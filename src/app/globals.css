@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* KWS Linkhout Clubkleuren - Rood & Wit */
+  --color-primary-50: #fef2f2;
+  --color-primary-100: #fee2e2;
+  --color-primary-200: #fecaca;
+  --color-primary-300: #fca5a5;
+  --color-primary-400: #f87171;
+  --color-primary-500: #ef4444;
+  --color-primary-600: #dc2626;
+  --color-primary-700: #b91c1c;
+  --color-primary-800: #991b1b;
+  --color-primary-900: #7f1d1d;
+  --color-primary-950: #450a0a;
+  
+  /* Primary = Clubrood */
+  --color-primary: #dc2626;
+  
+  /* Secondary = Wit */
+  --color-secondary: #ffffff;
+  --color-secondary-foreground: #1f2937;
+  
+  /* Accent = Donkerder rood voor accenten */
+  --color-accent: #991b1b;
+  --color-accent-foreground: #ffffff;
+  
+  /* Animaties */
+  --animate-fade-in: fadeIn 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.5s ease-out;
+  --animate-slide-down: slideDown 0.3s ease-out;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes slideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+  0% { transform: translateY(-10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: white;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom component classes */
+.container-custom {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 
+         text-white font-semibold transition-all duration-200 
+         hover:bg-primary-800 hover:shadow-lg hover:-translate-y-0.5
+         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 
+         text-primary font-semibold border-2 border-primary transition-all duration-200 
+         hover:bg-primary-50 hover:shadow-md
+         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+}
+
+.section-padding {
+  @apply py-16 md:py-24;
+}
+
+.heading-1 {
+  @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900;
+}
+
+.heading-2 {
+  @apply text-3xl md:text-4xl font-bold tracking-tight text-gray-900;
+}
+
+.heading-3 {
+  @apply text-2xl md:text-3xl font-bold text-gray-900;
+}
+
+.text-body {
+  @apply text-base md:text-lg text-gray-600 leading-relaxed;
 }
