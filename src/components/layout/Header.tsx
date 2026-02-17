@@ -181,8 +181,8 @@ export function Header() {
       <div className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="relative w-12 h-12">
+          <Link href="/" className="flex items-center">
+            <div className="relative w-16 h-16">
               <Image
                 src="/images/kwslinkhout-logo.png"
                 alt="KWS Linkhout"
@@ -191,11 +191,6 @@ export function Header() {
                 priority
               />
             </div>
-            <span className={`font-bold text-xl hidden sm:block transition-colors ${
-              scrolled ? "text-gray-900" : "text-white"
-            }`}>
-              KWS Linkhout
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -243,7 +238,7 @@ export function Header() {
                   <Link
                     href={item.href}
                     className="block py-3 text-gray-700 font-medium hover:text-primary"
-                    onClick={() => !item.dropdown && setMobileMenuOpen(false)}
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
                   </Link>
