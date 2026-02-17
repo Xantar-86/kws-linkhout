@@ -209,7 +209,7 @@ function ClubInfoContent() {
                   Klaar om lid te worden?
                 </h3>
                 <p className="text-white/90 mb-6">
-                  Vul het inschrijfformulier in en start je voetbalavontuur bij KWS Linkhout!
+                  Vul het Inschrijvingsformulier in en start je voetbalavontuur bij KWS Linkhout!
                 </p>
                 <a
                   href="https://docs.google.com/forms/d/e/1FAIpQLSdSw7GBB_yFZ3DDGCkTLJPwLjKzmTFX_8FlL0aOnxmqc43v9g/viewform"
@@ -218,7 +218,7 @@ function ClubInfoContent() {
                   className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition-colors"
                 >
                   <UserPlus className="w-5 h-5" />
-                  Inschrijfformulier invullen
+                  Inschrijvingsformulier invullen
                 </a>
               </div>
             )}

@@ -21,7 +21,7 @@ export function RegistrationForm() {
             Word lid van KWS Linkhout!
           </h2>
           <p className="text-white/90 mb-6 text-lg">
-            Wil jouw zoon of dochter bij ons komen voetballen? Vul het inschrijfformulier in 
+            Wil jouw zoon of dochter bij ons komen voetballen? Vul het Inschrijvingsformulier in 
             en wij nemen zo snel mogelijk contact op.
           </p>
 
@@ -47,7 +47,7 @@ export function RegistrationForm() {
             className="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-colors"
           >
             <UserPlus className="w-5 h-5" />
-            Inschrijfformulier invullen
+            Inschrijvingsformulier invullen
           </a>
         </div>
 

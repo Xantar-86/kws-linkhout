@@ -380,7 +380,7 @@ Wil jouw zoon of dochter bij KWS Linkhout komen voetballen? Super! Wij zijn alti
 
 **Hoe schrijf je in?**
 
-Vul het inschrijfformulier in via onderstaande knop. Wij nemen dan zo snel mogelijk contact met je op om de inschrijving te vervolledigen.
+Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel mogelijk contact met je op om de inschrijving te vervolledigen.
 
 **Contact per categorie:**
 
@@ -410,7 +410,7 @@ Het lidgeld omvat: verzekering, clubkledij (shirt, short, kousen), en deelname a
 
 We kijken er naar uit om je te verwelkomen bij KWS Linkhout!`,
     highlights: [
-      "Eenvoudig online inschrijfformulier",
+      "Eenvoudig online Inschrijvingsformulier",
       "Snelle opvolging via Spond/WhatsApp",
       "Alle leeftijdscategorieën welkom",
       "Inclusief verzekering en clubkledij"

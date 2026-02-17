@@ -77,20 +77,25 @@ export default function DamesOverOnsPage() {
             </div>
             <div className="prose prose-lg text-gray-700 space-y-4">
               <p>
-                Na maar liefst 3 Recrea Damesploegen in de rangen te hebben gehad, heeft KWS Linkhout 
-                een solide jeugdewerking voor meisjes op poten gezet.
+                Na maar liefst drie Recrea Damesploegen in de rangen te hebben gehad, heeft KWS Linkhout 
+                een sterke en toekomstgerichte meisjes- en dameswerking uitgebouwd.
               </p>
               <p>
-                In het seizoen &apos;22-&apos;23 zijn we dan ook gestart met een volwaardige U16 (8v8) dames 
-                competitieploeg en dit met groot succes!
+                In het seizoen 22-23 zetten we een nieuwe stap met de opstart van een volwaardige U16 (8v8) damescompetitieploeg 
+                en dat bleek meteen een schot in de roos.
               </p>
               <p>
-                Door de sterke groei van onze leden zullen we volgend seizoen zelfs aantreden met een 
-                extra U20 Damesploeg, weliswaar gesterkt door verschillende leeftijdscategorieën.
+                Dankzij de voortdurende groei én het succes van onze dameswerking telt de club vandaag vier volwaardige damesploegen: 
+                WU8, WU16, WU20 en onze eerste damesploeg, die dit seizoen zelfs de promotie naar 1ste provinciale afdwingt. 
+                Een prachtige bekroning van het harde werk van speelsters, trainers en vrijwilligers.
               </p>
               <p>
-                Onze dames zijn dikwijls te vinden op verschillende tornooien, maar steken ook de handen 
-                uit de mouwen op hun eigen Indoor Kersttornooi dat ze vorig jaar voor de eerste keer hebben georganiseerd.
+                Maar onze dames schitteren niet alleen op het veld. Ook naast het veld tonen ze hun engagement. 
+                Ze organiseren tal van activiteiten voor de club en haar supporters en zorgen telkens opnieuw 
+                voor een warme, enthousiaste en sportieve clubsfeer.
+              </p>
+              <p>
+                Momenteel tellen we 4
               </p>
             </div>
           </motion.div>

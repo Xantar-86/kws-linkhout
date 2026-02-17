@@ -121,7 +121,7 @@ Het grote nachttornooi
 Wij zijn nog steeds op zoek naar leuke teams die willen deelnemen. Inschrijven kan via het formulier op onze website.
 
 **Wil je meedoen?**
-Schrijf je team in via het inschrijfformulier op kwslinkhout.be. Hoe meer teams, hoe groter het feest!`,
+Schrijf je team in via het Inschrijvingsformulier op kwslinkhout.be. Hoe meer teams, hoe groter het feest!`,
     category: "evenementen",
     image: "/images/news/nachttornooi.jpg",
     date: "2025-05-05",

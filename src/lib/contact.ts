@@ -101,7 +101,7 @@ export const faqItems: FAQItem[] = [
   {
     id: "1",
     question: "Hoe schrijf ik mijn kind in bij KWS Linkhout?",
-    answer: "Je kan eenvoudig online inschrijven via ons inschrijfformulier op de pagina 'Nieuwe Aansluiting'. Vul je gegevens in en wij nemen asap contact op. Je kan ook mailen naar tvjo@kwslinkhout.be (jeugd) of info@kwslinkhout.be (dames/senioren).",
+    answer: "Je kan eenvoudig online inschrijven via ons Inschrijvingsformulier op de pagina 'Nieuwe Aansluiting'. Vul je gegevens in en wij nemen asap contact op. Je kan ook mailen naar tvjo@kwslinkhout.be (jeugd) of info@kwslinkhout.be (dames/senioren).",
     category: "lidmaatschap"
   },
   {
