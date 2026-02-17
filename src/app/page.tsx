@@ -19,7 +19,8 @@ import {
   CreditCard,
   MapPin,
   X,
-  BookOpen
+  BookOpen,
+  Circle
 } from "lucide-react";
 
 // Button component voor geschiedenis modal
@@ -404,7 +405,8 @@ function VolgendeWedstrijd({
               <span className={`inline-block px-3 py-1 ${badgeClasses} rounded-full text-sm font-medium mb-2`}>
                 {titel}
               </span>
-              <h3 className="text-xl md:text-2xl font-bold text-gray-900">
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
+                {kleur === "primary" && <span className="text-2xl">⚽</span>}
                 {wedstrijd.summary}
               </h3>
               {wedstrijd.location && (
