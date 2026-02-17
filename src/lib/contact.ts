@@ -34,16 +34,17 @@ export const contactPersons: ContactPerson[] = [
   },
   {
     id: "2",
-    name: "Mathias Breugelmans",
+    name: "Wesly Thomas",
     role: "Jeugdvoorzitter",
     email: "info@kwslinkhout.be",
+    phone: "0468 12 10 21",
     category: "jeugd"
   },
   {
     id: "3",
-    name: "Steven Bosman",
-    role: "TVJO (Technisch Verantwoordelijke JeugdOpleiding)",
-    email: "tvjo@kwslinkhout.be",
+    name: "TVJO",
+    role: "(Technisch Verantwoordelijke JeugdOpleiding)",
+    email: "info@kwslinkhout.be",
     phone: "0494 84 36 93",
     category: "jeugd"
   },
@@ -57,7 +58,7 @@ export const contactPersons: ContactPerson[] = [
   },
   {
     id: "5",
-    name: "Kristof Mondelaers",
+    name: "Frank Schroyen",
     role: "Hoofdtrainer Dames",
     email: "info@kwslinkhout.be",
     phone: "0476 23 57 29",

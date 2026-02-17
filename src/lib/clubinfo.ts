@@ -323,11 +323,11 @@ De belangen van de jeugd worden vertegenwoordigd door de aanwezigheid van haar v
 
 **Taken per Cel:**
 
-**Sportief:**
+**Sportief**
 - Uitwerken opleidingsvisie voor de jeugd
 - Aanwerven en begeleiden van trainers
 
-**Organisatorisch:**
+**Organisatorisch**
 - Kledij en organisatie bedeling kledij
 - Activiteiten: voetbaltornooi, paaskamp, steakdag
 - Medisch luik: blessurepreventie en -behandeling
@@ -335,27 +335,27 @@ De belangen van de jeugd worden vertegenwoordigd door de aanwezigheid van haar v
 - Bijdragen aan een financieel gezonde club
 - Organisatie scheidsrechters voor de jeugdwedstrijden
 
-**Audit / Subsidie:**
+**Audit / Subsidie**
 - Indienen gemeentelijke / VFV subsidie
 - Organisatie audit jeugd
 
-**Afgevaardigden / Ombudsman:**
+**Afgevaardigden / Ombudsman**
 - Contactpersoon afgevaardigden
 - Vertrouwenspersoon in geval van conflicten
 
-**Communicatie / PR:**
+**Communicatie / PR**
 - Beheer centrale communicatie naar ouders
 - Beheer website en social media
 - Opzetten interne communicatie en CRM systeem
 
-**Jeugdvoorzitter: Mathias Breugelmans**
+**Jeugdvoorzitter**
 
 Functieomschrijving:
 - Eindverantwoordelijke voor de jeugdwerking
 - Vertegenwoordigt het jeugdbestuur binnen het dagelijks bestuur
 - Roept op maandelijkse basis het jeugdbestuur samen
 
-**TVJO: Steven Bosman**
+**TVJO**
 
 Functieomschrijving:
 - Verantwoordelijk voor het sportief beleid inzake jeugdwerking
@@ -385,12 +385,13 @@ Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel m
 **Contact per categorie:**
 
 **Jeugd:**
-- E-mail: tvjo@kwslinkhout.be
+- E-mail: info@kwslinkhout.be
 - WhatsApp: 0494 84 36 93
 
 **Dames:**
+- Ben Jouck
 - E-mail: info@kwslinkhout.be
-- WhatsApp: 0479 07 35 55
+- Tel: 0479 07 35 55
 
 **Wat heb je nodig?**
 

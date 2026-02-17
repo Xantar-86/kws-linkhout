@@ -65,8 +65,8 @@ const navItems = [
     href: "/medisch",
     dropdown: [
       { name: "Voorstelling", href: "/medisch" },
-      { name: "Medische Omkadering", href: "/medisch/medische-omkadering" },
       { name: "Voetbalongeval", href: "/medisch/voetbalongeval" },
+      { name: "Medische Omkadering", href: "/medisch/medische-omkadering" },
       { name: "Reanimatie & Defibrillator", href: "/medisch/reanimatie-defibrillator" },
       { name: "Veilig Vervoer Kinderen", href: "/medisch/veilig-vervoer-kinderen" },
       { name: "Voeding", href: "/medisch/voeding" },
