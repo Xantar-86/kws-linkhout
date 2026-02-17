@@ -181,48 +181,51 @@ export function Header() {
         ? "bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm" 
         : "bg-primary border-b border-primary-700"
     }`}>
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <div className="relative w-16 h-16">
-              <Image
-                src="/images/kwslinkhout-logo.png"
-                alt="KWS Linkhout"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </Link>
+      <div className="flex items-center h-20">
+        {/* Logo - Helemaal links */}
+        <Link href="/" className="flex items-center flex-shrink-0 pl-4 lg:pl-6">
+          <div className="relative w-14 h-14 lg:w-16 lg:h-16">
+            <Image
+              src="/images/kwslinkhout-logo.png"
+              alt="KWS Linkhout"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <NavDropdown
-                key={item.name}
-                item={item}
-                isOpen={openDropdown === item.name}
-                onMouseEnter={() => setOpenDropdown(item.name)}
-                onMouseLeave={() => setOpenDropdown(null)}
-                scrolled={scrolled}
-              />
-            ))}
-          </nav>
+        {/* Navigation - Centraal/Rest van ruimte */}
+        <div className="flex-1 container-custom">
+          <div className="flex items-center justify-end lg:justify-between h-20">
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              {navItems.map((item) => (
+                <NavDropdown
+                  key={item.name}
+                  item={item}
+                  isOpen={openDropdown === item.name}
+                  onMouseEnter={() => setOpenDropdown(item.name)}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                  scrolled={scrolled}
+                />
+              ))}
+            </nav>
 
-          {/* Mobile Menu Button */}
-          <button
-            className={`lg:hidden p-2 rounded-lg transition-colors ${
-              scrolled ? "hover:bg-gray-100" : "hover:bg-white/20"
-            }`}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className={`w-6 h-6 ${scrolled ? "text-gray-700" : "text-white"}`} />
-            ) : (
-              <Menu className={`w-6 h-6 ${scrolled ? "text-gray-700" : "text-white"}`} />
-            )}
-          </button>
+            {/* Mobile Menu Button */}
+            <button
+              className={`lg:hidden p-2 rounded-lg transition-colors ${
+                scrolled ? "hover:bg-gray-100" : "hover:bg-white/20"
+              }`}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X className={`w-6 h-6 ${scrolled ? "text-gray-700" : "text-white"}`} />
+              ) : (
+                <Menu className={`w-6 h-6 ${scrolled ? "text-gray-700" : "text-white"}`} />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
