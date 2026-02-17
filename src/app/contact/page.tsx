@@ -259,19 +259,24 @@ export default function ContactPage() {
                 </motion.div>
               ))}
 
-              {/* Map Placeholder */}
+              {/* Google Maps Embed */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="bg-gray-200 rounded-2xl h-[400px] flex items-center justify-center"
+                className="bg-white rounded-2xl overflow-hidden shadow-lg h-[400px]"
               >
-                <div className="text-center text-gray-500">
-                  <MapPin className="w-12 h-12 mx-auto mb-2" />
-                  <p>Google Maps komt hier</p>
-                  <p className="text-sm">(Voeg Google Maps embed toe)</p>
-                </div>
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2511.4496391258195!2d5.158125976779158!3d50.95287397169496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c121b17f7ca66d%3A0x771b5f1e8b9b0b1a!2sKapelstraat%2072%2C%203560%20Linkhout!5e0!3m2!1snl!2sbe!4v1708185600000!5m2!1snl!2sbe"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="KWS Linkhout Clubhuis"
+                />
               </motion.div>
             </div>
           </div>
