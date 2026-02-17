@@ -21,10 +21,13 @@ const navItems = [
   {
     name: "Damesploegen",
     href: "/ploegen",
-    dropdown: getTeamsByCategory("dames").map(team => ({
-      name: team.name,
-      href: `/ploegen/team?slug=${team.slug}`,
-    })),
+    dropdown: [
+      { name: "Over ons", href: "/ploegen/dames-over-ons" },
+      ...getTeamsByCategory("dames").map(team => ({
+        name: team.name,
+        href: `/ploegen/team?slug=${team.slug}`,
+      })),
+    ],
   },
   {
     name: "Jeugdploegen",

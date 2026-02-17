@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView, animate } from "framer-motion";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { motion, useInView, animate, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -17,8 +17,28 @@ import {
   Camera,
   Shield,
   CreditCard,
-  MapPin
+  MapPin,
+  X,
+  BookOpen
 } from "lucide-react";
+
+// Button component voor geschiedenis modal
+function GeschiedenisButton() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  return (
+    <>
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="btn-primary"
+      >
+        Ontdek onze geschiedenis
+        <ArrowRight className="ml-2 w-4 h-4" />
+      </button>
+      <HistoryModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
+  );
+}
 
 // Component voor tellende animatie
 function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
@@ -95,6 +115,89 @@ const quickLinksRow2 = [
     color: "from-primary-600 to-primary-800"
   }
 ];
+// Modal component voor geschiedenis
+function HistoryModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            onClick={onClose}
+          />
+          
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-hidden">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-primary-900 via-primary-800 to-primary-700 p-6 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white">Geschiedenis van de Club</h2>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              </div>
+              
+              {/* Content */}
+              <div className="p-8 overflow-y-auto max-h-[calc(85vh-100px)]">
+                <div className="prose prose-lg max-w-none text-gray-700 space-y-6">
+                  <h3 className="text-xl font-bold text-gray-900">De Beginjaren</h3>
+                  <p>
+                    Linkhout is een typisch Kempische gemeente in de Demervallei met de onverzettelijkheid die haar eigen is. 
+                    Ook in de voetbalsport kwam dit tot uiting. Volgens annalen is WS Linkhout gestart in 1938. 
+                    Op een zondagvoormiddag na de Hoogmis werden in café van Richard Pluymers de koppen bij mekaar gestoken. 
+                    Die van de Sparta – ze voetbalden reeds in de zandkuil van Luyten – kwamen met de vraag om eens 
+                    tegen het Dorp te voetballen. Dit eerste Linkhoutse treffen vond plaats in de wei aan Tist bij de Demer. 
+                    En de overwinning smaakte zoet, heel zoet. Het recht op revanche werd gelicht en van het één kwam het ander. 
+                    Uiteindelijk werd besloten om een eigen ploeg op te richten en de draad van de White-Star 
+                    – een kortstondige ploeg in de jaren dertig – werd terug opgenomen.
+                  </p>
+                  
+                  <div className="bg-primary/5 border-l-4 border-primary p-4 rounded-r-lg">
+                    <p className="text-primary font-semibold italic m-0">
+                      We tekenen 2011, na exact 73 jaar zal KWS Linkhout de eerste beginselen leggen aan de basis 
+                      van de drie Linkhoutse vrouwenploegen...
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Close button */}
+                <div className="mt-8 text-center">
+                  <button
+                    onClick={onClose}
+                    className="btn-primary"
+                  >
+                    Sluiten
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
 // TypeWriter component met gekleurde woorden en emoji
 function TypeWriter({ 
   text, 
@@ -435,10 +538,7 @@ export default function Home() {
                 Met 23 ploegen, waaronder 6 meisjesploegen, is er voor ieder 
                 wat wils. Kom eens langs en ervaar de unieke sfeer zelf!
               </p>
-              <Link href="/club/geschiedenis" className="btn-primary">
-                Ontdek onze geschiedenis
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
+              <GeschiedenisButton />
             </motion.div>
 
             {/* Foto rechts - SCHUIN */}
@@ -495,6 +595,76 @@ export default function Home() {
                 <div className="text-gray-600 text-sm">{stat.label}</div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MEDIA SECTION - Video's */}
+      <section className="py-16 bg-gray-100">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              KWS Linkhout in de <span className="text-primary">media</span>
+            </h2>
+            <p className="text-gray-600">Bekijk onze club in actie</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Facebook Video */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-2xl overflow-hidden shadow-lg"
+            >
+              <div className="aspect-video w-full">
+                <iframe 
+                  src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2F61559748434812%2Fvideos%2F3867308740206273%2F&show_text=false&width=560&t=0" 
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 'none', overflow: 'hidden' }}
+                  scrolling="no" 
+                  frameBorder="0" 
+                  allowFullScreen={true}
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  className="w-full h-full"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-sm text-gray-500">Facebook Video</p>
+              </div>
+            </motion.div>
+
+            {/* YouTube Video */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="bg-white rounded-2xl overflow-hidden shadow-lg"
+            >
+              <div className="aspect-video w-full">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/QUi0ghNOScw"
+                  title="KWS Linkhout Video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-sm text-gray-500">YouTube Video</p>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
