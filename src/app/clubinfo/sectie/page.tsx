@@ -288,7 +288,7 @@ function ClubInfoContent() {
                   </h3>
                   <div className="relative overflow-hidden rounded-xl bg-gray-50">
                     <img 
-                      src="/images/Organigram/organigram1.jpg" 
+                      src="/images/organigram/organigram1.jpg" 
                       alt="Organigram KWS Linkhout - Structuur van de club"
                       className="w-full h-auto object-contain"
                     />
@@ -306,7 +306,7 @@ function ClubInfoContent() {
                   </h3>
                   <div className="relative overflow-hidden rounded-xl bg-gray-50">
                     <img 
-                      src="/images/Organigram/organigram2.jpg" 
+                      src="/images/organigram/organigram2.jpg" 
                       alt="Dagelijks Bestuur KWS Linkhout"
                       className="w-full h-auto object-contain"
                     />
