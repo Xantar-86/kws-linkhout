@@ -94,7 +94,7 @@ export default function DigitaalBetalenPage() {
                 <div>
                   <h3 className="font-bold text-gray-900">Bancontact</h3>
                   <p className="text-gray-600">
-                    U kan ook gewoon met uw Bancontactkaart betalen aan de toog.
+                    U kan ook gewoon met uw bankkaart betalen aan de toog.
                   </p>
                 </div>
               </div>
