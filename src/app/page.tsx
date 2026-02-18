@@ -577,10 +577,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* DIGITAAL BETALEN & DOCUMENTEN MUTUALITEIT */}
+      {/* LAATSTE NIEUWS - Digitaal Betalen & Documenten Mutualiteit */}
       <section className="py-16 bg-gray-100">
         <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl font-bold text-center mb-8 text-gray-900"
+          >
+            Laatste <span className="text-primary">nieuws</span>
+          </motion.h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-4xl mx-auto">
             <Link href="/digitaal-betalen">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -788,7 +797,7 @@ export default function Home() {
           </motion.h2>
           
           {/* 3 tegels in 1 rij */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {quickLinks.map((link, index) => (
               <motion.div
                 key={link.title}
@@ -799,24 +808,24 @@ export default function Home() {
                 className="h-full"
               >
                 <Link href={link.href} className="group block h-full">
-                  <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col">
                     {/* Header met gradient */}
-                    <div className={`bg-gradient-to-r ${link.color} p-3 text-center`}>
-                      <h3 className="text-white font-semibold text-xs">
+                    <div className={`bg-gradient-to-r ${link.color} p-4 text-center`}>
+                      <h3 className="text-white font-semibold text-sm">
                         {link.title}
                       </h3>
                     </div>
                     
                     {/* Icon area */}
-                    <div className="p-4 flex flex-col items-center flex-1">
-                      <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center mb-2 group-hover:bg-primary/10 transition-colors">
-                        <link.icon className="w-7 h-7 text-gray-800 group-hover:text-primary transition-colors" />
+                    <div className="p-6 flex flex-col items-center flex-1">
+                      <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
+                        <link.icon className="w-10 h-10 text-gray-800 group-hover:text-primary transition-colors" />
                       </div>
-                      <p className="text-gray-600 text-xs text-center">
+                      <p className="text-gray-600 text-sm text-center">
                         {link.description}
                       </p>
-                      <div className="mt-auto pt-2 flex items-center text-primary font-medium text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                        Ga naar <ArrowRight className="ml-1 w-3 h-3" />
+                      <div className="mt-auto pt-3 flex items-center text-primary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                        Ga naar <ArrowRight className="ml-1 w-4 h-4" />
                       </div>
                     </div>
                   </div>
