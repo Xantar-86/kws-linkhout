@@ -127,7 +127,7 @@ export default function TeamsPage() {
       const hash = window.location.hash;
       if (hash) {
         // Verwijder de hash uit de URL zodat de browser niet automatisch scrollt
-        history.pushState('', document.title, window.location.pathname + window.location.search);
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
         // Scroll eerst naar top
         window.scrollTo(0, 0);
         // Wacht even en scroll dan smooth naar de sectie
