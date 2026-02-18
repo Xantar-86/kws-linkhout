@@ -123,28 +123,21 @@ export default function TeamsPage() {
   const jeugd = getTeamsByCategory("jeugd");
 
   useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash;
-      if (hash) {
-        // Verwijder de hash uit de URL zodat de browser niet automatisch scrollt
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
-        // Scroll eerst naar top
-        window.scrollTo(0, 0);
-        // Wacht 1.5 seconde zodat gebruiker de hero ziet, dan smooth scroll
-        setTimeout(() => {
-          const element = document.querySelector(hash);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 1500);
-      }
-    };
-
-    handleHash();
-    
-    // Luister ook naar hash changes
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+    const hash = window.location.hash;
+    if (hash) {
+      // Verwijder de hash uit de URL zodat de browser niet automatisch scrollt
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      
+      // Wacht tot alles geladen is, dan scroll naar sectie
+      const timer = setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   return (

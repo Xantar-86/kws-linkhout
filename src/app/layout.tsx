@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -20,6 +21,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/kwslinkhout-logo.png",
     apple: "/images/kwslinkhout-logo.png",
+  },
+  other: {
+    'view-transition': 'same-origin',
   },
   openGraph: {
     title: "KWS Linkhout - Voetbalclub",
@@ -51,6 +55,7 @@ export default function RootLayout({
   return (
     <html lang="nl-BE" className={inter.variable}>
       <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
+        <ScrollToTop />
         <Header />
         <main className="flex-grow">
           {children}
