@@ -69,8 +69,9 @@ function TeamContent() {
       <section className="section-padding">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left: Team Photo */}
-            <div className="lg:col-span-2">
+            {/* Left: Team Photo & Calendar */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Team Photo */}
               <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
                 <div className="relative h-64 md:h-96">
                   <Image
@@ -92,6 +93,26 @@ function TeamContent() {
                   </p>
                 </div>
               </div>
+
+              {/* Calendar iFrame */}
+              {team.calendarIframe && (
+                <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
+                  <div className="bg-primary text-white px-6 py-4 flex items-center gap-3">
+                    <Calendar className="w-6 h-6" />
+                    <h2 className="text-xl font-bold">Wedstrijdkalender</h2>
+                  </div>
+                  <div className="p-4">
+                    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-lg">
+                      <iframe
+                        src={team.calendarIframe}
+                        title={`Wedstrijdkalender ${team.name}`}
+                        className="w-full h-full border-0"
+                        allow="fullscreen"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right: Info Cards */}
