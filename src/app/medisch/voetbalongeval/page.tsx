@@ -81,7 +81,8 @@ export default function VoetbalongevalPage() {
                   <Download className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <a 
                     href="/docs/medisch/voetbalongeval.pdf" 
-                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-primary hover:underline font-medium"
                   >
                     Hier downloaden
