@@ -20,7 +20,7 @@ export default function NewsPage() {
   const recentArticles = getRecentArticles(6);
 
   const filteredArticles = activeCategory === "all" 
-    ? recentArticles.filter(a => a.slug !== featuredArticle?.slug)
+    ? recentArticles.filter(a => a.slug !== featuredArticle?.slug && a.category !== "evenementen")
     : recentArticles.filter(a => a.category === activeCategory && a.slug !== featuredArticle?.slug);
 
   return (
