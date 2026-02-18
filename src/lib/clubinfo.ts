@@ -64,7 +64,7 @@ Als voetbalploeg hebben we zowel sportieve als sociale ambities door zoveel moge
     slug: "huishoudelijk-reglement",
     description: "De regels en afspraken voor al onze leden",
     icon: "file-text",
-    pdfUrl: "/docs/Huishoudelijk-Reglement.pdf",
+    pdfUrl: "/Docs/Huishoudelijk-Reglement.pdf",
     pdfLabel: "Download Huishoudelijk Reglement (PDF)",
     content: `**HuisHoudelijk Reglement Jeugd KWS Linkhout**
 

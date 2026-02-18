@@ -48,7 +48,7 @@ Zo krijgen alle spelers de mogelijkheid om de verschillende maten te passen en b
 
 Opgelet! Kledij zal enkel uitgeleverd worden indien de speler effectief aangesloten is bij de club en de betaling van het lidgeld is voldaan.
 
-[Bekijk de volledige nieuwsbrief (PDF)](/docs/nieuws/nieuwsbrief.pdf)`,
+[Bekijk de volledige nieuwsbrief (PDF)](/Docs/nieuws/nieuwsbrief.pdf)`,
     category: "clubnieuws",
     image: "/images/news/kws-info.jpg",
     date: "2025-05-01",

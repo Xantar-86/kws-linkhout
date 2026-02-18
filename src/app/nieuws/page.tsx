@@ -114,7 +114,7 @@ export default function NewsPage() {
                 </p>
               </div>
               <a
-                href="/docs/nieuws/nieuwsbrief.pdf"
+                href="/Docs/nieuws/nieuwsbrief.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors whitespace-nowrap"

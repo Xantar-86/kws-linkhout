@@ -97,7 +97,7 @@ export default function VeiligVervoerKinderenPage() {
               className="mb-8"
             >
               <a
-                href="/docs/medisch/veilig-vervoer.pdf"
+                href="/Docs/medisch/veilig-vervoer.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-4 bg-primary text-white rounded-xl p-6 hover:bg-primary-700 transition-colors"

@@ -277,7 +277,7 @@ export default function PanathloncharterPage() {
                     transition={{ delay: index * 0.1 }}
                   >
                     <a
-                      href={`/docs/jeugdopleiding/${file.filename}`}
+                      href={`/Docs/jeugdopleiding/${file.filename}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-start gap-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/30"

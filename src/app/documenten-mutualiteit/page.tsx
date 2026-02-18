@@ -97,7 +97,7 @@ export default function DocumentenMutualiteitPage() {
                       </p>
                     </div>
                     <a
-                      href={`/docs/documenten-mutualiteit/${encodeURIComponent(doc.bestandsnaam)}`}
+                      href={`/Docs/documenten-mutualiteit/${encodeURIComponent(doc.bestandsnaam)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-colors whitespace-nowrap"

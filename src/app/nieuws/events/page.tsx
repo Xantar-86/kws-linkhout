@@ -120,7 +120,7 @@ export default function EventsPage() {
                 </p>
               </div>
               <a
-                href="/docs/events/kws-events.pdf"
+                href="/Docs/events/kws-events.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors whitespace-nowrap"

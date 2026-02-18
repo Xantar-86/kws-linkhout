@@ -93,7 +93,7 @@ export default function OpleidingsvisiePage() {
               className="mb-8"
             >
               <a
-                href="/docs/jeugdopleiding/Opleidingsvisie-VFV-2015-2016.pdf"
+                href="/Docs/jeugdopleiding/Opleidingsvisie-VFV-2015-2016.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-4 bg-primary text-white rounded-xl p-6 hover:bg-primary-700 transition-colors"

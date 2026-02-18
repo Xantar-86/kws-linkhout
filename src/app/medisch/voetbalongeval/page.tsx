@@ -80,7 +80,7 @@ export default function VoetbalongevalPage() {
                 <li className="flex items-start gap-3">
                   <Download className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <a 
-                    href="/docs/medisch/voetbalongeval.pdf" 
+                    href="/Docs/medisch/voetbalongeval.pdf" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary hover:underline font-medium"

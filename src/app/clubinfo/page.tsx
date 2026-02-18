@@ -114,7 +114,7 @@ export default function ClubInfoPage() {
                           Bekijken
                         </Link>
                         <a
-                          href="/docs/Huishoudelijk-Reglement.pdf"
+                          href="/Docs/Huishoudelijk-Reglement.pdf"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center justify-center gap-2 py-2 px-4 bg-primary text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
@@ -152,7 +152,7 @@ export default function ClubInfoPage() {
                           Bekijken
                         </Link>
                         <a
-                          href="/docs/Privacyverklaring.pdf"
+                          href="/Docs/Privacyverklaring.pdf"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center justify-center gap-2 py-2 px-4 bg-primary text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
