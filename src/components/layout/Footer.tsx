@@ -46,16 +46,19 @@ export function Footer() {
               Koninklijke White Star Linkhout. 
               Een familiale voetbalclub met meer dan 85 jaar geschiedenis.
             </p>
-            <div className="flex items-center gap-4">
-              <a 
-                href="https://www.facebook.com/kwslinkhout" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors"
-                aria-label="Facebook KWS Linkhout"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
+            <div className="flex items-start gap-4">
+              <div className="flex flex-col items-center">
+                <a 
+                  href="https://www.facebook.com/kwslinkhout" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors"
+                  aria-label="Facebook KWS Linkhout"
+                >
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <span className="text-[10px] text-gray-500 mt-1">Facebook</span>
+              </div>
               <div className="flex flex-col items-center">
                 <a 
                   href="https://www.instagram.com/kwslinkhout" 
