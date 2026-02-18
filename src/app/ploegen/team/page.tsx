@@ -102,7 +102,7 @@ function TeamContent() {
                     <h2 className="text-xl font-bold">Wedstrijdkalender</h2>
                   </div>
                   <div className="p-4">
-                    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-lg">
+                    <div className="relative w-full h-[1000px] md:h-[1200px] overflow-hidden rounded-lg">
                       <iframe
                         src={team.calendarIframe}
                         title={`Wedstrijdkalender ${team.name}`}
