@@ -1,27 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Newspaper, Mail, ExternalLink, FileText, Download, CreditCard, Shield } from "lucide-react";
 import Link from "next/link";
-import { newsArticles, getFeaturedArticle, getRecentArticles } from "@/lib/news";
+import { getFeaturedArticle } from "@/lib/news";
 import { pressArticles } from "@/lib/press";
 import { FeaturedArticle } from "@/components/news/FeaturedArticle";
-import { NewsCard } from "@/components/news/NewsCard";
-import { NewsFilter } from "@/components/news/NewsFilter";
 import { PressCard } from "@/components/news/PressCard";
 
-type Category = "all" | "clubnieuws" | "ploegnieuws" | "evenementen";
-
 export default function NewsPage() {
-  const [activeCategory, setActiveCategory] = useState<Category>("all");
-
   const featuredArticle = getFeaturedArticle();
-  const recentArticles = getRecentArticles(6);
-
-  const filteredArticles = activeCategory === "all" 
-    ? recentArticles.filter(a => a.slug !== featuredArticle?.slug && a.category !== "evenementen")
-    : recentArticles.filter(a => a.category === activeCategory && a.slug !== featuredArticle?.slug);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -52,24 +40,6 @@ export default function NewsPage() {
         <div className="container-custom">
           {/* Featured Article */}
           {featuredArticle && <FeaturedArticle article={featuredArticle} />}
-
-          {/* Filter */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4 md:mb-0">
-              Laatste berichten
-            </h2>
-            <NewsFilter 
-              activeCategory={activeCategory} 
-              onCategoryChange={setActiveCategory} 
-            />
-          </div>
-
-          {/* News Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {filteredArticles.map((article, index) => (
-              <NewsCard key={article.id} article={article} index={index} />
-            ))}
-          </div>
 
           {/* Quick Links - Digitaal Betalen & Documenten Mutualiteit */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
