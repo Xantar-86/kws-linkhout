@@ -144,10 +144,7 @@ export default function EventsPage() {
               >
                 {/* Header met gradient */}
                 <div className={`bg-gradient-to-r ${event.color} p-4`}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-white/90 text-sm font-medium capitalize">
-                      {event.category}
-                    </span>
+                  <div className="flex items-center justify-end">
                     <Calendar className="w-5 h-5 text-white/80" />
                   </div>
                 </div>
