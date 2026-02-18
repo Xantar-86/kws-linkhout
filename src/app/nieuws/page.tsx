@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Newspaper, Mail, ExternalLink, FileText, Download, Calendar } from "lucide-react";
+import { Newspaper, Mail, ExternalLink, FileText, Download, CreditCard, Shield } from "lucide-react";
 import Link from "next/link";
 import { newsArticles, getFeaturedArticle, getRecentArticles } from "@/lib/news";
 import { pressArticles } from "@/lib/press";
@@ -71,34 +71,57 @@ export default function NewsPage() {
             ))}
           </div>
 
-          {/* Evenementenkalender CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-8 bg-gradient-to-r from-primary-50 to-primary-100 rounded-2xl p-6 shadow-lg border border-primary-200"
-          >
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
-                <Calendar className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                  Evenementenkalender 2025-2026
-                </h3>
-                <p className="text-gray-600">
-                  Bekijk alle activiteiten en evenementen voor het komende seizoen. Noteer de data alvast in je agenda!
-                </p>
-              </div>
-              <Link
-                href="/nieuws/events"
-                className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors whitespace-nowrap"
+          {/* Quick Links - Digitaal Betalen & Documenten Mutualiteit */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <Link href="/digitaal-betalen">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
               >
-                <Calendar className="w-5 h-5" />
-                Bekijk evenementen
-              </Link>
-            </div>
-          </motion.div>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <CreditCard className="w-7 h-7 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      Digitaal Betalen
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Betaal voortaan ook digitaal @ KWS Linkhout
+                    </p>
+                  </div>
+                  <ExternalLink className="w-5 h-5 text-gray-400" />
+                </div>
+              </motion.div>
+            </Link>
+
+            <Link href="/documenten-mutualiteit">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-7 h-7 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      Documenten Mutualiteit
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Download hier je formulier voor de mutualiteiten
+                    </p>
+                  </div>
+                  <ExternalLink className="w-5 h-5 text-gray-400" />
+                </div>
+              </motion.div>
+            </Link>
+          </div>
 
           {/* Volledige Nieuwsbrief PDF */}
           <motion.div
