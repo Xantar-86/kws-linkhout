@@ -24,7 +24,7 @@ export const teams: Team[] = [
   // ========== SENIOREN (3) ==========
   {
     id: "sen-1",
-    name: "1ste Ploeg A",
+    name: "1ste Ploeg P2",
     slug: "eerste-ploeg",
     category: "senioren",
     division: "2de Provinciale Limb A",
@@ -41,7 +41,7 @@ export const teams: Team[] = [
   },
   {
     id: "sen-2",
-    name: "Reserven",
+    name: "Beloften P2",
     slug: "reserven",
     category: "senioren",
     division: "Reserven Voetb Vl AU",
@@ -56,7 +56,7 @@ export const teams: Team[] = [
   },
   {
     id: "sen-3",
-    name: "1ste Ploeg B",
+    name: "1ste Ploeg P4",
     slug: "recrea-mannen",
     category: "senioren",
     division: "4 Provinciale Limb A",
@@ -73,7 +73,7 @@ export const teams: Team[] = [
   // ========== DAMES/MEISJES (6) ==========
   {
     id: "dam-1",
-    name: "1ste Ploeg Dames",
+    name: "Dames 1ste Ploeg P2",
     slug: "eerste-ploeg-dames",
     category: "dames",
     division: "2de Provinciale Dames",
@@ -158,7 +158,7 @@ export const teams: Team[] = [
     division: "Vriendschappelijk",
     trainingDays: ["?"],
     trainingTime: "?",
-    coach: "Frank Schroyen",
+    coach: "Staf Vaes",
     image: "/images/teams/recrea-vrouwen.jpg",
     description: "Gezellig voetballen voor dames van alle niveaus.",
     calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/recrea-vrouwen-123?per_page=999"

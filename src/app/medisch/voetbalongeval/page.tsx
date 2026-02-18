@@ -70,7 +70,7 @@ export default function VoetbalongevalPage() {
                   <User className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-gray-700">
                     Onze gerechtigde correspondent <strong>Gert Peremans</strong>{" "}
-                    <a href="mailto:gc@kwslinkhout.be" className="text-primary hover:underline">gc@kwslinkhout.be</a>
+                    <a href="mailto:info@kwslinkhout.be" className="text-primary hover:underline">info@kwslinkhout.be</a>
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -324,11 +324,11 @@ export default function VoetbalongevalPage() {
               Bij eventuele vragen of opmerkingen is het best om te contacteren:
             </p>
             <a 
-              href="mailto:gc@kwslinkhout.be" 
+              href="mailto:info@kwslinkhout.be" 
               className="inline-flex items-center gap-2 text-white font-semibold hover:underline"
             >
               <Mail className="w-5 h-5" />
-              gc@kwslinkhout.be
+              info@kwslinkhout.be
             </a>
           </motion.div>
         </div>

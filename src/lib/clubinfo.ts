@@ -385,13 +385,19 @@ Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel m
 **Contact per categorie:**
 
 **Jeugd:**
+- Wesly Thomas
 - E-mail: info@kwslinkhout.be
-- WhatsApp: 0494 84 36 93
+- WhatsApp: 0468 12 10 21
 
 **Dames:**
 - Ben Jouck
 - E-mail: info@kwslinkhout.be
 - Tel: 0479 07 35 55
+
+**Senioren:**
+- Ramon Fernandez
+- E-mail: info@kwslinkhout.be
+- Tel: 0475 61 02 86
 
 **Wat heb je nodig?**
 

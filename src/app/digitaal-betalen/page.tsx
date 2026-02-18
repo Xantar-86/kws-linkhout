@@ -88,6 +88,18 @@ export default function DigitaalBetalenPage() {
               </div>
 
               <div className="flex gap-4">
+                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-5 h-5 text-orange-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900">Bankcontact</h3>
+                  <p className="text-gray-600">
+                    U kan ook gewoon met uw bankcontactkaart betalen aan de toog.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <QrCode className="w-5 h-5 text-green-600" />
                 </div>

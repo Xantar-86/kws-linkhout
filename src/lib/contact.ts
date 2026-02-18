@@ -45,7 +45,7 @@ export const contactPersons: ContactPerson[] = [
     name: "TVJO",
     role: "(Technisch Verantwoordelijke JeugdOpleiding)",
     email: "info@kwslinkhout.be",
-    phone: "0494 84 36 93",
+    phone: "",
     category: "jeugd"
   },
   {
@@ -67,7 +67,7 @@ export const contactPersons: ContactPerson[] = [
   {
     id: "6",
     name: "Patrick Beutels",
-    role: "Trainer 1ste Ploeg A",
+    role: "Trainer 1ste Ploeg P2",
     email: "info@kwslinkhout.be",
     category: "senioren"
   },

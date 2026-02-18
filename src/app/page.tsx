@@ -11,7 +11,6 @@ import {
   Users, 
   Calendar, 
   Users2,
-  FileText,
   Clock,
   AlertTriangle,
   Camera,
@@ -20,7 +19,8 @@ import {
   MapPin,
   X,
   BookOpen,
-  Circle
+  Circle,
+  CalendarDays
 } from "lucide-react";
 
 // Button component voor geschiedenis modal
@@ -69,12 +69,12 @@ function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string
 }
 
 // Quick links data
-const quickLinksRow1 = [
+const quickLinks = [
   {
-    title: "Inschrijvingen 25-26",
-    icon: FileText,
-    href: "/clubinfo/sectie?slug=nieuwe-aansluiting",
-    description: "Schrijf je in voor het nieuwe seizoen",
+    title: "Documenten Mutualiteit Seizoen 25-26",
+    icon: Shield,
+    href: "/documenten-mutualiteit",
+    description: "Download hier je formulier",
     color: "from-primary-600 to-primary-800"
   },
   {
@@ -97,22 +97,12 @@ const quickLinksRow1 = [
     href: "/fotos",
     description: "Bekijk onze fotogalerij",
     color: "from-primary-600 to-primary-800"
-  }
-];
-
-const quickLinksRow2 = [
-  {
-    title: "Documenten Mutualiteit Seizoen 25-26",
-    icon: Shield,
-    href: "/documenten-mutualiteit",
-    description: "Download hier je formulier voor de mutualiteiten",
-    color: "from-primary-600 to-primary-800"
   },
   {
     title: "Digitaal betalen",
     icon: CreditCard,
     href: "/digitaal-betalen",
-    description: "Betaal voortaan ook digitaal @ KWS Linkhout",
+    description: "Betaal voortaan ook digitaal",
     color: "from-primary-600 to-primary-800"
   }
 ];
@@ -601,8 +591,84 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MEDIA SECTION - Video's */}
+      {/* AANKOMENDE EVENTS SECTION */}
       <section className="py-16 bg-gray-100">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Aankomende <span className="text-primary">evenementen</span>
+            </h2>
+            <p className="text-gray-600">Noteer deze data alvast in je agenda</p>
+          </motion.div>
+
+          {/* Events Preview - Alleen toekomstige events */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {[
+              {
+                title: "Pasta Take-A-Way",
+                date: "13-14 Maart",
+                description: "Heerlijke pasta om mee te nemen",
+                color: "from-red-500 to-red-700"
+              },
+              {
+                title: "Voetbalkamp Meisjes",
+                date: "8-9-10 April",
+                description: "Drie dagen voetbalplezier voor onze meisjes",
+                color: "from-pink-500 to-pink-700"
+              },
+              {
+                title: "Paasvoetbalkamp",
+                date: "15-16-17 April",
+                description: "Traditioneel paasvoetbalkamp voor alle jeugd",
+                color: "from-green-500 to-green-700"
+              }
+            ].map((event, index) => (
+              <motion.div
+                key={event.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                <div className={`bg-gradient-to-r ${event.color} p-4`}>
+                  <div className="flex items-center justify-between">
+                    <CalendarDays className="w-5 h-5 text-white/80" />
+                    <span className="text-white font-semibold text-sm">{event.date}</span>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{event.title}</h3>
+                  <p className="text-gray-600 text-sm">{event.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <Link
+              href="/nieuws/events"
+              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary-700 transition-colors"
+            >
+              <Calendar className="w-5 h-5" />
+              Bekijk alle evenementen
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* MEDIA SECTION - Video's */}
+      <section className="py-16 bg-white">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -683,9 +749,9 @@ export default function Home() {
             Snel naar <span className="text-primary">...</span>
           </motion.h2>
           
-          {/* Eerste rij - 4 tegels */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-            {quickLinksRow1.map((link, index) => (
+          {/* 5 tegels in 1 rij */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {quickLinks.map((link, index) => (
               <motion.div
                 key={link.title}
                 initial={{ opacity: 0, y: 30 }}
@@ -695,62 +761,24 @@ export default function Home() {
                 className="h-full"
               >
                 <Link href={link.href} className="group block h-full">
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col">
+                  <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
                     {/* Header met gradient */}
-                    <div className={`bg-gradient-to-r ${link.color} p-4 text-center`}>
-                      <h3 className="text-white font-semibold text-sm">
+                    <div className={`bg-gradient-to-r ${link.color} p-3 text-center`}>
+                      <h3 className="text-white font-semibold text-xs">
                         {link.title}
                       </h3>
                     </div>
                     
                     {/* Icon area */}
-                    <div className="p-10 flex flex-col items-center flex-1">
-                      <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
-                        <link.icon className="w-12 h-12 text-gray-800 group-hover:text-primary transition-colors" />
+                    <div className="p-4 flex flex-col items-center flex-1">
+                      <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center mb-2 group-hover:bg-primary/10 transition-colors">
+                        <link.icon className="w-7 h-7 text-gray-800 group-hover:text-primary transition-colors" />
                       </div>
-                      <p className="text-gray-600 text-sm text-center h-10 flex items-center justify-center">
+                      <p className="text-gray-600 text-xs text-center">
                         {link.description}
                       </p>
-                      <div className="mt-auto pt-4 flex items-center text-primary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        Ga naar <ArrowRight className="ml-1 w-4 h-4" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Tweede rij - 2 tegels (mutualiteit + digitaal betalen) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
-            {quickLinksRow2.map((link, index) => (
-              <motion.div
-                key={link.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: (index + 4) * 0.1 }}
-                className="h-full"
-              >
-                <Link href={link.href} className="group block h-full">
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col">
-                    {/* Header met gradient */}
-                    <div className={`bg-gradient-to-r ${link.color} p-4 text-center`}>
-                      <h3 className="text-white font-semibold text-sm">
-                        {link.title}
-                      </h3>
-                    </div>
-                    
-                    {/* Icon area */}
-                    <div className="p-10 flex flex-col items-center flex-1">
-                      <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors">
-                        <link.icon className="w-12 h-12 text-gray-800 group-hover:text-primary transition-colors" />
-                      </div>
-                      <p className="text-gray-600 text-sm text-center h-10 flex items-center justify-center">
-                        {link.description}
-                      </p>
-                      <div className="mt-auto pt-4 flex items-center text-primary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        Ga naar <ArrowRight className="ml-1 w-4 h-4" />
+                      <div className="mt-auto pt-2 flex items-center text-primary font-medium text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                        Ga naar <ArrowRight className="ml-1 w-3 h-3" />
                       </div>
                     </div>
                   </div>

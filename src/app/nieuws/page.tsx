@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Newspaper, Mail, ExternalLink, FileText, Download } from "lucide-react";
+import { Newspaper, Mail, ExternalLink, FileText, Download, Calendar } from "lucide-react";
 import Link from "next/link";
 import { newsArticles, getFeaturedArticle, getRecentArticles } from "@/lib/news";
 import { pressArticles } from "@/lib/press";
@@ -70,6 +70,35 @@ export default function NewsPage() {
               <NewsCard key={article.id} article={article} index={index} />
             ))}
           </div>
+
+          {/* Evenementenkalender CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-8 bg-gradient-to-r from-primary-50 to-primary-100 rounded-2xl p-6 shadow-lg border border-primary-200"
+          >
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="w-16 h-16 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Evenementenkalender 2025-2026
+                </h3>
+                <p className="text-gray-600">
+                  Bekijk alle activiteiten en evenementen voor het komende seizoen. Noteer de data alvast in je agenda!
+                </p>
+              </div>
+              <Link
+                href="/nieuws/events"
+                className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors whitespace-nowrap"
+              >
+                <Calendar className="w-5 h-5" />
+                Bekijk evenementen
+              </Link>
+            </div>
+          </motion.div>
 
           {/* Volledige Nieuwsbrief PDF */}
           <motion.div

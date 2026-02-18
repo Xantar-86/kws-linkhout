@@ -94,9 +94,6 @@ export default function DamesOverOnsPage() {
                 Ze organiseren tal van activiteiten voor de club en haar supporters en zorgen telkens opnieuw 
                 voor een warme, enthousiaste en sportieve clubsfeer.
               </p>
-              <p>
-                Momenteel tellen we 4
-              </p>
             </div>
           </motion.div>
 
@@ -158,12 +155,12 @@ export default function DamesOverOnsPage() {
               Aarzel dus niet, KWS Linkhout verwelkomt je graag!
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white rounded-xl p-5 shadow-sm text-center">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Users className="w-5 h-5 text-primary" />
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Kristof Mondelaers</h3>
+                <h3 className="font-semibold text-gray-900 mb-1">Frank Schroyen</h3>
                 <p className="text-sm text-gray-500 mb-2">T1</p>
                 <a 
                   href="tel:0476235729" 
@@ -189,20 +186,6 @@ export default function DamesOverOnsPage() {
                 </a>
               </div>
 
-              <div className="bg-white rounded-xl p-5 shadow-sm text-center">
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-5 h-5 text-primary" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-1">Petra Mariën</h3>
-                <p className="text-sm text-gray-500 mb-2">Ambassadrice</p>
-                <a 
-                  href="tel:0474503326" 
-                  className="flex items-center justify-center gap-2 text-primary hover:underline"
-                >
-                  <Phone className="w-4 h-4" />
-                  (0474) 50.33.26
-                </a>
-              </div>
             </div>
 
             <div className="mt-8 text-center">
