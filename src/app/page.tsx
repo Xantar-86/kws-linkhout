@@ -628,25 +628,26 @@ export default function Home() {
                 color: "from-green-500 to-green-700"
               }
             ].map((event, index) => (
-              <motion.div
-                key={event.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow"
-              >
-                <div className={`bg-gradient-to-r ${event.color} p-4`}>
-                  <div className="flex items-center justify-between">
-                    <CalendarDays className="w-5 h-5 text-white/80" />
-                    <span className="text-white font-semibold text-sm">{event.date}</span>
+              <Link key={event.title} href="/nieuws/events" className="group">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+                >
+                  <div className={`bg-gradient-to-r ${event.color} p-4`}>
+                    <div className="flex items-center justify-between">
+                      <CalendarDays className="w-5 h-5 text-white/80" />
+                      <span className="text-white font-semibold text-sm">{event.date}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="p-5">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{event.title}</h3>
-                  <p className="text-gray-600 text-sm">{event.description}</p>
-                </div>
-              </motion.div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{event.title}</h3>
+                    <p className="text-gray-600 text-sm">{event.description}</p>
+                  </div>
+                </motion.div>
+              </Link>
             ))}
           </div>
 
