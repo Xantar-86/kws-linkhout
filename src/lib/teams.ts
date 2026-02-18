@@ -35,9 +35,9 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Ons vlaggenschip in de 2de Provinciale. Een mix van ervaring en jong talent.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/1-a-1959?per_page=999",
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337162/kalender",
     calendarIcal: "https://ical.voetbalinbelgie.be/competities/2025-2026/limburg/mannen/2a/?c=linkhout-kws",
-    standingsIframe: "https://embed.voetbalinbelgie.be/competities/2025-2026/limburg/mannen/2a/?bU=false&iDO=1&sTFC=%23ffffff&sTBC=%23df2626&bBT=true&sBC=%23fcfcfc&bAT=true&sAC=%23fafafa"
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337162/overzicht"
   },
   {
     id: "sen-2",
