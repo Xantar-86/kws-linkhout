@@ -52,7 +52,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De toekomstige talenten en ervaren krachten van de club.",
-    calendarIframe: "https://foot24.be/nl/iframe/ws-linkhout/reserven-2151?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337161/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337161/overzicht"
   },
   {
     id: "sen-3",
@@ -65,9 +66,8 @@ export const teams: Team[] = [
     coach: "Ramon",
     image: "/images/teams/placeholder-senioren.jpg",
     description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/1-b-1828?per_page=999",
-    calendarIcal: "https://www.foot24.be/nl/ical/ws-linkhout/1-b-1828.ics?key=8XJ0zG5",
-    standingsIframe: "https://embed.voetbalinbelgie.be/competities/2025-2026/limburg/mannen/4a/?bU=false&iDO=1&sTFC=%23ffffff&sTBC=%23df2626&bBT=true&sBC=%23ffffff&bAT=true&sAC=%23f3f3f3"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337159/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337159/overzicht"
   },
 
   // ========== DAMES/MEISJES (6) ==========
@@ -84,9 +84,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Onze damesploeg strijdt elke week voor de punten in de 2de Provinciale.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/1-vrouwen-596?per_page=999",
-    calendarIcal: "https://www.foot24.be/nl/ical/ws-linkhout/1-vrouwen-596.ics?key=B1WjXx2",
-    standingsIframe: "https://embed.voetbalinbelgie.be/competities/2025-2026/limburg/vrouwen/2a/?bU=false&iDO=1&sTFC=%23ffffff&sTBC=%23df2626&bBT=true&sBC=%23ffffff&bAT=true&sAC=%23f3f3f3"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337160/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337160/overzicht"
   },
   {
     id: "dam-2",
@@ -102,7 +101,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De brug tussen jeugd en senioren voor onze meisjestalenten.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u20-vrouwen-54?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351080/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351080/overzicht"
   },
   {
     id: "dam-3",
@@ -118,7 +118,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Talentvolle meisjes die elke week met plezier trainen en spelen.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u16-vrouwen-a-24?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351079/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351079/overzicht"
   },
   {
     id: "dam-4",
@@ -134,7 +135,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U16 team met evenveel enthousiasme en inzet.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u16-vrouwen-b-30?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351078/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351078/overzicht"
   },
   {
     id: "dam-5",
@@ -148,7 +150,8 @@ export const teams: Team[] = [
     coach: "Frank Schroyen",
     image: "/images/teams/placeholder-dames.jpg",
     description: "Onze jongste meisjes maken hun eerste stappen op het voetbalveld.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u8-m-18?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/overzicht"
   },
   {
     id: "dam-6",
@@ -161,7 +164,7 @@ export const teams: Team[] = [
     coach: "Staf Vaes",
     image: "/images/teams/recrea-vrouwen.jpg",
     description: "Gezellig voetballen voor dames van alle niveaus.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/recrea-vrouwen-123?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359957/kalender"
   },
 
   // ========== JEUGD (17) ==========
@@ -179,7 +182,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Talentvolle jongens in de belangrijke ontwikkelingsfase.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u17-1892?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351067/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351067/overzicht"
   },
   {
     id: "j-3",
@@ -194,7 +198,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Techniek en tactiek staan centraal in deze leeftijdsgroep.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u15-7400?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351068/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351068/overzicht"
   },
   {
     id: "j-4",
@@ -209,7 +214,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De overgang van 8 naar 11 tegen 11 voetbal.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u13-1776?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351069/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351069/overzicht"
   },
   {
     id: "j-5",
@@ -224,7 +230,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Spelenderwijs leren en plezier maken staat voorop.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u12-1647?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351070/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351070/overzicht"
   },
   {
     id: "j-6",
@@ -239,7 +246,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De basis van techniek en teamspel wordt hier gelegd.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u11-1755?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351071/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351071/overzicht"
   },
   {
     id: "j-7",
@@ -254,7 +262,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Veel spelvormen en plezier op het veld.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u10-1760?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351072/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351072/overzicht"
   },
   {
     id: "j-7b",
@@ -269,7 +278,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U10 team met evenveel enthousiasme.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u10-b-1622?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/357042/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/357042/overzicht"
   },
   {
     id: "j-8",
@@ -284,7 +294,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Ontdekken, leren en groeien als voetballer.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u9-1432?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351073/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351073/overzicht"
   },
   {
     id: "j-8b",
@@ -299,7 +310,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U9 team met veel potentieel.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u9-b-2208?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359368/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359368/overzicht"
   },
   {
     id: "j-9",
@@ -314,7 +326,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De eerste stappen in het competitieve voetbal.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u8-a-1483?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351075/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351075/overzicht"
   },
   {
     id: "j-9b",
@@ -329,7 +342,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U8 team met veel plezier op het veld.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u8-b-1665?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351074/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351074/overzicht"
   },
   {
     id: "j-10",
@@ -343,7 +357,8 @@ export const teams: Team[] = [
     image: "/images/teams/U7.jpg",
     calendarUrl: "#",
     description: "Spelenderwijs kennismaken met voetbal.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u7-2042?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351076/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351076/overzicht"
   },
   {
     id: "j-10b",
@@ -357,7 +372,8 @@ export const teams: Team[] = [
     image: "/images/teams/U7.jpg",
     calendarUrl: "#",
     description: "Het tweede U7 team met veel enthousiasme.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u7-b-1155?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/356637/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/356637/overzicht"
   },
   {
     id: "j-11",
@@ -370,7 +386,8 @@ export const teams: Team[] = [
     coach: "Simon Biesmans & Lennert Neuteleers",
     image: "/images/teams/U6.jpg",
     description: "Onze allerkleinsten! Plezier en bewegen staat centraal.",
-    calendarIframe: "https://www.foot24.be/nl/iframe/ws-linkhout/u6-5389?per_page=999"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/overzicht"
   }
 ];
 
