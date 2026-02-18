@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Facebook, Mail, MapPin, Phone, Coffee, Heart } from "lucide-react";
+import { Facebook, Mail, MapPin, Phone } from "lucide-react";
 
 const footerLinks = {
   club: [
@@ -171,8 +171,8 @@ export function Footer() {
           <p className="text-gray-500 text-sm">
             © {new Date().getFullYear()} KWS Linkhout. Alle rechten voorbehouden.
           </p>
-          <p className="text-gray-500 text-sm flex items-center gap-1">
-            Gemaakt met lots of <Coffee className="w-4 h-4" /> en een <Heart className="w-4 h-4 text-red-500" /> voor de club.
+          <p className="text-gray-500 text-sm">
+            Gemaakt met een ♥ voor de club.
           </p>
         </div>
       </div>
