@@ -71,13 +71,6 @@ function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string
 // Quick links data
 const quickLinks = [
   {
-    title: "Documenten Mutualiteit Seizoen 25-26",
-    icon: Shield,
-    href: "/documenten-mutualiteit",
-    description: "Download hier je formulier",
-    color: "from-primary-600 to-primary-800"
-  },
-  {
     title: "Trainingsschema",
     icon: Clock,
     href: "/jeugdopleiding/trainingsschema-25-26",
@@ -96,13 +89,6 @@ const quickLinks = [
     icon: Camera,
     href: "/fotos",
     description: "Bekijk onze fotogalerij",
-    color: "from-primary-600 to-primary-800"
-  },
-  {
-    title: "Digitaal betalen",
-    icon: CreditCard,
-    href: "/digitaal-betalen",
-    description: "Betaal voortaan ook digitaal",
     color: "from-primary-600 to-primary-800"
   }
 ];
@@ -591,9 +577,60 @@ export default function Home() {
         </div>
       </section>
 
-      {/* AANKOMENDE EVENTS SECTION */}
+      {/* DIGITAAL BETALEN & DOCUMENTEN MUTUALITEIT */}
       <section className="py-16 bg-gray-100">
         <div className="container-custom">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <Link href="/digitaal-betalen">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <CreditCard className="w-7 h-7 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      Digitaal Betalen
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Betaal voortaan ook digitaal @ KWS Linkhout
+                    </p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-gray-400" />
+                </div>
+              </motion.div>
+            </Link>
+
+            <Link href="/documenten-mutualiteit">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-7 h-7 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                      Documenten Mutualiteit
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      Download hier je formulier voor de mutualiteiten
+                    </p>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-gray-400" />
+                </div>
+              </motion.div>
+            </Link>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -750,8 +787,8 @@ export default function Home() {
             Snel naar <span className="text-primary">...</span>
           </motion.h2>
           
-          {/* 5 tegels in 1 rij */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {/* 3 tegels in 1 rij */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             {quickLinks.map((link, index) => (
               <motion.div
                 key={link.title}
