@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect } from "react";
 import { teams, getTeamsByCategory } from "@/lib/teams";
 import { Trophy, Clock, User, ChevronRight } from "lucide-react";
 
@@ -120,6 +121,22 @@ export default function TeamsPage() {
   const senioren = getTeamsByCategory("senioren");
   const dames = getTeamsByCategory("dames");
   const jeugd = getTeamsByCategory("jeugd");
+
+  useEffect(() => {
+    // Check if there's a hash in the URL
+    if (window.location.hash) {
+      const hash = window.location.hash;
+      // First scroll to top
+      window.scrollTo(0, 0);
+      // Then after a short delay, smooth scroll to the section
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
