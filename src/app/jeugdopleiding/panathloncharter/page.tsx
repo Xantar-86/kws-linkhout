@@ -278,7 +278,8 @@ export default function PanathloncharterPage() {
                   >
                     <a
                       href={`/docs/jeugdopleiding/${file.filename}`}
-                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group flex items-start gap-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/30"
                     >
                       <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors text-primary">

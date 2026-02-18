@@ -147,7 +147,8 @@ export default function PressPage() {
                       </a>
                       <a
                         href={article.url}
-                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition-colors"
                         title="Download PDF"
                       >

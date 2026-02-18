@@ -98,7 +98,8 @@ export default function DocumentenMutualiteitPage() {
                     </div>
                     <a
                       href={`/docs/documenten-mutualiteit/${encodeURIComponent(doc.bestandsnaam)}`}
-                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-colors whitespace-nowrap"
                       style={{ backgroundColor: '#8c1d1c' }}
                     >
