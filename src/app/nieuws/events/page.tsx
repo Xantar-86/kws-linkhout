@@ -4,44 +4,8 @@ import { motion } from "framer-motion";
 import { Calendar, MapPin, ArrowLeft, Download } from "lucide-react";
 import Link from "next/link";
 
-// Events data gebaseerd op de PDF kws-events.pdf
+// Events data gebaseerd op de PDF kws-events.pdf - Alleen komende evenementen
 const events = [
-  {
-    id: 1,
-    title: "Jeugdvoorstelling",
-    date: "5 Oktober",
-    dateFull: "5 oktober 2025",
-    description: "De jaarlijkse jeugdvoorstelling waar alle jeugdploegen worden voorgesteld.",
-    category: "voorstelling",
-    color: "from-blue-500 to-blue-700"
-  },
-  {
-    id: 2,
-    title: "Mosselfeest",
-    date: "17-18 Oktober",
-    dateFull: "17-18 oktober 2025",
-    description: "Het jaarlijkse mosselfeest in het clubhuis.",
-    category: "feest",
-    color: "from-orange-500 to-orange-700"
-  },
-  {
-    id: 3,
-    title: "Halloween Voetbalkamp",
-    date: "29-30-31 Oktober",
-    dateFull: "29-30-31 oktober 2025",
-    description: "Spookachtig voetbalplezier tijdens het Halloween kamp.",
-    category: "kamp",
-    color: "from-purple-500 to-purple-700"
-  },
-  {
-    id: 4,
-    title: "Wafelverkoop",
-    date: "Vanaf 2 november",
-    dateFull: "Vanaf 2 november 2025",
-    description: "Heerlijke verse wafels te koop voor het goede doel.",
-    category: "verkoop",
-    color: "from-amber-500 to-amber-700"
-  },
   {
     id: 5,
     title: "Pasta Take-A-Way",
