@@ -130,13 +130,13 @@ export default function TeamsPage() {
         window.history.replaceState(null, '', window.location.pathname + window.location.search);
         // Scroll eerst naar top
         window.scrollTo(0, 0);
-        // Wacht even en scroll dan smooth naar de sectie
+        // Wacht 1.5 seconde zodat gebruiker de hero ziet, dan smooth scroll
         setTimeout(() => {
           const element = document.querySelector(hash);
           if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-        }, 500);
+        }, 1500);
       }
     };
 
