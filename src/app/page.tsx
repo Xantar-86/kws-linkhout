@@ -570,7 +570,7 @@ export default function Home() {
               { icon: Trophy, label: "Opgericht", value: 1938, suffix: "" },
               { icon: Users, label: "Actieve Leden", value: 250, suffix: "+" },
               { icon: Calendar, label: "Ploegen", value: 23, suffix: "" },
-              { icon: Users2, label: "Meisjesploegen", value: 6, suffix: "" },
+              { icon: Users2, label: "Damesploegen", value: 6, suffix: "" },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
