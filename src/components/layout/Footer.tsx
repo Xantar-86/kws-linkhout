@@ -83,7 +83,7 @@ export function Footer() {
                 >
                   <Facebook className="w-5 h-5" />
                 </a>
-                <span className="text-[10px] text-gray-500 mt-1">Dames</span>
+                <span className="text-[10px] text-gray-500 mt-1">FB Dames</span>
               </div>
               <div className="flex flex-col items-center">
                 <a 
