@@ -12,11 +12,7 @@ interface TeamCardProps {
   index: number;
 }
 
-interface TeamSectionProps {
-  title: string;
-  teamsList: typeof teams;
-  startIndex: number;
-}
+
 
 // TeamCard Component
 function TeamCard({ team, index }: TeamCardProps) {
@@ -82,11 +78,18 @@ function TeamCard({ team, index }: TeamCardProps) {
 }
 
 // Section Component
-function TeamSection({ title, teamsList, startIndex }: TeamSectionProps) {
+interface TeamSectionProps {
+  title: string;
+  teamsList: typeof teams;
+  startIndex: number;
+  id?: string;
+}
+
+function TeamSection({ title, teamsList, startIndex, id }: TeamSectionProps) {
   if (teamsList.length === 0) return null;
 
   return (
-    <section className="mb-16">
+    <section id={id} className="mb-16 scroll-mt-24">
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -163,9 +166,9 @@ export default function TeamsPage() {
             </div>
           </motion.div>
 
-          <TeamSection title="Senioren" teamsList={senioren} startIndex={0} />
-          <TeamSection title="Dames & Meisjes" teamsList={dames} startIndex={senioren.length} />
-          <TeamSection title="Jeugd" teamsList={jeugd} startIndex={senioren.length + dames.length} />
+          <TeamSection id="senioren" title="Senioren" teamsList={senioren} startIndex={0} />
+          <TeamSection id="dames" title="Dames & Meisjes" teamsList={dames} startIndex={senioren.length} />
+          <TeamSection id="jeugd" title="Jeugd" teamsList={jeugd} startIndex={senioren.length + dames.length} />
         </div>
       </section>
     </div>
