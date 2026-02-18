@@ -123,19 +123,28 @@ export default function TeamsPage() {
   const jeugd = getTeamsByCategory("jeugd");
 
   useEffect(() => {
-    // Check if there's a hash in the URL
-    if (window.location.hash) {
+    const handleHash = () => {
       const hash = window.location.hash;
-      // First scroll to top
-      window.scrollTo(0, 0);
-      // Then after a short delay, smooth scroll to the section
-      setTimeout(() => {
-        const element = document.querySelector(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
+      if (hash) {
+        // Verwijder de hash uit de URL zodat de browser niet automatisch scrollt
+        history.pushState('', document.title, window.location.pathname + window.location.search);
+        // Scroll eerst naar top
+        window.scrollTo(0, 0);
+        // Wacht even en scroll dan smooth naar de sectie
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 500);
+      }
+    };
+
+    handleHash();
+    
+    // Luister ook naar hash changes
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
   return (
