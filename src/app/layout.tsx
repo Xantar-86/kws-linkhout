@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { CacheBuster } from "@/components/CacheBuster";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default function RootLayout({
   return (
     <html lang="nl-BE" className={inter.variable}>
       <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
+        <CacheBuster />
         <ScrollToTop />
         <Header />
         <main className="flex-grow">
