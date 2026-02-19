@@ -17,7 +17,7 @@ const baseUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   title: "KWS Linkhout - Voetbalclub",
-  description: "KWS Linkhout - Een club met een hart. 23 ploegen, 250+ leden. Van U6 tot senioren.",
+  description: "KWS Linkhout - Een club met een hart. 22 ploegen, 250+ leden. Van U6 tot senioren.",
   metadataBase: new URL(baseUrl),
   icons: {
     icon: "/images/kwslinkhout-logo.png",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "KWS Linkhout - Voetbalclub",
-    description: "KWS Linkhout - Een club met een hart. 23 ploegen, 250+ leden. Van U6 tot senioren.",
+    description: "KWS Linkhout - Een club met een hart. 22 ploegen, 250+ leden. Van U6 tot senioren.",
     images: [
       {
         url: "/images/kwslinkhout-logo.png",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "KWS Linkhout - Voetbalclub",
-    description: "KWS Linkhout - Een club met een hart. 23 ploegen, 250+ leden.",
+    description: "KWS Linkhout - Een club met een hart. 22 ploegen, 250+ leden."
     images: ["/images/kwslinkhout-logo.png"],
   },
 };

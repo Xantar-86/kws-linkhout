@@ -121,23 +121,7 @@ export const teams: Team[] = [
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351079/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351079/overzicht"
   },
-  {
-    id: "dam-4",
-    name: "Women U16 B",
-    slug: "women-u16-b",
-    category: "dames",
-    subCategory: "meisjes",
-    division: "2-Meisjes U16 reeks P",
-    trainingDays: ["maandag", "woensdag"],
-    trainingTime: "19:35 - 21:00",
-    coach: "Frank Schroyen",
-    image: "/images/teams/placeholder-dames.jpg",
-    calendarUrl: "#",
-    standingsUrl: "#",
-    description: "Het tweede U16 team met evenveel enthousiasme en inzet.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351078/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351078/overzicht"
-  },
+
   {
     id: "dam-5",
     name: "Women U8",
@@ -147,7 +131,7 @@ export const teams: Team[] = [
     division: "U8 Meisjes",
     trainingDays: ["?"],
     trainingTime: "?",
-    coach: "Frank Schroyen",
+    coach: "Kevin Kenis",
     image: "/images/teams/placeholder-dames.jpg",
     description: "Onze jongste meisjes maken hun eerste stappen op het voetbalveld.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/kalender",

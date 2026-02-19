@@ -155,7 +155,7 @@ export default function TeamsPage() {
             transition={{ duration: 0.8 }}
           >
             <span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">
-              23 Ploegen • 250+ Leden
+              22 Ploegen • 250+ Leden
             </span>
             <h1 className="text-4xl md:text-5xl font-bold mb-6">
               Onze Ploegen

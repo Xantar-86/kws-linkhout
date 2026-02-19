@@ -456,7 +456,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
               <Link href="/ploegen" className="btn-primary bg-white text-primary hover:bg-gray-100 text-sm md:text-base">
-                Ontdek Onze 23 Ploegen
+                Ontdek Onze 22 Ploegen
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
               <Link href="/clubinfo/sectie?slug=nieuwe-aansluiting" className="btn-secondary border-white text-white hover:bg-white/10 text-sm md:text-base">
@@ -513,7 +513,7 @@ export default function Home() {
                 tot onze veteranen - iedereen telt mee.
               </p>
               <p className="text-body mb-8">
-                Met 23 ploegen, waaronder 6 meisjesploegen, is er voor ieder 
+                Met 22 ploegen, waaronder 5 meisjesploegen, is er voor ieder 
                 wat wils. Kom eens langs en ervaar de unieke sfeer zelf!
               </p>
               <GeschiedenisButton />
@@ -539,7 +539,7 @@ export default function Home() {
                     className="w-full h-auto rounded-lg"
                   />
                   <p className="text-center text-sm text-gray-500 mt-3 font-medium">
-                    Onze trots: 23 ploegen, 250+ leden
+                    Onze trots: 22 ploegen, 250+ leden
                   </p>
                 </div>
               </div>
@@ -555,8 +555,8 @@ export default function Home() {
             {[
               { icon: Trophy, label: "Opgericht", value: 1938, suffix: "" },
               { icon: Users, label: "Actieve Leden", value: 250, suffix: "+" },
-              { icon: Calendar, label: "Ploegen", value: 23, suffix: "" },
-              { icon: Users2, label: "Damesploegen", value: 6, suffix: "" },
+              { icon: Calendar, label: "Ploegen", value: 22, suffix: "" },
+              { icon: Users2, label: "Damesploegen", value: 5, suffix: "" },
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
