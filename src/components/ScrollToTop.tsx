@@ -7,8 +7,15 @@ export function ScrollToTop() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Scroll altijd naar boven bij pagina wissel
+    // Schakel browser's scroll restoration uit
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    
+    // Scroll expliciet naar top
     window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [pathname]);
 
   return null;

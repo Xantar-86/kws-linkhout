@@ -123,9 +123,14 @@ export default function TeamsPage() {
   const jeugd = getTeamsByCategory("jeugd");
 
   useEffect(() => {
+    // Reset scroll naar top onmiddellijk
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
     const hash = window.location.hash;
     if (hash) {
-      // Verwijder de hash uit de URL zodat de browser niet automatisch scrollt
+      // Verwijder de hash uit de URL
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
       
       // Wacht tot alles geladen is, dan scroll naar sectie
@@ -134,7 +139,7 @@ export default function TeamsPage() {
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }, 100);
+      }, 1500);
       
       return () => clearTimeout(timer);
     }
