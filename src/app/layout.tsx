@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "KWS Linkhout - Voetbalclub",
-    description: "KWS Linkhout - Een club met een hart. 22 ploegen, 250+ leden."
+    description: "KWS Linkhout - Een club met een hart. 22 ploegen, 250+ leden.",
     images: ["/images/kwslinkhout-logo.png"],
   },
 };
