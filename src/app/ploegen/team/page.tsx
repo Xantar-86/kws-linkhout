@@ -23,6 +23,7 @@ function TeamContent() {
   const slug = searchParams.get("slug");
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showStandingsModal, setShowStandingsModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
   
   const team = slug ? getTeamBySlug(slug) : null;
 
@@ -73,14 +74,22 @@ function TeamContent() {
             <div className="lg:col-span-2 space-y-6">
               {/* Team Photo */}
               <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
-                <div className="relative h-64 md:h-96">
+                <div 
+                  className="relative h-64 md:h-96 cursor-pointer group"
+                  onClick={() => setShowImageModal(true)}
+                >
                   <Image
                     src={team.image}
                     alt={team.name}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                     priority
                   />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 px-4 py-2 rounded-full text-sm font-medium">
+                      Klik om te vergroten
+                    </span>
+                  </div>
                 </div>
                 <div className="p-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -364,6 +373,51 @@ function TeamContent() {
                 >
                   Sluiten
                 </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Image Modal */}
+      <AnimatePresence>
+        {showImageModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowImageModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-5xl w-full max-h-[90vh] flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowImageModal(false)}
+                className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors z-10"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
+              
+              {/* Image Container */}
+              <div className="relative w-full h-[80vh] rounded-lg overflow-hidden">
+                <Image
+                  src={team.image}
+                  alt={team.name}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1280px) 100vw, 1280px"
+                />
+              </div>
+              
+              {/* Caption */}
+              <div className="text-center mt-4">
+                <p className="text-white text-lg font-medium">{team.name}</p>
               </div>
             </motion.div>
           </motion.div>
