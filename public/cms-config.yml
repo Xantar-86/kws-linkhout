@@ -1,0 +1,16 @@
+backend:
+  name: test-repo
+
+media_folder: "public/images/nieuws"
+public_folder: "/images/nieuws"
+
+collections:
+  - name: "nieuws"
+    label: "Nieuwsberichten"
+    folder: "content/nieuws"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titel", name: "title", widget: "string" }
+      - { label: "Publicatiedatum", name: "date", widget: "datetime" }
+      - { label: "Inhoud", name: "body", widget: "markdown" }

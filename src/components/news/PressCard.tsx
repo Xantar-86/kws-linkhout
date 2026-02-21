@@ -29,7 +29,7 @@ export function PressCard({ article, index = 0 }: PressCardProps) {
       transition={{ delay: index * 0.1 }}
     >
       <Link 
-        href={article.url}
+        href={article.pdf}
         target="_blank"
         rel="noopener noreferrer"
         className="group block bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"

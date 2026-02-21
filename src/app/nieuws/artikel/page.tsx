@@ -3,56 +3,79 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, Clock, User, Share2, MessageSquare, ExternalLink } from "lucide-react";
-import { newsArticles, getArticleBySlug } from "@/lib/news";
-import { NewsCard } from "@/components/news/NewsCard";
+import { ArrowLeft, Calendar, Clock, User, Share2, FileText, X, ZoomIn } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { NewsArticle } from "@/lib/news";
+import { newsArticles } from "@/lib/news";
 import React from "react";
 
 // Simple markdown to HTML parser
 const parseContent = (content: string) => {
-  // Replace **bold** with <strong>bold</strong>
   let html = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
-  // Replace *italic* with <em>italic</em>
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  
-  // Replace [text](url) with <a href="url">text</a>
+  html = html.replace(/##\s+(.*?)(?=\n|$)/g, '<h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">$1</h2>');
   html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-medium">$1</a>');
-  
-  // Replace • bullet points with styled list items
-  html = html.replace(/•\s(.*?)(?=\n|$)/g, '<li class="flex items-start gap-2"><span class="text-primary mt-1.5">•</span><span>$1</span></li>');
-  
-  // Wrap consecutive list items in <ul>
+  html = html.replace(/^-\s+(.*?)(?=\n|$)/gm, '<li class="flex items-start gap-2"><span class="text-primary mt-1.5">•</span><span>$1</span></li>');
   html = html.replace(/(<li.*?>.*?<\/li>\n?)+/g, '<ul class="space-y-2 my-4">$&</ul>');
-  
-  // Replace newlines with <br /> (but not inside lists)
   html = html.split('\n').map(line => {
-    if (line.trim().startsWith('<') && !line.includes('</li>')) {
-      return line;
-    }
+    if (line.trim().startsWith('<') && !line.includes('</li>')) return line;
     return line + '<br />';
   }).join('\n');
-  
   return html;
+};
+
+const categoryColors: Record<string, string> = {
+  clubnieuws: "bg-blue-600",
+  ploegnieuws: "bg-green-600", 
+  evenementen: "bg-orange-600"
+};
+
+const categoryLabels: Record<string, string> = {
+  clubnieuws: "Clubnieuws",
+  ploegnieuws: "Ploegnieuws",
+  evenementen: "Evenementen"
 };
 
 function ArticleContent() {
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
-  const article = slug ? getArticleBySlug(slug) : null;
+  const [article, setArticle] = useState<NewsArticle | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [imageModalOpen, setImageModalOpen] = useState(false);
 
-  const categoryColors = {
-    clubnieuws: "bg-blue-600",
-    ploegnieuws: "bg-green-600", 
-    evenementen: "bg-orange-600"
-  };
+  useEffect(() => {
+    async function loadArticle() {
+      if (!slug) {
+        setLoading(false);
+        return;
+      }
 
-  const categoryLabels = {
-    clubnieuws: "Clubnieuws",
-    ploegnieuws: "Ploegnieuws",
-    evenementen: "Evenementen"
-  };
+      // Eerst zoeken in hardcoded artikelen
+      const hardcoded = newsArticles.find(a => a.slug === slug);
+      if (hardcoded) {
+        setArticle(hardcoded);
+        setLoading(false);
+        return;
+      }
+
+      // Anders zoeken in CMS artikelen via API
+      try {
+        const response = await fetch('/api/cms-articles');
+        if (response.ok) {
+          const cmsArticles: NewsArticle[] = await response.json();
+          const cmsArticle = cmsArticles.find(a => a.slug === slug);
+          if (cmsArticle) {
+            setArticle(cmsArticle);
+          }
+        }
+      } catch (error) {
+        console.error("Error loading CMS article:", error);
+      }
+      setLoading(false);
+    }
+
+    loadArticle();
+  }, [slug]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -63,12 +86,13 @@ function ArticleContent() {
     });
   };
 
-  // Related articles (same category, excluding current)
-  const relatedArticles = article 
-    ? newsArticles
-        .filter(a => a.category === article.category && a.slug !== article.slug)
-        .slice(0, 3)
-    : [];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
 
   if (!article) {
     return (
@@ -110,15 +134,11 @@ function ArticleContent() {
       {/* Article Header */}
       <section className="bg-white">
         <div className="container-custom py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             {/* Meta */}
             <div className="flex flex-wrap items-center gap-4 mb-6">
-              <span className={`${categoryColors[article.category]} text-white px-4 py-1 rounded-full text-sm font-semibold`}>
-                {categoryLabels[article.category]}
+              <span className={`${categoryColors[article.category] || "bg-gray-600"} text-white px-4 py-1 rounded-full text-sm font-semibold`}>
+                {categoryLabels[article.category] || article.category}
               </span>
               <span className="flex items-center gap-1 text-gray-500">
                 <Calendar className="w-4 h-4" />
@@ -146,39 +166,70 @@ function ArticleContent() {
                 Delen
               </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Featured Image */}
-      <section className="bg-white pb-12">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
-            className="relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden"
+      {/* Featured Image - Klikbaar */}
+      {article.image && (
+        <section className="bg-white pb-12">
+          <div className="container-custom">
+            <div 
+              className="relative h-[300px] md:h-[500px] rounded-3xl overflow-hidden cursor-pointer group"
+              onClick={() => setImageModalOpen(true)}
+            >
+              <Image
+                src={article.image}
+                alt={article.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                priority
+              />
+              {/* Zoom indicator */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded-full p-3 shadow-lg">
+                  <ZoomIn className="w-6 h-6 text-gray-800" />
+                </div>
+              </div>
+            </div>
+            <p className="text-sm text-gray-500 text-center mt-2">
+              Klik op de foto om volledig te bekijken
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* Image Modal / Lightbox */}
+      {imageModalOpen && article.image && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setImageModalOpen(false)}
+        >
+          <button 
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-50"
+            onClick={() => setImageModalOpen(false)}
+          >
+            <X className="w-8 h-8" />
+          </button>
+          <div 
+            className="relative w-full h-full max-w-6xl max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
           >
             <Image
               src={article.image}
               alt={article.title}
               fill
-              className="object-cover"
+              className="object-contain"
               priority
             />
-          </motion.div>
+          </div>
         </div>
-      </section>
+      )}
 
       {/* Article Content */}
       <section className="section-padding bg-white">
         <div className="container-custom max-w-3xl">
-          <motion.article
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="prose prose-lg max-w-none"
-          >
+          <article className="prose prose-lg max-w-none">
             <p className="text-xl text-gray-600 leading-relaxed mb-8 font-medium">
               {article.excerpt}
             </p>
@@ -186,61 +237,34 @@ function ArticleContent() {
               className="text-gray-700 leading-relaxed prose prose-lg max-w-none"
               dangerouslySetInnerHTML={{ __html: parseContent(article.content) }}
             />
-          </motion.article>
+          </article>
+
+          {/* Attachment */}
+          {article.attachment && (
+            <div className="mt-12 p-6 bg-gray-50 rounded-2xl border border-gray-200">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900">Bijlage</h3>
+                  <p className="text-sm text-gray-500">
+                    Download het bijbehorende document
+                  </p>
+                </div>
+                <a
+                  href={article.attachment}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-700 transition-colors"
+                >
+                  Download
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </section>
-
-      {/* Survey CTA for Ledenbevraging */}
-      {article.slug === "ledenbevraging-2025" && (
-        <section className="section-padding bg-white">
-          <div className="container-custom max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="p-8 bg-gradient-to-br from-primary to-primary-700 rounded-2xl text-white text-center"
-            >
-              <MessageSquare className="w-12 h-12 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold mb-4">
-                Deel jouw mening!
-              </h3>
-              <p className="text-white/90 mb-6">
-                Help onze club groeien door de ledenbevraging in te vullen. 
-                Samen maken we KWS Linkhout nog beter!
-              </p>
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSdKHXqQAkwHdUixHQL-qRic31xmkDR8ruRbzFIAhdDNHOADjw/viewform"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition-colors"
-              >
-                <MessageSquare className="w-5 h-5" />
-                Bevraging invullen
-              </a>
-            </motion.div>
-          </div>
-        </section>
-      )}
-
-      {/* Related Articles */}
-      {relatedArticles.length > 0 && (
-        <section className="section-padding bg-gray-50">
-          <div className="container-custom">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">
-              Gerelateerde artikelen
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedArticles.map((relatedArticle, index) => (
-                <NewsCard 
-                  key={relatedArticle.id} 
-                  article={relatedArticle} 
-                  index={index} 
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   );
 }
