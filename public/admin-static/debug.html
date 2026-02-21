@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>CMS Debug - KWS Linkhout</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
+    .section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
+    .error { background: #fee; border: 2px solid #c00; }
+    .success { background: #efe; border: 2px solid #0c0; }
+    code { background: #fff; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #fff; padding: 10px; overflow-x: auto; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🔧 CMS Debugging</h1>
+  
+  <div class="section">
+    <h2>1. Netlify Identity Widget Status</h2>
+    <div id="widget-status">Laden...</div>
+    <button onclick="testIdentity()">Test Identity</button>
+    <button onclick="showIdentity()">Toon Identity Modal</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+  
+  <div class="section">
+    <h2>2. Huidige URL & Info</h2>
+    <pre id="url-info"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>3. API Test</h2>
+    <div id="api-status">Nog niet getest</div>
+    <button onclick="testAPI()">Test /.netlify/identity</button>
+    <pre id="api-result"></pre>
+  </div>
+  
+  <div class="section">
+    <h2>4. Config Check</h2>
+    <div id="config-status">Laden...</div>
+  </div>
+  
+  <div class="section error">
+    <h2>5. Mogelijke Oplossingen</h2>
+    <p>Als hierboven errors staan, probeer dan:</p>
+    <ol>
+      <li><strong>Controleer je Netlify site URL</strong><br>
+        Ga naar Netlify Dashboard → Site settings → General → Site details<br>
+        Check wat er staat bij "Site name" en "Domain settings"
+      </li>
+      <li><strong>Controleer of Identity echt enabled is</strong><br>
+        In Netlify, onderaan de linker sidebar zie je "Identity" staan als het enabled is
+      </li>
+      <li><strong>Force refresh</strong><br>
+        Druk Ctrl+F5 (of Cmd+Shift+R) om cache te verversen
+      </li>
+    </ol>
+  </div>
+
+  <!-- Netlify Identity Widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
+  <script>
+    // Show URL info
+    document.getElementById('url-info').textContent = 
+      'URL: ' + window.location.href + '\n' +
+      'Origin: ' + window.location.origin + '\n' +
+      'Host: ' + window.location.host + '\n' +
+      'User Agent: ' + navigator.userAgent;
+    
+    // Check widget status
+    if (window.netlifyIdentity) {
+      document.getElementById('widget-status').innerHTML = 
+        '<span style="color: green;">✓ Identity widget geladen</span>';
+    } else {
+      document.getElementById('widget-status').innerHTML = 
+        '<span style="color: red;">✗ Identity widget NIET geladen</span>';
+    }
+    
+    // Fetch config
+    fetch('config.yml')
+      .then(r => r.text())
+      .then(text => {
+        document.getElementById('config-status').innerHTML = 
+          '<span style="color: green;">✓ Config.yml gevonden</span><pre>' + 
+          text.substring(0, 500) + '...</pre>';
+      })
+      .catch(e => {
+        document.getElementById('config-status').innerHTML = 
+          '<span style="color: red;">✗ Config.yml niet gevonden: ' + e + '</span>';
+      });
+    
+    function testIdentity() {
+      if (!window.netlifyIdentity) {
+        alert('Identity widget niet geladen!');
+        return;
+      }
+      
+      window.netlifyIdentity.init({
+        APIUrl: 'https://kwslinkhout.be/.netlify/identity'
+      });
+      
+      const user = window.netlifyIdentity.currentUser();
+      if (user) {
+        alert('Ingelogd als: ' + user.email);
+      } else {
+        alert('Niet ingelogd. Klik "Toon Identity Modal" om in te loggen.');
+      }
+    }
+    
+    function showIdentity() {
+      if (!window.netlifyIdentity) {
+        alert('Identity widget niet geladen!');
+        return;
+      }
+      window.netlifyIdentity.open();
+    }
+    
+    function logout() {
+      if (!window.netlifyIdentity) return;
+      window.netlifyIdentity.logout();
+      alert('Uitgelogd');
+    }
+    
+    async function testAPI() {
+      document.getElementById('api-status').textContent = 'Testen...';
+      try {
+        const response = await fetch('/.netlify/identity/settings');
+        const text = await response.text();
+        document.getElementById('api-result').textContent = 
+          'Status: ' + response.status + '\n\n' + text;
+        if (response.ok) {
+          document.getElementById('api-status').innerHTML = 
+            '<span style="color: green;">✓ API reageert!</span>';
+        } else {
+          document.getElementById('api-status').innerHTML = 
+            '<span style="color: red;">✗ API error: ' + response.status + '</span>';
+        }
+      } catch (e) {
+        document.getElementById('api-status').innerHTML = 
+          '<span style="color: red;">✗ API niet bereikbaar: ' + e.message + '</span>';
+        document.getElementById('api-result').textContent = e.toString();
+      }
+    }
+  </script>
+</body>
+</html>
