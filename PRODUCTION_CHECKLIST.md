@@ -29,31 +29,20 @@ Alle stappen zijn uitgevoerd en de CMS staat live!
 - [x] Vercel build succesvol
 - [x] CMS bereikbaar op `https://kwslinkhout.be/admin`
 
-## 🔐 STAP 6: Toegangsbeheer (Nog doen!)
+### Stap 6: Gebruikers Toevoegen ✓
+- [x] Jochen toegevoegd als GitHub Collaborator (Admin)
+- [x] Joel toegevoegd als GitHub Collaborator (Admin)
+- [x] Andere gebruikers toegevoegd als GitHub Collaborators (Write)
 
-### Doel:
-- **Jochen & Joel**: Direct publiceren zonder approval
-- **Andere gebruikers**: Moeten eerst approval krijgen
+## ⚠️ Belangrijke Notitie: Editorial Workflow
 
-### 6.1 GitHub Admins Instellen
-- [ ] Jochen toevoegen als GitHub repo Admin
-- [ ] Joel toevoegen als GitHub repo Admin
-- [ ] Andere gebruikers: Alleen "Write" rechten (geen Admin)
+Decap CMS's Editorial Workflow werkt voor **alle gebruikers**. Het is **technisch niet mogelijk** om alleen Jochen en Joel direct te laten publiceren terwijl anderen approval nodig hebben.
 
-### 6.2 Branch Protection Instellen
-- [ ] Ga naar GitHub repo → Settings → Branches
-- [ ] Klik "Add rule" voor branch `main`
-- [ ] Configureer:
-  - ☑️ Restrict who can push to matching branches
-  - ☑️ Require a pull request before merging
-  - ☑️ Require approvals: 1
-  - ☑️ Include administrators
-- [ ] Save changes
+### Praktische oplossing:
+- **Jochen & Joel**: Kunnen direct publiceren (en zullen dat ook doen)
+- **Andere gebruikers**: Werken met Draft → melden aan Jochen/Joel → publicatie
 
-### 6.3 Testen
-- [ ] Jochen logt in en probeert direct te publiceren
-- [ ] Joel logt in en probeert direct te publiceren
-- [ ] Testgebruiker logt in en ziet dat approval nodig is
+Het werkt op basis van **afspraken**, niet technische beperkingen.
 
 ## 🌐 Live URLs
 
@@ -75,15 +64,19 @@ Alle stappen zijn uitgevoerd en de CMS staat live!
 | In de Krant | `content/press/` | Krantenartikelen op /in-de-krant |
 | Foto's | `content/fotos/` | Foto albums op /fotos |
 
-## 👤 Gebruikers & Rechten
+## 👤 Gebruikers
 
-| Gebruiker | Rol | Kan direct publiceren? |
-|-----------|-----|----------------------|
-| Jochen | GitHub Admin + CMS | ✅ Ja |
-| Joel | GitHub Admin + CMS | ✅ Ja |
-| Andere gebruikers | GitHub Write + CMS | ❌ Nee (approval nodig) |
+Alle gebruikers kunnen inloggen via:
+- ✉️ Email + Wachtwoord
+- 🐙 GitHub
+- 🔵 Google (indien geconfigureerd)
 
-## 🔄 Workflow per Rol
+**Workflow:**
+- Iedereen ziet: Draft → In Review → Ready → Publish
+- Jochen & Joel publiceren direct
+- Anderen vragen approval via mail/WhatsApp
+
+## 🔄 Workflow
 
 ### Voor Jochen & Joel:
 ```
@@ -92,7 +85,7 @@ Draft → Publish = Direct live! ✅
 
 ### Voor andere gebruikers:
 ```
-Draft → In Review → Ready → PR → Approval → Publish = Live
+Draft → [Mail naar Jochen/Joel] → Publish = Live
 ```
 
 ## 🆘 Troubleshooting
@@ -103,15 +96,20 @@ Draft → In Review → Ready → PR → Approval → Publish = Live
 | "Login failed" | Controleer OAuth app callback URLs |
 | "404 on admin" | Controleer of admin folder is geüpload |
 | "Config not found" | Controleer config.yml in public/admin-static/ |
-| "Ik ben admin maar moet toch approval" | Controleer GitHub branch protection → "Include administrators" moet AAN staan |
 
 ## 📝 Notities
 
 - **Domein**: Geen domeinverhuizing nodig! Site blijft op Vercel draaien.
 - **Netlify**: Alleen gebruikt voor Identity + Git Gateway
 - **Uploads**: Afbeeldingen/PDF's worden opgeslagen in `public/uploads/`
-- **Editorial Workflow**: Ingeschakeld, maar alleen van toepassing op niet-admins
+- **Editorial Workflow**: Ingeschakeld voor iedereen (werkt op vertrouwen)
+
+## 📖 Documentatie
+
+- `CMS_SETUP_README.md` - Algemene setup instructies
+- `ACCESS_CONTROL_SETUP.md` - Uitleg over rechten en workflow
+- `content/README.md` - Uitleg over content structuur
 
 ## 🎉 Gereed!
 
-De CMS is volledig operationeel na voltooiing van Stap 6!
+De CMS is volledig operationeel. Train gebruikers om met de workflow te werken!

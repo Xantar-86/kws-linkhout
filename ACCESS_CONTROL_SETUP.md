@@ -1,141 +1,110 @@
-# Toegangsbeheer Setup - KWS Linkhout CMS
+# CMS Toegangsbeheer - KWS Linkhout
 
-Dit document legt uit hoe je de rechten configureert zodat:
-- **Jochen & Joel** direct kunnen publiceren
-- **Andere gebruikers** eerst approval nodig hebben
+## ⚠️ BELANGRIJK: Editoriale Workflow Werkt Voor Iedereen
 
-## Waarom is dit nodig?
+Er bestaat een verkeerd begrip over hoe Decap CMS's Editorial Workflow werkt. Hier is de werkelijkheid:
 
-Decap CMS heeft een editorial workflow die geldt voor **iedereen** of **niemand**. Om specifieke gebruikers (Jochen & Joel) direct te laten publiceren, gebruiken we **GitHub Branch Protection** met admin uitsluitingen.
+### Wat je denkt dat kan:
+- Jochen en Joel kunnen direct publiceren
+- Andere gebruikers moeten approval vragen
+- Technische beveiliging die dit afdwingt
 
-## Stappenplan
+### Wat er werkelijk is:
+- **Iedereen** ziet de workflow: Draft → In Review → Ready → Publish
+- **Iedereen** kan op "Publish" klikken (content gaat dan direct live)
+- Het werkt op basis van **afspraken**, niet technische beperkingen
 
-### Stap 1: GitHub Repository Instellingen
+## Hoe Werkt Het Wel in de Praktijk?
 
-1. Ga naar: `https://github.com/Xantar-86/kws-linkhout/settings`
-2. Klik in de linker sidebar op **"Manage access"** (of "Collaborators and teams")
+### Scenario 1: Jochen & Joel
+1. Loggen in op CMS
+2. Maken content aan
+3. Kunnen klikken: **"Publish"** → Content gaat direct live!
+   - Of gebruiken de workflow: Draft → In Review → Ready → Publish
 
-### Stap 2: Gebruikers Toevoegen
+### Scenario 2: Andere gebruikers
+1. Loggen in op CMS
+2. Maken content aan als **"Draft"**
+3. Sturen mail/WhatsApp naar Jochen/Joel: "Content klaar voor review"
+4. Jochen/Joel loggen in, reviewen, en klikken **"Publish"**
 
-#### Jochen & Joel (Admins):
-1. Klik **"Invite a collaborator"**
-2. Voer email/GitHub username in: `jochen_thoelen@telenet.be` (of GitHub username)
-3. Rol selecteren: **"Admin"**
-4. Herhaal voor Joel: `Joel.bynens@gmail.com`
+## Wat Gebeurt Er Bij Misbruik?
 
-#### Andere gebruikers:
-1. Klik **"Invite a collaborator"**
-2. Voer email/GitHub username in
-3. Rol selecteren: **"Write"** (NIET Admin!)
+**Als iemand zonder toestemming "Publish" klikt:**
+- Content verschijnt meteen op de website
+- Git commit wordt gedaan naar main branch
+- Vercel build start automatisch
+- Jochen/Joel kunnen dit zien in GitHub commits
+- Misbruik kan leiden tot verwijdering van CMS toegang
 
-### Stap 3: Branch Protection Instellen
+## Aanbevelingen
 
-1. Ga naar: `https://github.com/Xantar-86/kws-linkhout/settings/branches`
-2. Klik **"Add rule"** (als er nog geen rule is) of bewerk bestaande rule
-3. Vul in:
-   - **Branch name pattern**: `main`
+### Goede Afspraken
 
-4. Zet vinkjes bij:
-   - ☑️ **Restrict who can push to matching branches**
-     - Selecteer: Jochen en Joel
-   
-   - ☑️ **Require a pull request before merging**
-     - ☑️ Require approvals: `1`
-     - ☑️ Dismiss stale PR approvals when new commits are pushed
-   
-   - ☑️ **Include administrators**
-     - Dit is BELANGRIJK: zorgt ervoor dat admins (Jochen/Joel) direct kunnen pushen!
+1. **Train gebruikers goed**
+   - Leg uit dat "Publish" direct live gaat
+   - Geef duidelijke richtlijnen wanneer wel/niet te publiceren
 
-5. Klik **"Create"** of **"Save changes"**
+2. **Gebruik communicatie**
+   - Maak een duidelijke afspraak over "melden aan Jochen/Joel"
+   - Eventueel een WhatsApp groep voor CMS notificaties
 
-### Stap 4: Testen
+3. **Monitor activiteit**
+   - Check regelmatig GitHub commits (`https://github.com/Xantar-86/kws-linkhout/commits`)
+   - Gebruik Netlify Identity logs voor login monitoring
 
-#### Test 1: Jochen of Joel
-1. Ga naar `https://kwslinkhout.be/admin`
-2. Log in
-3. Maak een test artikel
-4. Klik **"Publish"**
-5. **Verwacht resultaat**: Direct live, geen approval nodig! ✅
+### Beveiliging (GitHub)
 
-#### Test 2: Andere gebruiker
-1. Laat iemand anders inloggen (met Write rechten, geen Admin)
-2. Maak een test artikel
-3. Klik **"Publish"**
-4. **Verwacht resultaat**: 
-   - Status gaat naar "In Review"
-   - Kan niet direct publiceren
-   - Jochen of Joel moet approven
+De GitHub repository heeft Branch Protection ingeschakeld. Dit:
+- Voorkomt force pushes naar main
+- Voorkomt directe commits (alleen via Decap CMS)
 
-## Hoe ziet het eruit in de praktijk?
+**Maar:** Het beschermt NIET tegen publicatie via Decap CMS omdat:
+- Git Gateway (Decap) de commits doet namens een admin account
+- Branch Protection niet kan onderscheiden wie op "Publish" klikte
 
-### Voor Jochen & Joel:
-```
-┌─────────────────────────────────────┐
-│  CMS Editor                         │
-│                                     │
-│  [Content schrijven...]             │
-│                                     │
-│  [Save]  [Publish] ← Direct! ✅     │
-└─────────────────────────────────────┘
-         ↓
-    [Direct Live!]
-```
+## Mogelijke Verbeteringen (Toekomst)
 
-### Voor andere gebruikers:
-```
-┌─────────────────────────────────────┐
-│  CMS Editor                         │
-│                                     │
-│  [Content schrijven...]             │
-│                                     │
-│  [Save]  [Publish] ← Blocked! ❌    │
-└─────────────────────────────────────┘
-         ↓
-   [Draft] → [In Review] → [Ready]
-         ↓
-   [Pull Request aangemaakt]
-         ↓
-   [Wacht op approval Jochen/Joel]
-         ↓
-   [Approved] → [Live!]
-```
+### 1. GitHub Rulesets (Beta)
+GitHub heeft nieuwe "Rulesets" die bypass lists hebben per gebruiker:
+- Je kunt zeggen: "Alleen Jochen en Joel mogen direct naar main"
+- Andere gebruikers moeten een PR aanmaken
+- Dit is nieuw en complex om in te stellen
 
-## FAQ
+### 2. Custom Workflow
+Een programmeerbare oplossing:
+- GitHub Action die commits controleert
+- Block commits van niet-geautoriseerde gebruikers
+- Email notificatie naar Jochen/Joel voor approval
+- **Nadeel:** Vereist ontwikkeling en onderhoud
 
-### Q: Wat als Jochen of Joel per ongeluk iets verkeerds publiceert?
-**A:** Geen probleem! Alles wordt opgeslagen in Git. Je kunt eenvoudig terugdraaien via GitHub of een nieuwe versie publiceren via de CMS.
+### 3. Moderation Queue
+Bouw een custom "moderatie" laag:
+- Content van niet-admins wordt eerst opgeslagen in database
+- Admins krijgen notificatie om te reviewen
+- Na approval wordt het naar GitHub geschreven
+- **Nadeel:** Vereist significante ontwikkeling
 
-### Q: Kunnen we later meer "direct publish" gebruikers toevoegen?
-**A:** Ja! Voeg ze gewoon toe als GitHub Admin in de repository settings.
+## Huidige Conclusie
 
-### Q: Wat als iemand zonder GitHub account toegang nodig heeft?
-**A:** Zij kunnen inloggen via Email/Wachtwoord in Netlify Identity. Ze krijgen automatisch Write rechten en moeten wachten op approval.
+**Voor nu:**
+- Gebruik de Editorial Workflow zoals deze bedoeld is
+- Vertrouw op goede afspraken en training
+- Monitor GitHub commits
+- Reageer snel bij misbruik
 
-### Q: Hoe krijg ik een melding als iemand iets ter review indient?
-**A:** GitHub stuurt automatisch een email notificatie wanneer iemand een Pull Request aanmaakt (wat gebeurt bij "Ready" status).
+**Dit is hoe de meeste organisaties het doen.** Editorial workflows werken op basis van vertrouwen, niet technische beperkingen. Zelfs in professionele omgevingen (zoals WordPress) is het de verantwoordelijkheid van editors om de juiste knoppen te klikken.
 
-## Troubleshooting
+## Checklist Voor Jochen & Joel
 
-### Probleem: "Ik ben admin maar moet toch approval"
-**Oplossing:** 
-1. Ga naar GitHub → Settings → Branches
-2. Bewerk de rule voor `main`
-3. Controleer of ☑️ **"Include administrators"** AAN staat
-4. Sla op
+- [x] GitHub Collaborators toegevoegd voor alle gebruikers
+- [x] Netlify Identity geconfigureerd met juiste providers
+- [ ] Gebruikers getraind in correct gebruik van workflow
+- [ ] Afspraak gemaakt over communicatie bij klaarstaande content
+- [ ] Monitoring proces ingericht (GitHub commits checken)
 
-### Probleem: "Ik zie geen 'Publish' knop, alleen 'Save'"
-**Oplossing:**
-1. Controleer of je de juiste rechten hebt in GitHub
-2. Log uit en opnieuw in in de CMS
-3. Probeer een ander artikel
+## Meer Info
 
-### Probleem: "Andere gebruiker kan helemaal niet publiceren"
-**Oplossing:**
-1. Controleer of de gebruiker "Write" rechten heeft (geen "Read")
-2. Controleer of branch protection correct is ingesteld
-
-## Links
-
-- GitHub Repo Settings: `https://github.com/Xantar-86/kws-linkhout/settings`
-- Branch Protection: `https://github.com/Xantar-86/kws-linkhout/settings/branches`
-- CMS Admin: `https://kwslinkhout.be/admin`
+- Decap CMS Editorial Workflow: https://decapcms.org/docs/editorial-workflows/
+- GitHub Branch Protection: https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches
+- GitHub Rulesets (Beta): https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets
