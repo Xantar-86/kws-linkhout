@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Redirect all traffic to kwslinkhout.be (for invite tokens)
+[[redirects]]
+  from = "/*"
+  to = "https://kwslinkhout.be/admin/:splat"
+  status = 302
+  force = true

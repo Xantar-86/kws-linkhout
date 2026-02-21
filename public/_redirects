@@ -1,5 +1,0 @@
-# Redirect invites/confirmations from netlify.app to kwslinkhout.be
-# Place this file in the root of your Netlify site
-
-# Redirect any URL with hash tokens to kwslinkhout.be/admin/
-/* https://kwslinkhout.be/admin/:splat 302!
