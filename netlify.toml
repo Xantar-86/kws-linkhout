@@ -2,7 +2,14 @@
   command = "npm run build"
   publish = ".next"
 
-# Redirect all traffic to kwslinkhout.be (for invite tokens)
+# Redirect www to non-www
+[[redirects]]
+  from = "https://www.kwslinkhout.be/*"
+  to = "https://kwslinkhout.be/:splat"
+  status = 301
+  force = true
+
+# Redirect all netlify.app traffic to kwslinkhout.be
 [[redirects]]
   from = "/*"
   to = "https://kwslinkhout.be/admin/:splat"

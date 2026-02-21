@@ -15,8 +15,10 @@
   <script src="https://unpkg.com/decap-cms@3.1.1/dist/decap-cms.js"></script>
   
   <script>
-    // Redirect van netlify.app naar kwslinkhout.be (voor invites/confirmations)
-    if (window.location.host === 'kws-linkhout.netlify.app') {
+    // Redirect van netlify.app of www naar kwslinkhout.be (zonder www)
+    // Dit is nodig voor invites, confirmations en recovery tokens
+    if (window.location.host === 'kws-linkhout.netlify.app' || 
+        window.location.host === 'www.kwslinkhout.be') {
       window.location.href = 'https://kwslinkhout.be/admin/' + window.location.hash;
     }
     
