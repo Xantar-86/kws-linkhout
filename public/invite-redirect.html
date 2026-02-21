@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Doorverwijzen...</title>
+  <script>
+    // Redirect van netlify.app naar kwslinkhout.be met dezelfde hash
+    if (window.location.hash) {
+      window.location.href = 'https://kwslinkhout.be/admin/' + window.location.hash;
+    } else {
+      window.location.href = 'https://kwslinkhout.be/admin/';
+    }
+  </script>
+</head>
+<body>
+  <p>Doorverwijzen naar kwslinkhout.be...</p>
+  <p>Als je niet automatisch wordt doorgestuurd, <a href="https://kwslinkhout.be/admin/">klik hier</a>.</p>
+</body>
+</html>
