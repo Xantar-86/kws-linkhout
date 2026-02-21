@@ -1,18 +1,24 @@
 # ============================================
 # PRODUCTIE CONFIGURATIE - KWS Linkhout CMS
 # ============================================
-# Gebruikt Netlify Identity voor authenticatie
-# Backend: Git Gateway (verbindt met GitHub repo)
+# Gebruikt GitHub OAuth voor authenticatie
+# Backend: GitHub (direct, geen Netlify nodig)
 #
-# BELANGRIJK: Deze config werkt alleen met:
-# - Netlify Identity ingeschakeld
-# - Git Gateway ingeschakeld
-# - Domein: kwslinkhout.be
+# BELANGRIJK: Je moet een GitHub OAuth App aanmaken:
+# 1. Ga naar https://github.com/settings/developers
+# 2. Klik "New OAuth App"
+# 3. Application name: KWS Linkhout CMS
+# 4. Homepage URL: https://kwslinkhout.be
+# 5. Authorization callback URL: https://kwslinkhout.be/admin/
+# 6. Sla Client ID en Client Secret op
 # ============================================
 
 backend:
-  name: git-gateway
+  name: github
+  repo: Xantar-86/kws-linkhout
   branch: main
+  base_url: https://kwslinkhout.be
+  auth_endpoint: /api/auth
 
 # Enable editorial workflow voor review process
 publish_mode: editorial_workflow

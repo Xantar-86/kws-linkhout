@@ -3,35 +3,19 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactCompiler: false,
   
-  // Proxy Netlify Identity calls to the Netlify site
-  async rewrites() {
+  // Redirect www to non-www
+  async redirects() {
     return [
       {
-        source: "/.netlify/identity/:path*",
-        destination: "https://kws-linkhout.netlify.app/.netlify/identity/:path*",
-      },
-    ];
-  },
-  
-  // Add CORS headers for identity
-  async headers() {
-    return [
-      {
-        source: "/admin/:path*",
-        headers: [
+        source: "/:path*",
+        has: [
           {
-            key: "Access-Control-Allow-Origin",
-            value: "*",
-          },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET, POST, PUT, DELETE, OPTIONS",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value: "Content-Type, Authorization",
+            type: "host",
+            value: "www.kwslinkhout.be",
           },
         ],
+        destination: "https://kwslinkhout.be/:path*",
+        permanent: true,
       },
     ];
   },
