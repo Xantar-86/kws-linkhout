@@ -13,23 +13,6 @@ const nextConfig: NextConfig = {
     ];
   },
   
-  // Redirect www to non-www
-  async redirects() {
-    return [
-      {
-        source: "/:path*",
-        has: [
-          {
-            type: "host",
-            value: "www.kwslinkhout.be",
-          },
-        ],
-        destination: "https://kwslinkhout.be/:path*",
-        permanent: true,
-      },
-    ];
-  },
-  
   // Add CORS headers for identity
   async headers() {
     return [

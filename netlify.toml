@@ -2,16 +2,9 @@
   command = "npm run build"
   publish = ".next"
 
-# Redirect www to non-www
+# Only redirect www to non-www for the main domain
 [[redirects]]
   from = "https://www.kwslinkhout.be/*"
   to = "https://kwslinkhout.be/:splat"
   status = 301
-  force = true
-
-# Redirect all netlify.app traffic to kwslinkhout.be
-[[redirects]]
-  from = "/*"
-  to = "https://kwslinkhout.be/admin/:splat"
-  status = 302
   force = true
