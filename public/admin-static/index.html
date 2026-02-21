@@ -43,17 +43,16 @@
   <!-- Error message container -->
   <div id="identity-error">
     <h2>⚠️ Identity Service Niet Geconfigureerd</h2>
-    <p>De Netlify Identity service is niet correct ingesteld voor dit domein.</p>
+    <p>Er is een probleem met de Netlify Identity configuratie.</p>
     
-    <h3>Snelle oplossing:</h3>
+    <h3>Mogelijke oorzaken:</h3>
     <ol>
-      <li>Ga naar <a href="https://app.netlify.com/" target="_blank">Netlify Dashboard</a></li>
-      <li>Selecteer je site</li>
-      <li>Ga naar <strong>Identity</strong> → Klik <strong>Enable Identity</strong></li>
-      <li>Ga naar <strong>Identity → Services → Git Gateway</strong> → Klik <strong>Enable Git Gateway</strong></li>
-      <li>Herlaad deze pagina</li>
+      <li>Git Gateway is niet enabled in Netlify</li>
+      <li>Identity is niet enabled in Netlify</li>
+      <li>De site URL is niet correct geconfigureerd</li>
     </ol>
     
+    <p><strong>Netlify site:</strong> <a href="https://kws-linkhout.netlify.app/" target="_blank">kws-linkhout.netlify.app</a></p>
     <p>Zie <a href="/TROUBLESHOOT_IDENTITY.md">TROUBLESHOOT_IDENTITY.md</a> voor gedetailleerde instructies.</p>
   </div>
   
@@ -61,8 +60,14 @@
   <script src="https://unpkg.com/decap-cms@3.1.1/dist/decap-cms.js"></script>
   
   <script>
-    // Initialiseer Netlify Identity
+    // Initialiseer Netlify Identity met expliciete API URL
     if (window.netlifyIdentity) {
+      // BELANGRIJK: We gebruiken de Netlify URL voor de Identity API
+      // terwijl de site zelf op kwslinkhout.be draait
+      window.netlifyIdentity.init({
+        APIUrl: "https://kws-linkhout.netlify.app/.netlify/identity"
+      });
+      
       window.netlifyIdentity.on("init", user => {
         if (!user) {
           window.netlifyIdentity.on("login", () => {
@@ -70,28 +75,6 @@
           });
         }
       });
-      
-      // Check for identity errors after a delay
-      setTimeout(function() {
-        const ncRoot = document.getElementById('nc-root');
-        const errorDiv = document.getElementById('identity-error');
-        
-        // Check if CMS failed to load (empty or error state)
-        if (ncRoot && (ncRoot.children.length === 0 || ncRoot.innerHTML.includes('error'))) {
-          errorDiv.style.display = 'block';
-        }
-        
-        // Also check for specific error messages
-        const bodyText = document.body.innerText || '';
-        if (bodyText.includes('Unable to access identity') || 
-            bodyText.includes('git-gateway') ||
-            bodyText.includes('Identity service')) {
-          errorDiv.style.display = 'block';
-        }
-      }, 3000);
-    } else {
-      // Identity widget failed to load
-      document.getElementById('identity-error').style.display = 'block';
     }
   </script>
 </body>

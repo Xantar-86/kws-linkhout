@@ -30,44 +30,40 @@
   </div>
   
   <div class="section">
-    <h2>3. API Test</h2>
-    <div id="api-status">Nog niet getest</div>
-    <button onclick="testAPI()">Test /.netlify/identity</button>
-    <pre id="api-result"></pre>
+    <h2>3. API Test (kwslinkhout.be)</h2>
+    <div id="api-status-1">Nog niet getest</div>
+    <button onclick="testAPI1()">Test /.netlify/identity</button>
+    <pre id="api-result-1"></pre>
   </div>
   
   <div class="section">
-    <h2>4. Config Check</h2>
-    <div id="config-status">Laden...</div>
+    <h2>4. API Test (Netlify URL)</h2>
+    <div id="api-status-2">Nog niet getest</div>
+    <button onclick="testAPI2()">Test kws-linkhout.netlify.app</button>
+    <pre id="api-result-2"></pre>
   </div>
   
-  <div class="section error">
-    <h2>5. Mogelijke Oplossingen</h2>
-    <p>Als hierboven errors staan, probeer dan:</p>
-    <ol>
-      <li><strong>Controleer je Netlify site URL</strong><br>
-        Ga naar Netlify Dashboard → Site settings → General → Site details<br>
-        Check wat er staat bij "Site name" en "Domain settings"
-      </li>
-      <li><strong>Controleer of Identity echt enabled is</strong><br>
-        In Netlify, onderaan de linker sidebar zie je "Identity" staan als het enabled is
-      </li>
-      <li><strong>Force refresh</strong><br>
-        Druk Ctrl+F5 (of Cmd+Shift+R) om cache te verversen
-      </li>
-    </ol>
+  <div class="section">
+    <h2>5. Config Check</h2>
+    <div id="config-status">Laden...</div>
   </div>
 
   <!-- Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   
   <script>
+    // Init met expliciete API URL
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.init({
+        APIUrl: "https://kws-linkhout.netlify.app/.netlify/identity"
+      });
+    }
+    
     // Show URL info
     document.getElementById('url-info').textContent = 
       'URL: ' + window.location.href + '\n' +
       'Origin: ' + window.location.origin + '\n' +
-      'Host: ' + window.location.host + '\n' +
-      'User Agent: ' + navigator.userAgent;
+      'Host: ' + window.location.host;
     
     // Check widget status
     if (window.netlifyIdentity) {
@@ -83,12 +79,11 @@
       .then(r => r.text())
       .then(text => {
         document.getElementById('config-status').innerHTML = 
-          '<span style="color: green;">✓ Config.yml gevonden</span><pre>' + 
-          text.substring(0, 500) + '...</pre>';
+          '<span style="color: green;">✓ Config.yml gevonden</span>';
       })
       .catch(e => {
         document.getElementById('config-status').innerHTML = 
-          '<span style="color: red;">✗ Config.yml niet gevonden: ' + e + '</span>';
+          '<span style="color: red;">✗ Config.yml niet gevonden</span>';
       });
     
     function testIdentity() {
@@ -96,11 +91,6 @@
         alert('Identity widget niet geladen!');
         return;
       }
-      
-      window.netlifyIdentity.init({
-        APIUrl: 'https://kwslinkhout.be/.netlify/identity'
-      });
-      
       const user = window.netlifyIdentity.currentUser();
       if (user) {
         alert('Ingelogd als: ' + user.email);
@@ -123,24 +113,37 @@
       alert('Uitgelogd');
     }
     
-    async function testAPI() {
-      document.getElementById('api-status').textContent = 'Testen...';
+    async function testAPI1() {
+      document.getElementById('api-status-1').textContent = 'Testen...';
       try {
         const response = await fetch('/.netlify/identity/settings');
         const text = await response.text();
-        document.getElementById('api-result').textContent = 
-          'Status: ' + response.status + '\n\n' + text;
-        if (response.ok) {
-          document.getElementById('api-status').innerHTML = 
-            '<span style="color: green;">✓ API reageert!</span>';
-        } else {
-          document.getElementById('api-status').innerHTML = 
-            '<span style="color: red;">✗ API error: ' + response.status + '</span>';
-        }
+        document.getElementById('api-result-1').textContent = 
+          'Status: ' + response.status + '\n\n' + text.substring(0, 500);
+        document.getElementById('api-status-1').innerHTML = 
+          response.ok ? '<span style="color: green;">✓ OK</span>' : 
+                        '<span style="color: red;">✗ Error ' + response.status + '</span>';
       } catch (e) {
-        document.getElementById('api-status').innerHTML = 
-          '<span style="color: red;">✗ API niet bereikbaar: ' + e.message + '</span>';
-        document.getElementById('api-result').textContent = e.toString();
+        document.getElementById('api-status-1').innerHTML = 
+          '<span style="color: red;">✗ Niet bereikbaar</span>';
+        document.getElementById('api-result-1').textContent = e.message;
+      }
+    }
+    
+    async function testAPI2() {
+      document.getElementById('api-status-2').textContent = 'Testen...';
+      try {
+        const response = await fetch('https://kws-linkhout.netlify.app/.netlify/identity/settings');
+        const text = await response.text();
+        document.getElementById('api-result-2').textContent = 
+          'Status: ' + response.status + '\n\n' + text.substring(0, 500);
+        document.getElementById('api-status-2').innerHTML = 
+          response.ok ? '<span style="color: green;">✓ OK</span>' : 
+                        '<span style="color: red;">✗ Error ' + response.status + '</span>';
+      } catch (e) {
+        document.getElementById('api-status-2').innerHTML = 
+          '<span style="color: red;">✗ Niet bereikbaar</span>';
+        document.getElementById('api-result-2').textContent = e.message;
       }
     }
   </script>
