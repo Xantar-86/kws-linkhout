@@ -1,0 +1,276 @@
+# ============================================
+# PRODUCTIE CONFIGURATIE - KWS Linkhout CMS
+# ============================================
+# Gebruikt GitHub OAuth voor authenticatie
+# Backend: GitHub (direct, geen Netlify nodig)
+#
+# BELANGRIJK: Je moet een GitHub OAuth App aanmaken:
+# 1. Ga naar https://github.com/settings/developers
+# 2. Klik "New OAuth App"
+# 3. Application name: KWS Linkhout CMS
+# 4. Homepage URL: https://kwslinkhout.be
+# 5. Authorization callback URL: https://kwslinkhout.be/admin/
+# 6. Sla Client ID en Client Secret op
+# ============================================
+
+backend:
+  name: github
+  repo: Xantar-86/kws-linkhout
+  branch: main
+  base_url: https://kwslinkhout.be
+  auth_endpoint: /api/auth
+
+# Enable editorial workflow voor review process
+publish_mode: editorial_workflow
+
+# Media instellingen
+media_folder: public/uploads
+public_folder: /uploads
+
+# Collecties
+collections:
+  # Nieuwsberichten
+  - name: nieuws
+    label: Nieuwsberichten
+    folder: content/nieuws
+    create: true
+    slug: "{{slug}}"
+    
+    fields:
+      - label: Titel
+        name: title
+        widget: string
+        required: true
+      
+      - label: Slug (URL naam)
+        name: slug
+        widget: string
+        required: false
+        hint: "Laat leeg om automatisch te genereren uit de titel"
+      
+      - label: Publicatiedatum
+        name: date
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: HH:mm
+        required: true
+      
+      - label: Auteur
+        name: author
+        widget: string
+        default: "Bestuur KWS Linkhout"
+      
+      - label: Leestijd (minuten)
+        name: readTime
+        widget: number
+        default: 3
+        min: 1
+        max: 30
+        value_type: int
+      
+      - label: Categorie
+        name: category
+        widget: select
+        options:
+          - { label: "Clubnieuws", value: "clubnieuws" }
+          - { label: "Ploegnieuws", value: "ploegnieuws" }
+          - { label: "Evenementen", value: "evenementen" }
+        default: "clubnieuws"
+      
+      - label: Uitgelicht
+        name: featured
+        widget: boolean
+        default: false
+        hint: "Toon dit artikel als uitgelicht op de homepage"
+      
+      - label: Samenvatting
+        name: excerpt
+        widget: text
+        required: true
+        hint: "Korte beschrijving voor overzichtspagina's"
+      
+      - label: Hoofdafbeelding
+        name: image
+        widget: image
+        required: false
+        hint: "Upload een afbeelding"
+      
+      - label: Bijlage / Document
+        name: attachment
+        widget: file
+        required: false
+        hint: "Upload een PDF of ander bestand"
+      
+      - label: Inhoud
+        name: body
+        widget: markdown
+        required: true
+        hint: "Het volledige artikel"
+
+  # Evenementen
+  - name: events
+    label: Evenementen
+    folder: content/events
+    create: true
+    slug: "{{slug}}"
+    
+    fields:
+      - label: Titel
+        name: title
+        widget: string
+        required: true
+      
+      - label: Datum (kort)
+        name: date
+        widget: string
+        required: true
+        hint: "Bijvoorbeeld: '13-14 Maart' of '25 Mei'"
+      
+      - label: Volledige datum
+        name: dateFull
+        widget: string
+        required: true
+        hint: "Bijvoorbeeld: '13-14 maart 2026'"
+      
+      - label: Beschrijving
+        name: description
+        widget: text
+        required: true
+        hint: "Korte omschrijving van het evenement"
+      
+      - label: Kleur
+        name: color
+        widget: select
+        required: true
+        default: "primary"
+        options:
+          - { label: "Rood", value: "red" }
+          - { label: "Roze", value: "pink" }
+          - { label: "Groen", value: "green" }
+          - { label: "Blauw (Primary)", value: "primary" }
+          - { label: "Indigo", value: "indigo" }
+          - { label: "Geel", value: "yellow" }
+          - { label: "Paars", value: "purple" }
+          - { label: "Oranje", value: "orange" }
+          - { label: "Lichtblauw", value: "blue" }
+          - { label: "Grijs", value: "gray" }
+      
+      - label: Locatie
+        name: location
+        widget: string
+        default: "KWS Linkhout"
+        required: false
+      
+      - label: Afbeelding
+        name: image
+        widget: image
+        required: false
+        hint: "Optionele afbeelding voor het evenement"
+
+  # Krantenartikelen
+  - name: press
+    label: "In de Krant"
+    folder: content/press
+    create: true
+    slug: "{{slug}}"
+    
+    fields:
+      - label: Titel
+        name: title
+        widget: string
+        required: true
+      
+      - label: Krant/Bron
+        name: sourceKey
+        widget: select
+        required: true
+        default: "hbvl"
+        options:
+          - { label: "Het Belang van Limburg", value: "hbvl" }
+          - { label: "Het Laatste Nieuws", value: "hln" }
+          - { label: "Het Nieuwsblad", value: "nieuwsblad" }
+          - { label: "Andere", value: "andere" }
+      
+      - label: Datum publicatie
+        name: date
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: false
+        required: true
+      
+      - label: PDF Bestand
+        name: pdf
+        widget: file
+        required: true
+        hint: "Upload het PDF bestand van het krantenartikel"
+        media_library:
+          config:
+            multiple: false
+      
+      - label: Samenvatting
+        name: summary
+        widget: text
+        required: false
+        hint: "Korte beschrijving van het artikel"
+
+  # Foto Albums
+  - name: fotos
+    label: "Foto's"
+    folder: content/fotos
+    create: true
+    slug: "{{slug}}"
+    
+    fields:
+      - label: ID (unieke identifier)
+        name: id
+        widget: string
+        required: true
+        hint: "Bijvoorbeeld: herfst-voetbalkamp-2025"
+      
+      - label: Titel
+        name: title
+        widget: string
+        required: true
+      
+      - label: Beschrijving
+        name: description
+        widget: string
+        required: true
+        hint: "Korte omschrijving van het foto album"
+      
+      - label: Datum
+        name: date
+        widget: string
+        required: false
+        hint: "Bijvoorbeeld: '2025', '2025-05-25' of 'Mei 2025'"
+      
+      - label: Google Photos Link
+        name: googlePhotosUrl
+        widget: string
+        required: true
+        hint: "De link naar het Google Photos album (bijv: https://photos.app.goo.gl/...)"
+      
+      - label: Thumbnail Afbeelding
+        name: thumbnail
+        widget: image
+        required: false
+        hint: "Upload een cover foto voor het album. Als leeg, wordt een standaard foto gebruikt."
+      
+      - label: Categorie
+        name: category
+        widget: select
+        required: false
+        default: ""
+        options:
+          - { label: "Geen categorie", value: "" }
+          - { label: "Wedstrijden", value: "Wedstrijden" }
+          - { label: "Evenementen", value: "Evenementen" }
+          - { label: "Jeugd", value: "Jeugd" }
+          - { label: "Senioren", value: "Senioren" }
+          - { label: "Dames", value: "Dames" }
+      
+      - label: Aantal foto's
+        name: fotoCount
+        widget: number
+        required: false
+        hint: "Optioneel: aantal foto's in het album"
