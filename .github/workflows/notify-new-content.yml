@@ -3,8 +3,6 @@ name: Notify on New Content
 on:
   push:
     branches: [main]
-    paths:
-      - 'content/**'
 
 jobs:
   notify:
@@ -13,13 +11,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Get commit info
-        id: commit
+      - name: Debug info
         run: |
-          echo "message=$(git log -1 --pretty=format:'%s')" >> $GITHUB_OUTPUT
-          echo "author=$(git log -1 --pretty=format:'%an')" >> $GITHUB_OUTPUT
+          echo "Changed files:"
+          git diff --name-only HEAD^ HEAD || echo "No previous commit"
+          echo ""
+          echo "Commit message:"
+          git log -1 --pretty=format:'%s'
+          echo ""
+          echo "Author:"
+          git log -1 --pretty=format:'%an'
+
+      - name: Check if content changed
+        id: check
+        run: |
+          CHANGED=$(git diff --name-only HEAD^ HEAD | grep -c "^content/" || echo "0")
+          echo "content_changed=$CHANGED" >> $GITHUB_OUTPUT
+          echo "Files changed in content/: $CHANGED"
 
       - name: Send notification email
+        if: steps.check.outputs.content_changed != '0'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -31,9 +42,7 @@ jobs:
           from: KWS Linkhout CMS <${{ secrets.EMAIL_USERNAME }}>
           html_body: |
             <h2>Nieuwe content wacht op goedkeuring</h2>
-            <p><strong>Auteur:</strong> ${{ steps.commit.outputs.author }}</p>
-            <p><strong>Wijziging:</strong> ${{ steps.commit.outputs.message }}</p>
-            <p>Er is nieuwe content toegevoegd aan de KWS Linkhout website.</p>
+            <p>Er is nieuwe content toegevoegd aan de KWS Linkhout website via Decap CMS.</p>
             <p style="margin: 20px 0;">
               <a href="https://kwslinkhout.be/admin" 
                  style="padding: 12px 24px; background: #24292e; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">
@@ -41,7 +50,4 @@ jobs:
               </a>
             </p>
             <hr>
-            <p style="color: #666; font-size: 12px;">
-              Dit is een automatische melding van KWS Linkhout CMS.<br>
-              Tijd: ${{ github.event.head_commit.timestamp }}
-            </p>
+            <p style="color: #666; font-size: 12px;">Dit is een automatische melding van KWS Linkhout CMS.</p>
