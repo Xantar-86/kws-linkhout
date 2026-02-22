@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-
 export async function GET(request: NextRequest) {
+  // Log for debugging
+  console.log('Auth API called:', request.url);
+  
+  const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+  const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+  
+  if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
+    console.error('Missing environment variables');
+    return NextResponse.json({ 
+      error: 'Server configuration error: missing credentials' 
+    }, { status: 500 });
+  }
+  
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code');
-
+  
   if (!code) {
     return NextResponse.json({ error: 'No code provided' }, { status: 400 });
   }
@@ -26,23 +36,16 @@ export async function GET(request: NextRequest) {
     });
 
     const tokenData = await tokenResponse.json();
+    console.log('GitHub response:', tokenData);
 
     if (tokenData.error) {
-      // Redirect to login with error
-      const url = new URL('/admin-static/login.html', request.url);
-      url.searchParams.set('error', tokenData.error);
-      return NextResponse.redirect(url);
+      return NextResponse.json({ error: tokenData.error }, { status: 400 });
     }
 
-    // Redirect to login with token in hash
-    const url = new URL('/admin-static/login.html', request.url);
-    url.hash = `access_token=${tokenData.access_token}&token_type=bearer`;
-    return NextResponse.redirect(url);
+    return NextResponse.json({ token: tokenData.access_token });
     
   } catch (error) {
     console.error('OAuth error:', error);
-    const url = new URL('/admin-static/login.html', request.url);
-    url.searchParams.set('error', 'Authentication failed');
-    return NextResponse.redirect(url);
+    return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
   }
 }
