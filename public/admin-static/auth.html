@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Authenticating...</title>
+</head>
+<body>
+  <script>
+    // This page handles the OAuth callback from GitHub
+    // It passes the token back to the parent window (Decap CMS)
+    
+    (function() {
+      function receiveMessage(e) {
+        if (e.data === 'authorizing:github') {
+          // Get the token from URL
+          const params = new URLSearchParams(window.location.search);
+          const code = params.get('code');
+          
+          if (code) {
+            // Exchange code for token via our API
+            fetch('/api/auth?code=' + encodeURIComponent(code))
+              .then(res => res.json())
+              .then(data => {
+                if (data.token) {
+                  e.source.postMessage(
+                    'authorization:github:success:' + data.token,
+                    e.origin
+                  );
+                } else {
+                  e.source.postMessage(
+                    'authorization:github:error:' + (data.error || 'Unknown error'),
+                    e.origin
+                  );
+                }
+              })
+              .catch(err => {
+                e.source.postMessage(
+                  'authorization:github:error:' + err.message,
+                  e.origin
+                );
+              });
+          }
+        }
+      }
+      
+      window.addEventListener('message', receiveMessage, false);
+      
+      // Notify opener that we're ready
+      if (window.opener) {
+        window.opener.postMessage('authorizing:github', '*');
+      }
+    })();
+  </script>
+  <p>Authenticating with GitHub...</p>
+</body>
+</html>
