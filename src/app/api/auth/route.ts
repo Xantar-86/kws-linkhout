@@ -39,11 +39,48 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: tokenData.error }, { status: 400 });
     }
 
-    // Redirect back to admin with token
-    const redirectUrl = new URL('/admin/', request.nextUrl.origin);
-    redirectUrl.hash = `access_token=${tokenData.access_token}&token_type=${tokenData.token_type || 'bearer'}`;
-    
-    return NextResponse.redirect(redirectUrl);
+    // Return HTML that passes token to parent window (Decap CMS)
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Authenticating...</title>
+</head>
+<body>
+  <script>
+    (function() {
+      function receiveMessage(e) {
+        if (e.origin !== '${request.nextUrl.origin}') return;
+        
+        if (e.data === 'authorizing:github') {
+          e.source.postMessage(
+            'authorization:github:success:${tokenData.access_token}',
+            e.origin
+          );
+        }
+      }
+      
+      window.addEventListener('message', receiveMessage, false);
+      
+      // Also try to communicate with parent
+      if (window.opener) {
+        window.opener.postMessage('authorizing:github', '${request.nextUrl.origin}');
+      }
+      
+      // Redirect after a short delay
+      setTimeout(function() {
+        window.location.href = '/admin/';
+      }, 1000);
+    })();
+  </script>
+  <p>Authenticatie succesvol! Doorverwijzen...</p>
+</body>
+</html>`;
+
+    return new NextResponse(html, {
+      headers: { 'Content-Type': 'text/html' },
+    });
   } catch (error) {
     console.error('OAuth error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
