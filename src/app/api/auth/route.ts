@@ -28,14 +28,21 @@ export async function GET(request: NextRequest) {
     const tokenData = await tokenResponse.json();
 
     if (tokenData.error) {
-      return NextResponse.json({ error: tokenData.error }, { status: 400 });
+      // Redirect to login with error
+      const url = new URL('/admin-static/login.html', request.url);
+      url.searchParams.set('error', tokenData.error);
+      return NextResponse.redirect(url);
     }
 
-    // Return token as JSON (auth.html will handle it)
-    return NextResponse.json({ token: tokenData.access_token });
+    // Redirect to login with token in hash
+    const url = new URL('/admin-static/login.html', request.url);
+    url.hash = `access_token=${tokenData.access_token}&token_type=bearer`;
+    return NextResponse.redirect(url);
     
   } catch (error) {
     console.error('OAuth error:', error);
-    return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
+    const url = new URL('/admin-static/login.html', request.url);
+    url.searchParams.set('error', 'Authentication failed');
+    return NextResponse.redirect(url);
   }
 }
