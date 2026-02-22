@@ -52,11 +52,6 @@
   </div>
   
   <script>
-    // Generate random state for OAuth
-    function generateState() {
-      return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    }
-    
     // Check if already logged in
     const user = localStorage.getItem('decap-cms-user');
     if (user) {
@@ -67,10 +62,12 @@
           window.location.href = '/admin-static/';
         }
       } catch (e) {
-        // Invalid data, clear it
         localStorage.removeItem('decap-cms-user');
       }
     }
+    
+    // Close any existing popup
+    let popupWindow = null;
     
     // Listen for messages from popup
     window.addEventListener('message', function(e) {
@@ -85,44 +82,46 @@
           token: token
         }));
         
-        // Show success and redirect
+        // Show success
         document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
         
-        // Close popup if reference still exists
+        // Close popup
         if (popupWindow && !popupWindow.closed) {
           popupWindow.close();
         }
         
+        // Redirect
         setTimeout(() => {
           window.location.href = '/admin-static/';
         }, 500);
       }
     });
     
-    let popupWindow = null;
-    
     function login() {
-      // Clear any old state
+      // Clear old data
       localStorage.removeItem('decap-cms-user');
       document.getElementById('message').innerHTML = '';
+      
+      // Close any existing popup
+      if (popupWindow && !popupWindow.closed) {
+        popupWindow.close();
+      }
       
       const clientId = 'Ov23liafFGErfmejn48L';
       const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
       const scope = encodeURIComponent('repo');
-      const state = generateState();
       
-      // Store state to verify later
-      localStorage.setItem('oauth-state', state);
+      // Use unique URL to prevent caching
+      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&_=${Date.now()}`;
       
-      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
-      
-      // Open popup centered
+      // Open popup with unique name
       const width = 500;
       const height = 600;
       const left = (window.screen.width / 2) - (width / 2);
       const top = (window.screen.height / 2) - (height / 2);
       
-      popupWindow = window.open(url, 'github-oauth', `width=${width},height=${height},top=${top},left=${left}`);
+      const popupName = 'github-oauth-' + Date.now();
+      popupWindow = window.open(url, popupName, `width=${width},height=${height},top=${top},left=${left}`);
       
       if (!popupWindow) {
         document.getElementById('message').innerHTML = '<p class="error">Popup was blocked. Please allow popups for this site.</p>';
