@@ -4,89 +4,86 @@
   <meta charset="utf-8">
   <title>Authenticating...</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 50px auto; }
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 50px auto; text-align: center; }
     .error { color: red; }
     .success { color: green; }
-    pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
   </style>
 </head>
 <body>
   <h1>GitHub Authentication</h1>
-  <div id="status">Initializing...</div>
-  <pre id="debug"></pre>
+  <div id="status">Waiting for authorization...</div>
   
   <script>
-    function log(msg) {
-      console.log(msg);
-      document.getElementById('debug').textContent += msg + '\n';
-    }
-    
-    function setStatus(msg, isError) {
-      const el = document.getElementById('status');
-      el.textContent = msg;
-      el.className = isError ? 'error' : 'success';
-    }
-    
     (function() {
-      log('URL: ' + window.location.href);
-      log('Origin: ' + window.location.origin);
+      const statusEl = document.getElementById('status');
       
-      // Get the code from URL (GitHub sends ?code=...)
+      // Check if we have a code (returning from GitHub)
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
-      const state = params.get('state');
       const error = params.get('error');
       
-      log('Code: ' + (code ? code.substring(0, 10) + '...' : 'NOT FOUND'));
-      log('State: ' + state);
-      log('Error: ' + error);
-      
       if (error) {
-        setStatus('GitHub Error: ' + error, true);
+        statusEl.textContent = 'Error: ' + error;
+        statusEl.className = 'error';
         return;
       }
       
-      if (!code) {
-        setStatus('Error: No authorization code received from GitHub', true);
-        log('Full query string: ' + window.location.search);
-        return;
-      }
-      
-      setStatus('Exchanging code for token...');
-      
-      // Exchange code for access token
-      fetch('/api/auth?code=' + encodeURIComponent(code))
-        .then(res => {
-          log('API response status: ' + res.status);
-          return res.json();
-        })
-        .then(data => {
-          log('API response: ' + JSON.stringify(data, null, 2));
-          
-          if (data.token) {
-            setStatus('Success! Token received.');
-            
-            // Send message to parent window (Decap CMS)
-            if (window.opener) {
-              log('Sending token to parent window...');
-              window.opener.postMessage(
-                'authorization:github:success:' + data.token,
-                window.location.origin
-              );
-              // Close this window after a short delay
-              setTimeout(() => window.close(), 500);
+      if (code) {
+        // We're returning from GitHub with a code
+        statusEl.textContent = 'Exchanging code for token...';
+        
+        fetch('/api/auth?code=' + encodeURIComponent(code))
+          .then(res => res.json())
+          .then(data => {
+            if (data.token) {
+              statusEl.textContent = 'Success! Closing window...';
+              statusEl.className = 'success';
+              
+              // Send token to parent window
+              if (window.opener) {
+                window.opener.postMessage(
+                  'authorization:github:success:' + data.token,
+                  window.location.origin
+                );
+                setTimeout(() => window.close(), 500);
+              } else {
+                // Fallback: redirect to admin
+                window.location.href = '/admin/#access_token=' + data.token + '&token_type=bearer';
+              }
             } else {
-              log('No parent window - redirecting to admin...');
-              window.location.href = '/admin-static/#access_token=' + data.token + '&token_type=bearer';
+              statusEl.textContent = 'Error: ' + (data.error || 'Failed to get token');
+              statusEl.className = 'error';
             }
-          } else {
-            setStatus('Error: ' + (data.error || 'No token received'), true);
-          }
-        })
-        .catch(err => {
-          log('Fetch error: ' + err.message);
-          setStatus('Error: ' + err.message, true);
-        });
+          })
+          .catch(err => {
+            statusEl.textContent = 'Error: ' + err.message;
+            statusEl.className = 'error';
+          });
+        return;
+      }
+      
+      // No code yet - wait for message from Decap CMS to start the flow
+      statusEl.textContent = 'Waiting for Decap CMS...';
+      
+      window.addEventListener('message', function(e) {
+        if (e.origin !== window.location.origin) return;
+        
+        if (e.data === 'authorizing:github') {
+          statusEl.textContent = 'Redirecting to GitHub...';
+          
+          // Build GitHub OAuth URL
+          const clientId = 'Ov23liafFGErfmejn48L'; // This should match your GitHub OAuth App
+          const redirectUri = encodeURIComponent(window.location.origin + '/admin-static/auth.html');
+          const scope = encodeURIComponent('repo');
+          
+          window.location.href = 'https://github.com/login/oauth/authorize?client_id=' + clientId + '&redirect_uri=' + redirectUri + '&scope=' + scope;
+        }
+      });
+      
+      // Also notify parent that we're ready
+      if (window.opener) {
+        window.opener.postMessage('authorizing:github', window.location.origin);
+      }
     })();
   </script>
 </body>
