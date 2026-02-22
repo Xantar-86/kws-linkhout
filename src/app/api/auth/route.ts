@@ -9,12 +9,11 @@ const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code');
-  const state = searchParams.get('state');
 
   if (!code) {
     // Step 1: Redirect to GitHub OAuth
     const redirectUri = `${request.nextUrl.origin}/api/auth`;
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=repo&state=${state || ''}`;
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=repo`;
     return NextResponse.redirect(githubAuthUrl);
   }
 
@@ -39,48 +38,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: tokenData.error }, { status: 400 });
     }
 
-    // Return HTML that passes token to parent window (Decap CMS)
-    const html = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Authenticating...</title>
-</head>
-<body>
-  <script>
-    (function() {
-      function receiveMessage(e) {
-        if (e.origin !== '${request.nextUrl.origin}') return;
-        
-        if (e.data === 'authorizing:github') {
-          e.source.postMessage(
-            'authorization:github:success:${tokenData.access_token}',
-            e.origin
-          );
-        }
-      }
-      
-      window.addEventListener('message', receiveMessage, false);
-      
-      // Also try to communicate with parent
-      if (window.opener) {
-        window.opener.postMessage('authorizing:github', '${request.nextUrl.origin}');
-      }
-      
-      // Redirect after a short delay
-      setTimeout(function() {
-        window.location.href = '/admin/';
-      }, 1000);
-    })();
-  </script>
-  <p>Authenticatie succesvol! Doorverwijzen...</p>
-</body>
-</html>`;
-
-    return new NextResponse(html, {
-      headers: { 'Content-Type': 'text/html' },
-    });
+    // Redirect directly to admin-static with token in hash
+    // This is what Decap CMS expects
+    const redirectUrl = new URL('/admin-static/', request.nextUrl.origin);
+    redirectUrl.hash = `access_token=${tokenData.access_token}&token_type=bearer`;
+    
+    return NextResponse.redirect(redirectUrl);
   } catch (error) {
     console.error('OAuth error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
