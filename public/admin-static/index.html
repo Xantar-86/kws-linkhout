@@ -4,6 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KWS Linkhout - Content Manager</title>
+  <script>
+    // Check if user is logged in
+    const user = localStorage.getItem('decap-cms-user');
+    if (!user) {
+      // Not logged in, redirect to login
+      window.location.href = '/admin-static/login.html';
+    }
+  </script>
 </head>
 <body>
   <div id="nc-root"></div>

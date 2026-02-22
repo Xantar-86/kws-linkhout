@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
 export default function AdminPage() {
-  redirect('/admin-static/');
+  // Redirect to custom login page
+  redirect('/admin-static/login.html');
 }
