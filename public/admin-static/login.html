@@ -65,40 +65,94 @@
       }
     }
     
-    // Check if returning from auth with token in hash
-    const hash = window.location.hash;
-    if (hash && hash.includes('access_token')) {
-      const params = new URLSearchParams(hash.substring(1));
-      const token = params.get('access_token');
+    // Check if returning from OAuth
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('logged_in')) {
+      // Already processed, clear and continue
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    let popupWindow = null;
+    
+    window.addEventListener('message', function(e) {
+      if (e.origin !== window.location.origin) return;
       
-      if (token) {
+      if (e.data && typeof e.data === 'string' && e.data.startsWith('authorization:github:success:')) {
+        const token = e.data.substring('authorization:github:success:'.length);
+        
         localStorage.setItem('decap-cms-user', JSON.stringify({
           backendName: 'github',
           token: token
         }));
-        window.location.replace('/admin-static/');
+        
+        document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
+        
+        if (popupWindow && !popupWindow.closed) {
+          popupWindow.close();
+        }
+        
+        setTimeout(() => {
+          window.location.href = '/admin-static/';
+        }, 500);
       }
-    }
-    
-    // Check if returning from auth with error
-    const params = new URLSearchParams(window.location.search);
-    const error = params.get('error');
-    if (error) {
-      document.getElementById('message').innerHTML = '<p class="error">Login failed: ' + error + '</p>';
-    }
+    });
     
     function login() {
-      // Clear old data
       localStorage.removeItem('decap-cms-user');
       document.getElementById('message').innerHTML = '';
       
+      if (popupWindow && !popupWindow.closed) {
+        popupWindow.close();
+      }
+      
       const clientId = 'Ov23liafFGErfmejn48L';
-      const redirectUri = encodeURIComponent('https://kwslinkhout.be/api/auth');
+      const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
       const scope = encodeURIComponent('repo');
       
-      // Full page redirect to GitHub (no popup)
-      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
-      window.location.href = url;
+      // Force fresh URL with random parameter
+      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&t=${Date.now()}`;
+      
+      const width = 500;
+      const height = 600;
+      const left = (window.screen.width / 2) - (width / 2);
+      const top = (window.screen.height / 2) - (height / 2);
+      
+      // Use about:blank first to force fresh window
+      popupWindow = window.open('about:blank', '_blank', `width=${width},height=${height},top=${top},left=${left}`);
+      
+      if (!popupWindow) {
+        document.getElementById('message').innerHTML = '<p class="error">Popup was blocked. Please allow popups for this site.</p>';
+        return;
+      }
+      
+      // Now navigate to GitHub
+      popupWindow.location.href = url;
+      
+      // Check if popup is still open and has content
+      const checkPopup = setInterval(() => {
+        if (popupWindow.closed) {
+          clearInterval(checkPopup);
+          return;
+        }
+        
+        try {
+          // Try to access popup URL
+          const popupUrl = popupWindow.location.href;
+          // If we can access it and it contains our callback URL without code, something is wrong
+          if (popupUrl.includes('auth-callback.html') && !popupUrl.includes('code=')) {
+            // Cached page without code - close and reopen
+            popupWindow.close();
+            clearInterval(checkPopup);
+            
+            // Reopen with fresh URL
+            setTimeout(() => {
+              popupWindow = window.open(url + '&r=' + Math.random(), '_blank', `width=${width},height=${height},top=${top},left=${top}`);
+            }, 100);
+          }
+        } catch (e) {
+          // Cross-origin error means we're on GitHub, which is good
+        }
+      }, 500);
     }
   </script>
 </body>
