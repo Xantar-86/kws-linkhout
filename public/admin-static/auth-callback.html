@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <title>Authenticating...</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <style>
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -40,9 +43,20 @@
       const state = params.get('state');
       const error = params.get('error');
       
-      // Verify state matches what we sent
-      const storedState = localStorage.getItem('oauth-state');
-      localStorage.removeItem('oauth-state'); // Clear it immediately
+      // If no code, we need to redirect to GitHub
+      if (!code && !error) {
+        statusEl.textContent = 'Redirecting to GitHub...';
+        
+        // Get the client ID - in a real scenario this should be passed or stored
+        // For now, we close and let the parent handle it
+        if (window.opener) {
+          window.opener.postMessage('auth-callback-needs-login', window.location.origin);
+        }
+        
+        // Close this window after a moment
+        setTimeout(() => window.close(), 500);
+        return;
+      }
       
       if (error) {
         statusEl.textContent = 'Error: ' + error;
@@ -51,14 +65,9 @@
         return;
       }
       
-      if (!code) {
-        statusEl.textContent = 'Error: No authorization code received';
-        statusEl.className = 'error';
-        setTimeout(() => window.close(), 2000);
-        return;
-      }
+      // We have a code, exchange it for token
+      statusEl.textContent = 'Exchanging code for token...';
       
-      // Exchange code for token
       fetch('/api/auth?code=' + encodeURIComponent(code))
         .then(res => res.json())
         .then(data => {
@@ -66,13 +75,13 @@
             statusEl.textContent = 'Success! Closing window...';
             statusEl.className = 'success';
             
-            // Store token in localStorage for this window too
+            // Store token
             localStorage.setItem('decap-cms-user', JSON.stringify({
               backendName: 'github',
               token: data.token
             }));
             
-            // Send token to parent window
+            // Send token to parent
             if (window.opener) {
               window.opener.postMessage(
                 'authorization:github:success:' + data.token,
@@ -80,10 +89,8 @@
               );
             }
             
-            // Close popup after a short delay
-            setTimeout(() => {
-              window.close();
-            }, 1000);
+            // Close popup
+            setTimeout(() => window.close(), 1000);
             
           } else {
             statusEl.textContent = 'Error: ' + (data.error || 'Failed to get token');

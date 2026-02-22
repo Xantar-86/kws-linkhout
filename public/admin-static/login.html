@@ -58,7 +58,6 @@
       try {
         const userData = JSON.parse(user);
         if (userData.token) {
-          // Already logged in, go to admin
           window.location.href = '/admin-static/';
         }
       } catch (e) {
@@ -66,46 +65,46 @@
       }
     }
     
-    // Close any existing popup
     let popupWindow = null;
     
     // Listen for messages from popup
     window.addEventListener('message', function(e) {
       if (e.origin !== window.location.origin) return;
       
+      // Popup needs us to start login again
+      if (e.data === 'auth-callback-needs-login') {
+        // Close the old popup and open a fresh one
+        if (popupWindow && !popupWindow.closed) {
+          popupWindow.close();
+        }
+        // Small delay then reopen
+        setTimeout(() => openFreshLogin(), 100);
+        return;
+      }
+      
+      // Success message with token
       if (e.data && typeof e.data === 'string' && e.data.startsWith('authorization:github:success:')) {
         const token = e.data.substring('authorization:github:success:'.length);
         
-        // Store token
         localStorage.setItem('decap-cms-user', JSON.stringify({
           backendName: 'github',
           token: token
         }));
         
-        // Show success
         document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
         
-        // Close popup
         if (popupWindow && !popupWindow.closed) {
           popupWindow.close();
         }
         
-        // Redirect
         setTimeout(() => {
           window.location.href = '/admin-static/';
         }, 500);
       }
     });
     
-    function login() {
-      // Clear old data
-      localStorage.removeItem('decap-cms-user');
-      document.getElementById('message').innerHTML = '';
-      
-      // Close any existing popup
-      if (popupWindow && !popupWindow.closed) {
-        popupWindow.close();
-      }
+    function openFreshLogin() {
+      document.getElementById('message').innerHTML = '<p>Opening GitHub...</p>';
       
       const clientId = 'Ov23liafFGErfmejn48L';
       const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
@@ -114,7 +113,6 @@
       // Use unique URL to prevent caching
       const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&_=${Date.now()}`;
       
-      // Open popup with unique name
       const width = 500;
       const height = 600;
       const left = (window.screen.width / 2) - (width / 2);
@@ -126,6 +124,17 @@
       if (!popupWindow) {
         document.getElementById('message').innerHTML = '<p class="error">Popup was blocked. Please allow popups for this site.</p>';
       }
+    }
+    
+    function login() {
+      localStorage.removeItem('decap-cms-user');
+      document.getElementById('message').innerHTML = '';
+      
+      if (popupWindow && !popupWindow.closed) {
+        popupWindow.close();
+      }
+      
+      openFreshLogin();
     }
   </script>
 </body>
