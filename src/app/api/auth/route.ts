@@ -31,7 +31,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: tokenData.error }, { status: 400 });
     }
 
+    // Return token as JSON (auth.html will handle it)
     return NextResponse.json({ token: tokenData.access_token });
+    
   } catch (error) {
     console.error('OAuth error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });

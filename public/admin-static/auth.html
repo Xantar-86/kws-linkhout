@@ -5,52 +5,44 @@
   <title>Authenticating...</title>
 </head>
 <body>
+  <p>Authenticating with GitHub...</p>
   <script>
-    // This page handles the OAuth callback from GitHub
-    // It passes the token back to the parent window (Decap CMS)
-    
     (function() {
-      function receiveMessage(e) {
-        if (e.data === 'authorizing:github') {
-          // Get the token from URL
-          const params = new URLSearchParams(window.location.search);
-          const code = params.get('code');
-          
-          if (code) {
-            // Exchange code for token via our API
-            fetch('/api/auth?code=' + encodeURIComponent(code))
-              .then(res => res.json())
-              .then(data => {
-                if (data.token) {
-                  e.source.postMessage(
-                    'authorization:github:success:' + data.token,
-                    e.origin
-                  );
-                } else {
-                  e.source.postMessage(
-                    'authorization:github:error:' + (data.error || 'Unknown error'),
-                    e.origin
-                  );
-                }
-              })
-              .catch(err => {
-                e.source.postMessage(
-                  'authorization:github:error:' + err.message,
-                  e.origin
-                );
-              });
+      // Get the code from URL (GitHub sends ?code=...)
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const state = params.get('state');
+      
+      if (!code) {
+        document.body.innerHTML = '<p>Error: No authorization code received from GitHub</p>';
+        return;
+      }
+      
+      // Exchange code for access token
+      fetch('/api/auth?code=' + encodeURIComponent(code))
+        .then(res => res.json())
+        .then(data => {
+          if (data.token) {
+            // Success - send message to parent window (Decap CMS)
+            if (window.opener) {
+              window.opener.postMessage(
+                'authorization:github:success:' + data.token,
+                window.location.origin
+              );
+              // Close this window
+              window.close();
+            } else {
+              // No opener - redirect to admin with token
+              window.location.href = '/admin-static/#access_token=' + data.token + '&token_type=bearer';
+            }
+          } else {
+            document.body.innerHTML = '<p>Error: ' + (data.error || 'Authentication failed') + '</p>';
           }
-        }
-      }
-      
-      window.addEventListener('message', receiveMessage, false);
-      
-      // Notify opener that we're ready
-      if (window.opener) {
-        window.opener.postMessage('authorizing:github', '*');
-      }
+        })
+        .catch(err => {
+          document.body.innerHTML = '<p>Error: ' + err.message + '</p>';
+        });
     })();
   </script>
-  <p>Authenticating with GitHub...</p>
 </body>
 </html>
