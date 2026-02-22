@@ -39,7 +39,6 @@
     .btn:hover { background: #000; }
     .error { color: #d32f2f; margin-top: 20px; }
     .success { color: #388e3c; margin-top: 20px; }
-    .note { color: #666; font-size: 14px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -47,12 +46,11 @@
     <h1>KWS Linkhout CMS</h1>
     <p>Log in met GitHub om content te beheren.</p>
     <button class="btn" onclick="login()">Login met GitHub</button>
-    <p class="note">Je wordt doorgestuurd naar GitHub voor authenticatie.</p>
     <div id="message"></div>
   </div>
   
   <script>
-    // Check if already logged in
+    // Check if logged in
     const user = localStorage.getItem('decap-cms-user');
     if (user) {
       try {
@@ -65,19 +63,11 @@
       }
     }
     
-    // Check if returning from OAuth
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('logged_in')) {
-      // Already processed, clear and continue
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    
-    let popupWindow = null;
-    
+    // Listen for auth success
     window.addEventListener('message', function(e) {
       if (e.origin !== window.location.origin) return;
       
-      if (e.data && typeof e.data === 'string' && e.data.startsWith('authorization:github:success:')) {
+      if (e.data && e.data.startsWith('authorization:github:success:')) {
         const token = e.data.substring('authorization:github:success:'.length);
         
         localStorage.setItem('decap-cms-user', JSON.stringify({
@@ -85,74 +75,28 @@
           token: token
         }));
         
-        document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
-        
-        if (popupWindow && !popupWindow.closed) {
-          popupWindow.close();
-        }
-        
-        setTimeout(() => {
-          window.location.href = '/admin-static/';
-        }, 500);
+        document.getElementById('message').innerHTML = '<p class="success">Login successful!</p>';
+        setTimeout(() => window.location.href = '/admin-static/', 300);
       }
     });
     
     function login() {
+      // Clear any existing data
       localStorage.removeItem('decap-cms-user');
       document.getElementById('message').innerHTML = '';
       
-      if (popupWindow && !popupWindow.closed) {
-        popupWindow.close();
-      }
-      
+      // Build GitHub OAuth URL - goes DIRECTLY to GitHub, not to callback
       const clientId = 'Ov23liafFGErfmejn48L';
       const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
-      const scope = encodeURIComponent('repo');
+      const url = 'https://github.com/login/oauth/authorize?client_id=' + clientId + '&redirect_uri=' + redirectUri + '&scope=repo';
       
-      // Force fresh URL with random parameter
-      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&t=${Date.now()}`;
+      // Center popup
+      const w = 500, h = 600;
+      const left = (screen.width - w) / 2;
+      const top = (screen.height - h) / 2;
       
-      const width = 500;
-      const height = 600;
-      const left = (window.screen.width / 2) - (width / 2);
-      const top = (window.screen.height / 2) - (height / 2);
-      
-      // Use about:blank first to force fresh window
-      popupWindow = window.open('about:blank', '_blank', `width=${width},height=${height},top=${top},left=${left}`);
-      
-      if (!popupWindow) {
-        document.getElementById('message').innerHTML = '<p class="error">Popup was blocked. Please allow popups for this site.</p>';
-        return;
-      }
-      
-      // Now navigate to GitHub
-      popupWindow.location.href = url;
-      
-      // Check if popup is still open and has content
-      const checkPopup = setInterval(() => {
-        if (popupWindow.closed) {
-          clearInterval(checkPopup);
-          return;
-        }
-        
-        try {
-          // Try to access popup URL
-          const popupUrl = popupWindow.location.href;
-          // If we can access it and it contains our callback URL without code, something is wrong
-          if (popupUrl.includes('auth-callback.html') && !popupUrl.includes('code=')) {
-            // Cached page without code - close and reopen
-            popupWindow.close();
-            clearInterval(checkPopup);
-            
-            // Reopen with fresh URL
-            setTimeout(() => {
-              popupWindow = window.open(url + '&r=' + Math.random(), '_blank', `width=${width},height=${height},top=${top},left=${top}`);
-            }, 100);
-          }
-        } catch (e) {
-          // Cross-origin error means we're on GitHub, which is good
-        }
-      }, 500);
+      // Open popup directly to GitHub
+      window.open(url, 'githublogin', 'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
     }
   </script>
 </body>
