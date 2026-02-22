@@ -11,43 +11,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Debug info
-        run: |
-          echo "Changed files:"
-          git diff --name-only HEAD^ HEAD || echo "No previous commit"
-          echo ""
-          echo "Commit message:"
-          git log -1 --pretty=format:'%s'
-          echo ""
-          echo "Author:"
-          git log -1 --pretty=format:'%an'
-
       - name: Check if content changed
         id: check
         run: |
-          CHANGED=$(git diff --name-only HEAD^ HEAD | grep -c "^content/" || echo "0")
+          CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -c "^content/" || echo "0")
           echo "content_changed=$CHANGED" >> $GITHUB_OUTPUT
-          echo "Files changed in content/: $CHANGED"
+          echo "Changed files in content/: $CHANGED"
+          git diff --name-only HEAD^ HEAD 2>/dev/null | grep "^content/" || true
 
-      - name: Send notification email
+      - name: Send email via SendGrid
         if: steps.check.outputs.content_changed != '0'
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 587
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: 'KWS Linkhout - Nieuwe content toegevoegd'
-          to: jochen_thoelen@telenet.be, Joel.bynens@gmail.com
-          from: KWS Linkhout CMS <${{ secrets.EMAIL_USERNAME }}>
-          html_body: |
-            <h2>Nieuwe content wacht op goedkeuring</h2>
-            <p>Er is nieuwe content toegevoegd aan de KWS Linkhout website via Decap CMS.</p>
-            <p style="margin: 20px 0;">
-              <a href="https://kwslinkhout.be/admin" 
-                 style="padding: 12px 24px; background: #24292e; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">
-                Ga naar CMS om te reviewen
-              </a>
-            </p>
-            <hr>
-            <p style="color: #666; font-size: 12px;">Dit is een automatische melding van KWS Linkhout CMS.</p>
+        run: |
+          curl --request POST \
+            --url https://api.sendgrid.com/v3/mail/send \
+            --header "Authorization: Bearer ${{ secrets.SENDGRID_API_KEY }}" \
+            --header 'Content-Type: application/json' \
+            --data '{
+              "personalizations": [
+                {
+                  "to": [
+                    {"email": "jochen_thoelen@telenet.be"},
+                    {"email": "Joel.bynens@gmail.com"}
+                  ]
+                }
+              ],
+              "from": {"email": "'"${{ secrets.SENDGRID_FROM_EMAIL }}"'", "name": "KWS Linkhout CMS"},
+              "subject": "KWS Linkhout - Nieuwe content wacht op goedkeuring",
+              "content": [
+                {
+                  "type": "text/html",
+                  "value": "<h2>Nieuwe content wacht op goedkeuring</h2><p>Er is nieuwe content toegevoegd aan de KWS Linkhout website via Decap CMS.</p><p><a href=\"https://kwslinkhout.be/admin\" style=\"padding: 12px 24px; background: #24292e; color: white; text-decoration: none; border-radius: 5px; display: inline-block;\">Ga naar CMS om te reviewen</a></p><hr><p style=\"color: #666; font-size: 12px;\">Dit is een automatische melding.</p>"
+                }
+              ]
+            }'
