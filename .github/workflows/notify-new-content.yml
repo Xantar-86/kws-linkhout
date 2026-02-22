@@ -1,0 +1,65 @@
+name: Notify on New Content
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/**'
+      - 'content-*/**'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+          git diff --name-only HEAD^ HEAD | grep -E '^content' >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Check for drafts
+        id: check-drafts
+        run: |
+          DRAFTS_FOUND="false"
+          NEW_FILES=""
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              # Check if file contains draft status or is new
+              if grep -q "draft: true" "$file" 2>/dev/null || ! git show HEAD^:"$file" > /dev/null 2>&1; then
+                DRAFTS_FOUND="true"
+                NEW_FILES="$NEW_FILES$file\n"
+              fi
+            fi
+          done <<< "$(git diff --name-only HEAD^ HEAD | grep -E '^content' || true)"
+          
+          echo "DRAFTS_FOUND=$DRAFTS_FOUND" >> $GITHUB_OUTPUT
+          echo "NEW_FILES<<EOF" >> $GITHUB_ENV
+          echo -e "$NEW_FILES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Send email notification
+        if: steps.check-drafts.outputs.DRAFTS_FOUND == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: 'KWS Linkhout - Nieuwe content wacht op goedkeuring'
+          to: jochen_thoelen@telenet.be, Joel.bynens@gmail.com
+          from: KWS Linkhout CMS <noreply@kwslinkhout.be>
+          html_body: |
+            <h2>Nieuwe content wacht op goedkeuring</h2>
+            <p>Er is nieuwe content toegevoegd aan de website die wacht op goedkeuring.</p>
+            <h3>Bestanden:</h3>
+            <pre>${{ env.NEW_FILES }}</pre>
+            <p><a href="https://kwslinkhout.be/admin" style="padding: 10px 20px; background: #24292e; color: white; text-decoration: none; border-radius: 5px;">Ga naar CMS om te reviewen</a></p>
+            <hr>
+            <p style="color: #666; font-size: 12px;">Dit is een automatische melding van KWS Linkhout CMS</p>
+          convert_markdown: false
