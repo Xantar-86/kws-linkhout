@@ -9,7 +9,20 @@
     const user = localStorage.getItem('decap-cms-user');
     if (!user) {
       // Not logged in, redirect to login
-      window.location.href = '/admin-static/login.html';
+      window.location.replace('/admin-static/login.html');
+    } else {
+      try {
+        const userData = JSON.parse(user);
+        if (!userData.token) {
+          // No token, redirect to login
+          localStorage.removeItem('decap-cms-user');
+          window.location.replace('/admin-static/login.html');
+        }
+      } catch (e) {
+        // Invalid data, clear it
+        localStorage.removeItem('decap-cms-user');
+        window.location.replace('/admin-static/login.html');
+      }
     }
   </script>
 </head>

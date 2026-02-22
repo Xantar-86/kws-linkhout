@@ -42,12 +42,14 @@
       if (error) {
         statusEl.textContent = 'Error: ' + error;
         statusEl.className = 'error';
+        setTimeout(() => window.location.href = '/admin-static/login.html', 2000);
         return;
       }
       
       if (!code) {
         statusEl.textContent = 'Error: No authorization code received';
         statusEl.className = 'error';
+        setTimeout(() => window.location.href = '/admin-static/login.html', 2000);
         return;
       }
       
@@ -59,25 +61,34 @@
             statusEl.textContent = 'Success! Redirecting...';
             statusEl.className = 'success';
             
-            // Send token to parent window (the login page)
+            // Store token in localStorage
+            localStorage.setItem('decap-cms-user', JSON.stringify({
+              backendName: 'github',
+              token: data.token
+            }));
+            
+            // Send token to parent window if opened as popup
             if (window.opener) {
               window.opener.postMessage(
                 'authorization:github:success:' + data.token,
                 window.location.origin
               );
-              setTimeout(() => window.close(), 500);
-            } else {
-              // No opener - redirect to login with token
-              window.location.href = '/admin-static/login.html#access_token=' + data.token;
             }
+            
+            // Redirect to admin-static (NOT /admin/ which loops back)
+            setTimeout(() => {
+              window.location.href = '/admin-static/';
+            }, 500);
           } else {
             statusEl.textContent = 'Error: ' + (data.error || 'Failed to get token');
             statusEl.className = 'error';
+            setTimeout(() => window.location.href = '/admin-static/login.html', 2000);
           }
         })
         .catch(err => {
           statusEl.textContent = 'Error: ' + err.message;
           statusEl.className = 'error';
+          setTimeout(() => window.location.href = '/admin-static/login.html', 2000);
         });
     })();
   </script>

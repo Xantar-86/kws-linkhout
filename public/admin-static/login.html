@@ -39,6 +39,7 @@
     .btn:hover { background: #000; }
     .error { color: #d32f2f; margin-top: 20px; }
     .success { color: #388e3c; margin-top: 20px; }
+    .note { color: #666; font-size: 14px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -46,28 +47,46 @@
     <h1>KWS Linkhout CMS</h1>
     <p>Log in met GitHub om content te beheren.</p>
     <button class="btn" onclick="login()">Login met GitHub</button>
+    <p class="note">Je wordt doorgestuurd naar GitHub voor authenticatie.</p>
     <div id="message"></div>
   </div>
   
   <script>
-    // Check if we have a token in the URL (returning from auth)
-    const hash = window.location.hash;
-    if (hash && hash.includes('access_token')) {
-      // Extract token and store it
-      const params = new URLSearchParams(hash.substring(1));
-      const token = params.get('access_token');
+    // Check if already logged in
+    const user = localStorage.getItem('decap-cms-user');
+    if (user) {
+      try {
+        const userData = JSON.parse(user);
+        if (userData.token) {
+          // Already logged in, go to admin
+          window.location.href = '/admin-static/';
+        }
+      } catch (e) {
+        // Invalid data, clear it
+        localStorage.removeItem('decap-cms-user');
+      }
+    }
+    
+    // Listen for messages from popup
+    window.addEventListener('message', function(e) {
+      if (e.origin !== window.location.origin) return;
       
-      if (token) {
-        // Store in localStorage for Decap CMS
+      if (e.data && typeof e.data === 'string' && e.data.startsWith('authorization:github:success:')) {
+        const token = e.data.substring('authorization:github:success:'.length);
+        
+        // Store token
         localStorage.setItem('decap-cms-user', JSON.stringify({
           backendName: 'github',
           token: token
         }));
         
-        // Redirect to admin
-        window.location.href = '/admin/';
+        // Show success and redirect
+        document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
+        setTimeout(() => {
+          window.location.href = '/admin-static/';
+        }, 500);
       }
-    }
+    });
     
     function login() {
       const clientId = 'Ov23liafFGErfmejn48L';
@@ -76,26 +95,17 @@
       
       const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
       
-      // Open popup
-      const popup = window.open(url, 'github-oauth', 'width=500,height=600');
+      // Open popup centered
+      const width = 500;
+      const height = 600;
+      const left = (window.screen.width / 2) - (width / 2);
+      const top = (window.screen.height / 2) - (height / 2);
       
-      // Listen for the token
-      window.addEventListener('message', function(e) {
-        if (e.origin !== window.location.origin) return;
-        
-        if (e.data && e.data.startsWith('authorization:github:success:')) {
-          const token = e.data.substring('authorization:github:success:'.length);
-          
-          // Store token
-          localStorage.setItem('decap-cms-user', JSON.stringify({
-            backendName: 'github',
-            token: token
-          }));
-          
-          // Redirect to admin
-          window.location.href = '/admin/';
-        }
-      });
+      const popup = window.open(url, 'github-oauth', `width=${width},height=${height},top=${top},left=${left}`);
+      
+      if (!popup) {
+        document.getElementById('message').innerHTML = '<p class="error">Popup was blocked. Please allow popups for this site.</p>';
+      }
     }
   </script>
 </body>
