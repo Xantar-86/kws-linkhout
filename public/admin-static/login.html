@@ -52,6 +52,11 @@
   </div>
   
   <script>
+    // Generate random state for OAuth
+    function generateState() {
+      return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+    
     // Check if already logged in
     const user = localStorage.getItem('decap-cms-user');
     if (user) {
@@ -82,18 +87,34 @@
         
         // Show success and redirect
         document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
+        
+        // Close popup if reference still exists
+        if (popupWindow && !popupWindow.closed) {
+          popupWindow.close();
+        }
+        
         setTimeout(() => {
           window.location.href = '/admin-static/';
         }, 500);
       }
     });
     
+    let popupWindow = null;
+    
     function login() {
+      // Clear any old state
+      localStorage.removeItem('decap-cms-user');
+      document.getElementById('message').innerHTML = '';
+      
       const clientId = 'Ov23liafFGErfmejn48L';
       const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
       const scope = encodeURIComponent('repo');
+      const state = generateState();
       
-      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
+      // Store state to verify later
+      localStorage.setItem('oauth-state', state);
+      
+      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
       
       // Open popup centered
       const width = 500;
@@ -101,9 +122,9 @@
       const left = (window.screen.width / 2) - (width / 2);
       const top = (window.screen.height / 2) - (height / 2);
       
-      const popup = window.open(url, 'github-oauth', `width=${width},height=${height},top=${top},left=${left}`);
+      popupWindow = window.open(url, 'github-oauth', `width=${width},height=${height},top=${top},left=${left}`);
       
-      if (!popup) {
+      if (!popupWindow) {
         document.getElementById('message').innerHTML = '<p class="error">Popup was blocked. Please allow popups for this site.</p>';
       }
     }
