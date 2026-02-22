@@ -3,44 +3,89 @@
 <head>
   <meta charset="utf-8">
   <title>Authenticating...</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: 50px auto; }
+    .error { color: red; }
+    .success { color: green; }
+    pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+  </style>
 </head>
 <body>
-  <p>Authenticating with GitHub...</p>
+  <h1>GitHub Authentication</h1>
+  <div id="status">Initializing...</div>
+  <pre id="debug"></pre>
+  
   <script>
+    function log(msg) {
+      console.log(msg);
+      document.getElementById('debug').textContent += msg + '\n';
+    }
+    
+    function setStatus(msg, isError) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = isError ? 'error' : 'success';
+    }
+    
     (function() {
+      log('URL: ' + window.location.href);
+      log('Origin: ' + window.location.origin);
+      
       // Get the code from URL (GitHub sends ?code=...)
       const params = new URLSearchParams(window.location.search);
       const code = params.get('code');
       const state = params.get('state');
+      const error = params.get('error');
       
-      if (!code) {
-        document.body.innerHTML = '<p>Error: No authorization code received from GitHub</p>';
+      log('Code: ' + (code ? code.substring(0, 10) + '...' : 'NOT FOUND'));
+      log('State: ' + state);
+      log('Error: ' + error);
+      
+      if (error) {
+        setStatus('GitHub Error: ' + error, true);
         return;
       }
       
+      if (!code) {
+        setStatus('Error: No authorization code received from GitHub', true);
+        log('Full query string: ' + window.location.search);
+        return;
+      }
+      
+      setStatus('Exchanging code for token...');
+      
       // Exchange code for access token
       fetch('/api/auth?code=' + encodeURIComponent(code))
-        .then(res => res.json())
+        .then(res => {
+          log('API response status: ' + res.status);
+          return res.json();
+        })
         .then(data => {
+          log('API response: ' + JSON.stringify(data, null, 2));
+          
           if (data.token) {
-            // Success - send message to parent window (Decap CMS)
+            setStatus('Success! Token received.');
+            
+            // Send message to parent window (Decap CMS)
             if (window.opener) {
+              log('Sending token to parent window...');
               window.opener.postMessage(
                 'authorization:github:success:' + data.token,
                 window.location.origin
               );
-              // Close this window
-              window.close();
+              // Close this window after a short delay
+              setTimeout(() => window.close(), 500);
             } else {
-              // No opener - redirect to admin with token
+              log('No parent window - redirecting to admin...');
               window.location.href = '/admin-static/#access_token=' + data.token + '&token_type=bearer';
             }
           } else {
-            document.body.innerHTML = '<p>Error: ' + (data.error || 'Authentication failed') + '</p>';
+            setStatus('Error: ' + (data.error || 'No token received'), true);
           }
         })
         .catch(err => {
-          document.body.innerHTML = '<p>Error: ' + err.message + '</p>';
+          log('Fetch error: ' + err.message);
+          setStatus('Error: ' + err.message, true);
         });
     })();
   </script>
