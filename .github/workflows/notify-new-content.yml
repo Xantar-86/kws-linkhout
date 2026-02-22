@@ -16,31 +16,51 @@ jobs:
         run: |
           CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -c "^content/" || echo "0")
           echo "content_changed=$CHANGED" >> $GITHUB_OUTPUT
-          echo "Changed files in content/: $CHANGED"
-          git diff --name-only HEAD^ HEAD 2>/dev/null | grep "^content/" || true
+          echo "Changed files:"
+          git diff --name-only HEAD^ HEAD 2>/dev/null | grep "^content/" || echo "Geen content wijzigingen"
+          echo "Author: $(git log -1 --pretty=format:'%an')"
+          echo "Message: $(git log -1 --pretty=format:'%s')"
 
-      - name: Send email via SendGrid
+      - name: Send Discord notification
         if: steps.check.outputs.content_changed != '0'
         run: |
-          curl --request POST \
-            --url https://api.sendgrid.com/v3/mail/send \
-            --header "Authorization: Bearer ${{ secrets.SENDGRID_API_KEY }}" \
-            --header 'Content-Type: application/json' \
-            --data '{
-              "personalizations": [
-                {
-                  "to": [
-                    {"email": "jochen_thoelen@telenet.be"},
-                    {"email": "Joel.bynens@gmail.com"}
-                  ]
-                }
-              ],
-              "from": {"email": "'"${{ secrets.SENDGRID_FROM_EMAIL }}"'", "name": "KWS Linkhout CMS"},
-              "subject": "KWS Linkhout - Nieuwe content wacht op goedkeuring",
-              "content": [
-                {
-                  "type": "text/html",
-                  "value": "<h2>Nieuwe content wacht op goedkeuring</h2><p>Er is nieuwe content toegevoegd aan de KWS Linkhout website via Decap CMS.</p><p><a href=\"https://kwslinkhout.be/admin\" style=\"padding: 12px 24px; background: #24292e; color: white; text-decoration: none; border-radius: 5px; display: inline-block;\">Ga naar CMS om te reviewen</a></p><hr><p style=\"color: #666; font-size: 12px;\">Dit is een automatische melding.</p>"
-                }
-              ]
-            }'
+          AUTHOR=$(git log -1 --pretty=format:'%an')
+          MESSAGE=$(git log -1 --pretty=format:'%s')
+          
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d '{
+              "username": "KWS Linkhout CMS",
+              "avatar_url": "https://kwslinkhout.be/favicon.ico",
+              "embeds": [{
+                "title": "📝 Nieuwe content wacht op goedkeuring",
+                "description": "Er is nieuwe content toegevoegd aan de website.",
+                "color": 3447003,
+                "fields": [
+                  {
+                    "name": "Auteur",
+                    "value": "'"$AUTHOR"'",
+                    "inline": true
+                  },
+                  {
+                    "name": "Wijziging",
+                    "value": "'"$MESSAGE"'",
+                    "inline": false
+                  }
+                ],
+                "footer": {
+                  "text": "KWS Linkhout CMS"
+                },
+                "timestamp": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'"
+              }],
+              "components": [{
+                "type": 1,
+                "components": [{
+                  "type": 2,
+                  "label": "🚀 Ga naar CMS",
+                  "style": 5,
+                  "url": "https://kwslinkhout.be/admin"
+                }]
+              }]
+            }' \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}
