@@ -4,27 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KWS Linkhout - Content Manager</title>
-  <script>
-    // Check if user is logged in
-    const user = localStorage.getItem('decap-cms-user');
-    if (!user) {
-      // Not logged in, redirect to login
-      window.location.replace('/admin-static/login.html');
-    } else {
-      try {
-        const userData = JSON.parse(user);
-        if (!userData.token) {
-          // No token, redirect to login
-          localStorage.removeItem('decap-cms-user');
-          window.location.replace('/admin-static/login.html');
-        }
-      } catch (e) {
-        // Invalid data, clear it
-        localStorage.removeItem('decap-cms-user');
-        window.location.replace('/admin-static/login.html');
-      }
-    }
-  </script>
 </head>
 <body>
   <div id="nc-root"></div>
