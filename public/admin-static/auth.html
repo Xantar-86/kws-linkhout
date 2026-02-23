@@ -2,23 +2,81 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Authenticating...</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      margin: 0; 
+      background: #f5f5f5; 
+    }
+    .box { 
+      background: white; 
+      padding: 40px; 
+      border-radius: 8px; 
+      text-align: center; 
+    }
+  </style>
 </head>
 <body>
-  <p>Authenticating...</p>
+  <div class="box">
+    <h1>Authenticating...</h1>
+    <p id="status">Please wait...</p>
+  </div>
+  
   <script>
     (function() {
-      function receiveMessage(e) {
-        if (e.data === 'authorizing:github') {
-          console.log('Received authorizing message from parent');
-        }
-      }
-      window.addEventListener('message', receiveMessage, false);
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const error = params.get('error');
       
-      // Send message to parent that we're ready
-      if (window.opener) {
-        window.opener.postMessage('authorizing:github', '*');
+      if (error) {
+        document.getElementById('status').textContent = 'Error: ' + error;
+        return;
       }
+      
+      if (!code) {
+        // No code yet - wait for parent to tell us to start
+        document.getElementById('status').textContent = 'Waiting...';
+        
+        window.addEventListener('message', function(e) {
+          if (e.data === 'authorizing:github') {
+            // Go to GitHub
+            window.location.href = 'https://github.com/login/oauth/authorize?client_id=Ov23liafFGErfmejn48L&redirect_uri=https://kwslinkhout.be/admin-static/auth.html&scope=repo';
+          }
+        });
+        
+        // Notify parent we're ready
+        if (window.opener) {
+          window.opener.postMessage('authorizing:github', '*');
+        }
+        return;
+      }
+      
+      // We have a code - exchange it
+      document.getElementById('status').textContent = 'Completing login...';
+      
+      fetch('/api/auth?code=' + encodeURIComponent(code))
+        .then(r => r.json())
+        .then(data => {
+          if (data.token) {
+            // Send token to parent
+            if (window.opener) {
+              window.opener.postMessage('authorization:github:success:' + data.token, '*');
+            }
+            document.getElementById('status').textContent = 'Success!';
+            setTimeout(() => window.close(), 500);
+          } else {
+            document.getElementById('status').textContent = 'Error: ' + (data.error || 'No token');
+          }
+        })
+        .catch(err => {
+          document.getElementById('status').textContent = 'Error: ' + err.message;
+        });
     })();
   </script>
 </body>
