@@ -37,7 +37,6 @@
       font-size: 16px;
     }
     .btn:hover { background: #000; }
-    .error { color: #d32f2f; margin-top: 20px; }
     .success { color: #388e3c; margin-top: 20px; }
   </style>
 </head>
@@ -46,68 +45,41 @@
     <h1>KWS Linkhout CMS</h1>
     <p>Log in met GitHub om content te beheren.</p>
     <button class="btn" onclick="login()">Login met GitHub</button>
-    <div id="message"></div>
+    <p id="message"></p>
   </div>
   
   <script>
-    // Check if already logged in
+    // Check if logged in
     const user = localStorage.getItem('decap-cms-user');
     if (user) {
       try {
-        const userData = JSON.parse(user);
-        if (userData.token) {
-          window.location.replace('/admin-static/');
-        }
+        const data = JSON.parse(user);
+        if (data.token) window.location.replace('/admin-static/');
       } catch (e) {
         localStorage.removeItem('decap-cms-user');
       }
     }
     
-    // Listen for auth success from popup
+    // Listen for auth
     window.addEventListener('message', function(e) {
-      console.log('Received message:', e.data, 'from:', e.origin);
-      
-      if (e.origin !== window.location.origin) {
-        console.log('Origin mismatch, ignoring');
-        return;
-      }
-      
-      if (e.data && typeof e.data === 'string' && e.data.indexOf('authorization:github:success:') === 0) {
-        const token = e.data.substring('authorization:github:success:'.length);
-        
-        console.log('Token received, storing...');
-        localStorage.setItem('decap-cms-user', JSON.stringify({
-          backendName: 'github',
-          token: token
-        }));
-        
-        document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
-        
-        // Redirect after short delay
-        setTimeout(function() {
-          window.location.href = '/admin-static/';
-        }, 500);
+      if (e.data && e.data.indexOf('authorization:github:success:') === 0) {
+        const token = e.data.split(':')[2];
+        localStorage.setItem('decap-cms-user', JSON.stringify({backendName: 'github', token: token}));
+        document.getElementById('message').textContent = 'Login successful! Redirecting...';
+        setTimeout(() => window.location.href = '/admin-static/', 500);
       }
     });
     
     function login() {
-      // Clear any existing auth data
       localStorage.removeItem('decap-cms-user');
-      document.getElementById('message').innerHTML = '';
+      document.getElementById('message').textContent = '';
       
-      const clientId = 'Ov23liafFGErfmejn48L';
-      const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
+      const url = 'https://github.com/login/oauth/authorize?client_id=Ov23liafFGErfmejn48L&redirect_uri=https://kwslinkhout.be/admin-static/auth-callback.html&scope=repo';
+      const w = 500, h = 600;
+      const left = (screen.width - w) / 2;
+      const top = (screen.height - h) / 2;
       
-      // Unique URL with timestamp
-      const timestamp = Date.now();
-      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo&state=${timestamp}`;
-      
-      // Open popup
-      const width = 500, height = 600;
-      const left = (screen.width - width) / 2;
-      const top = (screen.height - height) / 2;
-      
-      window.open(url, 'github-auth', `width=${width},height=${height},top=${top},left=${left}`);
+      window.open(url, 'auth', 'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top);
     }
   </script>
 </body>

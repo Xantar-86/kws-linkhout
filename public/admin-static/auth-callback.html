@@ -2,72 +2,43 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, proxy-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Authenticating...</title>
-  <style>
-    body { 
-      font-family: sans-serif; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      min-height: 100vh; 
-      margin: 0; 
-      background: #f5f5f5; 
-    }
-    .box { 
-      background: white; 
-      padding: 40px; 
-      border-radius: 8px; 
-      text-align: center; 
-    }
-  </style>
 </head>
 <body>
-  <div class="box">
-    <h1>Authenticating...</h1>
-    <p id="status">Checking...</p>
-  </div>
-  
+  <p>Loading...</p>
   <script>
-    // Check for code immediately
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    const error = params.get('error');
+    // IMMEDIATE check - before anything else
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get('code');
     
-    if (error) {
-      document.getElementById('status').textContent = 'Error: ' + error;
-      setTimeout(() => window.close(), 2000);
-    } else if (!code) {
-      // No code = go to GitHub
-      document.getElementById('status').textContent = 'Redirecting to GitHub...';
-      window.location.replace('https://github.com/login/oauth/authorize?client_id=Ov23liafFGErfmejn48L&redirect_uri=https://kwslinkhout.be/admin-static/auth-callback.html&scope=repo&_=' + Date.now());
+    if (!code) {
+      // CRITICAL: Don't show error, just redirect to GitHub
+      window.location.replace('https://github.com/login/oauth/authorize?client_id=Ov23liafFGErfmejn48L&redirect_uri=https://kwslinkhout.be/admin-static/auth-callback.html&scope=repo&t=' + Date.now());
     } else {
-      // We have code, exchange it
-      document.getElementById('status').textContent = 'Completing login...';
+      // Have code - process it
+      document.body.innerHTML = '<p>Completing login...</p>';
       
       fetch('/api/auth?code=' + encodeURIComponent(code))
         .then(r => r.json())
         .then(data => {
           if (data.token) {
-            localStorage.setItem('decap-cms-user', JSON.stringify({
-              backendName: 'github',
-              token: data.token
-            }));
+            localStorage.setItem('decap-cms-user', JSON.stringify({backendName: 'github', token: data.token}));
             if (window.opener) {
-              window.opener.postMessage('authorization:github:success:' + data.token, window.location.origin);
+              window.opener.postMessage('authorization:github:success:' + data.token, '*');
             }
-            document.getElementById('status').textContent = 'Success!';
-            setTimeout(() => window.close(), 500);
+            document.body.innerHTML = '<p>Success! Closing...</p>';
+            setTimeout(() => window.close(), 300);
           } else {
-            document.getElementById('status').textContent = 'Error. Retrying...';
-            setTimeout(() => window.location.reload(), 1500);
+            // No token, try again
+            window.location.reload();
           }
         })
         .catch(() => {
-          document.getElementById('status').textContent = 'Error. Retrying...';
-          setTimeout(() => window.location.reload(), 1500);
+          // Error, try again
+          setTimeout(() => window.location.reload(), 1000);
         });
     }
   </script>
