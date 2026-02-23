@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Authenticating...</title>
+</head>
+<body>
+  <p>Authenticating...</p>
+  <script>
+    (function() {
+      function receiveMessage(e) {
+        if (e.data === 'authorizing:github') {
+          console.log('Received authorizing message from parent');
+        }
+      }
+      window.addEventListener('message', receiveMessage, false);
+      
+      // Send message to parent that we're ready
+      if (window.opener) {
+        window.opener.postMessage('authorizing:github', '*');
+      }
+    })();
+  </script>
+</body>
+</html>

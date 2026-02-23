@@ -2,8 +2,8 @@ backend:
   name: github
   repo: Xantar-86/kws-linkhout
   branch: main
-  # Gebruik de standaard Decap CMS auth (geen custom handler)
-  # Gebruikers moeten een GitHub Personal Access Token invoeren
+  base_url: https://kwslinkhout.be
+  auth_endpoint: /admin-static/auth.html
 
 publish_mode: editorial_workflow
 
