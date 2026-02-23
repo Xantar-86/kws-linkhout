@@ -65,19 +65,28 @@
     
     // Listen for auth success from popup
     window.addEventListener('message', function(e) {
-      if (e.origin !== window.location.origin) return;
+      console.log('Received message:', e.data, 'from:', e.origin);
       
-      if (e.data && e.data.startsWith && e.data.startsWith('authorization:github:success:')) {
+      if (e.origin !== window.location.origin) {
+        console.log('Origin mismatch, ignoring');
+        return;
+      }
+      
+      if (e.data && typeof e.data === 'string' && e.data.indexOf('authorization:github:success:') === 0) {
         const token = e.data.substring('authorization:github:success:'.length);
         
+        console.log('Token received, storing...');
         localStorage.setItem('decap-cms-user', JSON.stringify({
           backendName: 'github',
           token: token
         }));
         
-        document.getElementById('message').innerHTML = '<p class="success">Login successful!</p>';
+        document.getElementById('message').innerHTML = '<p class="success">Login successful! Redirecting...</p>';
         
-        setTimeout(() => window.location.href = '/admin-static/', 300);
+        // Redirect after short delay
+        setTimeout(function() {
+          window.location.href = '/admin-static/';
+        }, 500);
       }
     });
     
@@ -89,27 +98,16 @@
       const clientId = 'Ov23liafFGErfmejn48L';
       const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
       
-      // Unique URL with timestamp AND random string
+      // Unique URL with timestamp
       const timestamp = Date.now();
-      const random = Math.random().toString(36).substring(2, 15);
-      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo&state=${timestamp}-${random}`;
+      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo&state=${timestamp}`;
       
-      // Open popup with unique name
+      // Open popup
       const width = 500, height = 600;
       const left = (screen.width - width) / 2;
       const top = (screen.height - height) / 2;
-      const popupName = 'github-auth-' + timestamp;
       
-      // Close any existing popup first
-      if (window.githubPopup && !window.githubPopup.closed) {
-        window.githubPopup.close();
-      }
-      
-      window.githubPopup = window.open(url, popupName, `width=${width},height=${height},top=${top},left=${left},noopener,noreferrer`);
-      
-      if (!window.githubPopup) {
-        document.getElementById('message').innerHTML = '<p class="error">Popup blocked. Please allow popups.</p>';
-      }
+      window.open(url, 'github-auth', `width=${width},height=${height},top=${top},left=${left}`);
     }
   </script>
 </body>
