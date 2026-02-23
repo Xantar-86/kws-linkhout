@@ -50,7 +50,7 @@
   </div>
   
   <script>
-    // Check if logged in
+    // Check if already logged in
     const user = localStorage.getItem('decap-cms-user');
     if (user) {
       try {
@@ -63,11 +63,11 @@
       }
     }
     
-    // Listen for auth success
+    // Listen for auth success from popup
     window.addEventListener('message', function(e) {
       if (e.origin !== window.location.origin) return;
       
-      if (e.data && e.data.startsWith('authorization:github:success:')) {
+      if (e.data && e.data.startsWith && e.data.startsWith('authorization:github:success:')) {
         const token = e.data.substring('authorization:github:success:'.length);
         
         localStorage.setItem('decap-cms-user', JSON.stringify({
@@ -76,27 +76,40 @@
         }));
         
         document.getElementById('message').innerHTML = '<p class="success">Login successful!</p>';
+        
         setTimeout(() => window.location.href = '/admin-static/', 300);
       }
     });
     
     function login() {
-      // Clear any existing data
+      // Clear any existing auth data
       localStorage.removeItem('decap-cms-user');
       document.getElementById('message').innerHTML = '';
       
-      // Build GitHub OAuth URL - goes DIRECTLY to GitHub, not to callback
       const clientId = 'Ov23liafFGErfmejn48L';
       const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
-      const url = 'https://github.com/login/oauth/authorize?client_id=' + clientId + '&redirect_uri=' + redirectUri + '&scope=repo';
       
-      // Center popup
-      const w = 500, h = 600;
-      const left = (screen.width - w) / 2;
-      const top = (screen.height - h) / 2;
+      // Unique URL with timestamp AND random string
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 15);
+      const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo&state=${timestamp}-${random}`;
       
-      // Open popup directly to GitHub
-      window.open(url, 'githublogin', 'width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
+      // Open popup with unique name
+      const width = 500, height = 600;
+      const left = (screen.width - width) / 2;
+      const top = (screen.height - height) / 2;
+      const popupName = 'github-auth-' + timestamp;
+      
+      // Close any existing popup first
+      if (window.githubPopup && !window.githubPopup.closed) {
+        window.githubPopup.close();
+      }
+      
+      window.githubPopup = window.open(url, popupName, `width=${width},height=${height},top=${top},left=${left},noopener,noreferrer`);
+      
+      if (!window.githubPopup) {
+        document.getElementById('message').innerHTML = '<p class="error">Popup blocked. Please allow popups.</p>';
+      }
     }
   </script>
 </body>

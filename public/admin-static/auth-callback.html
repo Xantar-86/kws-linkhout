@@ -2,28 +2,48 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="refresh" content="0;url=https://github.com/login/oauth/authorize?client_id=Ov23liafFGErfmejn48L&redirect_uri=https://kwslinkhout.be/admin-static/auth-callback.html&scope=repo">
   <title>Authenticating...</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      margin: 0; 
+      background: #f5f5f5; 
+    }
+    .box { 
+      background: white; 
+      padding: 40px; 
+      border-radius: 8px; 
+      text-align: center; 
+    }
+  </style>
 </head>
 <body>
-  <p id="status">Processing...</p>
+  <div class="box">
+    <h1>Authenticating...</h1>
+    <p>Redirecting to GitHub...</p>
+  </div>
   
   <script>
-    (function() {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-      
-      if (!code) {
-        // NO CODE - redirect to GitHub immediately
-        document.getElementById('status').textContent = 'Redirecting to GitHub...';
-        const clientId = 'Ov23liafFGErfmejn48L';
-        const redirectUri = encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html');
-        window.location.replace('https://github.com/login/oauth/authorize?client_id=' + clientId + '&redirect_uri=' + redirectUri + '&scope=repo');
-        return;
-      }
-      
-      // We have a code - exchange it
-      document.getElementById('status').textContent = 'Exchanging code...';
-      
+    // Clear any cached state
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
+    // Check for code
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    
+    if (!code) {
+      // No code = go to GitHub immediately
+      window.location.replace('https://github.com/login/oauth/authorize?client_id=Ov23liafFGErfmejn48L&redirect_uri=https://kwslinkhout.be/admin-static/auth-callback.html&scope=repo&_=' + Date.now());
+    } else {
+      // We have code, exchange it
       fetch('/api/auth?code=' + encodeURIComponent(code))
         .then(r => r.json())
         .then(data => {
@@ -32,20 +52,21 @@
               backendName: 'github',
               token: data.token
             }));
-            
             if (window.opener) {
               window.opener.postMessage('authorization:github:success:' + data.token, window.location.origin);
             }
-            
-            setTimeout(() => window.close(), 200);
+            document.querySelector('p').textContent = 'Success! Closing...';
+            setTimeout(() => window.close(), 500);
           } else {
-            document.getElementById('status').textContent = 'Error: ' + (data.error || 'No token');
+            document.querySelector('p').textContent = 'Error. Trying again...';
+            setTimeout(() => window.location.reload(), 1000);
           }
         })
-        .catch(err => {
-          document.getElementById('status').textContent = 'Error: ' + err.message;
+        .catch(() => {
+          document.querySelector('p').textContent = 'Error. Trying again...';
+          setTimeout(() => window.location.reload(), 1000);
         });
-    })();
+    }
   </script>
 </body>
 </html>
