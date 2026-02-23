@@ -2,8 +2,7 @@ backend:
   name: github
   repo: Xantar-86/kws-linkhout
   branch: main
-  base_url: https://kwslinkhout.be
-  auth_endpoint: /admin-static/auth.html
+  # Geen auth_endpoint - gebruik standaard Decap CMS GitHub auth
 
 publish_mode: editorial_workflow
 
