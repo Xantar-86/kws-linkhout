@@ -1,4 +1,35 @@
 import { NextResponse } from "next/server";
+import { readFileSync } from "fs";
+import { join } from "path";
+
+// Type definitie voor handmatige wedstrijden
+interface HandmatigeWedstrijd {
+  datum: string;
+  thuis: string;
+  uit: string;
+  locatie: string;
+  isThuis: boolean;
+}
+
+interface HandmatigeData {
+  seizoen: string;
+  ploeg: string;
+  competitie: string;
+  wedstrijden: HandmatigeWedstrijd[];
+}
+
+// Lees handmatige wedstrijden uit JSON file
+function getHandmatigeWedstrijden(): HandmatigeWedstrijd[] {
+  try {
+    const filePath = join(process.cwd(), "content", "wedstrijden-dames-2025-2026.json");
+    const fileContent = readFileSync(filePath, "utf-8");
+    const data: HandmatigeData = JSON.parse(fileContent);
+    return data.wedstrijden;
+  } catch (error) {
+    console.error("Fout bij lezen handmatige wedstrijden:", error);
+    return [];
+  }
+}
 
 // Simpele ICS parser
 function parseICS(icsData: string) {
@@ -64,8 +95,36 @@ function parseICS(icsData: string) {
 
 export async function GET() {
   try {
+    // Eerst: probeer handmatige wedstrijden (betrouwbaarder dan ICS feeds)
+    const handmatigeWedstrijden = getHandmatigeWedstrijden();
+    
+    if (handmatigeWedstrijden.length > 0) {
+      const now = new Date();
+      
+      // Converteer naar hetzelfde formaat als ICS events
+      const events = handmatigeWedstrijden.map(w => ({
+        summary: `⚽ ${w.thuis} - ${w.uit}`,
+        start: new Date(w.datum),
+        location: w.locatie,
+        description: w.isThuis ? "Thuiswedstrijd" : "Uitwedstrijd"
+      }));
+      
+      const toekomstigeWedstrijden = events
+        .filter(w => w.start > now)
+        .sort((a, b) => a.start.getTime() - b.start.getTime());
+      
+      if (toekomstigeWedstrijden.length > 0) {
+        return NextResponse.json({ 
+          wedstrijden: toekomstigeWedstrijden,
+          volgende: toekomstigeWedstrijden[0] || null,
+          bron: "handmatig"
+        });
+      }
+    }
+    
+    // Fallback: VoetbalinBelgie.be ICS feed
     const response = await fetch(
-      "https://www.foot24.be/nl/ical/ws-linkhout/1-vrouwen-596.ics?key=B1WjXx2",
+      "https://ical.voetbalinbelgie.be/competities/2025-2026/limburg/vrouwen/2/?c=linkhout-kws",
       { next: { revalidate: 300 } } // Cache voor 5 minuten
     );
     
@@ -83,7 +142,8 @@ export async function GET() {
     
     return NextResponse.json({ 
       wedstrijden: toekomstigeWedstrijden,
-      volgende: toekomstigeWedstrijden[0] || null
+      volgende: toekomstigeWedstrijden[0] || null,
+      bron: "ics"
     });
   } catch (error) {
     console.error("Error fetching dames wedstrijden:", error);

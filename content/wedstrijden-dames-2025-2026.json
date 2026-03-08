@@ -1,0 +1,42 @@
+{
+  "seizoen": "2025-2026",
+  "ploeg": "Dames 1ste Ploeg P2",
+  "competitie": "2de Provinciale Dames Limburg",
+  "wedstrijden": [
+    {
+      "datum": "2026-03-13T19:30:00",
+      "thuis": "WS Linkhout",
+      "uit": "FC Diepenbeek B",
+      "locatie": "Linkhout",
+      "isThuis": true
+    },
+    {
+      "datum": "2026-03-21T14:30:00",
+      "thuis": "Bocholter V.V. B",
+      "uit": "WS Linkhout",
+      "locatie": "Bocholt",
+      "isThuis": false
+    },
+    {
+      "datum": "2026-03-27T19:30:00",
+      "thuis": "WS Linkhout",
+      "uit": "Zepperen-Brustem",
+      "locatie": "Linkhout",
+      "isThuis": true
+    },
+    {
+      "datum": "2026-04-19T15:00:00",
+      "thuis": "K.St.-Truidense V.V. B",
+      "uit": "WS Linkhout",
+      "locatie": "Sint-Truiden",
+      "isThuis": false
+    },
+    {
+      "datum": "2026-04-24T19:30:00",
+      "thuis": "WS Linkhout",
+      "uit": "UNICO Tongeren",
+      "locatie": "Linkhout",
+      "isThuis": true
+    }
+  ]
+}
