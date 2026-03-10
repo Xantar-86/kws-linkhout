@@ -1,19 +1,7 @@
 import { getCmsArticles } from "./news-server";
+import type { NewsArticle } from "@/types";
 
-export interface NewsArticle {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  category: "clubnieuws" | "ploegnieuws" | "evenementen";
-  image: string;
-  date: string;
-  author: string;
-  readTime: number;
-  featured?: boolean;
-  attachment?: string;
-}
+export type { NewsArticle };
 
 // BELANGRIJK: Dit artikel moet blijven staan (gefixeerd)
 const fixedArticle: NewsArticle = {
