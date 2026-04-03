@@ -30,13 +30,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: "KWS Linkhout - Voetbalclub",
     description: "KWS Linkhout - Een club met een hart. 22 ploegen, 250+ leden. Van U6 tot senioren.",
+    images: [{ url: "/images/logo-kws.jpg" }],
     locale: "nl_BE",
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "KWS Linkhout - Voetbalclub",
     description: "KWS Linkhout - Een club met een hart. 22 ploegen, 250+ leden.",
+    images: ["/images/logo-kws.jpg"],
   },
 };
 
