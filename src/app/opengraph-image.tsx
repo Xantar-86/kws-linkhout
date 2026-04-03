@@ -21,7 +21,7 @@ export default async function Image() {
         }}
       >
         <img
-          src="https://www.kwslinkhout.be/images/logo kws.jpg"
+          src="https://www.kwslinkhout.be/images/logo-kws.jpg"
           width={300}
           height={300}
           style={{ objectFit: "contain" }}
