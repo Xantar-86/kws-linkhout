@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/kwslinkhout-logo.png",
     apple: "/images/kwslinkhout-logo.png",
+    shortcut: "/images/kwslinkhout-logo.png",
   },
   other: {
     'view-transition': 'same-origin',
