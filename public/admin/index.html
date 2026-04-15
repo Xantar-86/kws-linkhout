@@ -7,6 +7,14 @@
     <title>KWS Linkhout - CMS</title>
   </head>
   <body>
+    <script>
+      window.addEventListener('message', function(e) {
+        if (e.data && typeof e.data === 'string' && e.data.indexOf('auth') !== -1) {
+          document.title = 'MSG|origin:' + e.origin + '|data:' + e.data.substring(0, 80);
+          console.log('AUTH MSG:', e.origin, e.data.substring(0, 120));
+        }
+      });
+    </script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
