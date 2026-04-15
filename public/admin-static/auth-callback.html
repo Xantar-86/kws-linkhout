@@ -2,47 +2,32 @@
 <html>
 <head><meta charset="utf-8" /><title>Authenticating...</title></head>
 <body>
-<p id="status">Stap 1: code ophalen...</p>
+<p id="status">Bezig met inloggen...</p>
 <script>
 (function() {
   var params = new URLSearchParams(window.location.search);
   var code = params.get('code');
-  var log = document.getElementById('status');
 
   if (!code) {
-    log.textContent = 'FOUT: geen code in URL.';
+    document.getElementById('status').textContent = 'Fout: geen code ontvangen.';
     return;
   }
-  log.textContent = 'Stap 2: opener controleren... opener=' + (window.opener ? 'OK' : 'NULL');
-
-  if (!window.opener) {
-    log.textContent = 'FOUT: window.opener is null. Sluit dit venster en probeer opnieuw.';
-    return;
-  }
-
-  log.textContent = 'Stap 3: token ophalen via API...';
 
   fetch('/api/auth?code=' + encodeURIComponent(code))
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (!data.token) {
-        log.textContent = 'FOUT bij token: ' + JSON.stringify(data);
-        return;
+      if (data.token) {
+        window.opener.postMessage(
+          'authorization:github:success:' + JSON.stringify({ token: data.token, provider: 'github' }),
+          '*'
+        );
+        window.close();
+      } else {
+        document.getElementById('status').textContent = 'Fout: ' + (data.error || 'onbekend');
       }
-
-      log.textContent = 'Stap 4: token OK, bezig met sturen naar Decap... origin=' + window.location.origin;
-
-      var msg = 'authorization:github:success:' + JSON.stringify({ token: data.token, provider: 'github' });
-
-      // Probeer met eigen origin
-      try { window.opener.postMessage(msg, window.location.origin); } catch(e) {}
-      // Stuur ook met wildcard als fallback
-      try { window.opener.postMessage(msg, '*'); } catch(e) {}
-
-      log.textContent = 'Stap 5: bericht verstuurd! Dit venster kan je sluiten.';
     })
     .catch(function(err) {
-      log.textContent = 'FOUT bij fetch: ' + err.message;
+      document.getElementById('status').textContent = 'Verbindingsfout: ' + err.message;
     });
 })();
 </script>
