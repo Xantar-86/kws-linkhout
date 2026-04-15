@@ -8,10 +8,26 @@
   </head>
   <body>
     <script>
-      window.addEventListener('message', function(e) {
-        if (e.data && typeof e.data === 'string' && e.data.indexOf('auth') !== -1) {
-          document.title = 'MSG|origin:' + e.origin + '|data:' + e.data.substring(0, 80);
-          console.log('AUTH MSG:', e.origin, e.data.substring(0, 120));
+      // Fallback: ontvang auth-token via localStorage wanneer window.opener
+      // null is na cross-origin navigatie (GitHub COOP security headers).
+      // Decap accepteert berichten van window.location.origin, dus een
+      // synthetisch MessageEvent met die origin werkt altijd.
+      window.addEventListener('storage', function(e) {
+        if (e.key !== 'kws-auth-token') return;
+        if (!e.newValue) return;
+        try {
+          var authData = JSON.parse(e.newValue);
+          if (Date.now() - authData.ts > 30000) return; // Max 30 seconden oud
+          localStorage.removeItem('kws-auth-token');
+          console.log('[admin] auth token ontvangen via localStorage, doorsturen naar Decap');
+          // Synthetisch bericht met origin = window.location.origin
+          // Decap accepteert: origin === base_url OR origin === window.location.origin
+          window.dispatchEvent(new MessageEvent('message', {
+            data: 'authorization:github:success:' + authData.token,
+            origin: window.location.origin
+          }));
+        } catch (err) {
+          console.error('[admin] auth relay fout:', err);
         }
       });
     </script>

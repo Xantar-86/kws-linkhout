@@ -6,64 +6,86 @@
   <title>Authenticating...</title>
   <style>
     body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
-    .box { background: white; padding: 40px; border-radius: 8px; text-align: center; }
+    .box { background: white; padding: 40px; border-radius: 8px; text-align: center; max-width: 400px; }
+    #status { color: #555; margin-top: 10px; }
+    #debug { color: #999; font-size: 11px; margin-top: 20px; text-align: left; word-break: break-all; }
   </style>
 </head>
 <body>
   <div class="box">
-    <h1>Authenticating...</h1>
-    <p id="status">Please wait...</p>
+    <h2>KWS Linkhout CMS</h2>
+    <p id="status">Bezig met inloggen...</p>
+    <pre id="debug"></pre>
   </div>
   <script>
+    function log(msg) {
+      document.getElementById('debug').textContent += msg + '\n';
+      console.log('[auth-callback]', msg);
+    }
+
     (function() {
       var params = new URLSearchParams(window.location.search);
       var code = params.get('code');
       var error = params.get('error');
 
+      log('origin: ' + window.location.origin);
+      log('opener: ' + (window.opener ? 'aanwezig' : 'NULL - localStorage fallback actief'));
+
       if (error) {
-        document.getElementById('status').textContent = 'Error: ' + error;
+        document.getElementById('status').textContent = 'Fout: ' + error;
         return;
       }
 
       if (!code) {
-        // Stap 1: nog geen code - wacht op Decap, redirect dan naar GitHub
-        document.getElementById('status').textContent = 'Connecting to GitHub...';
-
-        window.addEventListener('message', function(e) {
-          if (e.data === 'authorizing:github') {
-            window.location.href = 'https://github.com/login/oauth/authorize'
-              + '?client_id=Ov23liafFGErfmejn48L'
-              + '&redirect_uri=' + encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html')
-              + '&scope=repo';
-          }
-        });
-
-        if (window.opener) {
-          window.opener.postMessage('authorizing:github', '*');
-        } else {
-          document.getElementById('status').textContent = 'Error: geen opener venster.';
-        }
+        // Geen code - direct doorsturen naar GitHub
+        document.getElementById('status').textContent = 'Doorsturen naar GitHub...';
+        log('geen code, redirect naar GitHub');
+        window.location.replace(
+          'https://github.com/login/oauth/authorize'
+          + '?client_id=Ov23liafFGErfmejn48L'
+          + '&redirect_uri=' + encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html')
+          + '&scope=repo'
+          + '&_=' + Date.now()
+        );
         return;
       }
 
-      // Stap 2: code ontvangen - inwisselen voor token
-      document.getElementById('status').textContent = 'Completing login...';
+      // Code aanwezig - token ophalen
+      document.getElementById('status').textContent = 'Login afronden...';
+      log('code ontvangen, token ophalen...');
 
       fetch('/api/auth?code=' + encodeURIComponent(code))
         .then(function(r) { return r.json(); })
         .then(function(data) {
           if (data.token) {
-            if (window.opener) {
+            log('token ontvangen');
+
+            // Sla op in localStorage - dit is de betrouwbare fallback
+            // window.opener is vaak null na cross-origin navigatie (GitHub COOP headers)
+            localStorage.setItem('kws-auth-token', JSON.stringify({
+              token: data.token,
+              ts: Date.now()
+            }));
+            log('opgeslagen in localStorage');
+
+            // Probeer ook via postMessage als opener beschikbaar is
+            if (window.opener && !window.opener.closed) {
               window.opener.postMessage('authorization:github:success:' + data.token, '*');
+              log('postMessage verstuurd naar opener');
+            } else {
+              log('opener niet beschikbaar - alleen localStorage');
             }
-            document.getElementById('status').textContent = 'Success!';
-            setTimeout(function() { window.close(); }, 500);
+
+            document.getElementById('status').textContent = 'Ingelogd! Venster sluit...';
+            setTimeout(function() { window.close(); }, 800);
           } else {
-            document.getElementById('status').textContent = 'Error: ' + (data.error || 'No token');
+            log('FOUT: ' + JSON.stringify(data));
+            document.getElementById('status').textContent = 'Fout: ' + (data.error || 'Geen token ontvangen');
           }
         })
         .catch(function(err) {
-          document.getElementById('status').textContent = 'Error: ' + err.message;
+          log('fetch fout: ' + err.message);
+          document.getElementById('status').textContent = 'Netwerkfout: ' + err.message;
         });
     })();
   </script>
