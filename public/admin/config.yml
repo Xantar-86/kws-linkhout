@@ -1,0 +1,59 @@
+backend:
+  name: github
+  repo: Xantar-86/kws-linkhout
+  branch: main
+  base_url: https://kwslinkhout.be
+  auth_endpoint: /api/auth
+
+media_folder: public/uploads
+public_folder: /uploads
+
+locale: nl
+
+collections:
+  - name: events
+    label: Evenementen
+    folder: content/events
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Titel, name: title, widget: string }
+      - { label: Datum (kort), name: date, widget: string, hint: "bv. 25 Mei" }
+      - { label: Datum (volledig), name: dateFull, widget: string, hint: "bv. 25 mei 2026" }
+      - { label: Beschrijving, name: description, widget: text }
+      - { label: Kleur, name: color, widget: select, options: [yellow, red, green, blue, orange, purple], default: yellow }
+      - { label: Locatie, name: location, widget: string, default: KWS Linkhout }
+      - { label: Afbeelding, name: image, widget: image, required: false }
+
+  - name: fotos
+    label: Fotogalerij
+    folder: content/fotos
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: ID, name: id, widget: string }
+      - { label: Titel, name: title, widget: string }
+      - { label: Beschrijving, name: description, widget: string }
+      - { label: Jaar, name: date, widget: string }
+      - { label: Thumbnail, name: thumbnail, widget: image }
+      - { label: Google Photos URL, name: googlePhotosUrl, widget: string, required: false }
+      - { label: Aantal foto's, name: fotoCount, widget: number, required: false }
+      - label: Categorie
+        name: category
+        widget: select
+        options: [Evenementen, Jeugd, Senioren, Dames, Trainingen, Overig]
+
+  - name: press
+    label: In de krant
+    folder: content/press
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Titel, name: title, widget: string }
+      - label: Bron
+        name: sourceKey
+        widget: select
+        options: [hbvl, hln, nieuwsblad, overig]
+      - { label: Datum, name: date, widget: date, format: YYYY-MM-DD }
+      - { label: PDF, name: pdf, widget: file, required: false }
+      - { label: Samenvatting, name: summary, widget: text }
