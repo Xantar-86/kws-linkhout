@@ -13,18 +13,19 @@
     return;
   }
 
-  var token = null;
-  var openerOrigin = null;
+  if (!window.opener) {
+    document.getElementById('status').textContent = 'Fout: geen opener venster gevonden.';
+    return;
+  }
 
-  // Stap 1: start token fetch en handshake tegelijk
-
-  // Fetch token van onze API
   fetch('/api/auth?code=' + encodeURIComponent(code))
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.token) {
-        token = data.token;
-        sendIfReady();
+        document.getElementById('status').textContent = 'Ingelogd!';
+        var msg = 'authorization:github:success:' + JSON.stringify({ token: data.token, provider: 'github' });
+        window.opener.postMessage(msg, window.location.origin);
+        window.close();
       } else {
         document.getElementById('status').textContent = 'Fout: ' + (data.error || 'Token ophalen mislukt');
       }
@@ -32,31 +33,6 @@
     .catch(function(err) {
       document.getElementById('status').textContent = 'Verbindingsfout: ' + err.message;
     });
-
-  // Luister op bericht van Decap opener (geeft ons de correcte origin)
-  window.addEventListener('message', function(e) {
-    openerOrigin = e.origin;
-    sendIfReady();
-  }, false);
-
-  // Start handshake met opener
-  if (window.opener) {
-    window.opener.postMessage('authorizing:github', '*');
-  } else {
-    document.getElementById('status').textContent = 'Fout: geen opener venster gevonden.';
-  }
-
-  // Stuur token zodra we zowel de token als de origin hebben
-  function sendIfReady() {
-    if (token && openerOrigin) {
-      document.getElementById('status').textContent = 'Ingelogd! Venster sluit...';
-      window.opener.postMessage(
-        'authorization:github:success:' + JSON.stringify({ token: token, provider: 'github' }),
-        openerOrigin
-      );
-      setTimeout(function() { window.close(); }, 500);
-    }
-  }
 })();
 </script>
 </body>
