@@ -35,6 +35,22 @@
         }
       }, true);
 
+      // Debug: onderschep fetch zodat we GitHub API calls zien
+      (function () {
+        var _fetch = window.fetch;
+        window.fetch = function (url, opts) {
+          var urlStr = (typeof url === 'string' ? url : url.url || String(url)).substring(0, 100);
+          console.log('[admin] fetch →', urlStr);
+          return _fetch.apply(this, arguments).then(function (res) {
+            console.log('[admin] fetch ←', urlStr, res.status, res.ok ? 'OK' : 'FOUT');
+            return res;
+          }).catch(function (err) {
+            console.error('[admin] fetch FOUT:', urlStr, err.message);
+            throw err;
+          });
+        };
+      })();
+
       // Fix 2a: BroadcastChannel (betrouwbaarder dan StorageEvent voor cross-window same-origin)
       try {
         var _bc = new BroadcastChannel('kws-decap-auth');
