@@ -8,26 +8,24 @@
   </head>
   <body>
     <script>
-      // Fallback: ontvang auth-token via localStorage wanneer window.opener
-      // null is na cross-origin navigatie (GitHub COOP security headers).
-      // Decap accepteert berichten van window.location.origin, dus een
-      // synthetisch MessageEvent met die origin werkt altijd.
+      // Fallback voor wanneer window.opener null is na GitHub redirect.
+      // Decap's authorizeCallback checkt e.origin === base_url.
+      // window.location.origin === base_url (beide https://www.kwslinkhout.be),
+      // dus een synthetisch MessageEvent met window.location.origin als origin werkt.
       window.addEventListener('storage', function(e) {
         if (e.key !== 'kws-auth-token') return;
         if (!e.newValue) return;
         try {
-          var authData = JSON.parse(e.newValue);
-          if (Date.now() - authData.ts > 30000) return; // Max 30 seconden oud
+          var stored = JSON.parse(e.newValue);
+          if (Date.now() - stored.ts > 30000) return;
           localStorage.removeItem('kws-auth-token');
-          console.log('[admin] auth token ontvangen via localStorage, doorsturen naar Decap');
-          // Synthetisch bericht met origin = window.location.origin
-          // Decap accepteert: origin === base_url OR origin === window.location.origin
+          console.log('[admin] auth ontvangen via localStorage fallback, doorsturen naar Decap');
           window.dispatchEvent(new MessageEvent('message', {
-            data: 'authorization:github:success:' + authData.token,
+            data: stored.message,
             origin: window.location.origin
           }));
         } catch (err) {
-          console.error('[admin] auth relay fout:', err);
+          console.error('[admin] fallback fout:', err);
         }
       });
     </script>

@@ -8,7 +8,7 @@
     body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f5f5f5; }
     .box { background: white; padding: 40px; border-radius: 8px; text-align: center; max-width: 400px; }
     #status { color: #555; margin-top: 10px; }
-    #debug { color: #999; font-size: 11px; margin-top: 20px; text-align: left; word-break: break-all; }
+    #debug { color: #999; font-size: 11px; margin-top: 20px; text-align: left; word-break: break-all; white-space: pre-wrap; }
   </style>
 </head>
 <body>
@@ -29,64 +29,89 @@
       var error = params.get('error');
 
       log('origin: ' + window.location.origin);
-      log('opener: ' + (window.opener ? 'aanwezig' : 'NULL - localStorage fallback actief'));
+      log('opener: ' + (window.opener ? 'aanwezig' : 'NULL'));
 
       if (error) {
         document.getElementById('status').textContent = 'Fout: ' + error;
+        log('ERROR: ' + error);
         return;
       }
 
-      if (!code) {
-        // Geen code - direct doorsturen naar GitHub
-        document.getElementById('status').textContent = 'Doorsturen naar GitHub...';
-        log('geen code, redirect naar GitHub');
-        window.location.replace(
-          'https://github.com/login/oauth/authorize'
-          + '?client_id=Ov23liafFGErfmejn48L'
-          + '&redirect_uri=' + encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html')
-          + '&scope=repo'
-          + '&_=' + Date.now()
-        );
-        return;
-      }
+      if (code) {
+        // ── Stap 2: code ontvangen van GitHub → token ophalen ──
+        document.getElementById('status').textContent = 'Login afronden...';
+        log('code ontvangen, token ophalen...');
 
-      // Code aanwezig - token ophalen
-      document.getElementById('status').textContent = 'Login afronden...';
-      log('code ontvangen, token ophalen...');
+        fetch('/api/auth?code=' + encodeURIComponent(code))
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (!data.token) {
+              log('FOUT: geen token - ' + JSON.stringify(data));
+              document.getElementById('status').textContent = 'Fout: ' + (data.error || 'geen token');
+              return;
+            }
 
-      fetch('/api/auth?code=' + encodeURIComponent(code))
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data.token) {
             log('token ontvangen');
 
-            // Sla op in localStorage - dit is de betrouwbare fallback
-            // window.opener is vaak null na cross-origin navigatie (GitHub COOP headers)
-            localStorage.setItem('kws-auth-token', JSON.stringify({
-              token: data.token,
-              ts: Date.now()
-            }));
-            log('opgeslagen in localStorage');
+            // Decap verwacht JSON na 'success:' — NIET de raw token string
+            // Zie decap-cms-lib-auth: JSON.parse(e.data.match(...)[1])
+            var tokenJson = JSON.stringify({ token: data.token, provider: 'github' });
+            var message = 'authorization:github:success:' + tokenJson;
 
-            // Probeer ook via postMessage als opener beschikbaar is
+            // Primaire methode: postMessage naar opener
             if (window.opener && !window.opener.closed) {
-              window.opener.postMessage('authorization:github:success:' + data.token, '*');
+              window.opener.postMessage(message, '*');
               log('postMessage verstuurd naar opener');
             } else {
-              log('opener niet beschikbaar - alleen localStorage');
+              log('opener niet beschikbaar');
             }
+
+            // Fallback: localStorage (index.html luistert hierop en herverstuurt naar Decap)
+            localStorage.setItem('kws-auth-token', JSON.stringify({
+              message: message,
+              ts: Date.now()
+            }));
+            log('opgeslagen in localStorage als fallback');
 
             document.getElementById('status').textContent = 'Ingelogd! Venster sluit...';
             setTimeout(function() { window.close(); }, 800);
-          } else {
-            log('FOUT: ' + JSON.stringify(data));
-            document.getElementById('status').textContent = 'Fout: ' + (data.error || 'Geen token ontvangen');
+          })
+          .catch(function(err) {
+            log('fetch fout: ' + err.message);
+            document.getElementById('status').textContent = 'Netwerkfout: ' + err.message;
+          });
+
+      } else {
+        // ── Stap 1: geen code → handshake met Decap, dan naar GitHub ──
+        // Decap-flow (netlify-auth.ts):
+        //   1. popup stuurt 'authorizing:github' naar parent
+        //   2. parent (Decap) ontvangt dit, stuurt 'authorizing:github' TERUG naar popup
+        //   3. popup ontvangt de echo en redirect naar GitHub
+
+        document.getElementById('status').textContent = 'Verbinden met GitHub...';
+
+        // Luister op de echo van Decap
+        window.addEventListener('message', function(e) {
+          if (e.data === 'authorizing:github') {
+            log('echo ontvangen van Decap, redirect naar GitHub');
+            window.location.replace(
+              'https://github.com/login/oauth/authorize'
+              + '?client_id=Ov23liafFGErfmejn48L'
+              + '&redirect_uri=' + encodeURIComponent('https://kwslinkhout.be/admin-static/auth-callback.html')
+              + '&scope=repo'
+            );
           }
-        })
-        .catch(function(err) {
-          log('fetch fout: ' + err.message);
-          document.getElementById('status').textContent = 'Netwerkfout: ' + err.message;
         });
+
+        // Stuur handshake naar parent
+        if (window.opener && !window.opener.closed) {
+          window.opener.postMessage('authorizing:github', '*');
+          log('handshake verstuurd naar Decap, wachten op echo...');
+        } else {
+          log('FOUT: geen opener venster');
+          document.getElementById('status').textContent = 'Fout: pagina opnieuw laden en opnieuw proberen.';
+        }
+      }
     })();
   </script>
 </body>
