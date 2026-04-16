@@ -66,7 +66,15 @@
               log('opener niet beschikbaar');
             }
 
-            // Fallback: localStorage (index.html luistert hierop en herverstuurt naar Decap)
+            // Fallback 1: BroadcastChannel (betrouwbaarder dan StorageEvent)
+            try {
+              var bc = new BroadcastChannel('kws-decap-auth');
+              bc.postMessage(message);
+              bc.close();
+              log('BroadcastChannel verstuurd');
+            } catch (bcErr) { log('BroadcastChannel n.v.t.'); }
+
+            // Fallback 2: localStorage StorageEvent
             localStorage.setItem('kws-auth-token', JSON.stringify({
               message: message,
               ts: Date.now()

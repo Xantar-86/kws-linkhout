@@ -28,10 +28,26 @@
         };
       })();
 
-      // Fix 2: localStorage-fallback als opener toch null is.
-      // Gebruikt window.postMessage (native, isTrusted:true) i.p.v. dispatchEvent.
+      // Debug: log ALLE message events (vóór Decap)
+      window.addEventListener('message', function (e) {
+        if (typeof e.data === 'string' && e.data.length > 0) {
+          console.log('[admin] MESSAGE EVENT:', e.origin, '|', e.data.substring(0, 120), '| trusted:', e.isTrusted);
+        }
+      }, true);
+
+      // Fix 2a: BroadcastChannel (betrouwbaarder dan StorageEvent voor cross-window same-origin)
+      try {
+        var _bc = new BroadcastChannel('kws-decap-auth');
+        _bc.onmessage = function (e) {
+          console.log('[admin] BroadcastChannel ontvangen, doorsturen via postMessage');
+          window.postMessage(e.data, window.location.origin);
+        };
+      } catch (e) { console.log('[admin] BroadcastChannel niet beschikbaar'); }
+
+      // Fix 2b: localStorage-fallback als opener toch null is.
       window.addEventListener('storage', function (e) {
         if (e.key !== 'kws-auth-token' || !e.newValue) return;
+        console.log('[admin] storage event: kws-auth-token ontvangen');
         try {
           var stored = JSON.parse(e.newValue);
           if (Date.now() - stored.ts > 30000) return;
