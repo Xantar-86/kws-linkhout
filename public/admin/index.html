@@ -215,40 +215,61 @@
         });
       }
       function kwsInjectPAT(pat) {
+        console.log('[KWS] injectPAT gestart, token aanwezig:', !!pat);
         document.getElementById('kws-overlay').style.display = 'none';
+
+        // Luister op ALLE message events voor debug
+        window.addEventListener('message', function(e) {
+          if (typeof e.data === 'string' && e.data.length > 0)
+            console.log('[KWS] message ontvangen:', e.origin, '|', e.data.substring(0, 120));
+        }, true);
+
         var fakePopup = {
           _closed: false,
           get closed() { return this._closed; },
           focus: function() {},
-          close: function() { this._closed = true; },
-          postMessage: function(msg) {
+          close: function() { console.log('[KWS] fakePopup.close()'); this._closed = true; },
+          postMessage: function(msg, origin) {
+            console.log('[KWS] fakePopup.postMessage():', msg, '| origin:', origin);
             if (typeof msg === 'string' && msg.indexOf('authorizing:') === 0) {
               setTimeout(function() {
-                window.postMessage(
-                  'authorization:github:success:' + JSON.stringify({ token: pat, provider: 'github' }),
-                  window.location.origin
-                );
+                var successMsg = 'authorization:github:success:' + JSON.stringify({ token: pat, provider: 'github' });
+                console.log('[KWS] success verzenden naar window');
+                window.postMessage(successMsg, window.location.origin);
               }, 50);
             }
           }
         };
+
         var _origOpen = window.open;
-        window.open = function() {
+        window.open = function(url, name, features) {
+          console.log('[KWS] window.open onderschept, url:', url);
           window.open = _origOpen;
           setTimeout(function() {
+            console.log('[KWS] authorizing:github verzenden naar window, origin:', window.location.origin);
             window.postMessage('authorizing:github', window.location.origin);
           }, 100);
           return fakePopup;
         };
+
         function tryClick() {
           var btns = document.querySelectorAll('button');
+          console.log('[KWS] tryClick: ' + btns.length + ' knoppen gevonden');
           for (var i = 0; i < btns.length; i++) {
-            if (/github/i.test(btns[i].textContent || '')) { btns[i].click(); return; }
+            console.log('[KWS] knop ' + i + ': "' + (btns[i].textContent || '').trim() + '"');
+            if (/github/i.test(btns[i].textContent || '')) {
+              console.log('[KWS] GitHub knop gevonden, klikken...');
+              btns[i].click(); return;
+            }
           }
+          console.log('[KWS] GitHub knop niet gevonden, MutationObserver gestart');
           var obs = new MutationObserver(function() {
             var btns = document.querySelectorAll('button');
             for (var i = 0; i < btns.length; i++) {
-              if (/github/i.test(btns[i].textContent || '')) { obs.disconnect(); btns[i].click(); return; }
+              if (/github/i.test(btns[i].textContent || '')) {
+                console.log('[KWS] MutationObserver: GitHub knop gevonden, klikken...');
+                obs.disconnect(); btns[i].click(); return;
+              }
             }
           });
           obs.observe(document.body, { childList: true, subtree: true });
