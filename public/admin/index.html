@@ -6,86 +6,165 @@
     <meta name="robots" content="noindex" />
     <title>KWS Linkhout - CMS</title>
     <style>
-      #kws-login-overlay {
-        position: fixed;
-        inset: 0;
-        background: #1a1a2e;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 999999;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      #kws-overlay { position: fixed; inset: 0; z-index: 999999; display: flex; min-height: 100vh; }
+      #kws-panel-left {
+        display: none; flex: 1;
+        background: linear-gradient(160deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
+        position: relative; overflow: hidden;
+        align-items: center; justify-content: center;
+        flex-direction: column; gap: 24px; padding: 48px;
       }
-      #kws-login-box {
-        background: white;
-        border-radius: 12px;
-        padding: 48px 40px;
-        width: 100%;
-        max-width: 380px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        text-align: center;
+      @media (min-width: 900px) { #kws-panel-left { display: flex; } }
+      #kws-panel-left::before {
+        content: ''; position: absolute; width: 500px; height: 500px;
+        border-radius: 50%; background: rgba(255,255,255,0.05); top: -150px; left: -150px;
       }
-      #kws-login-box h1 { margin: 0 0 8px; font-size: 22px; color: #1a1a2e; }
-      #kws-login-box p { margin: 0 0 32px; color: #666; font-size: 14px; }
-      #kws-login-box input {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 16px;
-        box-sizing: border-box;
-        outline: none;
-        transition: border-color 0.2s;
-        margin-bottom: 12px;
+      #kws-panel-left::after {
+        content: ''; position: absolute; width: 350px; height: 350px;
+        border-radius: 50%; background: rgba(255,255,255,0.05); bottom: -100px; right: -80px;
       }
-      #kws-login-box input:focus { border-color: #1a1a2e; }
-      #kws-login-box button {
-        width: 100%;
-        margin-top: 4px;
-        padding: 13px;
-        background: #1a1a2e;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
+      #kws-panel-left img {
+        width: 150px; height: 150px; object-fit: contain;
+        filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4)); position: relative; z-index: 1;
       }
-      #kws-login-box button:hover:not(:disabled) { background: #2d2d4e; }
-      #kws-login-box button:disabled { opacity: 0.6; cursor: default; }
-      #kws-login-error { margin-top: 14px; color: #c0392b; font-size: 14px; min-height: 20px; }
+      #kws-panel-left h2 {
+        color: white; font-size: 30px; font-weight: 700;
+        text-align: center; position: relative; z-index: 1; line-height: 1.3;
+      }
+      #kws-panel-left p { color: rgba(255,255,255,0.75); font-size: 15px; text-align: center; position: relative; z-index: 1; }
+      #kws-panel-right {
+        width: 100%; max-width: 480px; background: #f9fafb;
+        display: flex; align-items: center; justify-content: center;
+        padding: 40px 32px; flex-shrink: 0;
+      }
+      @media (max-width: 899px) {
+        #kws-panel-right {
+          max-width: 100%;
+          background: linear-gradient(160deg, #b91c1c 0%, #7f1d1d 60%, #450a0a 100%);
+        }
+      }
+      .kws-card {
+        width: 100%; max-width: 380px; background: white;
+        border-radius: 16px; padding: 40px 36px;
+        box-shadow: 0 4px 40px rgba(0,0,0,0.10);
+      }
+      .kws-card-logo { display: flex; justify-content: center; margin-bottom: 20px; }
+      .kws-card-logo img { width: 80px; height: 80px; object-fit: contain; }
+      @media (min-width: 900px) { .kws-card-logo { display: none; } }
+      .kws-card h1 { font-size: 22px; font-weight: 700; color: #111827; text-align: center; margin-bottom: 6px; }
+      .kws-card .subtitle { font-size: 14px; color: #6b7280; text-align: center; margin-bottom: 28px; }
+      .kws-tabs {
+        display: flex; background: #f3f4f6; border-radius: 10px;
+        padding: 4px; margin-bottom: 28px; gap: 4px;
+      }
+      .kws-tab {
+        flex: 1; padding: 9px 10px; border: none; background: transparent;
+        border-radius: 8px; font-size: 13px; font-weight: 600; color: #6b7280;
+        cursor: pointer; transition: all 0.2s; white-space: nowrap;
+      }
+      .kws-tab.active { background: white; color: #dc2626; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+      .kws-form-panel { display: none; }
+      .kws-form-panel.active { display: block; }
+      .kws-field { margin-bottom: 16px; }
+      .kws-field label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+      .kws-field input, .kws-field textarea {
+        width: 100%; padding: 11px 14px; border: 1.5px solid #e5e7eb; border-radius: 8px;
+        font-size: 15px; color: #111827; background: white; outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s; font-family: inherit; resize: none;
+      }
+      .kws-field input:focus, .kws-field textarea:focus {
+        border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+      }
+      .kws-btn {
+        width: 100%; padding: 13px; background: #dc2626; color: white; border: none;
+        border-radius: 9px; font-size: 15px; font-weight: 700; cursor: pointer;
+        transition: background 0.2s, transform 0.1s; margin-top: 4px; letter-spacing: 0.01em;
+      }
+      .kws-btn:hover:not(:disabled) { background: #b91c1c; transform: translateY(-1px); }
+      .kws-btn:active:not(:disabled) { transform: translateY(0); }
+      .kws-btn:disabled { opacity: 0.55; cursor: default; transform: none; }
+      .kws-msg-error { margin-top: 12px; color: #dc2626; font-size: 13px; text-align: center; min-height: 18px; }
+      .kws-msg-ok {
+        margin-top: 12px; color: #16a34a; font-size: 13px; text-align: center;
+        background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px;
+      }
     </style>
   </head>
   <body>
-    <div id="kws-login-overlay">
-      <div id="kws-login-box">
-        <h1>KWS Linkhout CMS</h1>
-        <p>Log in met uw beheerdersaccount</p>
-        <input type="email" id="kws-email" placeholder="E-mailadres" autofocus />
-        <input type="password" id="kws-password" placeholder="Wachtwoord" />
-        <button id="kws-login-btn" onclick="kwsLogin()">Inloggen</button>
-        <div id="kws-login-error"></div>
+    <div id="kws-overlay">
+      <div id="kws-panel-left">
+        <img src="/images/logo-kws.png" alt="KWS Linkhout" />
+        <h2>KWS Linkhout</h2>
+        <p>Beheerdersportaal</p>
+      </div>
+      <div id="kws-panel-right">
+        <div class="kws-card">
+          <div class="kws-card-logo">
+            <img src="/images/logo-kws.png" alt="KWS Linkhout" />
+          </div>
+          <h1>KWS Linkhout CMS</h1>
+          <p class="subtitle">Beheerdersportaal</p>
+          <div class="kws-tabs">
+            <button class="kws-tab active" onclick="kwsTab('login')">Inloggen</button>
+            <button class="kws-tab" onclick="kwsTab('aanvraag')">Toegang aanvragen</button>
+          </div>
+          <div id="panel-login" class="kws-form-panel active">
+            <div class="kws-field">
+              <label for="kws-email">E-mailadres</label>
+              <input type="email" id="kws-email" placeholder="naam@voorbeeld.be" autofocus />
+            </div>
+            <div class="kws-field">
+              <label for="kws-password">Wachtwoord</label>
+              <input type="password" id="kws-password" placeholder="Wachtwoord" />
+            </div>
+            <button class="kws-btn" id="kws-login-btn" onclick="kwsLogin()">Inloggen</button>
+            <div class="kws-msg-error" id="kws-login-error"></div>
+          </div>
+          <div id="panel-aanvraag" class="kws-form-panel">
+            <div class="kws-field">
+              <label for="req-naam">Naam</label>
+              <input type="text" id="req-naam" placeholder="Uw volledige naam" />
+            </div>
+            <div class="kws-field">
+              <label for="req-email">E-mailadres</label>
+              <input type="email" id="req-email" placeholder="naam@voorbeeld.be" />
+            </div>
+            <div class="kws-field">
+              <label for="req-bericht">Bericht <span style="color:#9ca3af;font-weight:400">(optioneel)</span></label>
+              <textarea id="req-bericht" rows="3" placeholder="Waarom heeft u toegang nodig?"></textarea>
+            </div>
+            <button class="kws-btn" id="req-btn" onclick="kwsAanvraag()">Aanvraag versturen</button>
+            <div class="kws-msg-error" id="req-error"></div>
+            <div id="req-ok" style="display:none" class="kws-msg-ok">
+              Uw aanvraag is verstuurd. De beheerder neemt contact met u op.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
     <script>
-      document.getElementById('kws-password').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') kwsLogin();
+      function kwsTab(tab) {
+        document.querySelectorAll('.kws-tab').forEach(function(t, i) {
+          t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'aanvraag'));
+        });
+        document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+        document.getElementById('panel-aanvraag').classList.toggle('active', tab === 'aanvraag');
+        if (tab === 'login') document.getElementById('kws-email').focus();
+        else document.getElementById('req-naam').focus();
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter') return;
+        if (document.getElementById('panel-login').classList.contains('active')) kwsLogin();
       });
-
       function kwsLogin() {
         var email = document.getElementById('kws-email').value.trim();
         var pw = document.getElementById('kws-password').value;
         var btn = document.getElementById('kws-login-btn');
         var err = document.getElementById('kws-login-error');
-
         if (!email || !pw) { err.textContent = 'Vul e-mail en wachtwoord in.'; return; }
-
-        btn.disabled = true;
-        btn.textContent = 'Bezig...';
-        err.textContent = '';
-
+        btn.disabled = true; btn.textContent = 'Bezig...'; err.textContent = '';
         fetch('/api/admin-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -95,26 +174,48 @@
         .then(function(res) {
           if (!res.ok || !res.d.token) {
             err.textContent = res.d.error || 'Onbekende fout';
-            btn.disabled = false;
-            btn.textContent = 'Inloggen';
-            return;
+            btn.disabled = false; btn.textContent = 'Inloggen'; return;
           }
           kwsInjectPAT(res.d.token);
         })
         .catch(function(e) {
           err.textContent = 'Netwerkfout: ' + e.message;
-          btn.disabled = false;
-          btn.textContent = 'Inloggen';
+          btn.disabled = false; btn.textContent = 'Inloggen';
         });
       }
-
+      function kwsAanvraag() {
+        var naam = document.getElementById('req-naam').value.trim();
+        var email = document.getElementById('req-email').value.trim();
+        var bericht = document.getElementById('req-bericht').value.trim();
+        var btn = document.getElementById('req-btn');
+        var err = document.getElementById('req-error');
+        var ok = document.getElementById('req-ok');
+        if (!naam || !email) { err.textContent = 'Naam en e-mailadres zijn verplicht.'; return; }
+        btn.disabled = true; btn.textContent = 'Versturen...';
+        err.textContent = ''; ok.style.display = 'none';
+        fetch('/api/request-access', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ naam: naam, email: email, bericht: bericht })
+        })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, d: d }; }); })
+        .then(function(res) {
+          if (!res.ok) {
+            err.textContent = res.d.error || 'Onbekende fout';
+            btn.disabled = false; btn.textContent = 'Aanvraag versturen'; return;
+          }
+          ok.style.display = 'block'; btn.textContent = 'Verstuurd';
+          document.getElementById('req-naam').value = '';
+          document.getElementById('req-email').value = '';
+          document.getElementById('req-bericht').value = '';
+        })
+        .catch(function(e) {
+          err.textContent = 'Netwerkfout: ' + e.message;
+          btn.disabled = false; btn.textContent = 'Aanvraag versturen';
+        });
+      }
       function kwsInjectPAT(pat) {
-        document.getElementById('kws-login-overlay').style.display = 'none';
-
-        // Decap roept window.open() aan voor de OAuth popup.
-        // We geven een nep-popup terug zodat er geen echt venster opent.
-        // Wanneer Decap de handshake-echo naar de popup stuurt (postMessage),
-        // stuurt de nep-popup een success-bericht terug naar het hoofdvenster.
+        document.getElementById('kws-overlay').style.display = 'none';
         var fakePopup = {
           _closed: false,
           get closed() { return this._closed; },
@@ -131,7 +232,6 @@
             }
           }
         };
-
         var _origOpen = window.open;
         window.open = function() {
           window.open = _origOpen;
@@ -140,24 +240,15 @@
           }, 100);
           return fakePopup;
         };
-
-        // Klik de GitHub-knop van Decap zodra die in de DOM verschijnt
         function tryClick() {
           var btns = document.querySelectorAll('button');
           for (var i = 0; i < btns.length; i++) {
-            if (/github/i.test(btns[i].textContent || '')) {
-              btns[i].click();
-              return;
-            }
+            if (/github/i.test(btns[i].textContent || '')) { btns[i].click(); return; }
           }
           var obs = new MutationObserver(function() {
             var btns = document.querySelectorAll('button');
             for (var i = 0; i < btns.length; i++) {
-              if (/github/i.test(btns[i].textContent || '')) {
-                obs.disconnect();
-                btns[i].click();
-                return;
-              }
+              if (/github/i.test(btns[i].textContent || '')) { obs.disconnect(); btns[i].click(); return; }
             }
           });
           obs.observe(document.body, { childList: true, subtree: true });
@@ -165,7 +256,6 @@
         tryClick();
       }
     </script>
-
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
