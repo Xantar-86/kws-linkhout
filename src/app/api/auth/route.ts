@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const kwsPat = searchParams.get('kws_pat');
   const code = searchParams.get('code');
 
-  // PAT-flow: geef een HTML popup terug die de Decap-handshake afhandelt
+  // PAT-flow: geef HTML popup terug die de Decap-handshake afhandelt
   if (kwsPat) {
     const provider = searchParams.get('provider') || 'github';
     const html = `<!doctype html>
@@ -21,16 +21,16 @@ export async function GET(request: NextRequest) {
     var provider = ${JSON.stringify(provider)};
     var successMsg = 'authorization:' + provider + ':success:' + JSON.stringify({ token: pat, provider: provider });
 
-    // Stap 1: stuur handshake naar opener (Decap luistert hierop)
+    // Stap 1: stuur handshake naar opener — gebruik '*' want opener kan www. of niet-www zijn
     if (window.opener && !window.opener.closed) {
-      window.opener.postMessage('authorizing:' + provider, window.location.origin);
+      window.opener.postMessage('authorizing:' + provider, '*');
     }
 
     // Stap 2: wacht op echo van Decap, stuur dan success
     window.addEventListener('message', function(e) {
       if (typeof e.data === 'string' && e.data.indexOf('authorizing:') === 0) {
         if (window.opener && !window.opener.closed) {
-          window.opener.postMessage(successMsg, e.origin || '*');
+          window.opener.postMessage(successMsg, '*');
         }
         setTimeout(function() { window.close(); }, 300);
       }
