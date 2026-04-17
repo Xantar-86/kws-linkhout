@@ -1,8 +1,8 @@
 import { Metadata } from "next";
-import { Calendar, MapPin, ArrowLeft, Download } from "lucide-react";
+import { Calendar, MapPin, ArrowLeft, Download, Sparkles } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { getAllEvents } from "@/lib/events";
+import { getAllEvents, getRecentlyAddedEvents } from "@/lib/events";
 
 export const metadata: Metadata = {
   title: "Evenementen - KWS Linkhout",
@@ -10,8 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default async function EventsPage() {
-  // Server-side: Haal alle events op (uit CMS)
-  const events = await getAllEvents();
+  // Server-side: Haal alle events op (uit CMS) + recent toegevoegde apart
+  const [events, recentEvents] = await Promise.all([
+    getAllEvents(),
+    getRecentlyAddedEvents(3),
+  ]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,6 +76,45 @@ export default async function EventsPage() {
               </a>
             </div>
           </div>
+
+          {/* Recent toegevoegd */}
+          {recentEvents.length > 0 && (
+            <div className="mb-12">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-bold text-gray-900">
+                  Recent toegevoegd
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {recentEvents.map((event) => (
+                  <div
+                    key={`recent-${event.id}`}
+                    className="bg-white rounded-xl shadow-sm border border-primary/20 p-4 flex items-start gap-3 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex-shrink-0 w-14 text-center">
+                      <div className="bg-primary/10 rounded-lg p-2">
+                        <span className="block text-base font-bold text-primary leading-tight">
+                          {event.date.split(" ")[0]}
+                        </span>
+                        <span className="block text-[10px] text-gray-600 uppercase mt-0.5">
+                          {event.date.split(" ").slice(1).join(" ")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 text-sm truncate">
+                        {event.title}
+                      </h3>
+                      <p className="text-xs text-gray-500 truncate">
+                        {event.location || "KWS Linkhout"}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Events */}
           {events.length > 0 ? (
