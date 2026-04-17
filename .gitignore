@@ -36,6 +36,18 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Editor / IDE
+.claude/
+.vscode/
+
+# Logs en errors
+/logs/
+/errors/
+
+# Secrets / notities (nooit committen)
+*.txt
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel

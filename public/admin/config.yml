@@ -3,7 +3,6 @@ backend:
   repo: Xantar-86/kws-linkhout
   branch: main
   base_url: https://www.kwslinkhout.be
-  auth_endpoint: /admin-static/auth-callback.html
 
 media_folder: public/uploads
 public_folder: /uploads

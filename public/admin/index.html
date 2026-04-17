@@ -217,13 +217,15 @@
       function kwsInjectPAT(pat) {
         document.getElementById('kws-overlay').style.display = 'none';
 
-        // Voeg PAT toe aan de popup-URL; de echte popup-pagina (/api/auth)
-        // doet de Decap-handshake zelf. Zo kloppen e.source en e.origin altijd.
+        // Forceer popup URL naar www zodat opener en popup dezelfde origin hebben.
+        // Voeg PAT toe als query param; de popup (/api/auth) handelt de Decap-handshake af.
         var _origOpen = window.open;
         window.open = function(url, name, features) {
           window.open = _origOpen;
-          var sep = url.indexOf('?') !== -1 ? '&' : '?';
-          var modUrl = url + sep + 'kws_pat=' + btoa(pat);
+          var modUrl = String(url)
+            .replace(/^https?:\/\/kwslinkhout\.be/, 'https://www.kwslinkhout.be');
+          var sep = modUrl.indexOf('?') !== -1 ? '&' : '?';
+          modUrl = modUrl + sep + 'kws_pat=' + btoa(pat);
           return _origOpen.call(window, modUrl, name, features);
         };
 
