@@ -34,8 +34,15 @@ collections:
       - { label: Beschrijving, name: description, widget: string }
       - { label: Jaar, name: date, widget: string }
       - { label: Thumbnail, name: thumbnail, widget: image }
-      - { label: Google Photos URL, name: googlePhotosUrl, widget: string, required: false }
-      - { label: Aantal foto's, name: fotoCount, widget: number, required: false }
+      - { label: Google Photos URL, name: googlePhotosUrl, widget: string, required: false, hint: "Laat leeg als je hieronder foto's uploadt" }
+      - label: "Eigen foto's (uploaden)"
+        name: images
+        widget: list
+        required: false
+        summary: "{{fields.image}}"
+        fields:
+          - { label: Foto, name: image, widget: image }
+      - { label: Aantal foto's, name: fotoCount, widget: number, required: false, hint: "Laat leeg om automatisch te tellen" }
       - label: Categorie
         name: category
         widget: select

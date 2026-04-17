@@ -7,6 +7,7 @@ export interface FotoAlbum {
   googlePhotosUrl: string;
   fotoCount: number | null;
   category?: string;
+  images: string[];
 }
 
 // Default thumbnail als fallback
@@ -16,6 +17,20 @@ export const DEFAULT_THUMBNAIL = "/images/news/kws-info.jpg";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+
+function extractImages(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((item) => {
+      if (typeof item === "string") return item;
+      if (item && typeof item === "object" && "image" in item) {
+        const val = (item as { image?: unknown }).image;
+        return typeof val === "string" ? val : "";
+      }
+      return "";
+    })
+    .filter((s): s is string => !!s);
+}
 
 export async function getCmsFotoAlbums(): Promise<FotoAlbum[]> {
   try {
@@ -28,10 +43,11 @@ export async function getCmsFotoAlbums(): Promise<FotoAlbum[]> {
     const files = fs.readdirSync(contentDirectory);
     const mdFiles = files.filter((file) => file.endsWith(".md"));
 
-    return mdFiles.map((file, index) => {
+    return mdFiles.map((file) => {
       const filePath = path.join(contentDirectory, file);
       const fileContent = fs.readFileSync(filePath, "utf8");
       const { data } = matter(fileContent);
+      const images = extractImages(data.images);
 
       return {
         id: data.id || file.replace(".md", ""),
@@ -40,8 +56,9 @@ export async function getCmsFotoAlbums(): Promise<FotoAlbum[]> {
         date: data.date || "",
         thumbnail: data.thumbnail || DEFAULT_THUMBNAIL,
         googlePhotosUrl: data.googlePhotosUrl || "",
-        fotoCount: data.fotoCount || null,
+        fotoCount: data.fotoCount ?? (images.length > 0 ? images.length : null),
         category: data.category || "",
+        images,
       };
     });
   } catch (error) {
@@ -60,6 +77,11 @@ export async function getAllFotoAlbums(): Promise<FotoAlbum[]> {
     if (!b.date) return -1;
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
+}
+
+export async function getFotoAlbumById(id: string): Promise<FotoAlbum | null> {
+  const albums = await getCmsFotoAlbums();
+  return albums.find((a) => a.id === id) || null;
 }
 
 // Client-side (leeg - alles uit CMS)
