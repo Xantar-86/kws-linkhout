@@ -217,27 +217,14 @@
       function kwsInjectPAT(pat) {
         document.getElementById('kws-overlay').style.display = 'none';
 
-        // Decap 3.x checkt ook e.source === this.authWindow.
-        // Een plain object slaagt daar niet in — een same-origin iframe wél.
-        var iframe = document.createElement('iframe');
-        iframe.src = '/admin/auth-relay.html';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-
-        iframe.onload = function() {
-          var iframeWin = iframe.contentWindow;
-          iframeWin.postMessage({ type: 'kws-init', pat: pat }, window.location.origin);
-
-          var _origOpen = window.open;
-          window.open = function() {
-            window.open = _origOpen;
-            setTimeout(function() {
-              iframeWin.postMessage({ type: 'kws-start' }, window.location.origin);
-            }, 150);
-            return iframeWin;
-          };
-
-          tryClick();
+        // Voeg PAT toe aan de popup-URL; de echte popup-pagina (/api/auth)
+        // doet de Decap-handshake zelf. Zo kloppen e.source en e.origin altijd.
+        var _origOpen = window.open;
+        window.open = function(url, name, features) {
+          window.open = _origOpen;
+          var sep = url.indexOf('?') !== -1 ? '&' : '?';
+          var modUrl = url + sep + 'kws_pat=' + btoa(pat);
+          return _origOpen.call(window, modUrl, name, features);
         };
 
         function tryClick() {
@@ -253,6 +240,7 @@
           });
           obs.observe(document.body, { childList: true, subtree: true });
         }
+        tryClick();
       }
     </script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
