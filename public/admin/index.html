@@ -5,76 +5,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>KWS Linkhout - CMS</title>
+    <style>
+      #kws-login-overlay {
+        position: fixed;
+        inset: 0;
+        background: #1a1a2e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999999;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      #kws-login-box {
+        background: white;
+        border-radius: 12px;
+        padding: 48px 40px;
+        width: 100%;
+        max-width: 380px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        text-align: center;
+      }
+      #kws-login-box h1 { margin: 0 0 8px; font-size: 22px; color: #1a1a2e; }
+      #kws-login-box p { margin: 0 0 32px; color: #666; font-size: 14px; }
+      #kws-login-box input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.2s;
+        margin-bottom: 12px;
+      }
+      #kws-login-box input:focus { border-color: #1a1a2e; }
+      #kws-login-box button {
+        width: 100%;
+        margin-top: 4px;
+        padding: 13px;
+        background: #1a1a2e;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      #kws-login-box button:hover:not(:disabled) { background: #2d2d4e; }
+      #kws-login-box button:disabled { opacity: 0.6; cursor: default; }
+      #kws-login-error { margin-top: 14px; color: #c0392b; font-size: 14px; min-height: 20px; }
+    </style>
   </head>
   <body>
+    <div id="kws-login-overlay">
+      <div id="kws-login-box">
+        <h1>KWS Linkhout CMS</h1>
+        <p>Log in met uw beheerdersaccount</p>
+        <input type="email" id="kws-email" placeholder="E-mailadres" autofocus />
+        <input type="password" id="kws-password" placeholder="Wachtwoord" />
+        <button id="kws-login-btn" onclick="kwsLogin()">Inloggen</button>
+        <div id="kws-login-error"></div>
+      </div>
+    </div>
+
     <script>
-      // Fix 1: omhul window.open zodat Decap's authWindow.close() nooit een SecurityError
-      // gooit. GitHub gebruikt COOP: same-origin-allow-popups, waardoor de
-      // opener→popup referentie verbroken wordt na GitHub-navigatie. Decap's
-      // authorizeCallback roept dan authWindow.close() aan in een komma-expressie:
-      //   removeEventListener(...), authWindow.close(), e(null,o)
-      // Als close() gooit, draait e(null,o) nooit → login mislukt stilletjes.
-      (function () {
-        var _open = window.open;
-        window.open = function (url, name, features) {
-          var popup = _open.call(window, url, name, features);
-          if (!popup) return popup;
-          return {
-            get closed() { try { return popup.closed; } catch (e) { return true; } },
-            close:       function () { try { popup.close(); } catch (e) { console.log('[admin] authWindow.close() onderdrukt (COOP)'); } },
-            postMessage: function (msg, org) { try { popup.postMessage(msg, org); } catch (e) { console.error('[admin] postMessage fout:', e); } },
-            focus:       function () { try { popup.focus(); } catch (e) {} }
-          };
-        };
-      })();
-
-      // Debug: log ALLE message events (vóór Decap)
-      window.addEventListener('message', function (e) {
-        if (typeof e.data === 'string' && e.data.length > 0) {
-          console.log('[admin] MESSAGE EVENT:', e.origin, '|', e.data.substring(0, 120), '| trusted:', e.isTrusted);
-        }
-      }, true);
-
-      // Debug: onderschep fetch zodat we GitHub API calls zien
-      (function () {
-        var _fetch = window.fetch;
-        window.fetch = function (url, opts) {
-          var urlStr = (typeof url === 'string' ? url : url.url || String(url)).substring(0, 100);
-          console.log('[admin] fetch →', urlStr);
-          return _fetch.apply(this, arguments).then(function (res) {
-            console.log('[admin] fetch ←', urlStr, res.status, res.ok ? 'OK' : 'FOUT');
-            return res;
-          }).catch(function (err) {
-            console.error('[admin] fetch FOUT:', urlStr, err.message);
-            throw err;
-          });
-        };
-      })();
-
-      // Fix 2a: BroadcastChannel (betrouwbaarder dan StorageEvent voor cross-window same-origin)
-      try {
-        var _bc = new BroadcastChannel('kws-decap-auth');
-        _bc.onmessage = function (e) {
-          console.log('[admin] BroadcastChannel ontvangen, doorsturen via postMessage');
-          window.postMessage(e.data, window.location.origin);
-        };
-      } catch (e) { console.log('[admin] BroadcastChannel niet beschikbaar'); }
-
-      // Fix 2b: localStorage-fallback als opener toch null is.
-      window.addEventListener('storage', function (e) {
-        if (e.key !== 'kws-auth-token' || !e.newValue) return;
-        console.log('[admin] storage event: kws-auth-token ontvangen');
-        try {
-          var stored = JSON.parse(e.newValue);
-          if (Date.now() - stored.ts > 30000) return;
-          localStorage.removeItem('kws-auth-token');
-          console.log('[admin] localStorage-fallback: token → window.postMessage');
-          window.postMessage(stored.message, window.location.origin);
-        } catch (err) {
-          console.error('[admin] fallback fout:', err);
-        }
+      document.getElementById('kws-password').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') kwsLogin();
       });
+
+      function kwsLogin() {
+        var email = document.getElementById('kws-email').value.trim();
+        var pw = document.getElementById('kws-password').value;
+        var btn = document.getElementById('kws-login-btn');
+        var err = document.getElementById('kws-login-error');
+
+        if (!email || !pw) { err.textContent = 'Vul e-mail en wachtwoord in.'; return; }
+
+        btn.disabled = true;
+        btn.textContent = 'Bezig...';
+        err.textContent = '';
+
+        fetch('/api/admin-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: pw })
+        })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, d: d }; }); })
+        .then(function(res) {
+          if (!res.ok || !res.d.token) {
+            err.textContent = res.d.error || 'Onbekende fout';
+            btn.disabled = false;
+            btn.textContent = 'Inloggen';
+            return;
+          }
+          kwsInjectPAT(res.d.token);
+        })
+        .catch(function(e) {
+          err.textContent = 'Netwerkfout: ' + e.message;
+          btn.disabled = false;
+          btn.textContent = 'Inloggen';
+        });
+      }
+
+      function kwsInjectPAT(pat) {
+        document.getElementById('kws-login-overlay').style.display = 'none';
+
+        // Decap roept window.open() aan voor de OAuth popup.
+        // We geven een nep-popup terug zodat er geen echt venster opent.
+        // Wanneer Decap de handshake-echo naar de popup stuurt (postMessage),
+        // stuurt de nep-popup een success-bericht terug naar het hoofdvenster.
+        var fakePopup = {
+          _closed: false,
+          get closed() { return this._closed; },
+          focus: function() {},
+          close: function() { this._closed = true; },
+          postMessage: function(msg) {
+            if (typeof msg === 'string' && msg.indexOf('authorizing:') === 0) {
+              setTimeout(function() {
+                window.postMessage(
+                  'authorization:github:success:' + JSON.stringify({ token: pat, provider: 'github' }),
+                  window.location.origin
+                );
+              }, 50);
+            }
+          }
+        };
+
+        var _origOpen = window.open;
+        window.open = function() {
+          window.open = _origOpen;
+          setTimeout(function() {
+            window.postMessage('authorizing:github', window.location.origin);
+          }, 100);
+          return fakePopup;
+        };
+
+        // Klik de GitHub-knop van Decap zodra die in de DOM verschijnt
+        function tryClick() {
+          var btns = document.querySelectorAll('button');
+          for (var i = 0; i < btns.length; i++) {
+            if (/github/i.test(btns[i].textContent || '')) {
+              btns[i].click();
+              return;
+            }
+          }
+          var obs = new MutationObserver(function() {
+            var btns = document.querySelectorAll('button');
+            for (var i = 0; i < btns.length; i++) {
+              if (/github/i.test(btns[i].textContent || '')) {
+                obs.disconnect();
+                btns[i].click();
+                return;
+              }
+            }
+          });
+          obs.observe(document.body, { childList: true, subtree: true });
+        }
+        tryClick();
+      }
     </script>
+
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
