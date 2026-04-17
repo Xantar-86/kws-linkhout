@@ -2,7 +2,6 @@ backend:
   name: github
   repo: Xantar-86/kws-linkhout
   branch: main
-  base_url: https://www.kwslinkhout.be
 
 media_folder: public/uploads
 public_folder: /uploads

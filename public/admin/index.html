@@ -145,6 +145,16 @@
       </div>
     </div>
     <script>
+      // Als Decap al ingelogd is (token in localStorage) → meteen Decap laden, overlay weg
+      (function() {
+        try {
+          var stored = localStorage.getItem('decap-cms-user');
+          if (stored && JSON.parse(stored).token) {
+            kwsLoadDecap();
+          }
+        } catch (e) { /* negeer, toon login */ }
+      })();
+
       function kwsTab(tab) {
         document.querySelectorAll('.kws-tab').forEach(function(t, i) {
           t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'aanvraag'));
@@ -154,10 +164,12 @@
         if (tab === 'login') document.getElementById('kws-email').focus();
         else document.getElementById('req-naam').focus();
       }
+
       document.addEventListener('keydown', function(e) {
         if (e.key !== 'Enter') return;
         if (document.getElementById('panel-login').classList.contains('active')) kwsLogin();
       });
+
       function kwsLogin() {
         var email = document.getElementById('kws-email').value.trim();
         var pw = document.getElementById('kws-password').value;
@@ -176,13 +188,21 @@
             err.textContent = res.d.error || 'Onbekende fout';
             btn.disabled = false; btn.textContent = 'Inloggen'; return;
           }
-          kwsInjectPAT(res.d.token);
+          // Schrijf token rechtstreeks in Decap's localStorage sleutel.
+          // Bij het laden ziet Decap deze en roept restoreUser → authenticate aan,
+          // wat enkel api.user() doet met de token. Geen popup, geen OAuth handshake.
+          localStorage.setItem('decap-cms-user', JSON.stringify({
+            backendName: 'github',
+            token: res.d.token
+          }));
+          kwsLoadDecap();
         })
         .catch(function(e) {
           err.textContent = 'Netwerkfout: ' + e.message;
           btn.disabled = false; btn.textContent = 'Inloggen';
         });
       }
+
       function kwsAanvraag() {
         var naam = document.getElementById('req-naam').value.trim();
         var email = document.getElementById('req-email').value.trim();
@@ -214,37 +234,15 @@
           btn.disabled = false; btn.textContent = 'Aanvraag versturen';
         });
       }
-      function kwsInjectPAT(pat) {
+
+      function kwsLoadDecap() {
         document.getElementById('kws-overlay').style.display = 'none';
-
-        // Forceer popup URL naar www zodat opener en popup dezelfde origin hebben.
-        // Voeg PAT toe als query param; de popup (/api/auth) handelt de Decap-handshake af.
-        var _origOpen = window.open;
-        window.open = function(url, name, features) {
-          window.open = _origOpen;
-          var modUrl = String(url)
-            .replace(/^https?:\/\/kwslinkhout\.be/, 'https://www.kwslinkhout.be');
-          var sep = modUrl.indexOf('?') !== -1 ? '&' : '?';
-          modUrl = modUrl + sep + 'kws_pat=' + btoa(pat);
-          return _origOpen.call(window, modUrl, name, features);
-        };
-
-        function tryClick() {
-          var btns = document.querySelectorAll('button');
-          for (var i = 0; i < btns.length; i++) {
-            if (/github/i.test(btns[i].textContent || '')) { btns[i].click(); return; }
-          }
-          var obs = new MutationObserver(function() {
-            var btns = document.querySelectorAll('button');
-            for (var i = 0; i < btns.length; i++) {
-              if (/github/i.test(btns[i].textContent || '')) { obs.disconnect(); btns[i].click(); return; }
-            }
-          });
-          obs.observe(document.body, { childList: true, subtree: true });
-        }
-        tryClick();
+        if (window.__kwsDecapLoaded) return;
+        window.__kwsDecapLoaded = true;
+        var s = document.createElement('script');
+        s.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+        document.body.appendChild(s);
       }
     </script>
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </body>
 </html>
