@@ -2,8 +2,7 @@
 id: kws_paaskamp-2026
 title: KWS Paaskamp 2026
 description: Een week geleden genoten we samen van een geweldig paaskamp vol
-  plezier, avontuur en onvergetelijke momenten. Intussen zijn alle beelden
-  verzameld en kan je ze eindelijk bekijken.
+  plezier en avontuur
 date: "2026"
 thumbnail: /uploads/img_3109.jpeg
 googlePhotosUrl: https://photos.google.com/share/AF1QipMeu7fDFvbfUQS157jGJwIHwmUwWtYmSoDuDJudpew6v6GcrODDpqbsq-izfoPCwg?key=bENqaWpHUTZUR3cyRmZJU3JBcmhsd0JKVnFjSVpB
