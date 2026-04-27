@@ -4,9 +4,45 @@ import { motion } from "framer-motion";
 import { FileText, ArrowLeft, Download, Shield } from "lucide-react";
 import Link from "next/link";
 
-const secties = [
+const secties: {
+  titel: string;
+  folder?: string;
+  documenten: { naam: string; beschrijving: string; bestandsnaam: string }[];
+}[] = [
+  {
+    titel: "Paaskamp 26",
+    folder: "Paaskamp 26",
+    documenten: [
+      {
+        naam: "CM",
+        beschrijving: "Download het formulier voor CM (Christelijke Mutualiteit)",
+        bestandsnaam: "CM Pasen 26.pdf"
+      },
+      {
+        naam: "Helan",
+        beschrijving: "Download het formulier voor Helan",
+        bestandsnaam: "Helan Pasen 26.pdf"
+      },
+      {
+        naam: "Liberale Mutualiteit",
+        beschrijving: "Download het formulier voor Liberale Mutualiteit",
+        bestandsnaam: "Liberale Mutualiteit Pasen 26.pdf"
+      },
+      {
+        naam: "Solidaris",
+        beschrijving: "Download het formulier voor Solidaris",
+        bestandsnaam: "Solidaris Pasen 26.pdf"
+      },
+      {
+        naam: "Vlaams & Neutraal ziekenfonds",
+        beschrijving: "Download het formulier voor Vlaams & Neutraal ziekenfonds",
+        bestandsnaam: "Vlaams & Neutraal ziekenfonds Pasen 26.pdf"
+      }
+    ]
+  },
   {
     titel: "Allerheiligen 25",
+    folder: "allerheiligen 25",
     documenten: [
       {
         naam: "CM",
@@ -138,7 +174,7 @@ export default function DocumentenMutualiteitPage() {
                             </p>
                           </div>
                           <a
-                            href={`/Docs/documenten-mutualiteit/${encodeURIComponent(doc.bestandsnaam)}`}
+                            href={`/Docs/documenten-mutualiteit/${sectie.folder ? encodeURIComponent(sectie.folder) + "/" : ""}${encodeURIComponent(doc.bestandsnaam)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-colors whitespace-nowrap"
