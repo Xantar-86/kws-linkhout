@@ -62,3 +62,22 @@ collections:
       - { label: Datum, name: date, widget: date, format: YYYY-MM-DD }
       - { label: PDF, name: pdf, widget: file, required: false }
       - { label: Samenvatting, name: summary, widget: text }
+
+  - name: mutualiteit-secties
+    label: Documenten Mutualiteit
+    label_singular: Sectie
+    folder: content/mutualiteit-secties
+    create: true
+    slug: "{{slug}}"
+    summary: "{{titel}} (volgorde {{volgorde}})"
+    fields:
+      - { label: Titel, name: titel, widget: string, hint: "bv. Paaskamp 26 of Allerheiligen 25" }
+      - { label: Volgorde, name: volgorde, widget: number, default: 50, value_type: int, hint: "Lager getal = hoger op de pagina. Bv. 10 voor nieuwste evenement, 100 voor 'Formulieren Lidgeld' onderaan." }
+      - label: Documenten
+        name: documenten
+        widget: list
+        summary: "{{fields.naam}}"
+        fields:
+          - { label: Mutualiteit, name: naam, widget: string, hint: "bv. CM, Helan, ..." }
+          - { label: Beschrijving, name: beschrijving, widget: string, default: "Download het formulier" }
+          - { label: PDF-bestand, name: bestand, widget: file, hint: "Upload het PDF-formulier" }
