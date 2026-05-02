@@ -155,7 +155,7 @@ export default async function EventsPage() {
                         <h3 className="text-xl font-bold text-gray-900 mb-2">
                           {event.title}
                         </h3>
-                        <p className="text-gray-600 text-sm mb-3">
+                        <p className="text-gray-600 text-sm mb-3 whitespace-pre-line">
                           {event.description}
                         </p>
                         <div className="flex items-center gap-2 text-sm text-gray-500">
