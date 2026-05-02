@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { Calendar, MapPin, ArrowLeft, Download, Sparkles } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 import { getAllEvents, getRecentlyAddedEvents } from "@/lib/events";
+import { EventImage } from "./EventImage";
 
 export const metadata: Metadata = {
   title: "Evenementen - KWS Linkhout",
@@ -126,17 +126,7 @@ export default async function EventsPage() {
                 >
                   {/* Afbeelding of Kleur Header */}
                   {event.image ? (
-                    <div className="relative h-40 w-full">
-                      <Image
-                        src={event.image}
-                        alt={event.title}
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute top-4 right-4">
-                        <Calendar className="w-5 h-5 text-white drop-shadow-md" />
-                      </div>
-                    </div>
+                    <EventImage src={event.image} alt={event.title} />
                   ) : (
                     <div className={`bg-gradient-to-r ${event.color} p-4`}>
                       <div className="flex items-center justify-end">
