@@ -3,7 +3,7 @@ title: Nachttornooi 2026
 date: 22-23 Mei
 dateFull: 22-23 Mei 2026
 description: |-
-  Linkwood Cup
+  Linkwood Cup!
   Het spectaculaire nachttornooi op onze velden.
   Schrijf je snel in via de qr-code
 color: red
