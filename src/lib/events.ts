@@ -112,6 +112,29 @@ export async function getAllEvents(): Promise<Event[]> {
   });
 }
 
+// Aankomende events (vanaf vandaag), gesorteerd op datum.
+// Indien er minder dan `limit` aankomende events zijn, wordt aangevuld met
+// de meest recente voorbije events zodat de sectie nooit leeg blijft.
+export async function getUpcomingEvents(limit = 3): Promise<Event[]> {
+  const events = await loadEvents();
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayStartSec = Math.floor(todayStart.getTime() / 1000);
+
+  const withDate = events.filter((e) => e.sortDate && e.sortDate > 0);
+  const upcoming = withDate
+    .filter((e) => (e.sortDate as number) >= todayStartSec)
+    .sort((a, b) => (a.sortDate as number) - (b.sortDate as number));
+
+  if (upcoming.length >= limit) return upcoming.slice(0, limit);
+
+  const past = withDate
+    .filter((e) => (e.sortDate as number) < todayStartSec)
+    .sort((a, b) => (b.sortDate as number) - (a.sortDate as number));
+
+  return [...upcoming, ...past.slice(0, limit - upcoming.length)];
+}
+
 // Laatst toegevoegd/bewerkt eerst (op basis van git commit tijd).
 export async function getRecentlyAddedEvents(limit = 3): Promise<Event[]> {
   const events = await loadEvents();

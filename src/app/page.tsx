@@ -1,5 +1,3 @@
-"use client";
-
 import { HeroSection } from "@/components/home/HeroSection";
 import { VolgendeWedstrijd } from "@/components/home/VolgendeWedstrijd";
 import { AboutSection } from "@/components/home/AboutSection";
@@ -8,8 +6,11 @@ import { NieuwsSection } from "@/components/home/NieuwsSection";
 import { MediaSection } from "@/components/home/MediaSection";
 import { QuickLinksSection } from "@/components/home/QuickLinksSection";
 import { SponsorsSection } from "@/components/home/SponsorsSection";
+import { getUpcomingEvents } from "@/lib/events";
 
-export default function Home() {
+export default async function Home() {
+  const events = await getUpcomingEvents(3);
+
   return (
     <div className="min-h-screen">
       <HeroSection />
@@ -29,7 +30,7 @@ export default function Home() {
 
       <AboutSection />
       <StatsSection />
-      <NieuwsSection />
+      <NieuwsSection events={events} />
       <MediaSection />
       <QuickLinksSection />
       <SponsorsSection />

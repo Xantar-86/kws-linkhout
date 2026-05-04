@@ -3,29 +3,9 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, CreditCard, Shield, Calendar, CalendarDays } from "lucide-react";
+import type { Event } from "@/lib/events";
 
-const events = [
-  {
-    title: "Pasta Take-A-Way",
-    date: "13-14 Maart",
-    description: "Heerlijke pasta om mee te nemen",
-    color: "from-red-500 to-red-700",
-  },
-  {
-    title: "Voetbalkamp Meisjes",
-    date: "8-9-10 April",
-    description: "Drie dagen voetbalplezier voor onze meisjes",
-    color: "from-pink-500 to-pink-700",
-  },
-  {
-    title: "Paasvoetbalkamp",
-    date: "15-16-17 April",
-    description: "Traditioneel paasvoetbalkamp voor alle jeugd",
-    color: "from-green-500 to-green-700",
-  },
-];
-
-export function NieuwsSection() {
+export function NieuwsSection({ events }: { events: Event[] }) {
   return (
     <section className="py-16 bg-gray-100">
       <div className="container-custom">
@@ -101,7 +81,7 @@ export function NieuwsSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {events.map((event, index) => (
-            <Link key={event.title} href="/nieuws/events" className="group">
+            <Link key={event.id} href="/nieuws/events" className="group">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -119,7 +99,7 @@ export function NieuwsSection() {
                   <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
                     {event.title}
                   </h3>
-                  <p className="text-gray-600 text-sm">{event.description}</p>
+                  <p className="text-gray-600 text-sm whitespace-pre-line">{event.description}</p>
                 </div>
               </motion.div>
             </Link>
