@@ -26,5 +26,7 @@ export function parseMarkdown(content: string): string {
       return line + "<br />";
     })
     .join("\n");
+  // CommonMark backslash-escapes voor leestekens ontdoen (bv. \# -> #, \. -> .)
+  html = html.replace(/\\([#.\-!()[\]_*])/g, "$1");
   return html;
 }
