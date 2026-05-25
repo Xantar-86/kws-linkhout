@@ -2,6 +2,11 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
+export interface BerichtVideo {
+  url: string;
+  bestand: string;
+}
+
 export interface Bericht {
   slug: string;
   title: string;
@@ -10,6 +15,7 @@ export interface Bericht {
   cover: string;
   body: string;
   fotos: string[];
+  videos: BerichtVideo[];
 }
 
 function extractFotos(raw: unknown): string[] {
@@ -24,6 +30,22 @@ function extractFotos(raw: unknown): string[] {
       return "";
     })
     .filter((s): s is string => !!s);
+}
+
+function extractVideos(raw: unknown): BerichtVideo[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((item) => {
+      if (item && typeof item === "object") {
+        const o = item as { url?: unknown; bestand?: unknown };
+        return {
+          url: typeof o.url === "string" ? o.url : "",
+          bestand: typeof o.bestand === "string" ? o.bestand : "",
+        };
+      }
+      return { url: "", bestand: "" };
+    })
+    .filter((v) => v.url || v.bestand);
 }
 
 async function loadBerichten(): Promise<Bericht[]> {
@@ -48,6 +70,7 @@ async function loadBerichten(): Promise<Bericht[]> {
         cover: data.cover || fotos[0] || "",
         body: content.trim(),
         fotos,
+        videos: extractVideos(data.videos),
       };
     });
   } catch (error) {

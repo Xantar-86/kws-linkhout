@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getAllBerichten, getBerichtBySlug } from "@/lib/berichten";
 import { parseMarkdown } from "@/lib/markdown";
+import { resolveVideo } from "@/lib/video";
 import { PhotoGallery } from "@/components/PhotoGallery";
 
 type Params = { slug: string };
@@ -88,6 +89,60 @@ export default async function BerichtPage({ params }: { params: Promise<Params> 
               className="text-gray-700 leading-relaxed prose prose-lg max-w-none"
               dangerouslySetInnerHTML={{ __html: parseMarkdown(bericht.body) }}
             />
+          </div>
+        </section>
+      )}
+
+      {/* Video's */}
+      {bericht.videos.length > 0 && (
+        <section className="section-padding bg-white pt-0">
+          <div className="container-custom max-w-3xl space-y-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Video{bericht.videos.length > 1 ? "'s" : ""}
+            </h2>
+            {bericht.videos.map((v, i) => {
+              const r = resolveVideo(v);
+              if (!r) return null;
+              if (r.kind === "video") {
+                return (
+                  <video
+                    key={i}
+                    controls
+                    preload="metadata"
+                    className="w-full rounded-2xl bg-black"
+                    src={r.src}
+                  />
+                );
+              }
+              if (r.kind === "iframe") {
+                return (
+                  <div
+                    key={i}
+                    className="relative w-full overflow-hidden rounded-2xl bg-black mx-auto"
+                    style={{ aspectRatio: r.ratio, maxWidth: r.ratio === "4 / 5" ? "480px" : undefined }}
+                  >
+                    <iframe
+                      src={r.src}
+                      className="absolute inset-0 w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      loading="lazy"
+                    />
+                  </div>
+                );
+              }
+              return (
+                <a
+                  key={i}
+                  href={r.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+                >
+                  Bekijk video →
+                </a>
+              );
+            })}
           </div>
         </section>
       )}

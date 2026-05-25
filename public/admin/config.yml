@@ -82,6 +82,15 @@ collections:
         summary: "{{fields.image}}"
         fields:
           - { label: Foto, name: image, widget: image }
+      - label: Video's
+        name: videos
+        widget: list
+        required: false
+        summary: "{{fields.url}}{{fields.bestand}}"
+        hint: "Voeg video's toe via een link OF door een bestand te uploaden."
+        fields:
+          - { label: "Video-link (YouTube / Vimeo / Facebook / Instagram)", name: url, widget: string, required: false, hint: "Plak de link naar de video. Laat leeg als je hieronder een bestand uploadt." }
+          - { label: "Of videobestand uploaden (.mp4)", name: bestand, widget: file, required: false, hint: "Kort .mp4-bestand. Laat leeg als je hierboven een link gebruikt." }
       - { label: Tekst, name: body, widget: markdown, hint: "De volledige tekst van het bericht" }
 
   - name: mutualiteit-secties
