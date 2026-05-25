@@ -1,7 +1,10 @@
 // Eenvoudige markdown -> HTML parser (zelfde stijl als de nieuws-artikelpagina).
 // Ondersteunt: **vet**, *cursief*, ## koppen, [links](url), - lijsten en regelovergangen.
 export function parseMarkdown(content: string): string {
-  let html = content.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  // Verwijder CommonMark "harde regeleinde"-backslashes (regel eindigend op '\').
+  // Decap voegt die toe; wij maken sowieso al een regelovergang met <br />.
+  let html = content.replace(/\\+(?=\r?\n)/g, "").replace(/\\+$/g, "");
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
   html = html.replace(
     /##\s+(.*?)(?=\n|$)/g,
