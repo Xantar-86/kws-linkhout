@@ -11,9 +11,9 @@ const inter = Inter({
   variable: "--font-inter"
 });
 
-const baseUrl = process.env.VERCEL_URL 
-  ? `https://${process.env.VERCEL_URL}`
-  : "https://www.kwslinkhout.be";
+// Altijd het canonieke domein gebruiken: VERCEL_URL is per-deploy een
+// wisselende *.vercel.app-URL, wat preview-afbeeldingen bij gedeelde links breekt.
+const baseUrl = "https://www.kwslinkhout.be";
 
 export const metadata: Metadata = {
   title: "KWS Linkhout - Voetbalclub",

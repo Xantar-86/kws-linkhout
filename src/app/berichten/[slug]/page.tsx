@@ -22,7 +22,12 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return {
     title: `${bericht.title} - KWS Linkhout`,
     description: bericht.intro || bericht.title,
-    openGraph: bericht.cover ? { images: [{ url: bericht.cover }] } : undefined,
+    openGraph: {
+      title: bericht.title,
+      description: bericht.intro || bericht.title,
+      type: "article",
+      images: [{ url: "https://www.kwslinkhout.be/images/logo-kws.jpg" }],
+    },
   };
 }
 
