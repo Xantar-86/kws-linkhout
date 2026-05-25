@@ -42,6 +42,7 @@ const navItems = [
     href: "/nieuws",
     dropdown: [
       { name: "Laatste Nieuws", href: "/nieuws" },
+      { name: "Berichten", href: "/berichten" },
       { name: "Evenementen", href: "/nieuws/events" },
       { name: "Nieuwsbrief", href: "/nieuwsbrief" },
       { name: "In de Krant", href: "/in-de-krant" },

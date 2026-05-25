@@ -63,6 +63,27 @@ collections:
       - { label: PDF, name: pdf, widget: file, required: false }
       - { label: Samenvatting, name: summary, widget: text }
 
+  - name: berichten
+    label: Berichten
+    label_singular: Bericht
+    folder: content/berichten
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} ({{date}})"
+    fields:
+      - { label: Titel, name: title, widget: string }
+      - { label: Datum, name: date, widget: datetime, date_format: YYYY-MM-DD, time_format: false }
+      - { label: Korte intro, name: intro, widget: text, hint: "Kort stukje tekst dat op de homepage onder de titel verschijnt" }
+      - { label: Coverfoto, name: cover, widget: image, required: false, hint: "Hoofdfoto bovenaan het bericht en op de homepage. Leeg = eerste foto hieronder wordt gebruikt." }
+      - label: Foto's
+        name: fotos
+        widget: list
+        required: false
+        summary: "{{fields.image}}"
+        fields:
+          - { label: Foto, name: image, widget: image }
+      - { label: Tekst, name: body, widget: markdown, hint: "De volledige tekst van het bericht" }
+
   - name: mutualiteit-secties
     label: Documenten Mutualiteit
     label_singular: Sectie
