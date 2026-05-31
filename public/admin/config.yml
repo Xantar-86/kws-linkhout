@@ -93,6 +93,19 @@ collections:
           - { label: "Of videobestand uploaden (.mp4)", name: bestand, widget: file, required: false, hint: "Kort .mp4-bestand. Laat leeg als je hierboven een link gebruikt." }
       - { label: Tekst, name: body, widget: markdown, hint: "De volledige tekst van het bericht" }
 
+  - name: nieuwsbrieven
+    label: Nieuwsbrieven
+    label_singular: Nieuwsbrief
+    folder: content/nieuwsbrieven
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} ({{date}})"
+    fields:
+      - { label: Titel, name: title, widget: string, hint: "bv. 'Einde seizoen 2026'" }
+      - { label: Datum, name: date, widget: datetime, date_format: YYYY-MM-DD, time_format: false }
+      - { label: Korte voorbeschouwing, name: preview, widget: text, hint: "Eerste alinea(s) die als teaser op de nieuwsbrief-pagina verschijnen" }
+      - { label: Inhoud, name: body, widget: markdown, hint: "De volledige nieuwsbrief. Gebruik ## voor titels en **vet** voor nadruk." }
+
   - name: mutualiteit-secties
     label: Documenten Mutualiteit
     label_singular: Sectie

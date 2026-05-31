@@ -4,6 +4,11 @@ export function parseMarkdown(content: string): string {
   // Verwijder CommonMark "harde regeleinde"-backslashes (regel eindigend op '\').
   // Decap voegt die toe; wij maken sowieso al een regelovergang met <br />.
   let html = content.replace(/\\+(?=\r?\n)/g, "").replace(/\\+$/g, "");
+  // Afbeeldingen ![alt](url) — VOOR de link-regex zodat die niet eerst matcht.
+  html = html.replace(
+    /!\[(.*?)\]\(([^)]+)\)/g,
+    '<img src="$2" alt="$1" class="my-6 rounded-2xl mx-auto max-w-full h-auto" />'
+  );
   html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
   html = html.replace(
