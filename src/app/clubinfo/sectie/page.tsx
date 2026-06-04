@@ -212,7 +212,7 @@ function ClubInfoContent() {
                   Vul het Inschrijvingsformulier in en start je voetbalavontuur bij KWS Linkhout!
                 </p>
                 <a
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSdSw7GBB_yFZ3DDGCkTLJPwLjKzmTFX_8FlL0aOnxmqc43v9g/viewform"
+                  href="https://forms.gle/f6hM5fsBFkGarKJn9"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition-colors"

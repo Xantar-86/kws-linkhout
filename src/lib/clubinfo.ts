@@ -406,12 +406,11 @@ Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel m
 
 **Lidgeld seizoen 2025-2026:**
 
-- U5: € 120 (of € 150 bij inschrijving Bond)
-- U6-U9: €275
-- U10-U13: €300
-- U15-U17 + WU16-WU20: €325
-- Senioren: €350
-- Dames: €350
+- Voor U5 bedraagt het inschrijvingsgeld € 130 ( of € 160 bij inschrijving Bond)
+- Voor U6 tem U9 en WU9 bedraagt het inschrijvingsgeld € 295
+- Voor U10 tem U13 en WU13 bedraagt het inschrijvingsgeld € 320
+- Voor U15 tem U17 en WU16 tem WU20 bedraagt het inschrijvingsgeld € 350
+- Voor senioren mannen (Pr.2 - Pr.4) en dames (Pr.1) bedraagt het inschrijvingsgeld € 400
 
 Het lidgeld omvat: verzekering, clubkledij (shirt, short, kousen), en deelname aan clubactiviteiten.
 
