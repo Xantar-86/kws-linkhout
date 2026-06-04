@@ -404,7 +404,7 @@ Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel m
 - Geldige identiteitskaart
 - Pasfoto
 
-**Lidgeld seizoen 2025-2026:**
+**Lidgeld seizoen 2026-2027:**
 
 - Voor U5 bedraagt het inschrijvingsgeld € 130 ( of € 160 bij inschrijving Bond)
 - Voor U6 tem U9 en WU9 bedraagt het inschrijvingsgeld € 295
