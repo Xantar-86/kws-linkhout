@@ -229,7 +229,7 @@ C. Studies primeren. Trainingen overslaan omwille van studies, tijdens de examen
 
 **10. Sportongevallen**
 
-Laat steeds een formulier 'Aangifte ongeval' invullen door de dokter of in het ziekenhuis. Deze formulieren zijn steeds ter beschikking in de kantine, bij een ongeval tijdens een training. Bij een wedstrijd heeft iedere ploegafgevaardigde dit formulier bij. Dit correct ingevulde formulier zo snel mogelijk bezorgen aan Gert Peremans, Wesly Thomas of Maarten Cleren. Voor ieder (aangegeven) voetbalongeval is het raadzaam om steeds in contact te blijven met bovengenoemde personen.
+Laat steeds een formulier 'Aangifte ongeval' invullen door de dokter of in het ziekenhuis. Deze formulieren zijn steeds ter beschikking in de kantine, bij een ongeval tijdens een training. Bij een wedstrijd heeft iedere ploegafgevaardigde dit formulier bij. Dit correct ingevulde formulier zo snel mogelijk bezorgen aan Gert Peremans of Maarten Cleren. Voor ieder (aangegeven) voetbalongeval is het raadzaam om steeds in contact te blijven met bovengenoemde personen.
 
 ---
 
@@ -385,7 +385,7 @@ Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel m
 **Contact per categorie:**
 
 **Jeugd:**
-- Wesly Thomas
+- AVJO
 - E-mail: info@kwslinkhout.be
 - WhatsApp: 0468 12 10 21
 

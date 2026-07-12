@@ -34,10 +34,10 @@ export const contactPersons: ContactPerson[] = [
   },
   {
     id: "2",
-    name: "Wesly Thomas",
-    role: "Jeugdvoorzitter",
+    name: "Maarten Cleren",
+    role: "AVJO",
     email: "info@kwslinkhout.be",
-    phone: "0468 12 10 21",
+    phone: "0494 84 36 93",
     category: "jeugd"
   },
   {
