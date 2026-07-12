@@ -387,7 +387,7 @@ Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel m
 **Jeugd:**
 - AVJO
 - E-mail: info@kwslinkhout.be
-- WhatsApp: 0468 12 10 21
+- WhatsApp: 0494 84 36 93
 
 **Dames:**
 - Ben Jouck
