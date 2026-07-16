@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { parseICS, getToekomstigeWedstrijden } from "@/lib/ics-parser";
+import { getToekomstigeWedstrijden } from "@/lib/ics-parser";
+import { getRbfaWedstrijden } from "@/lib/rbfa";
 import type { HandmatigeWedstrijd, HandmatigeData, WedstrijdEvent } from "@/types";
+
+// Dames 1ste Ploeg P2 (Eerste Elftal Vrouwen A) - RBFA-ploeg-ID seizoen 2026-2027
+const DAMES_TEAM_ID = "365217";
 
 function getHandmatigeWedstrijden(): HandmatigeWedstrijd[] {
   try {
@@ -27,7 +31,7 @@ function handmatigeNaarEvents(wedstrijden: HandmatigeWedstrijd[]): WedstrijdEven
 
 export async function GET() {
   try {
-    // Eerst: handmatige wedstrijden (betrouwbaarder dan ICS feeds)
+    // Eerst: handmatige wedstrijden (override; alleen als er nog toekomstige in staan)
     const handmatigeWedstrijden = getHandmatigeWedstrijden();
 
     if (handmatigeWedstrijden.length > 0) {
@@ -43,24 +47,14 @@ export async function GET() {
       }
     }
 
-    // Fallback: VoetbalinBelgie.be ICS feed
-    const response = await fetch(
-      "https://ical.voetbalinbelgie.be/competities/2025-2026/limburg/vrouwen/2/?c=linkhout-kws",
-      { next: { revalidate: 300 } }
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch ICS");
-    }
-
-    const icsData = await response.text();
-    const events = parseICS(icsData);
+    // Standaardbron: RBFA-kalender van de ploeg
+    const events = await getRbfaWedstrijden(DAMES_TEAM_ID);
     const toekomstigeWedstrijden = getToekomstigeWedstrijden(events);
 
     return NextResponse.json({
       wedstrijden: toekomstigeWedstrijden,
       volgende: toekomstigeWedstrijden[0] || null,
-      bron: "ics",
+      bron: "rbfa",
     });
   } catch (error) {
     console.error("Error fetching dames wedstrijden:", error);

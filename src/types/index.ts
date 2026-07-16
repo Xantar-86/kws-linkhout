@@ -33,7 +33,7 @@ export interface WedstrijdEvent {
 export interface WedstrijdenResponse {
   wedstrijden: WedstrijdEvent[];
   volgende: WedstrijdEvent | null;
-  bron?: "handmatig" | "ics";
+  bron?: "handmatig" | "ics" | "rbfa";
   error?: string;
 }
 

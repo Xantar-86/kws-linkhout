@@ -22,13 +22,13 @@ export default async function Home() {
 
       <VolgendeWedstrijd
         apiUrl="/api/wedstrijden"
-        kalenderUrl="https://www.rbfa.be/nl/club/1595/ploeg/337162/kalender"
+        kalenderUrl="https://www.rbfa.be/nl/club/1595/ploeg/365216/kalender"
         titel="Heren - Volgende Wedstrijd"
         kleur="primary"
       />
       <VolgendeWedstrijd
         apiUrl="/api/wedstrijden/dames"
-        kalenderUrl="https://www.rbfa.be/nl/club/1595/ploeg/337160/kalender"
+        kalenderUrl="https://www.rbfa.be/nl/club/1595/ploeg/365217/kalender"
         titel="Dames - Volgende Wedstrijd"
         kleur="pink"
       />
