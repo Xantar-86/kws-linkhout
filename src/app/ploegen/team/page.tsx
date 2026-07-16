@@ -151,8 +151,19 @@ function TeamContent() {
                     </button>
                   ) : null}
                   
-                  {team.calendarIcal ? (
-                    <a 
+                  {team.calendarIcal && team.calendarIcalDisabled ? (
+                    <div
+                      title="Beschikbaar zodra de kalender voor het nieuwe seizoen is gepubliceerd"
+                      className="flex flex-col items-center justify-center w-full py-2 px-4 bg-gray-50 border-2 border-gray-200 text-gray-400 rounded-lg cursor-not-allowed"
+                    >
+                      <span className="flex items-center">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Toevoegen aan mijn kalender
+                      </span>
+                      <span className="text-xs mt-0.5">Binnenkort beschikbaar</span>
+                    </div>
+                  ) : team.calendarIcal ? (
+                    <a
                       href={team.calendarIcal}
                       target="_blank"
                       rel="noopener noreferrer"
