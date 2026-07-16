@@ -35,9 +35,9 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Ons vlaggenschip in de 2de Provinciale. Een mix van ervaring en jong talent.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337162/kalender",
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365216/kalender",
     calendarIcal: "https://ical.voetbalinbelgie.be/competities/2025-2026/limburg/mannen/2a/?c=linkhout-kws",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337162/overzicht"
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365216/overzicht"
   },
   {
     id: "sen-2",
@@ -52,8 +52,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De toekomstige talenten en ervaren krachten van de club.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337161/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337161/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372246/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372246/overzicht"
   },
   {
     id: "sen-3",
@@ -66,8 +66,8 @@ export const teams: Team[] = [
     coach: "Ramon",
     image: "/images/teams/placeholder-senioren-2025.jpg",
     description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337159/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337159/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/overzicht"
   },
 
   // ========== DAMES/MEISJES (6) ==========
@@ -84,8 +84,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Onze damesploeg strijdt elke week voor de punten in de 2de Provinciale.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337160/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/337160/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365217/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365217/overzicht"
   },
   {
     id: "dam-2",
