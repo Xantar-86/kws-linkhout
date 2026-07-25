@@ -189,7 +189,7 @@ export const teams: Team[] = [
     category: "jeugd",
     division: "2-Gewestelijk",
     trainingDays: ["Maandag", "Woensdag"],
-    trainingTime: "17:55 - 19:20 / 16:30 - 18:00",
+    trainingTime: "Maandag 17:55 - 19:20 · Woensdag 16:30 - 18:00",
     trainingLocation: "Zelem",
     coach: "Jasper Peremans",
     image: "/images/teams/U15-2025.jpg",
