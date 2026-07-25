@@ -12,9 +12,10 @@ import {
   Clock, 
   Calendar, 
   User, 
-  Users, 
+  Users,
   ArrowLeft,
   ExternalLink,
+  MapPin,
   X
 } from "lucide-react";
 
@@ -233,6 +234,15 @@ function TeamContent() {
                       <p className="text-gray-600">{team.trainingTime}</p>
                     </div>
                   </div>
+                  {team.trainingLocation && (
+                    <div className="flex items-start">
+                      <MapPin className="w-4 h-4 mr-3 text-gray-400 mt-1" />
+                      <div>
+                        <p className="font-medium text-gray-900">Locatie</p>
+                        <p className="text-gray-600">{team.trainingLocation}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
