@@ -17,16 +17,14 @@ export function HeroSection() {
         transition={{ duration: 0.6, delay: 0.4 }}
         className="absolute top-3 right-3 md:top-5 md:right-5 z-20"
       >
-        <div className="bg-white rounded-xl shadow-lg p-2 md:p-2.5">
-          <Image
-            src="/images/samenwerking-web.png"
-            alt="In samenwerking met Eendracht Zwart-Wit Zelem"
-            width={520}
-            height={286}
-            className="w-32 sm:w-40 md:w-56 h-auto"
-            priority
-          />
-        </div>
+        <Image
+          src="/images/samenwerking-outline.png"
+          alt="In samenwerking met Eendracht Zwart-Wit Zelem"
+          width={560}
+          height={313}
+          className="w-32 sm:w-40 md:w-56 h-auto drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]"
+          priority
+        />
       </motion.div>
 
       <div className="container-custom relative z-10 text-white">
