@@ -20,9 +20,12 @@ export const metadata: Metadata = {
   description: "KWS Linkhout - Een club met een hart. 25 ploegen, 300+ leden. Van U6 tot senioren.",
   metadataBase: new URL(baseUrl),
   icons: {
-    icon: "/images/kwslinkhout-logo.png",
-    apple: "/images/kwslinkhout-logo.png",
-    shortcut: "/images/kwslinkhout-logo.png",
+    icon: [
+      { url: "/images/favicon-kws-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/images/favicon-kws.png", sizes: "64x64", type: "image/png" },
+    ],
+    apple: "/images/apple-touch-icon.png",
+    shortcut: "/images/favicon-kws.png",
   },
   other: {
     'view-transition': 'same-origin',
