@@ -15,7 +15,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="absolute top-3 right-3 md:top-5 md:right-5 z-20"
+        className="absolute top-6 right-6 md:top-14 md:right-24 z-20"
       >
         <Image
           src="/images/samenwerking-outline.png"
