@@ -23,7 +23,7 @@ export function AboutSection() {
               en samen groeien. Van onze jongste U6-spelers tot onze veteranen - iedereen telt mee.
             </p>
             <p className="text-body mb-8">
-              Met 22 ploegen, waaronder 5 meisjesploegen, is er voor ieder wat wils. Kom eens langs
+              Met 25 ploegen, waaronder 6 dames/meisjesploegen, is er voor ieder wat wils. Kom eens langs
               en ervaar de unieke sfeer zelf!
             </p>
             <GeschiedenisButton />
@@ -45,7 +45,7 @@ export function AboutSection() {
                   className="w-full h-auto rounded-lg"
                 />
                 <p className="text-center text-sm text-gray-500 mt-3 font-medium">
-                  Onze trots: 22 ploegen, 250+ leden
+                  Onze trots: 25 ploegen, 300+ leden
                 </p>
               </div>
             </div>

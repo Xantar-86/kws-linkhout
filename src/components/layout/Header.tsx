@@ -19,7 +19,7 @@ const navItems = [
     })),
   },
   {
-    name: "Damesploegen",
+    name: "Dames/Meisjes ploegen",
     href: "/ploegen#dames",
     dropdown: [
       { name: "Over ons", href: "/ploegen/dames-over-ons" },

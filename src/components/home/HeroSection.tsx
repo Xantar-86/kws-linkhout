@@ -49,7 +49,7 @@ export function HeroSection() {
                 href="/ploegen"
                 className="btn-primary bg-white text-primary hover:bg-gray-100 text-sm md:text-base"
               >
-                Ontdek Onze 22 Ploegen
+                Ontdek Onze 25 Ploegen
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
               <Link

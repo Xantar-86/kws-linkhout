@@ -6,9 +6,9 @@ import { AnimatedNumber } from "./AnimatedNumber";
 
 const stats = [
   { icon: Trophy, label: "Opgericht", value: 1938, suffix: "" },
-  { icon: Users, label: "Actieve Leden", value: 250, suffix: "+" },
-  { icon: Calendar, label: "Ploegen", value: 22, suffix: "" },
-  { icon: Users2, label: "Damesploegen", value: 5, suffix: "" },
+  { icon: Users, label: "Actieve Leden", value: 300, suffix: "+" },
+  { icon: Calendar, label: "Ploegen", value: 25, suffix: "" },
+  { icon: Users2, label: "Dames/Meisjes ploegen", value: 6, suffix: "" },
 ];
 
 export function StatsSection() {
