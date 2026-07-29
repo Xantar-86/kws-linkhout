@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const sponsors = [
-  { name: "Roof Projects", image: "/images/sponsors/roof-projects.png" },
+  { name: "Roof Projects", image: "/images/sponsors/ROOF-PROJECTS-LOGO-RGB.jpg" },
   { name: "Salesforce", image: "/images/sponsors/Salesforce.png" },
   { name: "De Backer", image: "/images/sponsors/de-backer.jpeg" },
   { name: "Lumen", image: "/images/sponsors/lumen.png" },
