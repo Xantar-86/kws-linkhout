@@ -12,6 +12,7 @@ const sponsors = [
   { name: "PD Bouw", image: "/images/sponsors/pd-bouw.png" },
   { name: "AA Drink", image: "/images/sponsors/aa-drink.png" },
   { name: "Spar", image: "/images/sponsors/spar.jpg" },
+  { name: "Mathys", image: "/images/sponsors/Mathys.png" },
 ];
 
 export function SponsorsSection() {
