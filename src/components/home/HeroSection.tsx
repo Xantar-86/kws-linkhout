@@ -10,6 +10,25 @@ export function HeroSection() {
     <section className="relative min-h-[500px] md:min-h-[400px] py-12 md:py-0 md:h-[48vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700" />
 
+      {/* Samenwerkingsbadge - rechtsboven in de hoek */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="absolute top-3 right-3 md:top-5 md:right-5 z-20"
+      >
+        <div className="bg-white rounded-xl shadow-lg p-2 md:p-2.5">
+          <Image
+            src="/images/samenwerking-web.png"
+            alt="In samenwerking met Eendracht Zwart-Wit Zelem"
+            width={520}
+            height={286}
+            className="w-32 sm:w-40 md:w-56 h-auto"
+            priority
+          />
+        </div>
+      </motion.div>
+
       <div className="container-custom relative z-10 text-white">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
