@@ -189,7 +189,7 @@ export const teams: Team[] = [
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/overzicht"
   },
 
-  // ========== JEUGD (16) ==========
+  // ========== JEUGD (15) ==========
 
   {
     id: "j-2",
@@ -305,23 +305,6 @@ export const teams: Team[] = [
     description: "Veel spelvormen en plezier op het veld.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351072/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351072/overzicht"
-  },
-  {
-    id: "j-7b",
-    name: "U10 B",
-    slug: "u10-b",
-    category: "jeugd",
-    division: "2-Gewestelijk",
-    trainingDays: ["Dinsdag", "Donderdag"],
-    trainingTime: "17:00 - 18:15",
-    trainingLocation: "Zelem",
-    coach: "Franky Forrier & Staf Vaes",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U10-2025.jpg
-    calendarUrl: "#",
-    standingsUrl: "#",
-    description: "Het tweede U10 team met evenveel enthousiasme.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/357042/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/357042/overzicht"
   },
   {
     id: "j-8",
