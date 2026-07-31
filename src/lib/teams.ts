@@ -47,23 +47,6 @@ export const teams: Team[] = [
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365216/overzicht"
   },
   {
-    id: "sen-2",
-    name: "Beloften P2",
-    slug: "reserven",
-    category: "senioren",
-    division: "Reserven Voetb Vl AU",
-    trainingDays: ["Dinsdag", "Donderdag"],
-    trainingTime: "19:30 - 21:00",
-    trainingLocation: "Zelem",
-    coach: "Steven V",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
-    calendarUrl: "#",
-    standingsUrl: "#",
-    description: "De toekomstige talenten en ervaren krachten van de club.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372246/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372246/overzicht"
-  },
-  {
     id: "sen-3",
     name: "1ste Ploeg P4",
     slug: "recrea-mannen",
@@ -77,6 +60,23 @@ export const teams: Team[] = [
     description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/overzicht"
+  },
+  {
+    id: "sen-2",
+    name: "Beloften",
+    slug: "reserven",
+    category: "senioren",
+    division: "Reserven Voetb Vl AU",
+    trainingDays: ["Dinsdag", "Donderdag"],
+    trainingTime: "19:30 - 21:00",
+    trainingLocation: "Zelem",
+    coach: "Steven V",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
+    calendarUrl: "#",
+    standingsUrl: "#",
+    description: "De toekomstige talenten en ervaren krachten van de club.",
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372246/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372246/overzicht"
   },
   {
     id: "sen-4",
