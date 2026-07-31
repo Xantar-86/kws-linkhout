@@ -37,7 +37,7 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Patrick Beutels",
-    image: "/images/teams/1ste-ploeg-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/1ste-ploeg-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Ons vlaggenschip in de 2de Provinciale. Een mix van ervaring en jong talent.",
@@ -56,7 +56,7 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Steven V",
-    image: "/images/teams/placeholder-senioren-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De toekomstige talenten en ervaren krachten van de club.",
@@ -73,7 +73,7 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Ramon",
-    image: "/images/teams/placeholder-senioren-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
     description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/overzicht"
@@ -90,7 +90,7 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Frank Schroyen",
-    image: "/images/teams/1ste-ploeg-dames-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/1ste-ploeg-dames-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Onze damesploeg strijdt elke week voor de punten in de 2de Provinciale.",
@@ -108,7 +108,7 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Steven B",
-    image: "/images/teams/women-U20-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/women-U20-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De brug tussen jeugd en senioren voor onze meisjestalenten.",
@@ -125,7 +125,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "19:35 - 21:00",
     coach: "Frank Schroyen",
-    image: "/images/teams/women-U16-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/women-U16-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Talentvolle meisjes die elke week met plezier trainen en spelen.",
@@ -144,7 +144,7 @@ export const teams: Team[] = [
     trainingTime: "18:15 - 19:30",
     trainingLocation: "Zelem",
     coach: "Kevin Kenis",
-    image: "/images/teams/placeholder-dames-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-dames-2025.jpg
     description: "Onze jongste meisjes maken hun eerste stappen op het voetbalveld.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/overzicht"
@@ -158,7 +158,7 @@ export const teams: Team[] = [
     trainingDays: ["Woensdag"],
     trainingTime: "20:00 - 21:30",
     coach: "Staf Vaes",
-    image: "/images/teams/recrea-vrouwen-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/recrea-vrouwen-2025.jpg
     description: "Gezellig voetballen voor dames van alle niveaus.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359957/kalender"
   },
@@ -175,7 +175,7 @@ export const teams: Team[] = [
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
     coach: "Steven B",
-    image: "/images/teams/U17-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U17-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Talentvolle jongens in de belangrijke ontwikkelingsfase.",
@@ -192,7 +192,7 @@ export const teams: Team[] = [
     trainingTime: "Maandag 17:55 - 19:20 · Woensdag 16:30 - 18:00",
     trainingLocation: "Zelem",
     coach: "Jasper Peremans",
-    image: "/images/teams/U15-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U15-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Techniek en tactiek staan centraal in deze leeftijdsgroep.",
@@ -209,7 +209,7 @@ export const teams: Team[] = [
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
     coach: "Pieter Peremans",
-    image: "/images/teams/U13-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U13-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De overgang van 8 naar 11 tegen 11 voetbal.",
@@ -226,7 +226,7 @@ export const teams: Team[] = [
     trainingTime: "17:55 - 19:20",
     trainingLocation: "KWS",
     coach: "Stijn Vlaeyen",
-    image: "/images/teams/U12-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U12-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Spelenderwijs leren en plezier maken staat voorop.",
@@ -243,7 +243,7 @@ export const teams: Team[] = [
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
     coach: "Maarten Cleeren",
-    image: "/images/teams/U11-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U11-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De basis van techniek en teamspel wordt hier gelegd.",
@@ -260,7 +260,7 @@ export const teams: Team[] = [
     trainingTime: "17:00 - 18:15",
     trainingLocation: "Zelem",
     coach: "Franky Forrier & Staf Vaes",
-    image: "/images/teams/U10-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U10-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Veel spelvormen en plezier op het veld.",
@@ -277,7 +277,7 @@ export const teams: Team[] = [
     trainingTime: "17:00 - 18:15",
     trainingLocation: "Zelem",
     coach: "Franky Forrier & Staf Vaes",
-    image: "/images/teams/U10-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U10-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U10 team met evenveel enthousiasme.",
@@ -294,7 +294,7 @@ export const teams: Team[] = [
     trainingTime: "18:00 - 19:30",
     trainingLocation: "KWS",
     coach: "Staf Vaes",
-    image: "/images/teams/U9-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Ontdekken, leren en groeien als voetballer.",
@@ -311,7 +311,7 @@ export const teams: Team[] = [
     trainingTime: "18:00 - 19:30",
     trainingLocation: "KWS",
     coach: "Staf Vaes",
-    image: "/images/teams/U9-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U9 team met veel potentieel.",
@@ -328,7 +328,7 @@ export const teams: Team[] = [
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
     coach: "Kevin Kenis & Gunther Vanneroem",
-    image: "/images/teams/U8-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U8-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De eerste stappen in het competitieve voetbal.",
@@ -345,7 +345,7 @@ export const teams: Team[] = [
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
     coach: "Kevin Kenis & Gunther Vanneroem",
-    image: "/images/teams/U8-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U8-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U8 team met veel plezier op het veld.",
@@ -362,7 +362,7 @@ export const teams: Team[] = [
     trainingTime: "18:00 - 19:15",
     trainingLocation: "KWS",
     coach: "Wesly Thomas & Abdullah Sümbül",
-    image: "/images/teams/U7-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
     calendarUrl: "#",
     description: "Spelenderwijs kennismaken met voetbal.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351076/kalender",
@@ -378,7 +378,7 @@ export const teams: Team[] = [
     trainingTime: "18:00 - 19:15",
     trainingLocation: "KWS",
     coach: "Wesly Thomas & Abdullah Sümbül",
-    image: "/images/teams/U7-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
     calendarUrl: "#",
     description: "Het tweede U7 team met veel enthousiasme.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/356637/kalender",
@@ -394,7 +394,7 @@ export const teams: Team[] = [
     trainingTime: "18:00 - 19:00",
     trainingLocation: "KWS",
     coach: "Simon Biesmans & Lennert Neuteleers",
-    image: "/images/teams/U6-2025.jpg",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U6-2025.jpg
     description: "Onze allerkleinsten! Plezier en bewegen staat centraal.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/overzicht"
