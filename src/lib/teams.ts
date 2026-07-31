@@ -291,8 +291,8 @@ export const teams: Team[] = [
   },
   {
     id: "j-7",
-    name: "U10 A",
-    slug: "u10-a",
+    name: "U10",
+    slug: "u10",
     category: "jeugd",
     division: "2-Gewestelijk",
     trainingDays: ["Dinsdag", "Donderdag"],
