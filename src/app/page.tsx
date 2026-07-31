@@ -20,6 +20,8 @@ export default async function Home() {
     <div className="min-h-screen">
       <HeroSection />
 
+      <AboutSection />
+
       <VolgendeWedstrijd
         apiUrl="/api/wedstrijden"
         kalenderUrl="https://www.rbfa.be/nl/club/1595/ploeg/365216/kalender"
@@ -38,8 +40,6 @@ export default async function Home() {
         titel="Dames - Volgende Wedstrijd"
         kleur="pink"
       />
-
-      <AboutSection />
       <StatsSection />
       <NieuwsSection events={events} />
       <BerichtenSection berichten={berichten} />
