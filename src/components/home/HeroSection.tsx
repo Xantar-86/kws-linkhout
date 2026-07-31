@@ -10,19 +10,19 @@ export function HeroSection() {
     <section className="relative min-h-[500px] md:min-h-[400px] py-12 md:py-0 md:h-[48vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700" />
 
-      {/* Samenwerkingsbadge - rechtsboven in de hoek */}
+      {/* Samenwerkingsbadge - desktop: rechtsboven in de hoek */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="absolute top-6 right-6 md:top-14 md:right-24 z-20"
+        className="hidden md:block absolute md:top-14 md:right-24 z-20"
       >
         <Image
           src="/images/samenwerking-outline.png"
           alt="In samenwerking met Eendracht Zwart-Wit Zelem"
           width={560}
           height={313}
-          className="w-32 sm:w-40 md:w-56 h-auto drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]"
+          className="md:w-56 h-auto drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]"
           priority
         />
       </motion.div>
@@ -34,6 +34,16 @@ export function HeroSection() {
           transition={{ duration: 0.8 }}
           className="flex flex-col md:flex-row items-center gap-8 md:gap-12"
         >
+          {/* Samenwerkingsbadge - mobiel: boven het logo */}
+          <Image
+            src="/images/samenwerking-outline.png"
+            alt="In samenwerking met Eendracht Zwart-Wit Zelem"
+            width={560}
+            height={313}
+            className="md:hidden w-52 h-auto drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]"
+            priority
+          />
+
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
