@@ -129,7 +129,6 @@ export function VolgendeWedstrijd({
                 {titel}
               </span>
               <h3 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
-                {kleur === "primary" && <span className="text-2xl">⚽</span>}
                 {wedstrijd.summary}
               </h3>
               {wedstrijd.location && (
