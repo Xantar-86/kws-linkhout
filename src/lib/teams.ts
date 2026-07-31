@@ -26,7 +26,7 @@ export interface Team {
 
 // REGEL 21-180: Alle ploegen data
 export const teams: Team[] = [
-  // ========== SENIOREN (4) ==========
+  // ========== SENIOREN (6) ==========
   {
     id: "sen-1",
     name: "1ste Ploeg P2",
@@ -36,7 +36,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
-    coach: "Patrick Beutels",
+    coach: "Jelle Aerts",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/1ste-ploeg-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -55,7 +55,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
-    coach: "Ramon",
+    coach: "Ramon Fernandez",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
     description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
@@ -70,7 +70,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
-    coach: "Steven V",
+    coach: "Steven Vangeel",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -90,14 +90,12 @@ export const teams: Team[] = [
     image: "/images/under-construction.png",
     description: "Gezellig voetballen voor heren van alle niveaus."
   },
-
-  // ========== DAMES/MEISJES (6) ==========
   {
     id: "dam-1",
-    name: "Dames 1ste Ploeg P2",
+    name: "Dames 1ste Ploeg P1",
     slug: "eerste-ploeg-dames",
-    category: "dames",
-    division: "2de Provinciale Dames",
+    category: "senioren",
+    division: "1ste Provinciale Dames",
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
@@ -105,9 +103,41 @@ export const teams: Team[] = [
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/1ste-ploeg-dames-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
-    description: "Onze damesploeg strijdt elke week voor de punten in de 2de Provinciale.",
+    description: "Onze eerste damesploeg strijdt elke week voor de punten in de 1ste Provinciale.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365217/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365217/overzicht"
+  },
+  {
+    id: "dam-6",
+    name: "Recrea Vrouwen",
+    slug: "recrea-vrouwen",
+    category: "senioren",
+    division: "Vriendschappelijk",
+    trainingDays: ["Woensdag"],
+    trainingTime: "20:00 - 21:30",
+    coach: "Staf Vaes",
+    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/recrea-vrouwen-2025.jpg
+    description: "Gezellig voetballen voor dames van alle niveaus.",
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359957/kalender"
+  },
+
+  // ========== DAMES/MEISJES (4) ==========
+  {
+    id: "dam-4",
+    name: "Dames 2de Ploeg P2",
+    slug: "tweede-ploeg-dames",
+    category: "dames",
+    division: "2de Provinciale Dames",
+    trainingDays: ["Maandag", "Woensdag"],
+    trainingTime: "19:30 - 21:00",
+    trainingLocation: "Zelem",
+    coach: "",
+    image: "/images/under-construction.png",
+    calendarUrl: "#",
+    standingsUrl: "#",
+    description: "Onze tweede damesploeg in de 2de Provinciale.",
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372245/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/372245/overzicht"
   },
   {
     id: "dam-2",
@@ -129,20 +159,17 @@ export const teams: Team[] = [
   },
   {
     id: "dam-3",
-    name: "Women U16",
-    slug: "women-u16",
+    name: "Women U10",
+    slug: "women-u10",
     category: "dames",
     subCategory: "meisjes",
-    division: "2-Meisjes U16 reeks Q",
+    division: "Meisjes U10",
     trainingDays: ["Maandag", "Woensdag"],
-    trainingTime: "19:35 - 21:00",
+    trainingTime: "18:15 - 19:30",
+    trainingLocation: "Zelem",
     coach: "Frank Schroyen",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/women-U16-2025.jpg
-    calendarUrl: "#",
-    standingsUrl: "#",
-    description: "Talentvolle meisjes die elke week met plezier trainen en spelen.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351079/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351079/overzicht"
+    image: "/images/under-construction.png",
+    description: "Talentvolle meisjes die elke week met plezier trainen en spelen."
   },
 
   {
@@ -160,19 +187,6 @@ export const teams: Team[] = [
     description: "Onze jongste meisjes maken hun eerste stappen op het voetbalveld.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/overzicht"
-  },
-  {
-    id: "dam-6",
-    name: "Recrea Vrouwen",
-    slug: "recrea-vrouwen",
-    category: "dames",
-    division: "Vriendschappelijk",
-    trainingDays: ["Woensdag"],
-    trainingTime: "20:00 - 21:30",
-    coach: "Staf Vaes",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/recrea-vrouwen-2025.jpg
-    description: "Gezellig voetballen voor dames van alle niveaus.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359957/kalender"
   },
 
   // ========== JEUGD (17) ==========
