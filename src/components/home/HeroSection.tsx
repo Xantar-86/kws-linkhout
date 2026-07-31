@@ -50,7 +50,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="hidden md:block flex-shrink-0"
           >
-            <div className="relative w-28 h-28 md:w-36 md:h-36 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">
+            <div className="relative w-28 h-28 md:w-52 md:h-52 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">
               <Image
                 src="/images/kwslinkhout-logo.png"
                 alt="KWS Linkhout"
