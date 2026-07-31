@@ -48,7 +48,7 @@ export function HeroSection() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex-shrink-0"
+            className="hidden md:block flex-shrink-0"
           >
             <div className="relative w-28 h-28 md:w-36 md:h-36 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">
               <Image

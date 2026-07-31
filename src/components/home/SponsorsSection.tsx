@@ -48,7 +48,7 @@ export function SponsorsSection() {
                 <img
                   src={sponsor.image}
                   alt={sponsor.name}
-                  className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 opacity-70 group-hover:opacity-100"
+                  className="max-h-full max-w-full object-contain filter transition-all duration-300 md:grayscale md:opacity-70 md:group-hover:grayscale-0 md:group-hover:opacity-100"
                 />
               </div>
             </motion.div>
