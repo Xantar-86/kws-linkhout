@@ -189,7 +189,7 @@ export const teams: Team[] = [
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/overzicht"
   },
 
-  // ========== JEUGD (17) ==========
+  // ========== JEUGD (16) ==========
 
   {
     id: "j-2",
@@ -207,6 +207,19 @@ export const teams: Team[] = [
     description: "Talentvolle jongens in de belangrijke ontwikkelingsfase.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351067/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351067/overzicht"
+  },
+  {
+    id: "j-16",
+    name: "U16",
+    slug: "u16",
+    category: "jeugd",
+    division: "2-Gewestelijk",
+    trainingDays: ["Dinsdag", "Donderdag"],
+    trainingTime: "17:55 - 19:20",
+    trainingLocation: "Zelem",
+    coach: "",
+    image: "/images/under-construction.png",
+    description: "Onze U16 in de belangrijke ontwikkelingsfase."
   },
   {
     id: "j-3",
@@ -424,6 +437,19 @@ export const teams: Team[] = [
     description: "Onze allerkleinsten! Plezier en bewegen staat centraal.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/overzicht"
+  },
+  {
+    id: "j-u5",
+    name: "U5 Voetbaltuin",
+    slug: "u5",
+    category: "jeugd",
+    division: "Voetbaltuin",
+    trainingDays: ["Woensdag"],
+    trainingTime: "18:00 - 19:00",
+    trainingLocation: "KWS",
+    coach: "",
+    image: "/images/under-construction.png",
+    description: "Onze allerjongsten maken spelenderwijs kennis met voetbal in de voetbaltuin."
   }
 ];
 
