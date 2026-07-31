@@ -26,7 +26,7 @@ export interface Team {
 
 // REGEL 21-180: Alle ploegen data
 export const teams: Team[] = [
-  // ========== SENIOREN (3) ==========
+  // ========== SENIOREN (4) ==========
   {
     id: "sen-1",
     name: "1ste Ploeg P2",
@@ -77,6 +77,18 @@ export const teams: Team[] = [
     description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/overzicht"
+  },
+  {
+    id: "sen-4",
+    name: "Recrea Heren",
+    slug: "recrea-heren",
+    category: "senioren",
+    division: "Recreatief",
+    trainingDays: [],
+    trainingTime: "",
+    coach: "",
+    image: "/images/under-construction.png",
+    description: "Gezellig voetballen voor heren van alle niveaus."
   },
 
   // ========== DAMES/MEISJES (6) ==========
