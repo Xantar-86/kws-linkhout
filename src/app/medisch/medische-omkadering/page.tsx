@@ -19,7 +19,7 @@ const uitrusting = [
   },
   {
     categorie: "Reanimatie",
-    items: ["AED-toestel (kantine)", "Zuurstofmaskers", "Beademingsmaskers", "Reanimatiepop"]
+    items: ["AED-toestel (kantine Linkhout & scheidsrechterslokaal Zelem)", "Zuurstofmaskers", "Beademingsmaskers", "Reanimatiepop"]
   },
   {
     categorie: "Overige",

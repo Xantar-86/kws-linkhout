@@ -331,9 +331,9 @@ export default function EhboPage() {
               <h2 className="text-2xl font-bold text-gray-900">De EHBO-koffer</h2>
             </div>
             <p className="text-gray-600 mb-6">
-              In elke kleedkamerzone en langs het veld is een EHBO-koffer aanwezig. Trainers en
-              afgevaardigden weten waar die zich bevindt. Controleer regelmatig of alles nog aanwezig
-              en niet vervallen is. Een goed gevulde koffer bevat onder meer:
+              In Linkhout vind je de EHBO-koffer in de kantine, in Zelem in het scheidsrechterslokaal.
+              Trainers en afgevaardigden weten waar die zich bevindt. Controleer regelmatig of alles nog
+              aanwezig en niet vervallen is. Een goed gevulde koffer bevat onder meer:
             </p>
             <div className="grid sm:grid-cols-2 gap-3">
               {ehboKoffer.map((item, index) => (

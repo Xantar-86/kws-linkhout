@@ -4,11 +4,20 @@ import { motion } from "framer-motion";
 import { Heart, ArrowLeft, MapPin, Activity, AlertCircle, Play } from "lucide-react";
 import Link from "next/link";
 
-const aedLocatie = {
-  locatie: "Kantine - Hoofdingang (buiten)",
-  beschrijving: "AED bevestigd aan de buitenmuur van de kantine bij de hoofdingang. Altijd toegankelijk, ook wanneer de kantine gesloten is.",
-  beschikbaar: "24/7 toegankelijk"
-};
+const aedLocaties = [
+  {
+    naam: "Locatie Linkhout",
+    locatie: "Kantine - Hoofdingang (buiten)",
+    beschrijving: "AED bevestigd aan de buitenmuur van de kantine bij de hoofdingang. Altijd toegankelijk, ook wanneer de kantine gesloten is.",
+    beschikbaar: "24/7 toegankelijk"
+  },
+  {
+    naam: "Locatie Zelem",
+    locatie: "Scheidsrechterslokaal",
+    beschrijving: "AED in het scheidsrechterslokaal op de trainingslocatie in Zelem.",
+    beschikbaar: "Enkel toegankelijk bij activiteit"
+  }
+];
 
 const reanimatieStappen = [
   {
@@ -84,19 +93,24 @@ export default function ReanimatieDefibrillatorPage() {
                 <div className="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center text-white">
                   <MapPin className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-pink-900">AED Locatie</h2>
+                <h2 className="text-2xl font-bold text-pink-900">AED Locaties</h2>
               </div>
-              <div className="bg-white rounded-xl p-6 flex flex-col md:flex-row md:items-center gap-4">
-                <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-pink-600 flex-shrink-0">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-bold text-gray-900 text-lg">{aedLocatie.locatie}</h3>
-                  <p className="text-gray-600">{aedLocatie.beschrijving}</p>
-                </div>
-                <div className="text-sm text-pink-700 bg-pink-50 px-4 py-2 rounded-full">
-                  {aedLocatie.beschikbaar}
-                </div>
+              <div className="space-y-4">
+                {aedLocaties.map((aed, index) => (
+                  <div key={index} className="bg-white rounded-xl p-6 flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-pink-600 flex-shrink-0">
+                      <MapPin className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-pink-600">{aed.naam}</p>
+                      <h3 className="font-bold text-gray-900 text-lg">{aed.locatie}</h3>
+                      <p className="text-gray-600">{aed.beschrijving}</p>
+                    </div>
+                    <div className="text-sm text-pink-700 bg-pink-50 px-4 py-2 rounded-full md:flex-shrink-0">
+                      {aed.beschikbaar}
+                    </div>
+                  </div>
+                ))}
               </div>
             </motion.div>
 
