@@ -58,10 +58,9 @@ export const contactPersons: ContactPerson[] = [
   },
   {
     id: "5",
-    name: "Frank Schroyen",
-    role: "Hoofdtrainer Dames",
+    name: "Ben Jouck",
+    role: "Footballista Coördinator",
     email: "info@kwslinkhout.be",
-    phone: "0476 23 57 29",
     category: "dames"
   },
   {
