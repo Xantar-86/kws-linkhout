@@ -90,7 +90,7 @@ export function RegistrationForm() {
 
           <div className="mt-6 pt-6 border-t border-white/20">
             <p className="text-sm text-white/80">
-              Lidgeld vanaf €150/jaar (inclusief verzekering & kledij)
+              Lidgeld vanaf €130/jaar (inclusief verzekering & kledij)
             </p>
           </div>
         </div>
