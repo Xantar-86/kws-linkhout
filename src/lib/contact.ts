@@ -77,6 +77,22 @@ export const contactPersons: ContactPerson[] = [
     role: "Administratie & lidmaatschappen",
     email: "info@kwslinkhout.be",
     category: "administratie"
+  },
+  {
+    id: "8",
+    name: "Jochen Thoelen",
+    role: "Hoofdafgevaardigde Bovenbouw",
+    email: "info@kwslinkhout.be",
+    phone: "0494 44 38 04",
+    category: "jeugd"
+  },
+  {
+    id: "9",
+    name: "Kelly Smits",
+    role: "Hoofdafgevaardigde Onderbouw",
+    email: "info@kwslinkhout.be",
+    phone: "0486 91 94 46",
+    category: "jeugd"
   }
 ];
 
