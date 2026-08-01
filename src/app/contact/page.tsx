@@ -224,7 +224,7 @@ export default function ContactPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="bg-white rounded-2xl p-8 shadow-lg"
+                  className="bg-white rounded-2xl p-8 shadow-lg flex flex-col"
                 >
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
@@ -251,7 +251,7 @@ export default function ContactPage() {
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(facility.address)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+                    className="inline-flex items-center gap-2 text-primary font-medium hover:underline mt-auto"
                   >
                     <MapPin className="w-4 h-4" />
                     Open in Google Maps
