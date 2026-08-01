@@ -20,7 +20,7 @@ async function loadNieuwsbrieven(): Promise<Nieuwsbrief[]> {
     return files.map((file) => {
       const filePath = path.join(dir, file);
       const { data, content } = matter(fs.readFileSync(filePath, "utf8"));
-      // Filename is "YYYY-MM-DD-naam.md" (Decap-conventie) — strip de datum-prefix
+      // Filename is "YYYY-MM-DD-naam.md" (Decap-conventie): strip de datum-prefix
       // zodat de URL-slug schoon is, bv. "einde-seizoen-2026".
       const fallbackSlug = file.replace(/\.md$/, "").replace(/^\d{4}-\d{2}-\d{2}-/, "");
       return {

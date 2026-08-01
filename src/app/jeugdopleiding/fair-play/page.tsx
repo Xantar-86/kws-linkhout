@@ -153,7 +153,7 @@ export default function FairPlayPage() {
               <blockquote className="text-xl italic text-gray-700 mb-4">
                 "Het gaat niet om winnen of verliezen, maar om hoe je het spel speelt."
               </blockquote>
-              <cite className="text-gray-500">— Pierre de Coubertin</cite>
+              <cite className="text-gray-500">Pierre de Coubertin</cite>
             </motion.div>
           </motion.div>
         </div>

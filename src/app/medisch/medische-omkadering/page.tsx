@@ -190,7 +190,7 @@ export default function MedischeOmkaderingPage() {
               <blockquote className="text-xl italic text-gray-700 mb-4">
                 "Veiligheid staat voorop. Goede EHBO-voorzieningen maken het verschil."
               </blockquote>
-              <cite className="text-gray-500">— KWS Linkhout</cite>
+              <cite className="text-gray-500">KWS Linkhout</cite>
             </motion.div>
           </motion.div>
         </div>

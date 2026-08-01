@@ -238,7 +238,7 @@ export default function EhboPage() {
             <p className="text-teal-800 leading-relaxed">
               EHBO staat voor <strong>Eerste Hulp Bij Ongevallen</strong>: de hulp die je onmiddellijk
               verleent aan een gewonde of onwel geworden persoon, vóór professionele hulpverleners ter
-              plaatse zijn. Op en rond het voetbalveld gebeuren nu eenmaal ongevallen — van een
+              plaatse zijn. Op en rond het voetbalveld gebeuren nu eenmaal ongevallen, van een
               schaafwonde tot een ernstige blessure. Wie kalm blijft, de juiste stappen volgt en tijdig
               hulp inschakelt, beperkt de schade en kan in het uiterste geval een leven redden.
             </p>
@@ -410,7 +410,7 @@ export default function EhboPage() {
             <p className="text-white/90 leading-relaxed mb-4">
               Bij elke training en wedstrijd is er iemand met EHBO-kennis aanwezig. Meerdere trainers en
               afgevaardigden zijn opgeleid in eerste hulp en reanimatie. Twijfel je of het ernstig is?
-              Handel dan altijd voorzichtig en schakel professionele hulp in — bij twijfel bel je 112.
+              Handel dan altijd voorzichtig en schakel professionele hulp in. Bij twijfel bel je 112.
             </p>
             <a
               href="mailto:info@kwslinkhout.be"

@@ -154,7 +154,7 @@ export default function VoorstellingPage() {
               <blockquote className="text-xl italic text-gray-700 mb-4">
                 "De veiligheid van onze spelers is onze hoogste prioriteit."
               </blockquote>
-              <cite className="text-gray-500">— KWS Linkhout Bestuur</cite>
+              <cite className="text-gray-500">KWS Linkhout Bestuur</cite>
             </motion.div>
           </motion.div>
         </div>
