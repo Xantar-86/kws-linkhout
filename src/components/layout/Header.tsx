@@ -69,6 +69,7 @@ const navItems = [
       { name: "Voorstelling", href: "/medisch" },
       { name: "Voetbalongeval", href: "/medisch/voetbalongeval" },
       { name: "Medische Omkadering", href: "/medisch/medische-omkadering" },
+      { name: "EHBO", href: "/medisch/ehbo" },
       { name: "Reanimatie & Defibrillator", href: "/medisch/reanimatie-defibrillator" },
       { name: "Veilig Vervoer Kinderen", href: "/medisch/veilig-vervoer-kinderen" },
       { name: "Voeding", href: "/medisch/voeding" },
