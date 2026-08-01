@@ -61,6 +61,7 @@ export const contactPersons: ContactPerson[] = [
     name: "Ben Jouck",
     role: "Footballista Coördinator",
     email: "info@kwslinkhout.be",
+    phone: "0479 07 35 55",
     category: "dames"
   },
   {
