@@ -123,7 +123,7 @@ export const faqItems: FAQItem[] = [
   {
     id: "2",
     question: "Wat kost het lidgeld?",
-    answer: "Het lidgeld voor seizoen 2025-2026 is: U6-U8: €150, U9-U12: €175, U13-U17: €200, U21: €225, Senioren: €250, Dames: €225. Dit is inclusief verzekering, clubkledij (shirt, short, kousen) en deelname aan clubactiviteiten.",
+    answer: "Het lidgeld voor seizoen 2026-2027 is: U5: €130 (of €160 bij inschrijving Bond), U6 t/m U9 en WU9: €295, U10 t/m U13 en WU13: €320, U15 t/m U17 en WU16 t/m WU20: €350, senioren mannen (P2-P4) en dames (P1): €400. Dit is inclusief verzekering, clubkledij (shirt, short, kousen) en deelname aan clubactiviteiten.",
     category: "lidmaatschap"
   },
   {
