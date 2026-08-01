@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Heart, ArrowLeft, MapPin, Activity, AlertCircle, Play } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, ArrowLeft, MapPin, Activity, AlertCircle, Play, X } from "lucide-react";
 import Link from "next/link";
 
 const aedLocaties = [
@@ -9,13 +10,15 @@ const aedLocaties = [
     naam: "Locatie Linkhout",
     locatie: "Kantine - Hoofdingang (buiten)",
     beschrijving: "AED bevestigd aan de buitenmuur van de kantine bij de hoofdingang. Altijd toegankelijk, ook wanneer de kantine gesloten is.",
-    beschikbaar: "24/7 toegankelijk"
+    beschikbaar: "24/7 toegankelijk",
+    fotos: [] as string[]
   },
   {
     naam: "Locatie Zelem",
     locatie: "Scheidsrechterslokaal",
     beschrijving: "AED in het scheidsrechterslokaal op de trainingslocatie in Zelem.",
-    beschikbaar: "Enkel toegankelijk bij activiteit"
+    beschikbaar: "Enkel toegankelijk bij activiteit",
+    fotos: ["/images/AED/zelem-1.jpeg", "/images/AED/zelem-2.jpeg"] as string[]
   }
 ];
 
@@ -43,6 +46,8 @@ const reanimatieStappen = [
 ];
 
 export default function ReanimatieDefibrillatorPage() {
+  const [lightbox, setLightbox] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Back Button */}
@@ -105,6 +110,24 @@ export default function ReanimatieDefibrillatorPage() {
                       <p className="text-sm font-semibold text-pink-600">{aed.naam}</p>
                       <h3 className="font-bold text-gray-900 text-lg">{aed.locatie}</h3>
                       <p className="text-gray-600">{aed.beschrijving}</p>
+                      {aed.fotos.length > 0 && (
+                        <div className="flex gap-2 mt-3">
+                          {aed.fotos.map((foto, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setLightbox(foto)}
+                              className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 hover:ring-2 hover:ring-pink-400 transition"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={foto}
+                                alt={`${aed.naam} AED foto ${i + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className="text-sm text-pink-700 bg-pink-50 px-4 py-2 rounded-full md:flex-shrink-0">
                       {aed.beschikbaar}
@@ -210,6 +233,36 @@ export default function ReanimatieDefibrillatorPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Lightbox voor AED-foto's */}
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={() => setLightbox(null)}
+          >
+            <button
+              onClick={() => setLightbox(null)}
+              className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition"
+              aria-label="Sluiten"
+            >
+              <X className="w-5 h-5 text-white" />
+            </button>
+            <motion.img
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              src={lightbox}
+              alt="AED locatie"
+              className="max-w-full max-h-[85vh] rounded-xl object-contain shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
