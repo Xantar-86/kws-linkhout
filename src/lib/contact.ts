@@ -106,6 +106,7 @@ export const facilities: Facility[] = [
       "3 kleedkamers",
       "Verwarmde douches",
       "1 scheidsrechterslokaal",
+      "Gratis parking",
       "Toegankelijk voor rolstoelen",
       "AED aanwezig"
     ]

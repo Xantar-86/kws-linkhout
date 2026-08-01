@@ -278,6 +278,26 @@ export default function ContactPage() {
                   title="KWS Linkhout Clubhuis"
                 />
               </motion.div>
+
+              {/* Google Maps Embed - Zelem */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-2xl overflow-hidden shadow-lg h-[400px]"
+              >
+                <iframe
+                  src="https://maps.google.com/maps?q=Broekstraat%2C%203545%20Halen&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Locatie Zelem"
+                />
+              </motion.div>
             </div>
           </div>
 
