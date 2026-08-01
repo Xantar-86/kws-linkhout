@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Stethoscope, AlertTriangle, Shield, Heart, Car, Apple, Wine, Target, Calendar, Users, Mail } from "lucide-react";
+import { Stethoscope, AlertTriangle, Shield, Heart, Car, Apple, Wine, Target, Calendar, Users, Mail, HeartPulse } from "lucide-react";
 import Link from "next/link";
 
 const medischModules = [
@@ -11,6 +11,13 @@ const medischModules = [
     description: "EHBO, certificeringen en medische voorzieningen",
     icon: Shield,
     color: "bg-blue-500"
+  },
+  {
+    id: "ehbo",
+    title: "EHBO",
+    description: "Eerste hulp bij ongevallen: stappenplan, blessures en EHBO-koffer",
+    icon: HeartPulse,
+    color: "bg-teal-500"
   },
   {
     id: "voetbalongeval",
