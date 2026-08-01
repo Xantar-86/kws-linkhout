@@ -92,9 +92,23 @@ export const facilities: Facility[] = [
       "Scheidsrechterslokaal",
       "Verwarmde douches",
       "Gratis parking",
-      "Toegankelijk voor rolstoelen"
+      "Toegankelijk voor rolstoelen",
+      "AED aanwezig"
     ],
     mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2511.1234567890123!2d5.123456789012345!3d51.123456789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDA3JzI0LjQiTiA1wrAwNyczNi40IkU!5e0!3m2!1snl!2sbe!4v1234567890123!5m2!1snl!2sbe"
+  },
+  {
+    id: "2",
+    name: "Locatie Zelem",
+    address: "Broekstraat, 3545 Halen",
+    description: "Extra trainingscomplex in Zelem waar heel wat ploegen hun trainingen en wedstrijden afwerken.",
+    features: [
+      "3 kleedkamers",
+      "Verwarmde douches",
+      "1 scheidsrechterslokaal",
+      "Toegankelijk voor rolstoelen",
+      "AED aanwezig"
+    ]
   }
 ];
 
