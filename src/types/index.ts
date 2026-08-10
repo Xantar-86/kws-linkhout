@@ -28,6 +28,17 @@ export interface WedstrijdEvent {
   start: Date;
   location: string;
   description: string;
+  /**
+   * Extra gegevens die enkel de RBFA-bron levert. Optioneel, zodat de
+   * handmatige en ICS-bronnen ongewijzigd blijven werken.
+   */
+  thuisNaam?: string;
+  uitNaam?: string;
+  thuisLogo?: string;
+  uitLogo?: string;
+  reeks?: string;
+  /** Het terrein van deze wedstrijd, apart van de samengestelde `location`. */
+  veld?: { naam: string; straat: string; gemeente: string };
 }
 
 export interface WedstrijdenResponse {

@@ -1,0 +1,23 @@
+{
+  "_uitleg": "Waar de tekst en de logo's op het clubsjabloon terechtkomen. Alle waarden zijn percentages van de breedte en de hoogte van de affiche, dus ze blijven kloppen ongeacht de resolutie. Deze waarden zijn opgemeten uit de sjabloonbestanden zelf (wedstrijd 1122x1402, uitslag 1086x1448). Pas dit bestand aan om iets te verschuiven; de code hoeft niet gewijzigd te worden.",
+
+  "wedstrijd": {
+    "balk": { "left": 30.0, "top": 27.18, "breedte": 49.5, "hoogte": 7.42 },
+    "badge": { "left": 35.47, "top": 36.31, "breedte": 34.23, "hoogte": 2.21 },
+    "vlakLinks": { "left": 5.79, "top": 40.09, "breedte": 37.61, "hoogte": 22.4 },
+    "vlakRechts": { "left": 57.58, "top": 40.09, "breedte": 37.97, "hoogte": 22.4 },
+    "midden": { "left": 43.4, "top": 46.5, "breedte": 14.2, "hoogte": 9.0 },
+    "veld": { "left": 32.0, "top": 72.2, "breedte": 21.0 },
+    "kantine": { "left": 66.5, "top": 72.9, "breedte": 26.0 }
+  },
+
+  "uitslag": {
+    "balk": { "left": 29.65, "top": 29.42, "breedte": 52.67, "hoogte": 7.46 },
+    "badge": { "left": 35.36, "top": 38.95, "breedte": 36.19, "hoogte": 2.42 },
+    "vlakLinks": { "left": 4.42, "top": 42.4, "breedte": 39.23, "hoogte": 22.51 },
+    "vlakRechts": { "left": 58.1, "top": 42.4, "breedte": 39.59, "hoogte": 22.51 },
+    "midden": { "left": 43.65, "top": 48.5, "breedte": 14.45, "hoogte": 9.0 },
+    "veld": { "left": 32.0, "top": 74.8, "breedte": 21.0 },
+    "kantine": { "left": 67.5, "top": 75.4, "breedte": 26.0 }
+  }
+}

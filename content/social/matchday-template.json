@@ -1,0 +1,85 @@
+{
+  "_uitleg": "Template voor de automatische matchday-post. Pas de teksten hier aan, niet in de code. Beschikbare placeholders: {ploeg} {label} {reeks} {thuisploeg} {uitploeg} {tegenstander} {datum} {tijd} {datumKort} {locatie} {hashtags}",
+
+  "caption": {
+    "thuis": [
+      "⚽ VOLGENDE WEDSTRIJD | {label}",
+      "",
+      "{thuisploeg} - {uitploeg}",
+      "{reeks}",
+      "",
+      "📅 {datum} om {tijd}",
+      "📍 {locatie}",
+      "",
+      "Kom je supporteren? We rekenen op jullie langs de lijn! 🔴⚪",
+      "De kantine is open voor en na de wedstrijd, iedereen welkom.",
+      "",
+      "{hashtags}"
+    ],
+    "uit": [
+      "⚽ VOLGENDE WEDSTRIJD | {label}",
+      "",
+      "{thuisploeg} - {uitploeg}",
+      "{reeks}",
+      "",
+      "📅 {datum} om {tijd}",
+      "📍 {locatie}",
+      "",
+      "We trekken op verplaatsing naar {tegenstander}. Supporters welkom! 🔴⚪",
+      "",
+      "{hashtags}"
+    ]
+  },
+
+  "_uitleg_uitslag": "Post na de wedstrijd. Extra placeholders: {thuisScore} {uitScore} {uitslag} {doelpuntenmakers} {resultaat}. De regel {doelpuntenmakers} valt weg als de RBFA nog geen doelpuntenmakers doorgaf.",
+
+  "uitslag": {
+    "winst": [
+      "🔴⚪ WINST | {label}",
+      "",
+      "{thuisploeg} {uitslag} {uitploeg}",
+      "{reeks}",
+      "",
+      "⚽ {doelpuntenmakers}",
+      "",
+      "Drie punten erbij. Bedankt aan iedereen die er was!",
+      "",
+      "{hashtags}"
+    ],
+    "gelijk": [
+      "⚪ GELIJKSPEL | {label}",
+      "",
+      "{thuisploeg} {uitslag} {uitploeg}",
+      "{reeks}",
+      "",
+      "⚽ {doelpuntenmakers}",
+      "",
+      "Een punt gepakt. Volgende week gaan we er weer voor.",
+      "",
+      "{hashtags}"
+    ],
+    "verlies": [
+      "UITSLAG | {label}",
+      "",
+      "{thuisploeg} {uitslag} {uitploeg}",
+      "{reeks}",
+      "",
+      "⚽ {doelpuntenmakers}",
+      "",
+      "Deze keer niet. Kop omhoog, we komen sterker terug.",
+      "",
+      "{hashtags}"
+    ]
+  },
+
+  "afbeelding": {
+    "kop": "WEDSTRIJD",
+    "kopUitslag": "UITSLAG",
+    "labelThuis": "THUISWEDSTRIJD",
+    "labelUit": "UITWEDSTRIJD",
+    "voettekst": "kwslinkhout.be",
+    "achtergrond": "#7f1d1d",
+    "accent": "#b91c1c",
+    "tekstkleur": "#ffffff"
+  }
+}

@@ -57,3 +57,6 @@ public/images/fotos/Eendjes race 2026/
 
 # Originele spelersfotos (265 MB); enkel de webversies in public/images/spelers/ gaan mee
 public/images/kws spelers/
+
+# Originele ploegfotos uit de camera; de bijgesneden versie staat er los naast
+public/images/teams/IMG_*.JPG

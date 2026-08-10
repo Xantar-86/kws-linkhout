@@ -1,0 +1,151 @@
+# ============================================
+# LOKALE ONTWIKKELING
+# ============================================
+# Gebruik dit voor lokaal testen met decap-server
+# 
+# Om te gebruiken:
+# cp public/admin-static/config.local.yml public/admin-static/config.yml
+# npx decap-server
+# npm run dev
+# ============================================
+
+backend:
+  name: proxy
+  proxy_url: http://localhost:8081/api/v1
+
+media_folder: public/images/nieuws
+public_folder: /images/nieuws
+
+# Nieuws collectie
+collections:
+  - name: nieuws
+    label: Nieuwsberichten
+    folder: content/nieuws
+    create: true
+    slug: "{{slug}}"
+    
+    fields:
+      - label: Titel
+        name: title
+        widget: string
+        required: true
+      
+      - label: Slug (URL naam)
+        name: slug
+        widget: string
+        required: false
+        hint: "Laat leeg om automatisch te genereren uit de titel"
+      
+      - label: Publicatiedatum
+        name: date
+        widget: datetime
+        date_format: YYYY-MM-DD
+        time_format: HH:mm
+        required: true
+      
+      - label: Auteur
+        name: author
+        widget: string
+        default: "Bestuur KWS Linkhout"
+      
+      - label: Leestijd (minuten)
+        name: readTime
+        widget: number
+        default: 3
+        min: 1
+        max: 30
+        value_type: int
+      
+      - label: Categorie
+        name: category
+        widget: select
+        options:
+          - { label: "Clubnieuws", value: "clubnieuws" }
+          - { label: "Ploegnieuws", value: "ploegnieuws" }
+          - { label: "Evenementen", value: "evenementen" }
+        default: "clubnieuws"
+      
+      - label: Uitgelicht
+        name: featured
+        widget: boolean
+        default: false
+        hint: "Toon dit artikel als uitgelicht op de homepage"
+      
+      - label: Samenvatting
+        name: excerpt
+        widget: text
+        required: true
+        hint: "Korte beschrijving voor overzichtspagina's"
+      
+      - label: Hoofdafbeelding
+        name: image
+        widget: image
+        required: false
+        hint: "Upload een afbeelding"
+      
+      - label: Bijlage / Document
+        name: attachment
+        widget: file
+        required: false
+        hint: "Upload een PDF of ander bestand"
+      
+      - label: Inhoud
+        name: body
+        widget: markdown
+        required: true
+        hint: "Het volledige artikel"
+
+  # Evenementen collectie
+  - name: events
+    label: Evenementen
+    folder: content/events
+    create: true
+    slug: "{{slug}}"
+    
+    fields:
+      - label: Titel
+        name: title
+        widget: string
+        required: true
+      
+      - label: Datum (kort)
+        name: date
+        widget: string
+        required: true
+        hint: "Bijvoorbeeld: '13-14 Maart' of '25 Mei'"
+      
+      - label: Volledige datum
+        name: dateFull
+        widget: string
+        required: true
+        hint: "Bijvoorbeeld: '13-14 maart 2026'"
+      
+      - label: Beschrijving
+        name: description
+        widget: text
+        required: true
+        hint: "Korte omschrijving van het evenement"
+      
+      - label: Categorie
+        name: category
+        widget: select
+        options:
+          - { label: "Verkoop", value: "verkoop" }
+          - { label: "Kamp", value: "kamp" }
+          - { label: "Sport", value: "sport" }
+          - { label: "Actie", value: "actie" }
+          - { label: "Feest", value: "feest" }
+          - { label: "Ander", value: "ander" }
+        default: "ander"
+      
+      - label: Locatie
+        name: location
+        widget: string
+        default: "KWS Linkhout"
+        required: false
+      
+      - label: Afbeelding
+        name: image
+        widget: image
+        required: false
+        hint: "Optionele afbeelding voor het evenement"

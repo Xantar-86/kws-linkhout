@@ -1,5 +1,5 @@
 # Start CMS servers script voor LOKALE ontwikkeling
-# Voor productie gebruik je Netlify Identity (geen lokale server nodig)
+# In productie gebeurt het inloggen via /api/admin-login
 # Usage: .\scripts\start-cms.ps1
 
 $ErrorActionPreference = "SilentlyContinue"
@@ -8,7 +8,7 @@ Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "Lokale CMS ontwikkeling" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Voor productie gebruik je Netlify Identity:" -ForegroundColor Yellow
+Write-Host "In productie log je in via /admin op de site zelf:" -ForegroundColor Yellow
 Write-Host "- Geen decap-server nodig" -ForegroundColor Yellow
 Write-Host "- Multi-provider login (GitHub, Google, Email)" -ForegroundColor Yellow
 Write-Host ""

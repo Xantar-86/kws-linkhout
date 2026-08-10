@@ -1,0 +1,63 @@
+name: Matchday-voorstel
+
+# Stuurt woensdag om 18u00 de voorstelmail met de aankondigingen van de vier
+# ploegen. Deze workflow post zelf niets: jij beslist per ploeg via de knoppen
+# in de mail.
+#
+# De planning staat bewust UIT. Zet het schedule-blok hieronder pas aan wanneer
+# de secrets ingevuld zijn en je de testmail hebt goedgekeurd.
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   # GitHub Actions draait in UTC en kent geen zomertijd. We vuren daarom
+  #   # twee keer en laten de stap hieronder afbreken als het lokaal geen 18u is:
+  #   # 16:00 UTC = 18:00 Belgische zomertijd, 17:00 UTC = 18:00 wintertijd.
+  #   - cron: "0 16 * * 3"
+  #   - cron: "0 17 * * 3"
+
+jobs:
+  voorstel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Alleen doorgaan om 18u Belgische tijd
+        id: klok
+        run: |
+          uur=$(TZ=Europe/Brussels date +%H)
+          echo "Belgische tijd: ${uur}u"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$uur" != "18" ]; then
+            echo "Niet 18u lokaal, deze run wordt overgeslagen."
+            echo "doorgaan=nee" >> "$GITHUB_OUTPUT"
+          else
+            echo "doorgaan=ja" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Voorstelmail aanvragen
+        if: steps.klok.outputs.doorgaan == 'ja'
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.kwslinkhout.be' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "CRON_SECRET ontbreekt in de repository secrets."
+            exit 1
+          fi
+
+          response=$(curl --silent --show-error --fail-with-body \
+            --max-time 90 \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            "$SITE_URL/api/social/preview")
+
+          echo "$response"
+
+          # Geen wedstrijden deze week is normaal (winterstop, bye-week).
+          if echo "$response" | grep -q '"reden":"geen wedstrijden"'; then
+            echo "Geen wedstrijden binnen 8 dagen, niets te mailen."
+            exit 0
+          fi
+
+          # Anders moet er wel degelijk een mail vertrokken zijn.
+          echo "$response" | grep -q '"verstuurd":true' || {
+            echo "Er is geen mail verstuurd. Zie het antwoord hierboven."
+            exit 1
+          }
