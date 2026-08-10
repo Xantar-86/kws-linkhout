@@ -6,6 +6,9 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { teams, getTeamBySlug } from "@/lib/teams";
+import { trainerFoto } from "@/lib/spelers";
+import { spelersVan } from "@/lib/kernen";
+import { SpelersGalerij, TrainerAvatar } from "@/components/SpelersGalerij";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Trophy, 
@@ -254,9 +257,15 @@ function TeamContent() {
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
-                      <User className="w-5 h-5 text-primary" />
-                    </div>
+                    {/* Staat er een portret van de trainer, dan tonen we dat
+                        in plaats van het algemene poppetje. */}
+                    {trainerFoto(team.coach) ? (
+                      <TrainerAvatar trainer={trainerFoto(team.coach)!} />
+                    ) : (
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                        <User className="w-5 h-5 text-primary" />
+                      </div>
+                    )}
                     <div>
                       <p className="font-medium text-gray-900">{team.coach}</p>
                       <p className="text-sm text-gray-500">Hoofdtrainer</p>
@@ -275,6 +284,23 @@ function TeamContent() {
                   )}
                 </div>
               </div>
+
+              {/* Spelers */}
+              {team.spelersGroep && spelersVan(team.spelersGroep).length > 0 && (
+                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <Users className="w-5 h-5 mr-2 text-primary" />
+                    Spelers
+                    <span className="ml-2 text-sm font-normal text-gray-500">
+                      {spelersVan(team.spelersGroep).length}
+                    </span>
+                  </h3>
+                  <SpelersGalerij spelers={spelersVan(team.spelersGroep)} />
+                  <p className="mt-3 text-xs text-gray-500">
+                    Klik op een foto om die groter te bekijken.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

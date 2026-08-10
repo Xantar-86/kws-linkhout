@@ -54,3 +54,6 @@ next-env.d.ts
 
 # Lokale foto-backups (niet deployen, enkel lokaal bewaren)
 public/images/fotos/Eendjes race 2026/
+
+# Originele spelersfotos (265 MB); enkel de webversies in public/images/spelers/ gaan mee
+public/images/kws spelers/

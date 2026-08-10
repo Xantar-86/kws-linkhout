@@ -13,6 +13,11 @@ export interface Team {
   coach: string;
   assistantCoach?: string;
   image: string;
+  /**
+   * Welke kern uit `lib/kernen.ts` bij deze ploeg hoort, bijvoorbeeld "P2".
+   * Staat die er niet, dan toont de pagina geen spelers.
+   */
+  spelersGroep?: string;
   calendarUrl?: string;
   standingsUrl?: string;
   description?: string;
@@ -37,7 +42,9 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Jelle Aerts",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/1ste-ploeg-2025.jpg
+    // P2 en P4 staan samen op één ploegfoto.
+    image: "/images/teams/P2-P4.jpeg",
+    spelersGroep: "P2",
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Ons vlaggenschip in de 2de Provinciale. Een mix van ervaring en jong talent.",
@@ -56,7 +63,9 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Ramon Fernandez",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
+    // Dezelfde foto als P2.
+    image: "/images/teams/P2-P4.jpeg",
+    spelersGroep: "P4",
     description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/overzicht"
@@ -71,7 +80,9 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Steven Vangeel",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-senioren-2025.jpg
+    // Dezelfde ploegfoto als P2 en P4.
+    image: "/images/teams/P2-P4.jpeg",
+    spelersGroep: "Beloften",
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De toekomstige talenten en ervaren krachten van de club.",
