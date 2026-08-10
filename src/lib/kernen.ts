@@ -93,18 +93,28 @@ export const KERNEN: Record<string, string[]> = {
   ],
 };
 
+/** Een speler in een kern. Zonder foto blijft er een leeg portret staan. */
+export interface Kernlid {
+  naam: string;
+  klein?: string;
+  groot?: string;
+}
+
 /**
  * De spelers van één kern, op naam gesorteerd.
  *
- * Namen zonder foto worden overgeslagen; die verschijnen pas zodra er een
- * portret van hen in `public/images/kws spelers/` staat.
+ * Iedereen uit de lijst komt in het raster, ook wie nog geen portret heeft.
+ * Die krijgt een leeg vakje met zijn naam eronder, zodat de kern volledig is
+ * en er later alleen nog een foto bij hoeft.
  */
-export function spelersVan(kern: string): Speler[] {
+export function spelersVan(kern: string): Kernlid[] {
   const namen = KERNEN[kern];
   if (!namen) return [];
 
   return namen
-    .map((naam) => spelers.find((s) => s.naam === naam))
-    .filter((s): s is Speler => s !== undefined)
+    .map((naam) => {
+      const foto: Speler | undefined = spelers.find((s) => s.naam === naam);
+      return { naam, klein: foto?.klein, groot: foto?.groot };
+    })
     .sort((a, b) => a.naam.localeCompare(b.naam, "nl"));
 }

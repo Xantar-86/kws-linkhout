@@ -2,8 +2,16 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, User, X } from "lucide-react";
 import type { Speler } from "@/lib/spelers";
+import type { Kernlid } from "@/lib/kernen";
+
+/** Een lid van de kern waar wél een foto van is. */
+type MetFoto = Kernlid & { klein: string; groot: string };
+
+function heeftFoto(lid: Kernlid): lid is MetFoto {
+  return Boolean(lid.klein && lid.groot);
+}
 
 /** Het eerste woord van de naam. */
 function voornaam(naam: string): string {
@@ -27,7 +35,7 @@ function Vergroting({
   onSluit,
   onWissel,
 }: {
-  personen: Speler[];
+  personen: MetFoto[];
   index: number;
   onSluit: () => void;
   onWissel: (nieuw: number) => void;
@@ -133,20 +141,36 @@ function Vergroting({
  * klik erop en je krijgt hem groot te zien, met de pijltjestoetsen om door de
  * ploeg te bladeren.
  */
-export function SpelersGalerij({ spelers }: { spelers: Speler[] }) {
+export function SpelersGalerij({ spelers }: { spelers: Kernlid[] }) {
   const [open, setOpen] = useState<number | null>(null);
   if (spelers.length === 0) return null;
+
+  // Bladeren gaat alleen langs de portretten die er zijn, dus de lege vakjes
+  // slaan we over in het vergrote beeld.
+  const metFoto = spelers.filter(heeftFoto);
 
   return (
     <>
       {/* De uitvergroting bij het aanwijzen mag buiten het raster komen, dus
           hier geen overflow afkappen. */}
       <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 overflow-visible">
-        {spelers.map((speler, i) => (
+        {spelers.map((speler) =>
+          !heeftFoto(speler) ? (
+            // Nog geen portret: wel in het raster, zodat de kern volledig is.
+            <div key={speler.naam} className="text-left">
+              <div className="flex aspect-square items-center justify-center rounded-lg border border-dashed border-gray-200 bg-gray-50">
+                <User className="h-7 w-7 text-gray-300" />
+              </div>
+              <p className="mt-1.5 h-7 text-[11px] leading-3.5 text-gray-400 sm:h-8 sm:text-xs sm:leading-4">
+                <span className="block truncate">{voornaam(speler.naam)}</span>
+                <span className="block truncate">{achternaam(speler.naam)}</span>
+              </p>
+            </div>
+          ) : (
           <button
             key={speler.klein}
             type="button"
-            onClick={() => setOpen(i)}
+            onClick={() => setOpen(metFoto.indexOf(speler))}
             // Tailwind past hover alleen toe op toestellen die het kennen, dus
             // op een telefoon blijft de tegel gewoon staan. Daar geeft de
             // indruk bij het aantikken de terugkoppeling.
@@ -173,12 +197,13 @@ export function SpelersGalerij({ spelers }: { spelers: Speler[] }) {
               <span className="block truncate">{achternaam(speler.naam)}</span>
             </p>
           </button>
-        ))}
+          )
+        )}
       </div>
 
       {open !== null && (
         <Vergroting
-          personen={spelers}
+          personen={metFoto}
           index={open}
           onSluit={() => setOpen(null)}
           onWissel={setOpen}
