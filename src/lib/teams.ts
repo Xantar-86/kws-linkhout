@@ -12,6 +12,12 @@ export interface Team {
   trainingLocation?: string;
   coach: string;
   assistantCoach?: string;
+  /**
+   * De aanspreking voor beide namen hierboven, bijvoorbeeld "Trainster".
+   * Zet dit wanneer er geen rangorde is; anders staat er standaard
+   * "Hoofdtrainer" en "Assistent".
+   */
+  trainersTitel?: string;
   image: string;
   /**
    * Welke kern uit `lib/kernen.ts` bij deze ploeg hoort, bijvoorbeeld "P2".
@@ -55,7 +61,7 @@ export const teams: Team[] = [
   },
   {
     id: "sen-3",
-    name: "1ste Ploeg P4",
+    name: "2de Ploeg P4",
     slug: "recrea-mannen",
     category: "senioren",
     division: "4 Provinciale Limb A",
@@ -66,7 +72,8 @@ export const teams: Team[] = [
     // Dezelfde foto als P2.
     image: "/images/teams/P2-P4.jpeg",
     spelersGroep: "P4",
-    description: "Voor de liefhebbers die voetbal combineren met gezelligheid.",
+    description:
+      "Een gedreven ploeg in de 4de Provinciale waar jonge talenten en ervaren spelers samen bouwen aan de toekomst van K.W.S. Linkhout.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365215/overzicht"
   },
@@ -178,7 +185,9 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:15 - 19:30",
     trainingLocation: "Zelem",
-    coach: "Frank Schroyen",
+    coach: "Sharleen Vanderheyden",
+    assistantCoach: "Lotte Claeys",
+    trainersTitel: "Trainster",
     image: "/images/under-construction.png",
     description: "Talentvolle meisjes die elke week met plezier trainen en spelen."
   },
@@ -193,7 +202,9 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:15 - 19:30",
     trainingLocation: "Zelem",
-    coach: "Kevin Kenis",
+    coach: "Ylana De Vos",
+    assistantCoach: "Siena Bottu",
+    trainersTitel: "Trainster",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-dames-2025.jpg
     description: "Onze jongste meisjes maken hun eerste stappen op het voetbalveld.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/kalender",

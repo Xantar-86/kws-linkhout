@@ -61,9 +61,13 @@ function TeamCard({ team, index }: TeamCardProps) {
                 <span>{team.trainingDays.join(", ")}</span>
               </div>
               
-              <div className="flex items-center text-sm text-gray-600">
-                <User className="w-4 h-4 mr-2 text-primary" />
-                <span>{team.coach}</span>
+              {/* Zijn er twee gelijkwaardige trainers, dan horen ze hier
+                  allebei te staan en niet alleen de eerste. */}
+              <div className="flex items-start text-sm text-gray-600">
+                <User className="w-4 h-4 mr-2 mt-0.5 shrink-0 text-primary" />
+                <span>
+                  {[team.coach, team.assistantCoach].filter(Boolean).join(" en ")}
+                </span>
               </div>
             </div>
 

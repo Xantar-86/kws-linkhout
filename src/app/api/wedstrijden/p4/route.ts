@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getRbfaWedstrijden } from "@/lib/rbfa";
 import { getToekomstigeWedstrijden } from "@/lib/ics-parser";
 
-// 1ste Ploeg P4 (Eerste Elftal B) - RBFA-ploeg-ID seizoen 2026-2027
+// 2de Ploeg P4 (Eerste Elftal B) - RBFA-ploeg-ID seizoen 2026-2027
 const P4_TEAM_ID = "365215";
 
 export async function GET() {

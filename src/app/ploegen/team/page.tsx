@@ -268,17 +268,37 @@ function TeamContent() {
                     )}
                     <div>
                       <p className="font-medium text-gray-900">{team.coach}</p>
-                      <p className="text-sm text-gray-500">Hoofdtrainer</p>
+                      {/* Twee gelijkwaardige trainers krijgen dezelfde titel;
+                          anders staat er hoofdtrainer en assistent. */}
+                      <p className="text-sm text-gray-500">
+                        {team.trainersTitel ?? "Hoofdtrainer"}
+                      </p>
                     </div>
                   </div>
                   {team.assistantCoach && (
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mr-3">
-                        <User className="w-5 h-5 text-gray-500" />
-                      </div>
+                      {/* Bij gelijkwaardige trainers dezelfde cirkel als
+                          hierboven; anders blijft de assistent gedempt. */}
+                      {trainerFoto(team.assistantCoach) ? (
+                        <TrainerAvatar trainer={trainerFoto(team.assistantCoach)!} />
+                      ) : (
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center mr-3 ${
+                            team.trainersTitel ? "bg-primary/10" : "bg-gray-100"
+                          }`}
+                        >
+                          <User
+                            className={`w-5 h-5 ${
+                              team.trainersTitel ? "text-primary" : "text-gray-500"
+                            }`}
+                          />
+                        </div>
+                      )}
                       <div>
                         <p className="font-medium text-gray-900">{team.assistantCoach}</p>
-                        <p className="text-sm text-gray-500">Assistent</p>
+                        <p className="text-sm text-gray-500">
+                          {team.trainersTitel ?? "Assistent"}
+                        </p>
                       </div>
                     </div>
                   )}
