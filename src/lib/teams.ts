@@ -172,8 +172,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De brug tussen jeugd en senioren voor onze meisjestalenten.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351080/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351080/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385205/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385205/overzicht"
   },
   {
     id: "dam-3",
@@ -189,7 +189,10 @@ export const teams: Team[] = [
     assistantCoach: "Lotte Claeys",
     trainersTitel: "Trainster",
     image: "/images/under-construction.png",
-    description: "Talentvolle meisjes die elke week met plezier trainen en spelen."
+    description: "Talentvolle meisjes die elke week met plezier trainen en spelen.",
+    // Bij de RBFA heet deze ploeg U10 B.
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385197/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385197/overzicht"
   },
 
   {
@@ -207,8 +210,8 @@ export const teams: Team[] = [
     trainersTitel: "Trainster",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-dames-2025.jpg
     description: "Onze jongste meisjes maken hun eerste stappen op het voetbalveld.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359734/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385200/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385200/overzicht"
   },
 
   // ========== JEUGD (15) ==========
@@ -227,8 +230,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Talentvolle jongens in de belangrijke ontwikkelingsfase.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351067/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351067/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385191/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385191/overzicht"
   },
   {
     id: "j-16",
@@ -241,7 +244,10 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "",
     image: "/images/under-construction.png",
-    description: "Onze U16 in de belangrijke ontwikkelingsfase."
+    description: "Onze U16 in de belangrijke ontwikkelingsfase.",
+    // De ploeg bestaat bij de RBFA, maar er staat nog geen kalender in.
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385192/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385192/overzicht"
   },
   {
     id: "j-3",
@@ -257,8 +263,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Techniek en tactiek staan centraal in deze leeftijdsgroep.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351068/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351068/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385193/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385193/overzicht"
   },
   {
     id: "j-4",
@@ -274,8 +280,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De overgang van 8 naar 11 tegen 11 voetbal.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351069/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351069/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385194/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385194/overzicht"
   },
   {
     id: "j-5",
@@ -291,8 +297,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Spelenderwijs leren en plezier maken staat voorop.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351070/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351070/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385195/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385195/overzicht"
   },
   {
     id: "j-6",
@@ -308,8 +314,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De basis van techniek en teamspel wordt hier gelegd.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351071/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351071/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385196/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385196/overzicht"
   },
   {
     id: "j-7",
@@ -325,8 +331,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Veel spelvormen en plezier op het veld.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351072/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351072/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385207/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385207/overzicht"
   },
   {
     id: "j-8",
@@ -342,8 +348,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Ontdekken, leren en groeien als voetballer.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351073/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351073/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385199/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385199/overzicht"
   },
   {
     id: "j-8b",
@@ -359,8 +365,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U9 team met veel potentieel.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359368/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359368/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385198/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385198/overzicht"
   },
   {
     id: "j-9",
@@ -376,8 +382,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De eerste stappen in het competitieve voetbal.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351075/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351075/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385206/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385206/overzicht"
   },
   {
     id: "j-9b",
@@ -393,8 +399,8 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description: "Het tweede U8 team met veel plezier op het veld.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351074/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351074/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385201/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385201/overzicht"
   },
   {
     id: "j-10",
@@ -409,8 +415,8 @@ export const teams: Team[] = [
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
     calendarUrl: "#",
     description: "Spelenderwijs kennismaken met voetbal.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351076/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351076/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385203/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385203/overzicht"
   },
   {
     id: "j-10b",
@@ -425,8 +431,8 @@ export const teams: Team[] = [
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
     calendarUrl: "#",
     description: "Het tweede U7 team met veel enthousiasme.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/356637/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/356637/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385202/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385202/overzicht"
   },
   {
     id: "j-11",
@@ -440,8 +446,8 @@ export const teams: Team[] = [
     coach: "Simon Biesmans & Lennert Neuteleers",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U6-2025.jpg
     description: "Onze allerkleinsten! Plezier en bewegen staat centraal.",
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/351077/overzicht"
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385204/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385204/overzicht"
   },
   {
     id: "j-u5",

@@ -9,6 +9,8 @@ export interface Event {
   image?: string;
   addedAt?: number;
   sortDate?: number;
+  /** Laatste dag van het evenement; bij één dag gelijk aan sortDate. */
+  eindDate?: number;
 }
 
 // Kleuren mapping
@@ -39,19 +41,30 @@ const DUTCH_MONTHS: Record<string, number> = {
 // Parse Nederlandse datum als "25 mei 2026" of "13-14 maart 2026".
 // Pakt de eerste dag, eerste gevonden maand, en het jaar (4-cijferig).
 // Fallback jaar = huidig jaar. Retourneert unix seconds, of 0 bij falen.
-function parseDutchDate(s: string): number {
+//
+// Met `laatsteDag` krijg je het einde van een meerdaags evenement in plaats
+// van het begin. Zonder dat zou een mosselfeest van 23 en 24 oktober al op
+// de 24ste uit de aankondigingen verdwijnen, terwijl het dan nog bezig is.
+function parseDutchDate(s: string, laatsteDag = false): number {
   if (!s) return 0;
   const lower = s.toLowerCase();
-  const dayMatch = lower.match(/(\d+)/);
-  const day = dayMatch ? parseInt(dayMatch[1], 10) : 1;
+
   let monthIdx: number | undefined;
+  let monthNaam = "";
   for (const name of Object.keys(DUTCH_MONTHS)) {
     if (lower.includes(name)) {
       monthIdx = DUTCH_MONTHS[name];
+      monthNaam = name;
       break;
     }
   }
   if (monthIdx === undefined) return 0;
+
+  // Alleen de cijfers vóór de maandnaam zijn dagen; het jaar staat erachter.
+  const dagenDeel = lower.slice(0, lower.indexOf(monthNaam));
+  const dagen = dagenDeel.match(/\d+/g)?.map((d) => parseInt(d, 10)) ?? [];
+  const day = dagen.length === 0 ? 1 : laatsteDag ? dagen[dagen.length - 1] : dagen[0];
+
   const yearMatch = lower.match(/\b(20\d{2})\b/);
   const year = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
   return Math.floor(new Date(year, monthIdx, day).getTime() / 1000);
@@ -93,6 +106,7 @@ async function loadEvents(): Promise<Event[]> {
         image: data.image || undefined,
         addedAt: getLastCommitTime(filePath),
         sortDate: parseDutchDate(data.dateFull || data.date || ""),
+        eindDate: parseDutchDate(data.dateFull || data.date || "", true),
       };
     });
   } catch (error) {
@@ -113,26 +127,22 @@ export async function getAllEvents(): Promise<Event[]> {
 }
 
 // Aankomende events (vanaf vandaag), gesorteerd op datum.
-// Indien er minder dan `limit` aankomende events zijn, wordt aangevuld met
-// de meest recente voorbije events zodat de sectie nooit leeg blijft.
+//
+// Voorbije evenementen komen hier niet meer bij. Ze aanvullen zodat de sectie
+// nooit leeg oogt leverde het omgekeerde op: dan staat er in augustus nog een
+// paasvoetbalkamp onder "aankomende evenementen".
 export async function getUpcomingEvents(limit = 3): Promise<Event[]> {
   const events = await loadEvents();
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
   const todayStartSec = Math.floor(todayStart.getTime() / 1000);
 
-  const withDate = events.filter((e) => e.sortDate && e.sortDate > 0);
-  const upcoming = withDate
-    .filter((e) => (e.sortDate as number) >= todayStartSec)
-    .sort((a, b) => (a.sortDate as number) - (b.sortDate as number));
-
-  if (upcoming.length >= limit) return upcoming.slice(0, limit);
-
-  const past = withDate
-    .filter((e) => (e.sortDate as number) < todayStartSec)
-    .sort((a, b) => (b.sortDate as number) - (a.sortDate as number));
-
-  return [...upcoming, ...past.slice(0, limit - upcoming.length)];
+  return events
+    .filter((e) => e.sortDate && e.sortDate > 0)
+    // Een meerdaags evenement blijft staan tot en met de laatste dag.
+    .filter((e) => (e.eindDate || e.sortDate)! >= todayStartSec)
+    .sort((a, b) => (a.sortDate as number) - (b.sortDate as number))
+    .slice(0, limit);
 }
 
 // Laatst toegevoegd/bewerkt eerst (op basis van git commit tijd).

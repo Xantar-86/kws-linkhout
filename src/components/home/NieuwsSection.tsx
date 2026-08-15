@@ -79,6 +79,15 @@ export function NieuwsSection({ events }: { events: Event[] }) {
           <p className="text-gray-600">Noteer deze data alvast in je agenda</p>
         </motion.div>
 
+        {/* Staat er niets op de kalender, dan zeggen we dat gewoon in plaats
+            van een lege rij te tonen. */}
+        {events.length === 0 && (
+          <p className="mb-8 text-center text-gray-500">
+            Er staan momenteel geen evenementen gepland. Hou de kalender in het
+            oog, er komt zeker weer iets aan.
+          </p>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {events.map((event, index) => (
             <Link key={event.id} href="/nieuws/events" className="group">
