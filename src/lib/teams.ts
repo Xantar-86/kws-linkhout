@@ -245,9 +245,12 @@ export const teams: Team[] = [
     coach: "",
     image: "/images/under-construction.png",
     description: "Onze U16 in de belangrijke ontwikkelingsfase.",
-    // De ploeg bestaat bij de RBFA, maar er staat nog geen kalender in.
-    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385192/kalender",
-    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385192/overzicht"
+    // Deze ploeg speelt dit seizoen mee als U17 B, omdat er te weinig ploegen
+    // waren voor een U16-reeks. In de club heet ze wel gewoon U16, dus de naam
+    // hierboven blijft. De kalender komt van U17 B (386057); de ploeg die bij
+    // de RBFA U16 heet (385192) staat leeg en is dus niet de juiste.
+    calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/386057/kalender",
+    standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/386057/overzicht"
   },
   {
     id: "j-3",
