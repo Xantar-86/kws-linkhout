@@ -16,7 +16,8 @@
  * Draaien: node scripts/maak-spelerfotos.mjs
  */
 
-import { readdirSync, mkdirSync, writeFileSync, unlinkSync } from "node:fs";
+import { readdirSync, mkdirSync, writeFileSync, unlinkSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import sharp from "sharp";
 
@@ -167,14 +168,25 @@ for (const bestand of bestanden) {
   }
 
   const bronPad = join(BRON, bestand);
-  const basis = slug(naam);
-  const kleinPad = join(DOEL, `${basis}-klein.webp`);
-  const grootPad = join(DOEL, `${basis}.webp`);
 
   const gemeten = await zoekSpeler(bronPad);
   const correctie = CORRECTIES[naam] ?? {};
   const kruinFractie = correctie.kruin ?? gemeten.kruinFractie;
   const middenFractie = correctie.midden ?? gemeten.middenFractie;
+
+  // Een vingerafdruk van de foto en de uitsnede in de bestandsnaam. Verandert
+  // er iets, dan verandert het webadres mee en tonen browsers en de
+  // beeldoptimalisatie meteen het nieuwe beeld in plaats van het oude uit hun
+  // geheugen.
+  const vingerafdruk = createHash("sha1")
+    .update(readFileSync(bronPad))
+    .update(`${kruinFractie.toFixed(4)}|${middenFractie.toFixed(4)}|${UITSNEDE_HOOGTE}|${RUIMTE_BOVEN}|${KLEIN}|${GROOT}`)
+    .digest("hex")
+    .slice(0, 8);
+
+  const basis = `${slug(naam)}-${vingerafdruk}`;
+  const kleinPad = join(DOEL, `${basis}-klein.webp`);
+  const grootPad = join(DOEL, `${basis}.webp`);
 
   // metadata() leest de afmetingen uit het bestand zelf, dus van vóór het
   // rechtzetten. Bij een liggend opgeslagen portret staan breedte en hoogte
