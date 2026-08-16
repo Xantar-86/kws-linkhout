@@ -31,6 +31,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/bram-marien.webp"
   },
   {
+    "naam": "Brent Gilissen",
+    "ploeg": "P2",
+    "klein": "/images/spelers/brent-gilissen-klein.webp",
+    "groot": "/images/spelers/brent-gilissen.webp"
+  },
+  {
     "naam": "Daan Debruyne",
     "ploeg": "P2",
     "klein": "/images/spelers/daan-debruyne-klein.webp",
@@ -127,10 +133,10 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/kenneth-cupers.webp"
   },
   {
-    "naam": "Klevin Sagan",
+    "naam": "Klevin Sagang",
     "ploeg": "P2",
-    "klein": "/images/spelers/klevin-sagan-klein.webp",
-    "groot": "/images/spelers/klevin-sagan.webp"
+    "klein": "/images/spelers/klevin-sagang-klein.webp",
+    "groot": "/images/spelers/klevin-sagang.webp"
   },
   {
     "naam": "Lars Andries",
@@ -173,6 +179,12 @@ export const spelers: Speler[] = [
     "ploeg": "P4",
     "klein": "/images/spelers/maxim-leduc-klein.webp",
     "groot": "/images/spelers/maxim-leduc.webp"
+  },
+  {
+    "naam": "Maxim Vaes",
+    "ploeg": "P2",
+    "klein": "/images/spelers/maxim-vaes-klein.webp",
+    "groot": "/images/spelers/maxim-vaes.webp"
   },
   {
     "naam": "Mike Geybels",

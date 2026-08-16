@@ -17,7 +17,7 @@ export const KERNEN: Record<string, string[]> = {
   P2: [
     "Maxim Vaes",
     "Tibo Rousset",
-    "Klevin Sagan",
+    "Klevin Sagang",
     "Tiebe Vandevelde",
     "Nick Tuteleers",
     "Jelle Asnong",

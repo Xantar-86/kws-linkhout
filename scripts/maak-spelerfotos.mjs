@@ -16,7 +16,7 @@
  * Draaien: node scripts/maak-spelerfotos.mjs
  */
 
-import { readdirSync, mkdirSync, writeFileSync } from "node:fs";
+import { readdirSync, mkdirSync, writeFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 
@@ -31,6 +31,18 @@ const GROOT = 1400;
 /** Hoe hoog de uitsnede is, en hoeveel lucht er boven de kruin blijft. */
 const UITSNEDE_HOOGTE = 0.42;
 const RUIMTE_BOVEN = 0.1;
+
+/**
+ * Correcties voor foto's waar het zoeken naast zit.
+ *
+ * Het automatisch zoeken gaat uit van de ploegfotosessie: dezelfde afstand,
+ * dezelfde achtergrond. Komt er een portret van elders, dan kan de kruin er
+ * naast liggen. `kruin` is de hoogte van de kruin als deel van de foto,
+ * `midden` de horizontale plaats, allebei tussen 0 en 1.
+ */
+const CORRECTIES = {
+  "Brent Gilissen": { kruin: 0.25, midden: 0.51 },
+};
 
 /** Maakt van "Lorenzo Silvente Fernandez" een bestandsnaam zonder rare tekens. */
 function slug(naam) {
@@ -76,6 +88,13 @@ async function zoekSpeler(pad) {
   let kruin = null;
   let somX = 0;
   let aantalX = 0;
+  let opeenvolgend = 0;
+
+  // Een paar rijen wolkenlucht kunnen al van de randkleur afwijken. Daarom
+  // begint een kruin pas te tellen na een aantal rijen op rij, en nooit
+  // meteen bovenaan het beeld; niemand staat met zijn kruin tegen de rand.
+  const vroegst = Math.round(H * 0.02);
+  const nodigOpeenvolgend = 6;
 
   for (let y = 0; y < H; y++) {
     // Achtergrondkleur van deze rij: het gemiddelde van beide randen.
@@ -97,9 +116,13 @@ async function zoekSpeler(pad) {
       }
     }
 
-    // Een kruin is smal; we wachten tot er een handvol punten afwijken zodat
-    // een losse tak in de lucht ons niet op het verkeerde been zet.
-    if (kruin === null && afwijkend >= (midTot - midVan) * 0.06) kruin = y;
+    if (kruin === null) {
+      const genoeg = afwijkend >= (midTot - midVan) * 0.06;
+      opeenvolgend = genoeg ? opeenvolgend + 1 : 0;
+      if (y >= vroegst && opeenvolgend >= nodigOpeenvolgend) {
+        kruin = y - (nodigOpeenvolgend - 1);
+      }
+    }
     if (kruin !== null && y > kruin && y < kruin + H * 0.25 && afwijkend > 0) {
       somX += rijSom;
       aantalX += afwijkend;
@@ -121,7 +144,9 @@ const trainers = [];
 for (const bestand of bestanden) {
   const zonderExtensie = bestand.replace(/\.[^.]+$/, "").trim();
 
-  // De ploeg staat achteraan bij spelers en vooraan bij de trainers.
+  // Staat de ploeg vooraan, dan is het een trainer. Achteraan of helemaal
+  // niet is een speler: bij welke kern hij hoort staat in lib/kernen.ts en
+  // niet in de bestandsnaam, dus dat achtervoegsel mag ook weg blijven.
   const achteraan = zonderExtensie.match(/^(.*?)\s+(P2|P4)$/i);
   const vooraan = zonderExtensie.match(/^(P2|P4)\s+(.*)$/i);
 
@@ -129,16 +154,16 @@ for (const bestand of bestanden) {
   let ploeg;
   let isTrainer = false;
 
-  if (achteraan) {
-    naam = achteraan[1].trim();
-    ploeg = achteraan[2].toUpperCase();
-  } else if (vooraan) {
+  if (vooraan) {
     ploeg = vooraan[1].toUpperCase();
     naam = vooraan[2].trim();
     isTrainer = true;
+  } else if (achteraan) {
+    naam = achteraan[1].trim();
+    ploeg = achteraan[2].toUpperCase();
   } else {
-    console.warn(`overgeslagen, geen ploeg in de naam: ${bestand}`);
-    continue;
+    naam = zonderExtensie;
+    ploeg = "";
   }
 
   const bronPad = join(BRON, bestand);
@@ -146,7 +171,10 @@ for (const bestand of bestanden) {
   const kleinPad = join(DOEL, `${basis}-klein.webp`);
   const grootPad = join(DOEL, `${basis}.webp`);
 
-  const { kruinFractie, middenFractie } = await zoekSpeler(bronPad);
+  const gemeten = await zoekSpeler(bronPad);
+  const correctie = CORRECTIES[naam] ?? {};
+  const kruinFractie = correctie.kruin ?? gemeten.kruinFractie;
+  const middenFractie = correctie.midden ?? gemeten.middenFractie;
 
   // metadata() leest de afmetingen uit het bestand zelf, dus van vóór het
   // rechtzetten. Bij een liggend opgeslagen portret staan breedte en hoogte
@@ -218,4 +246,19 @@ const regels = [
 ];
 
 writeFileSync(LIJST, regels.join("\n"));
+
+// Beelden van wie er niet meer is opruimen, bijvoorbeeld na een hernoeming.
+const inGebruik = new Set(
+  [...spelers, ...trainers].flatMap((s) => [
+    s.klein.split("/").pop(),
+    s.groot.split("/").pop(),
+  ])
+);
+for (const bestand of readdirSync(DOEL)) {
+  if (bestand.endsWith(".webp") && !inGebruik.has(bestand)) {
+    unlinkSync(join(DOEL, bestand));
+    console.log(`opgeruimd: ${bestand}`);
+  }
+}
+
 console.log(`\n${spelers.length} spelers en ${trainers.length} trainers in ${LIJST}`);
