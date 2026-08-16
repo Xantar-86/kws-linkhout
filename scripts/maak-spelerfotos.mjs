@@ -42,7 +42,7 @@ const RUIMTE_BOVEN = 0.1;
  * `midden` de horizontale plaats, allebei tussen 0 en 1.
  */
 const CORRECTIES = {
-  "Brent Gilissen": { kruin: 0.25, midden: 0.51 },
+  "Brent Gilissen": { kruin: 0.215, midden: 0.51 },
 };
 
 /** Maakt van "Lorenzo Silvente Fernandez" een bestandsnaam zonder rare tekens. */

@@ -33,8 +33,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Brent Gilissen",
     "ploeg": "P2",
-    "klein": "/images/spelers/brent-gilissen-5d862724-klein.webp",
-    "groot": "/images/spelers/brent-gilissen-5d862724.webp"
+    "klein": "/images/spelers/brent-gilissen-198931bd-klein.webp",
+    "groot": "/images/spelers/brent-gilissen-198931bd.webp"
   },
   {
     "naam": "Daan Debruyne",
