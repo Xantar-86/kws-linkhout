@@ -8,8 +8,9 @@ import { Maximize2, X } from "lucide-react";
  *
  * Een organigram is breed en vol tekst, dus binnen de smalle tekstkolom valt
  * er niets van te lezen. Daarom staat het buiten die kolom, over de volle
- * breedte van de pagina. Op een telefoon blijft het hoe dan ook te klein; daar tik je
- * erop en opent het schermvullend, waar je kan knijpen om in te zoomen.
+ * breedte van de pagina. Tik erop en het opent schermvullend, passend op het
+ * scherm; wie echt wil inzoomen opent het beeld in een eigen tabblad, want
+ * het volledige schema is ruim tienduizend pixels breed.
  */
 
 export interface OrganigramBeeld {
@@ -86,17 +87,28 @@ export function Organigram({ beelden }: { beelden: OrganigramBeeld[] }) {
             <X className="h-6 w-6" />
           </button>
 
-          {/* Zelf mogen schuiven en knijpen; op een telefoon is dat de enige
-              manier om zo'n breed schema te lezen. */}
           <div
-            className="h-full w-full overflow-auto"
+            className="flex h-full w-full flex-col items-center justify-center gap-4"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={beelden[open].bron}
               alt={beelden[open].titel}
-              className="mx-auto h-auto min-w-225 max-w-none sm:w-full sm:min-w-0"
+              className="max-h-[80vh] max-w-full object-contain"
             />
+
+            {/* Het volledige schema is meer dan tienduizend pixels breed. Op
+                een telefoon valt dat binnen een venster niet te lezen; in een
+                eigen tabblad kan je wel knijpen en schuiven zoals gewoonlijk. */}
+            <a
+              href={beelden[open].bron}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20"
+            >
+              <Maximize2 className="h-4 w-4" />
+              Openen om in te zoomen
+            </a>
           </div>
         </div>
       )}
