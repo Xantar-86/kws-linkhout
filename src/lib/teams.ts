@@ -153,7 +153,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
-    coach: "",
+    coach: "Steven Bottu",
     image: "/images/under-construction.png",
     calendarUrl: "#",
     standingsUrl: "#",
@@ -171,7 +171,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
-    coach: "Steven B",
+    coach: "Danny Gaethofs",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/women-U20-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
