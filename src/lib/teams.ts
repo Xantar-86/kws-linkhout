@@ -29,10 +29,16 @@ export interface Team {
   description?: string;
   calendarIframe?: string;
   standingsIframe?: string;
-  calendarIcal?: string;
-  /** Zet op true zolang de iCal-feed voor het nieuwe seizoen nog leeg is:
-   *  de knop "Toevoegen aan mijn kalender" blijft zichtbaar maar uitgeschakeld. */
-  calendarIcalDisabled?: boolean;
+}
+
+/**
+ * Het adres van het agendabestand van een ploeg.
+ *
+ * We maken dat zelf uit de KBVB-gegevens, dus elke ploeg met een kalender
+ * heeft er een. Zie /api/kalender.
+ */
+export function icalUrl(team: Team): string | null {
+  return team.calendarIframe ? `/api/kalender?ploeg=${team.slug}` : null;
 }
 
 // REGEL 21-180: Alle ploegen data
@@ -55,8 +61,6 @@ export const teams: Team[] = [
     standingsUrl: "#",
     description: "Ons vlaggenschip in de 2de Provinciale. Een mix van ervaring en jong talent.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365216/kalender",
-    calendarIcal: "https://ical.voetbalinbelgie.be/competities/2025-2026/limburg/mannen/2a/?c=linkhout-kws",
-    calendarIcalDisabled: true,
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/365216/overzicht"
   },
   {
@@ -133,8 +137,8 @@ export const teams: Team[] = [
     division: "Vriendschappelijk",
     trainingDays: ["Woensdag"],
     trainingTime: "20:00 - 21:30",
-    coach: "Staf Vaes",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/recrea-vrouwen-2025.jpg
+    coach: "Luc Brants",
+    image: "/images/teams/Recrea Dames.jpeg",
     description: "Gezellig voetballen voor dames van alle niveaus.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/359957/kalender"
   },

@@ -15,278 +15,278 @@ export const spelers: Speler[] = [
   {
     "naam": "Alexander Cypers",
     "ploeg": "P4",
-    "klein": "/images/spelers/alexander-cypers-4f5bc786-klein.webp",
-    "groot": "/images/spelers/alexander-cypers-4f5bc786.webp"
+    "klein": "/images/spelers/alexander-cypers-9b5e7d83-klein.webp",
+    "groot": "/images/spelers/alexander-cypers-9b5e7d83.webp"
   },
   {
     "naam": "Ben Andries",
     "ploeg": "P2",
-    "klein": "/images/spelers/ben-andries-4707bd1b-klein.webp",
-    "groot": "/images/spelers/ben-andries-4707bd1b.webp"
+    "klein": "/images/spelers/ben-andries-9b46bedf-klein.webp",
+    "groot": "/images/spelers/ben-andries-9b46bedf.webp"
   },
   {
     "naam": "Bram Mariën",
     "ploeg": "P4",
-    "klein": "/images/spelers/bram-marien-d8e49cc8-klein.webp",
-    "groot": "/images/spelers/bram-marien-d8e49cc8.webp"
+    "klein": "/images/spelers/bram-marien-dc768c41-klein.webp",
+    "groot": "/images/spelers/bram-marien-dc768c41.webp"
   },
   {
     "naam": "Brent Gilissen",
     "ploeg": "P2",
-    "klein": "/images/spelers/brent-gilissen-198931bd-klein.webp",
-    "groot": "/images/spelers/brent-gilissen-198931bd.webp"
+    "klein": "/images/spelers/brent-gilissen-b6eb1738-klein.webp",
+    "groot": "/images/spelers/brent-gilissen-b6eb1738.webp"
   },
   {
     "naam": "Daan Debruyne",
     "ploeg": "P2",
-    "klein": "/images/spelers/daan-debruyne-1c6daf45-klein.webp",
-    "groot": "/images/spelers/daan-debruyne-1c6daf45.webp"
+    "klein": "/images/spelers/daan-debruyne-f415f9cf-klein.webp",
+    "groot": "/images/spelers/daan-debruyne-f415f9cf.webp"
   },
   {
     "naam": "Dries Huysmans",
     "ploeg": "P2",
-    "klein": "/images/spelers/dries-huysmans-a9f58f29-klein.webp",
-    "groot": "/images/spelers/dries-huysmans-a9f58f29.webp"
+    "klein": "/images/spelers/dries-huysmans-b6df9e5b-klein.webp",
+    "groot": "/images/spelers/dries-huysmans-b6df9e5b.webp"
   },
   {
     "naam": "Elias Chaufoureau",
     "ploeg": "P2",
-    "klein": "/images/spelers/elias-chaufoureau-2724c8cd-klein.webp",
-    "groot": "/images/spelers/elias-chaufoureau-2724c8cd.webp"
+    "klein": "/images/spelers/elias-chaufoureau-96734653-klein.webp",
+    "groot": "/images/spelers/elias-chaufoureau-96734653.webp"
   },
   {
     "naam": "Jacob Van Genechten",
     "ploeg": "P4",
-    "klein": "/images/spelers/jacob-van-genechten-8843bde4-klein.webp",
-    "groot": "/images/spelers/jacob-van-genechten-8843bde4.webp"
+    "klein": "/images/spelers/jacob-van-genechten-5eb26cb7-klein.webp",
+    "groot": "/images/spelers/jacob-van-genechten-5eb26cb7.webp"
   },
   {
     "naam": "Jarne Peeters",
     "ploeg": "P2",
-    "klein": "/images/spelers/jarne-peeters-b6fa283a-klein.webp",
-    "groot": "/images/spelers/jarne-peeters-b6fa283a.webp"
+    "klein": "/images/spelers/jarne-peeters-ddd65c8d-klein.webp",
+    "groot": "/images/spelers/jarne-peeters-ddd65c8d.webp"
   },
   {
     "naam": "Jaydrick Fornerino",
     "ploeg": "P4",
-    "klein": "/images/spelers/jaydrick-fornerino-e71ce572-klein.webp",
-    "groot": "/images/spelers/jaydrick-fornerino-e71ce572.webp"
+    "klein": "/images/spelers/jaydrick-fornerino-62a5dcc9-klein.webp",
+    "groot": "/images/spelers/jaydrick-fornerino-62a5dcc9.webp"
   },
   {
     "naam": "Jelle Asnong",
     "ploeg": "P2",
-    "klein": "/images/spelers/jelle-asnong-366ee473-klein.webp",
-    "groot": "/images/spelers/jelle-asnong-366ee473.webp"
+    "klein": "/images/spelers/jelle-asnong-98330688-klein.webp",
+    "groot": "/images/spelers/jelle-asnong-98330688.webp"
   },
   {
     "naam": "Jelle Pieraerts",
     "ploeg": "P2",
-    "klein": "/images/spelers/jelle-pieraerts-1c59e3c9-klein.webp",
-    "groot": "/images/spelers/jelle-pieraerts-1c59e3c9.webp"
+    "klein": "/images/spelers/jelle-pieraerts-166e8ad4-klein.webp",
+    "groot": "/images/spelers/jelle-pieraerts-166e8ad4.webp"
   },
   {
     "naam": "Jelte Bynens",
     "ploeg": "P2",
-    "klein": "/images/spelers/jelte-bynens-19e763da-klein.webp",
-    "groot": "/images/spelers/jelte-bynens-19e763da.webp"
+    "klein": "/images/spelers/jelte-bynens-43e503c4-klein.webp",
+    "groot": "/images/spelers/jelte-bynens-43e503c4.webp"
   },
   {
     "naam": "Jenz Neven",
     "ploeg": "P4",
-    "klein": "/images/spelers/jenz-neven-60b09f31-klein.webp",
-    "groot": "/images/spelers/jenz-neven-60b09f31.webp"
+    "klein": "/images/spelers/jenz-neven-760a90a6-klein.webp",
+    "groot": "/images/spelers/jenz-neven-760a90a6.webp"
   },
   {
     "naam": "Jonas Vaes",
     "ploeg": "P4",
-    "klein": "/images/spelers/jonas-vaes-e4c75b67-klein.webp",
-    "groot": "/images/spelers/jonas-vaes-e4c75b67.webp"
+    "klein": "/images/spelers/jonas-vaes-0d42b03f-klein.webp",
+    "groot": "/images/spelers/jonas-vaes-0d42b03f.webp"
   },
   {
     "naam": "Joost Beutels",
     "ploeg": "P2",
-    "klein": "/images/spelers/joost-beutels-c887cdf5-klein.webp",
-    "groot": "/images/spelers/joost-beutels-c887cdf5.webp"
+    "klein": "/images/spelers/joost-beutels-a5524b03-klein.webp",
+    "groot": "/images/spelers/joost-beutels-a5524b03.webp"
   },
   {
     "naam": "Jordy Berings",
     "ploeg": "P2",
-    "klein": "/images/spelers/jordy-berings-1281d20f-klein.webp",
-    "groot": "/images/spelers/jordy-berings-1281d20f.webp"
+    "klein": "/images/spelers/jordy-berings-655d5ba2-klein.webp",
+    "groot": "/images/spelers/jordy-berings-655d5ba2.webp"
   },
   {
     "naam": "Jorne Bynens",
     "ploeg": "P2",
-    "klein": "/images/spelers/jorne-bynens-8804080c-klein.webp",
-    "groot": "/images/spelers/jorne-bynens-8804080c.webp"
+    "klein": "/images/spelers/jorne-bynens-0232085b-klein.webp",
+    "groot": "/images/spelers/jorne-bynens-0232085b.webp"
   },
   {
     "naam": "Kahraman Can",
     "ploeg": "P2",
-    "klein": "/images/spelers/kahraman-can-3c75f3bb-klein.webp",
-    "groot": "/images/spelers/kahraman-can-3c75f3bb.webp"
+    "klein": "/images/spelers/kahraman-can-5f0d22af-klein.webp",
+    "groot": "/images/spelers/kahraman-can-5f0d22af.webp"
   },
   {
     "naam": "Kenneth Cupers",
     "ploeg": "P4",
-    "klein": "/images/spelers/kenneth-cupers-2d1fd355-klein.webp",
-    "groot": "/images/spelers/kenneth-cupers-2d1fd355.webp"
+    "klein": "/images/spelers/kenneth-cupers-85a52405-klein.webp",
+    "groot": "/images/spelers/kenneth-cupers-85a52405.webp"
   },
   {
     "naam": "Klevin Sagang",
     "ploeg": "P2",
-    "klein": "/images/spelers/klevin-sagang-4ce860b6-klein.webp",
-    "groot": "/images/spelers/klevin-sagang-4ce860b6.webp"
+    "klein": "/images/spelers/klevin-sagang-42723a2e-klein.webp",
+    "groot": "/images/spelers/klevin-sagang-42723a2e.webp"
   },
   {
     "naam": "Lars Andries",
     "ploeg": "P4",
-    "klein": "/images/spelers/lars-andries-168ddbe1-klein.webp",
-    "groot": "/images/spelers/lars-andries-168ddbe1.webp"
+    "klein": "/images/spelers/lars-andries-fabd45fd-klein.webp",
+    "groot": "/images/spelers/lars-andries-fabd45fd.webp"
   },
   {
     "naam": "Laurens Decoster",
     "ploeg": "P4",
-    "klein": "/images/spelers/laurens-decoster-fa0b3525-klein.webp",
-    "groot": "/images/spelers/laurens-decoster-fa0b3525.webp"
+    "klein": "/images/spelers/laurens-decoster-8c7bed8e-klein.webp",
+    "groot": "/images/spelers/laurens-decoster-8c7bed8e.webp"
   },
   {
     "naam": "Lennert Mellebeek",
     "ploeg": "P4",
-    "klein": "/images/spelers/lennert-mellebeek-630319cf-klein.webp",
-    "groot": "/images/spelers/lennert-mellebeek-630319cf.webp"
+    "klein": "/images/spelers/lennert-mellebeek-43b57166-klein.webp",
+    "groot": "/images/spelers/lennert-mellebeek-43b57166.webp"
   },
   {
     "naam": "Lorenzo Silvente Fernandez",
     "ploeg": "P2",
-    "klein": "/images/spelers/lorenzo-silvente-fernandez-32d83a81-klein.webp",
-    "groot": "/images/spelers/lorenzo-silvente-fernandez-32d83a81.webp"
+    "klein": "/images/spelers/lorenzo-silvente-fernandez-0c736cf2-klein.webp",
+    "groot": "/images/spelers/lorenzo-silvente-fernandez-0c736cf2.webp"
   },
   {
     "naam": "Lucas Volders",
     "ploeg": "P4",
-    "klein": "/images/spelers/lucas-volders-1abd8498-klein.webp",
-    "groot": "/images/spelers/lucas-volders-1abd8498.webp"
+    "klein": "/images/spelers/lucas-volders-a2230879-klein.webp",
+    "groot": "/images/spelers/lucas-volders-a2230879.webp"
   },
   {
     "naam": "Matthias Corten",
     "ploeg": "P2",
-    "klein": "/images/spelers/matthias-corten-a1b0d777-klein.webp",
-    "groot": "/images/spelers/matthias-corten-a1b0d777.webp"
+    "klein": "/images/spelers/matthias-corten-60a0df44-klein.webp",
+    "groot": "/images/spelers/matthias-corten-60a0df44.webp"
   },
   {
     "naam": "Maxim Leduc",
     "ploeg": "P4",
-    "klein": "/images/spelers/maxim-leduc-f5c70e7b-klein.webp",
-    "groot": "/images/spelers/maxim-leduc-f5c70e7b.webp"
+    "klein": "/images/spelers/maxim-leduc-c64cba7a-klein.webp",
+    "groot": "/images/spelers/maxim-leduc-c64cba7a.webp"
   },
   {
     "naam": "Maxim Vaes",
     "ploeg": "P2",
-    "klein": "/images/spelers/maxim-vaes-022c1a2b-klein.webp",
-    "groot": "/images/spelers/maxim-vaes-022c1a2b.webp"
+    "klein": "/images/spelers/maxim-vaes-b68504da-klein.webp",
+    "groot": "/images/spelers/maxim-vaes-b68504da.webp"
   },
   {
     "naam": "Mike Geybels",
     "ploeg": "P2",
-    "klein": "/images/spelers/mike-geybels-2edf7c80-klein.webp",
-    "groot": "/images/spelers/mike-geybels-2edf7c80.webp"
+    "klein": "/images/spelers/mike-geybels-984b6289-klein.webp",
+    "groot": "/images/spelers/mike-geybels-984b6289.webp"
   },
   {
     "naam": "Milan Roosen",
     "ploeg": "P2",
-    "klein": "/images/spelers/milan-roosen-ba231abd-klein.webp",
-    "groot": "/images/spelers/milan-roosen-ba231abd.webp"
+    "klein": "/images/spelers/milan-roosen-2733d41b-klein.webp",
+    "groot": "/images/spelers/milan-roosen-2733d41b.webp"
   },
   {
     "naam": "Milan Vanluyten",
     "ploeg": "P4",
-    "klein": "/images/spelers/milan-vanluyten-9dc1e4d8-klein.webp",
-    "groot": "/images/spelers/milan-vanluyten-9dc1e4d8.webp"
+    "klein": "/images/spelers/milan-vanluyten-0ac46e3d-klein.webp",
+    "groot": "/images/spelers/milan-vanluyten-0ac46e3d.webp"
   },
   {
     "naam": "Nick Tuteleers",
     "ploeg": "P2",
-    "klein": "/images/spelers/nick-tuteleers-a41b872a-klein.webp",
-    "groot": "/images/spelers/nick-tuteleers-a41b872a.webp"
+    "klein": "/images/spelers/nick-tuteleers-7530f8f8-klein.webp",
+    "groot": "/images/spelers/nick-tuteleers-7530f8f8.webp"
   },
   {
     "naam": "Niels Gabriels",
     "ploeg": "P2",
-    "klein": "/images/spelers/niels-gabriels-2022ab8b-klein.webp",
-    "groot": "/images/spelers/niels-gabriels-2022ab8b.webp"
+    "klein": "/images/spelers/niels-gabriels-2e3e2c92-klein.webp",
+    "groot": "/images/spelers/niels-gabriels-2e3e2c92.webp"
   },
   {
     "naam": "Noah Gielkens",
     "ploeg": "P4",
-    "klein": "/images/spelers/noah-gielkens-bab7f6a6-klein.webp",
-    "groot": "/images/spelers/noah-gielkens-bab7f6a6.webp"
+    "klein": "/images/spelers/noah-gielkens-05e9f5f5-klein.webp",
+    "groot": "/images/spelers/noah-gielkens-05e9f5f5.webp"
   },
   {
     "naam": "Noah Vandenhoudt",
     "ploeg": "P2",
-    "klein": "/images/spelers/noah-vandenhoudt-b28cbb99-klein.webp",
-    "groot": "/images/spelers/noah-vandenhoudt-b28cbb99.webp"
+    "klein": "/images/spelers/noah-vandenhoudt-3f0065ff-klein.webp",
+    "groot": "/images/spelers/noah-vandenhoudt-3f0065ff.webp"
   },
   {
     "naam": "Pieter Peremans",
     "ploeg": "P2",
-    "klein": "/images/spelers/pieter-peremans-0d9a4517-klein.webp",
-    "groot": "/images/spelers/pieter-peremans-0d9a4517.webp"
+    "klein": "/images/spelers/pieter-peremans-2baf813c-klein.webp",
+    "groot": "/images/spelers/pieter-peremans-2baf813c.webp"
   },
   {
     "naam": "Seppe Verdonck",
     "ploeg": "P2",
-    "klein": "/images/spelers/seppe-verdonck-b11b02ba-klein.webp",
-    "groot": "/images/spelers/seppe-verdonck-b11b02ba.webp"
+    "klein": "/images/spelers/seppe-verdonck-77804ff0-klein.webp",
+    "groot": "/images/spelers/seppe-verdonck-77804ff0.webp"
   },
   {
     "naam": "Simon Reykers",
     "ploeg": "P2",
-    "klein": "/images/spelers/simon-reykers-8eeb961b-klein.webp",
-    "groot": "/images/spelers/simon-reykers-8eeb961b.webp"
+    "klein": "/images/spelers/simon-reykers-acb9e966-klein.webp",
+    "groot": "/images/spelers/simon-reykers-acb9e966.webp"
   },
   {
     "naam": "Simon Volders",
     "ploeg": "P2",
-    "klein": "/images/spelers/simon-volders-66ca9df0-klein.webp",
-    "groot": "/images/spelers/simon-volders-66ca9df0.webp"
+    "klein": "/images/spelers/simon-volders-09068c00-klein.webp",
+    "groot": "/images/spelers/simon-volders-09068c00.webp"
   },
   {
     "naam": "Thomas Kellens",
     "ploeg": "P4",
-    "klein": "/images/spelers/thomas-kellens-89a451c5-klein.webp",
-    "groot": "/images/spelers/thomas-kellens-89a451c5.webp"
+    "klein": "/images/spelers/thomas-kellens-dc3b9e0f-klein.webp",
+    "groot": "/images/spelers/thomas-kellens-dc3b9e0f.webp"
   },
   {
     "naam": "Tibo Rousset",
     "ploeg": "P4",
-    "klein": "/images/spelers/tibo-rousset-94812f00-klein.webp",
-    "groot": "/images/spelers/tibo-rousset-94812f00.webp"
+    "klein": "/images/spelers/tibo-rousset-25b1ec1e-klein.webp",
+    "groot": "/images/spelers/tibo-rousset-25b1ec1e.webp"
   },
   {
     "naam": "Vince Godfroid",
     "ploeg": "P2",
-    "klein": "/images/spelers/vince-godfroid-ad22fed3-klein.webp",
-    "groot": "/images/spelers/vince-godfroid-ad22fed3.webp"
+    "klein": "/images/spelers/vince-godfroid-c9f1c137-klein.webp",
+    "groot": "/images/spelers/vince-godfroid-c9f1c137.webp"
   },
   {
     "naam": "Xander Beutling",
     "ploeg": "P2",
-    "klein": "/images/spelers/xander-beutling-6813bbd7-klein.webp",
-    "groot": "/images/spelers/xander-beutling-6813bbd7.webp"
+    "klein": "/images/spelers/xander-beutling-f1086b44-klein.webp",
+    "groot": "/images/spelers/xander-beutling-f1086b44.webp"
   },
   {
     "naam": "Xander Budé",
     "ploeg": "P2",
-    "klein": "/images/spelers/xander-bude-346c06ed-klein.webp",
-    "groot": "/images/spelers/xander-bude-346c06ed.webp"
+    "klein": "/images/spelers/xander-bude-d907727b-klein.webp",
+    "groot": "/images/spelers/xander-bude-d907727b.webp"
   },
   {
     "naam": "Yoran Moortgat",
     "ploeg": "P4",
-    "klein": "/images/spelers/yoran-moortgat-1e651d6d-klein.webp",
-    "groot": "/images/spelers/yoran-moortgat-1e651d6d.webp"
+    "klein": "/images/spelers/yoran-moortgat-4528fc2e-klein.webp",
+    "groot": "/images/spelers/yoran-moortgat-4528fc2e.webp"
   }
 ];
 
@@ -294,14 +294,20 @@ export const trainers: Speler[] = [
   {
     "naam": "Jelle Aerts",
     "ploeg": "P2",
-    "klein": "/images/spelers/jelle-aerts-9557ee72-klein.webp",
-    "groot": "/images/spelers/jelle-aerts-9557ee72.webp"
+    "klein": "/images/spelers/jelle-aerts-1da40065-klein.webp",
+    "groot": "/images/spelers/jelle-aerts-1da40065.webp"
+  },
+  {
+    "naam": "Luc Brants",
+    "ploeg": "",
+    "klein": "/images/spelers/luc-brants-7b82a2e3-klein.webp",
+    "groot": "/images/spelers/luc-brants-7b82a2e3.webp"
   },
   {
     "naam": "Ramon Fernandez",
     "ploeg": "P4",
-    "klein": "/images/spelers/ramon-fernandez-7cc16c86-klein.webp",
-    "groot": "/images/spelers/ramon-fernandez-7cc16c86.webp"
+    "klein": "/images/spelers/ramon-fernandez-46038a28-klein.webp",
+    "groot": "/images/spelers/ramon-fernandez-46038a28.webp"
   }
 ];
 

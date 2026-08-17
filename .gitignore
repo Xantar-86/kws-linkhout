@@ -60,3 +60,6 @@ public/images/kws spelers/
 
 # Originele ploegfotos uit de camera; de bijgesneden versie staat er los naast
 public/images/teams/IMG_*.JPG
+
+# Uitgeknipte spelers; afgeleid, wordt lokaal opnieuw gemaakt
+public/images/uitgeknipt/

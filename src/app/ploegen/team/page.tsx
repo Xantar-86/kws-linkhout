@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { teams, getTeamBySlug } from "@/lib/teams";
+import { teams, getTeamBySlug, icalUrl } from "@/lib/teams";
 import { trainerFoto } from "@/lib/spelers";
 import { spelersVan } from "@/lib/kernen";
-import { SpelersGalerij, TrainerAvatar } from "@/components/SpelersGalerij";
+import { TrainerAvatar } from "@/components/SpelersGalerij";
+import { SpelersCarrousel } from "@/components/SpelersCarrousel";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Trophy, 
@@ -29,6 +30,9 @@ function TeamContent() {
   const [showStandingsModal, setShowStandingsModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   
+  const [site, setSite] = useState("");
+  useEffect(() => setSite(window.location.host), []);
+
   const team = slug ? getTeamBySlug(slug) : null;
 
   if (!team) {
@@ -107,25 +111,6 @@ function TeamContent() {
                 </div>
               </div>
 
-              {/* Calendar iFrame */}
-              {team.calendarIframe && (
-                <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
-                  <div className="bg-primary text-white px-6 py-4 flex items-center gap-3">
-                    <Calendar className="w-6 h-6" />
-                    <h2 className="text-xl font-bold">Wedstrijdkalender</h2>
-                  </div>
-                  <div className="p-4">
-                    <div className="relative w-full h-[1000px] md:h-[1200px] overflow-hidden rounded-lg">
-                      <iframe
-                        src={team.calendarIframe}
-                        title={`Wedstrijdkalender ${team.name}`}
-                        className="w-full h-full border-0"
-                        allow="fullscreen"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Right: Info Cards */}
@@ -155,31 +140,29 @@ function TeamContent() {
                     </button>
                   ) : null}
                   
-                  {team.calendarIcal && team.calendarIcalDisabled ? (
-                    <div
-                      title="Beschikbaar zodra de kalender voor het nieuwe seizoen is gepubliceerd"
-                      className="flex flex-col items-center justify-center w-full py-2 px-4 bg-gray-50 border-2 border-gray-200 text-gray-400 rounded-lg cursor-not-allowed"
-                    >
-                      <span className="flex items-center">
+                  {icalUrl(team) ? (
+                    <>
+                      {/* webcal opent de agenda-app en houdt de kalender bij;
+                          verandert er een aftraptijd, dan schuift de afspraak
+                          mee. De gewone link eronder is voor wie liever een
+                          bestand downloadt. */}
+                      <a
+                        href={`webcal://${site}${icalUrl(team)}`}
+                        className="flex items-center justify-center w-full py-2 px-4 bg-white border-2 border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors"
+                      >
                         <Calendar className="w-4 h-4 mr-2" />
                         Toevoegen aan mijn kalender
-                      </span>
-                      <span className="text-xs mt-0.5">Binnenkort beschikbaar</span>
-                    </div>
-                  ) : team.calendarIcal ? (
-                    <a
-                      href={team.calendarIcal}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-full py-2 px-4 bg-white border-2 border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors"
-                    >
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Toevoegen aan mijn kalender
-                      <ExternalLink className="w-3 h-3 ml-2" />
-                    </a>
+                      </a>
+                      <a
+                        href={icalUrl(team)!}
+                        className="block text-center text-xs text-gray-500 hover:text-primary"
+                      >
+                        of download het kalenderbestand
+                      </a>
+                    </>
                   ) : null}
-                  
-                  {!team.calendarIframe && !team.calendarIcal ? (
+
+                  {!team.calendarIframe ? (
                     <a 
                       href="https://www.rbfa.be/nl/club/1595/ploegen"
                       target="_blank"
@@ -305,24 +288,43 @@ function TeamContent() {
                 </div>
               </div>
 
-              {/* Spelers */}
-              {team.spelersGroep && spelersVan(team.spelersGroep).length > 0 && (
-                <div className="bg-white rounded-2xl p-6 shadow-lg">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                    <Users className="w-5 h-5 mr-2 text-primary" />
-                    Spelers
-                    <span className="ml-2 text-sm font-normal text-gray-500">
-                      {spelersVan(team.spelersGroep).length}
-                    </span>
-                  </h3>
-                  <SpelersGalerij spelers={spelersVan(team.spelersGroep)} />
-                  <p className="mt-3 text-xs text-gray-500">
-                    Klik op een foto om die groter te bekijken.
-                  </p>
-                </div>
-              )}
             </div>
           </div>
+
+          {/* Spelerskern, over de volle breedte zodat de balk ruimte heeft,
+              en boven de kalender want die is een blok van zichzelf. */}
+          {team.spelersGroep && spelersVan(team.spelersGroep).length > 0 && (
+            <div className="mt-12">
+              <h2 className="mb-5 flex items-center text-2xl font-bold text-gray-900">
+                <Users className="mr-2 h-6 w-6 text-primary" />
+                Spelerskern
+                <span className="ml-3 text-base font-normal text-gray-500">
+                  {spelersVan(team.spelersGroep).length} spelers
+                </span>
+              </h2>
+              <SpelersCarrousel spelers={spelersVan(team.spelersGroep)} />
+            </div>
+          )}
+
+          {/* Wedstrijdkalender */}
+          {team.calendarIframe && (
+            <div className="mt-12 overflow-hidden rounded-2xl bg-white shadow-lg">
+              <div className="flex items-center gap-3 bg-primary px-6 py-4 text-white">
+                <Calendar className="h-6 w-6" />
+                <h2 className="text-xl font-bold">Wedstrijdkalender</h2>
+              </div>
+              <div className="p-4">
+                <div className="relative h-[1000px] w-full overflow-hidden rounded-lg md:h-[1200px]">
+                  <iframe
+                    src={team.calendarIframe}
+                    title={`Wedstrijdkalender ${team.name}`}
+                    className="h-full w-full border-0"
+                    allow="fullscreen"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
