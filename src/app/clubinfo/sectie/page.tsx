@@ -18,6 +18,7 @@ import {
   FileDown
 } from "lucide-react";
 import { clubInfoSections, getClubInfoBySlug } from "@/lib/clubinfo";
+import { Organigram } from "@/components/clubinfo/Organigram";
 import React from "react";
 
 function ClubInfoContent() {
@@ -277,46 +278,6 @@ function ClubInfoContent() {
               </div>
             )}
 
-            {/* Organigram Images Section */}
-            {section.slug === "organigram" && (
-              <div className="mt-12 space-y-8">
-                {/* Hoofd Organigram */}
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Users className="w-5 h-5 text-primary" />
-                    Structuur van de club
-                  </h3>
-                  <div className="relative overflow-hidden rounded-xl bg-gray-50">
-                    <img 
-                      src="/images/organigram/organigram1.jpg" 
-                      alt="Organigram KWS Linkhout - Structuur van de club"
-                      className="w-full h-auto object-contain"
-                    />
-                  </div>
-                  <p className="text-sm text-gray-500 mt-3 text-center">
-                    Overzicht van alle cellen binnen KWS Linkhout
-                  </p>
-                </div>
-
-                {/* Dagelijks Bestuur */}
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Users className="w-5 h-5 text-primary" />
-                    Dagelijks Bestuur
-                  </h3>
-                  <div className="relative overflow-hidden rounded-xl bg-gray-50">
-                    <img 
-                      src="/images/organigram/organigram2.jpg" 
-                      alt="Dagelijks Bestuur KWS Linkhout"
-                      className="w-full h-auto object-contain"
-                    />
-                  </div>
-                  <p className="text-sm text-gray-500 mt-3 text-center">
-                    Samenstelling van het Dagelijks Bestuur
-                  </p>
-                </div>
-              </div>
-            )}
 
             {/* PDF Download Bottom - nogmaals voor gemak */}
             {section.pdfUrl && (
@@ -347,6 +308,29 @@ function ClubInfoContent() {
             )}
           </motion.div>
         </div>
+
+        {/* Het organigram staat buiten de smalle tekstkolom: zo'n breed schema
+            is anders onleesbaar. */}
+        {section.slug === "organigram" && (
+          <div className="container-custom mt-12">
+            <Organigram
+              beelden={[
+                {
+                  bron: "/images/organigram/Organigram vzw.png",
+                  titel: "De vzw",
+                  onderschrift:
+                    "Voorzitter, secretaris en bestuurders, seizoen 2026-2027",
+                },
+                {
+                  bron: "/images/organigram/organigram kws linkhout.png",
+                  titel: "Structuur van de club",
+                  onderschrift:
+                    "Van de vzw tot de cellen, de ploegen en de jeugdwerking",
+                },
+              ]}
+            />
+          </div>
+        )}
       </section>
 
       {/* Other Sections */}

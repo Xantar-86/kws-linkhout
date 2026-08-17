@@ -310,50 +310,65 @@ De Club-API luistert graag naar je verhaal, behandelt jouw melding in alle discr
     icon: "users",
     content: `**Structuur van de club**
 
-De vzw KWS Linkhout bestaat uit enerzijds de Beheerraad (BR) die over alle (principiële) beslissingen oordeelt en anderzijds uit de Dagelijks Bestuur (DB) die het dagelijks beleid organiseert en hierover uitleg verschaft aan de Beheerraad.
+De vzw K.W.S. Linkhout wordt bestuurd door de Beheerraad, die over alle principiële beslissingen oordeelt. Het Dagelijks Bestuur organiseert het dagelijkse beleid en legt daarover verantwoording af aan de Beheerraad.
 
-Verder is er binnen het dagelijks bestuur een opsplitsing in Cellen, samengesteld uit telkens minstens 3 leden:
-- De cel jeugd (met een apart dagelijks bestuur)
-- De organisatie cel
-- De communicatie cel
-- De sport technische cel
-- De GC (Gewestelijke Commissie)
+Onder het Dagelijks Bestuur werkt de club met cellen. Elke cel heeft haar eigen verantwoordelijken en haar eigen taken.
 
-De belangen van de jeugd worden vertegenwoordigd door de aanwezigheid van haar voorzitter of diens aangestelde op de bijeenkomsten van het dagelijks bestuur / beheerraad en tevens door haar betrokkenheid bij de werking van de diverse cellen.
+**De vzw**
 
-**Taken per Cel:**
+- Gert Peremans, voorzitter
+- Jos Keldermans, secretaris
+- Erwin Doggen, bestuurder
+- Joël Bynens, bestuurder
+- Yves Frenay, bestuurder
 
-**Sportief**
-- Uitwerken opleidingsvisie voor de jeugd
-- Aanwerven en begeleiden van trainers
+**Dagelijks Bestuur**
 
-**Organisatorisch**
-- Kledij en organisatie bedeling kledij
-- Activiteiten: voetbaltornooi, paaskamp, steakdag
-- Medisch luik: blessurepreventie en -behandeling
-- Sponsoring / wedstrijden
-- Bijdragen aan een financieel gezonde club
-- Organisatie scheidsrechters voor de jeugdwedstrijden
+Voorzitter: Gert Peremans
 
-**Audit / Subsidie**
-- Indienen gemeentelijke / VFV subsidie
-- Organisatie audit jeugd
+**De cellen**
 
-**Afgevaardigden / Ombudsman**
-- Contactpersoon afgevaardigden
-- Vertrouwenspersoon in geval van conflicten
+**Organisatie**
+- Kledij: Lindsay Serré en Cindy Vanheukelom
+- Activiteiten: Maarten C., Wim C., Staf V. en Robrecht R.
+- Sponsoring: Ben Jouck
+- Financieel: Yves Frenay
+- Medisch: Robrecht Reynders
 
-**Communicatie / PR**
-- Beheer centrale communicatie naar ouders
-- Beheer website en social media
-- Opzetten interne communicatie en CRM systeem
+**Communicatie**
+- Joël Bynens en Maarten Cleeren
+- Webdesign: Jochen Thoelen
 
-**Jeugdvoorzitter**
+**Onderhoud velden en accommodatie**
+- Erwin Doggen en Jos Minten
+
+**Sport technisch**
+- Jos Minten en Bart Lenaerts
+- Senior ploegen, sportief verantwoordelijke: Ramon Fernandez
+- Dames ploegen, coördinator: Ben Jouck
+- Keepers dames: Steven B.
+
+**GC (Gewestelijke Commissie)**
+- Gert Peremans
+
+**API (Aanspreekpunt Integriteit)**
+- Lincy Mechelmans
+
+**Jeugdwerking**
+
+De jeugd valt onder de sport technische cel en heeft een eigen werking.
+
+- AVJO: Maarten Cleeren
+- TVJO: Steven Bosman
+- Coördinatoren: Staf Vaes, Kristof Baeten en Wesly Thomas
+- Keepers: Staf Vaes
+
+**AVJO**
 
 Functieomschrijving:
-- Eindverantwoordelijke voor de jeugdwerking
-- Vertegenwoordigt het jeugdbestuur binnen het dagelijks bestuur
-- Roept op maandelijkse basis het jeugdbestuur samen
+- Administratief verantwoordelijke van de jeugdopleiding
+- Vertegenwoordigt de jeugdwerking binnen het dagelijks bestuur
+- Volgt aansluitingen, inschrijvingen en de kalender op
 
 **TVJO**
 
@@ -362,10 +377,10 @@ Functieomschrijving:
 - Zorgt voor aanwerving en begeleiding van trainers
 - Uitwerking opleidingsvisie voor de jeugd`,
     highlights: [
-      "Duidelijke structuur met Beheerraad en Dagelijks Bestuur",
-      "5 gespecialiseerde cellen",
-      "Jeugd vertegenwoordigd in bestuur",
-      "Transparante organisatie"
+      "Beheerraad en Dagelijks Bestuur",
+      "Zes cellen met eigen verantwoordelijken",
+      "Eigen jeugdwerking met AVJO en TVJO",
+      "Aanspreekpunt Integriteit binnen de club"
     ]
   },
   {
