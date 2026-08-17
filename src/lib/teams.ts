@@ -229,7 +229,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
-    coach: "Steven B",
+    coach: "Steven Bosmans",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U17-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -246,7 +246,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
-    coach: "",
+    coach: "Kevin Thoelen",
     image: "/images/under-construction.png",
     description: "Onze U16 in de belangrijke ontwikkelingsfase.",
     // Deze ploeg speelt dit seizoen mee als U17 B, omdat er te weinig ploegen
@@ -282,7 +282,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
-    coach: "Pieter Peremans",
+    coach: "Stijn Vlaeyen",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U13-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -299,7 +299,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "KWS",
-    coach: "Stijn Vlaeyen",
+    coach: "Franky Forier",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U12-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -316,7 +316,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
-    coach: "Maarten Cleeren",
+    coach: "Jorne Bynens",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U11-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -333,9 +333,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "17:00 - 18:15",
     trainingLocation: "Zelem",
-    coach: "Franky Forrier",
-    assistantCoach: "Staf Vaes",
-    trainersTitel: "Trainer",
+    coach: "Kevin Thoelen",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U10-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -352,7 +350,9 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:00 - 19:30",
     trainingLocation: "KWS",
-    coach: "Staf Vaes",
+    coach: "Gunther Vanneroem",
+    assistantCoach: "Staf Vaes",
+    trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -369,7 +369,9 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:00 - 19:30",
     trainingLocation: "KWS",
-    coach: "Staf Vaes",
+    coach: "Gunther Vanneroem",
+    assistantCoach: "Staf Vaes",
+    trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -386,9 +388,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
-    coach: "Kevin Kenis",
-    assistantCoach: "Gunther Vanneroem",
-    trainersTitel: "Trainer",
+    coach: "Simon Biesmans",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U8-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -405,9 +405,7 @@ export const teams: Team[] = [
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
-    coach: "Kevin Kenis",
-    assistantCoach: "Gunther Vanneroem",
-    trainersTitel: "Trainer",
+    coach: "Simon Biesmans",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U8-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -424,8 +422,8 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:00 - 19:15",
     trainingLocation: "KWS",
-    coach: "Wesly Thomas",
-    assistantCoach: "Abdullah Sümbül",
+    coach: "Lennert Mellebeek",
+    assistantCoach: "Simon Biesmans",
     trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
     calendarUrl: "#",
@@ -442,8 +440,8 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:00 - 19:15",
     trainingLocation: "KWS",
-    coach: "Wesly Thomas",
-    assistantCoach: "Abdullah Sümbül",
+    coach: "Lennert Mellebeek",
+    assistantCoach: "Simon Biesmans",
     trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
     calendarUrl: "#",
@@ -460,9 +458,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:00 - 19:00",
     trainingLocation: "KWS",
-    coach: "Simon Biesmans",
-    assistantCoach: "Lennert Neuteleers",
-    trainersTitel: "Trainer",
+    coach: "Aliano Baeten",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U6-2025.jpg
     description: "Onze allerkleinsten! Plezier en bewegen staat centraal.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385204/kalender",
