@@ -348,7 +348,7 @@ Voorzitter: Gert Peremans
 - Dames ploegen, coördinator: Ben Jouck
 - Keepers dames: Steven B.
 
-**GC (Gewestelijke Commissie)**
+**GC (gerechtigd correspondent)**
 - Gert Peremans
 
 **API (Aanspreekpunt Integriteit)**
