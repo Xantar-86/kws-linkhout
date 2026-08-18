@@ -72,6 +72,45 @@ function Gegeven({
  * Bladeren gaat langs de spelers die een portret hebben; de lege vakjes slaan
  * we over, want daar valt niets te vergroten.
  */
+/**
+ * Haalt de foto's links en rechts alvast op.
+ *
+ * Zonder dit begint het ophalen pas als je op de pijl duwt en kijk je een
+ * tel of twee naar een leeg vak. Deze beelden staan onzichtbaar in een hoekje
+ * met precies dezelfde eigenschappen als het grote beeld, zodat de browser
+ * hetzelfde adres opvraagt en het straks uit zijn geheugen haalt.
+ */
+function Voorlader({
+  bronnen,
+  breedte,
+  hoogte,
+  sizes,
+}: {
+  bronnen: string[];
+  breedte: number;
+  hoogte: number;
+  sizes: string;
+}) {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute h-px w-px overflow-hidden opacity-0"
+    >
+      {bronnen.map((bron) => (
+        <Image
+          key={bron}
+          src={bron}
+          alt=""
+          width={breedte}
+          height={hoogte}
+          sizes={sizes}
+          loading="eager"
+        />
+      ))}
+    </div>
+  );
+}
+
 function Vergroting({
   spelers,
   index,
@@ -109,6 +148,12 @@ function Vergroting({
 
   const speler = spelers[index];
   const jaren = leeftijd(speler.geboren);
+
+  // Alleen de buren, want alle spelers tegelijk ophalen zou de lijn dichtslibben.
+  const buren = [
+    spelers[(index - 1 + spelers.length) % spelers.length]?.groot,
+    spelers[(index + 1) % spelers.length]?.groot,
+  ].filter((b): b is string => Boolean(b) && b !== speler.groot);
 
   return (
     <div
@@ -163,6 +208,12 @@ function Vergroting({
           sizes="(max-width: 768px) 80vw, 520px"
           className="max-h-[72vh] w-auto rounded-xl object-contain sm:max-h-[80vh]"
           priority
+        />
+        <Voorlader
+          bronnen={buren}
+          breedte={1050}
+          hoogte={1400}
+          sizes="(max-width: 768px) 80vw, 520px"
         />
         <figcaption className="mt-3 text-center text-white">
           <span className="block text-lg font-bold uppercase">

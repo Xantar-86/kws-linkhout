@@ -29,6 +29,45 @@ function achternaam(naam: string): string {
  * Zowel het spelersraster als de trainer gebruiken dit, zodat een foto overal
  * op dezelfde manier opengaat.
  */
+/**
+ * Haalt de foto's links en rechts alvast op.
+ *
+ * Zonder dit begint het ophalen pas als je op de pijl duwt en kijk je een
+ * tel of twee naar een leeg vak. Deze beelden staan onzichtbaar in een hoekje
+ * met precies dezelfde eigenschappen als het grote beeld, zodat de browser
+ * hetzelfde adres opvraagt en het straks uit zijn geheugen haalt.
+ */
+function Voorlader({
+  bronnen,
+  breedte,
+  hoogte,
+  sizes,
+}: {
+  bronnen: string[];
+  breedte: number;
+  hoogte: number;
+  sizes: string;
+}) {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute h-px w-px overflow-hidden opacity-0"
+    >
+      {bronnen.map((bron) => (
+        <Image
+          key={bron}
+          src={bron}
+          alt=""
+          width={breedte}
+          height={hoogte}
+          sizes={sizes}
+          loading="eager"
+        />
+      ))}
+    </div>
+  );
+}
+
 function Vergroting({
   personen,
   index,
@@ -66,6 +105,12 @@ function Vergroting({
   }, [onSluit, vorige, volgende]);
 
   const persoon = personen[index];
+
+  // Alleen de buren, want alle portretten tegelijk ophalen zou de lijn dichtslibben.
+  const buren = [
+    personen[(index - 1 + personen.length) % personen.length]?.groot,
+    personen[(index + 1) % personen.length]?.groot,
+  ].filter((b): b is string => Boolean(b) && b !== persoon.groot);
 
   return (
     <div
@@ -125,6 +170,12 @@ function Vergroting({
           sizes="(max-width: 768px) 80vw, 700px"
           className="max-h-[70vh] w-auto rounded-lg object-contain sm:max-h-[78vh]"
           priority
+        />
+        <Voorlader
+          bronnen={buren}
+          breedte={1400}
+          hoogte={1400}
+          sizes="(max-width: 768px) 80vw, 700px"
         />
         <figcaption className="mt-3 text-center text-base font-medium text-white sm:text-lg">
           {persoon.naam}

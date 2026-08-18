@@ -82,15 +82,29 @@ function TeamContent() {
             <div className="lg:col-span-2 space-y-6">
               {/* Team Photo */}
               <div className="bg-white rounded-2xl overflow-hidden shadow-lg">
-                <div 
-                  className="relative h-64 md:h-96 cursor-pointer group"
+                {/* Op een breed scherm is het kader zelf al bijna zo breed als
+                    de foto, dus daar vult hij het gewoon. Op een telefoon is het
+                    kader veel minder breed en zou er links en rechts een stuk van
+                    de ploeg afvallen; daarom past de foto er daar helemaal in, met
+                    de overblijvende randen gevuld door een vervaagde uitvergroting
+                    van diezelfde foto. */}
+                <div
+                  className="relative aspect-[2/1] md:aspect-auto md:h-96 cursor-pointer group overflow-hidden"
                   onClick={() => setShowImageModal(true)}
                 >
                   <Image
                     src={team.image}
+                    alt=""
+                    aria-hidden
+                    fill
+                    className="object-cover scale-110 blur-xl brightness-90"
+                  />
+                  <Image
+                    src={team.image}
                     alt={team.name}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 800px"
+                    className="object-contain md:object-cover transition-transform duration-300 group-hover:scale-105"
                     priority
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
