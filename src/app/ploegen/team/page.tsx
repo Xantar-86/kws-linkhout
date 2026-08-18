@@ -85,20 +85,13 @@ function TeamContent() {
                 {/* Op een breed scherm is het kader zelf al bijna zo breed als
                     de foto, dus daar vult hij het gewoon. Op een telefoon is het
                     kader veel minder breed en zou er links en rechts een stuk van
-                    de ploeg afvallen; daarom past de foto er daar helemaal in, met
-                    de overblijvende randen gevuld door een vervaagde uitvergroting
-                    van diezelfde foto. */}
+                    de ploeg afvallen; daarom past de foto er daar helemaal in.
+                    Het kader is wit, net als de kaart eronder, zodat de smalle
+                    strook die overblijft niet opvalt. */}
                 <div
-                  className="relative aspect-[2/1] md:aspect-auto md:h-96 cursor-pointer group overflow-hidden"
+                  className="relative aspect-[16/10] bg-white md:aspect-auto md:h-96 cursor-pointer group overflow-hidden"
                   onClick={() => setShowImageModal(true)}
                 >
-                  <Image
-                    src={team.image}
-                    alt=""
-                    aria-hidden
-                    fill
-                    className="object-cover scale-110 blur-xl brightness-90"
-                  />
                   <Image
                     src={team.image}
                     alt={team.name}
