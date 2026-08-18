@@ -65,5 +65,9 @@ public/images/teams/IMG_*.JPG
 # de groepsfoto's staan bijgesneden in public/images/teams/
 public/images/spelers p1 p2 kws ladies 2026-2027/
 
+# De kernlijst uit Excel; daar staan gsm-nummers van spelers in en alles onder
+# public/ wordt publiek uitgeserveerd. De kern zelf staat in src/lib/kernen.ts.
+public/Docs/Overzicht spelers*.xlsx
+
 # Uitgeknipte spelers; afgeleid, wordt lokaal opnieuw gemaakt
 public/images/uitgeknipt/
