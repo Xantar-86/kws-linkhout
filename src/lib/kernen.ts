@@ -84,6 +84,39 @@ export const KERNEN: Record<string, Kernspeler[]> = {
     { naam: "Matthias Corten" },
   ],
 
+  // De damesploegen, seizoen 2026-27.
+  DamesP1: [
+    { naam: "Aline Flossie" },
+    { naam: "Briana Geerts" },
+    { naam: "Emilie Konings" },
+    { naam: "Hannelore Barro" },
+    { naam: "Jacey Vanweddingen" },
+    { naam: "Janne Vaes" },
+    { naam: "Jolien Wouters" },
+    { naam: "Kyra Sagovac" },
+    { naam: "Lola Jouck" },
+    { naam: "Marie Doggen" },
+    { naam: "Meret Moldonado" },
+    { naam: "Nena Convents" },
+  ],
+  DamesP2: [
+    { naam: "Amélie Mondelaers" },
+    { naam: "Destiny Banken" },
+    { naam: "Emma Kellens" },
+    { naam: "Emma Veekmans" },
+    { naam: "Jade Beckers" },
+    { naam: "Kaat Smeulders" },
+    { naam: "Kara Peeters" },
+    { naam: "Kyare Houben" },
+    { naam: "Lilly Luyckx" },
+    { naam: "Meyra Cesur" },
+    { naam: "Oona Vansteenwegen Walterus" },
+    { naam: "Raissa Ciavarro" },
+    { naam: "Shantie Banken" },
+    { naam: "Sharleen Vanderheyden" },
+    { naam: "Yenthe Lodewyckx" },
+  ],
+
   // Beloften, 19 spelers.
   Beloften: [
     { naam: "Matthias Corten" },
@@ -139,3 +172,11 @@ export function spelersVan(kern: string): Kernlid[] {
     })
     .sort((a, b) => a.naam.localeCompare(b.naam, "nl"));
 }
+
+/**
+ * Trainers waarvan de foto alleen klein getoond wordt.
+ *
+ * Hun portret is nog niet goed genoeg om te vergroten; het ronde vakje naast
+ * hun naam volstaat. Haal de naam hier weg zodra er een betere foto is.
+ */
+export const GEEN_VERGROTING: string[] = [];

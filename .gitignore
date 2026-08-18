@@ -61,5 +61,9 @@ public/images/kws spelers/
 # Originele ploegfotos uit de camera; de bijgesneden versie staat er los naast
 public/images/teams/IMG_*.JPG
 
+# Originele foto's van de damesploegen (132 MB); enkel de webversies gaan mee,
+# de groepsfoto's staan bijgesneden in public/images/teams/
+public/images/spelers p1 p2 kws ladies 2026-2027/
+
 # Uitgeknipte spelers; afgeleid, wordt lokaal opnieuw gemaakt
 public/images/uitgeknipt/

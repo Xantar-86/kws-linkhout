@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, User, X } from "lucide-react";
 import type { Speler } from "@/lib/spelers";
-import type { Kernlid } from "@/lib/kernen";
+import { GEEN_VERGROTING, type Kernlid } from "@/lib/kernen";
 
 /** Een lid van de kern waar wél een foto van is. */
 type MetFoto = Kernlid & { klein: string; groot: string };
@@ -221,6 +221,22 @@ export function SpelersGalerij({ spelers }: { spelers: Kernlid[] }) {
  */
 export function TrainerAvatar({ trainer }: { trainer: Speler }) {
   const [open, setOpen] = useState(false);
+
+  // Van sommige trainers is de foto nog niet goed genoeg om te vergroten;
+  // die blijft klein en is niet aanklikbaar.
+  if (GEEN_VERGROTING.includes(trainer.naam)) {
+    return (
+      <div className="relative mr-3 h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100 shadow-sm">
+        <Image
+          src={trainer.klein}
+          alt={trainer.naam}
+          fill
+          sizes="80px"
+          className="object-cover"
+        />
+      </div>
+    );
+  }
 
   return (
     <>

@@ -355,7 +355,7 @@ export function SpelersCarrousel({ spelers }: { spelers: Kernlid[] }) {
         <button
           type="button"
           onClick={() => schuif(-1)}
-          className="absolute -left-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white p-2 text-primary shadow-lg ring-1 ring-black/5 hover:bg-gray-50 sm:block"
+          className="absolute -left-3 top-1/2 z-30 hidden -translate-y-1/2 rounded-full bg-white p-2 text-primary shadow-lg ring-1 ring-black/5 hover:bg-gray-50 sm:block"
           aria-label="Vorige spelers"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -365,7 +365,7 @@ export function SpelersCarrousel({ spelers }: { spelers: Kernlid[] }) {
         <button
           type="button"
           onClick={() => schuif(1)}
-          className="absolute -right-3 top-1/2 hidden -translate-y-1/2 rounded-full bg-white p-2 text-primary shadow-lg ring-1 ring-black/5 hover:bg-gray-50 sm:block"
+          className="absolute -right-3 top-1/2 z-30 hidden -translate-y-1/2 rounded-full bg-white p-2 text-primary shadow-lg ring-1 ring-black/5 hover:bg-gray-50 sm:block"
           aria-label="Volgende spelers"
         >
           <ChevronRight className="h-6 w-6" />

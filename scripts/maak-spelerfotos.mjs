@@ -29,7 +29,13 @@ import sharp from "sharp";
 const BRONNEN = [
   { map: "public/images/kws spelers", altijdTrainer: false },
   { map: "public/images/Trainers", altijdTrainer: true },
+  // De damesploegen hebben hun eigen map, met de ploeg vooraan in de naam en
+  // een T1 achteraan bij een trainer.
+  { map: "public/images/spelers p1 p2 kws ladies 2026-2027", dames: true },
 ];
+
+/** Groepsfoto's horen bij de ploeg, niet bij een speelster. */
+const GEEN_PORTRET = /groepsfoto/i;
 const DOEL = "public/images/spelers";
 const LIJST = "src/lib/spelers.ts";
 
@@ -72,7 +78,7 @@ const PORTRET_FACTOR = 1.7;
  * Het getal gaat mee in de vingerafdruk in de bestandsnaam. Zonder dat houdt
  * een browser de oude uitsnede vast, want het webadres blijft dan gelijk.
  */
-const SNIJ_VERSIE = 10;
+const SNIJ_VERSIE = 12;
 
 /**
  * Correcties voor foto's waar het zoeken naast zit.
@@ -191,7 +197,8 @@ const teDoen = BRONNEN.filter((b) => existsSync(b.map)).flatMap((bron) =>
     .map((bestand) => ({ ...bron, bestand }))
 );
 
-for (const { map, bestand, altijdTrainer } of teDoen) {
+for (const { map, bestand, altijdTrainer, dames } of teDoen) {
+  if (GEEN_PORTRET.test(bestand)) continue;
   const zonderExtensie = bestand.replace(/\.[^.]+$/, "").trim();
 
   // Staat de ploeg vooraan, dan is het een trainer. Achteraan of helemaal
@@ -204,7 +211,14 @@ for (const { map, bestand, altijdTrainer } of teDoen) {
   let ploeg;
   let isTrainer = altijdTrainer;
 
-  if (altijdTrainer) {
+  const damesRij = zonderExtensie.match(/^(P1|P2)\s+(.*)$/i);
+
+  if (dames && damesRij) {
+    // "P1 Frank Schroyen T1" is de trainer van de eerste damesploeg.
+    ploeg = `Dames ${damesRij[1].toUpperCase()}`;
+    naam = damesRij[2].replace(/\s+T\d$/i, "").trim();
+    isTrainer = naam !== damesRij[2].trim();
+  } else if (altijdTrainer) {
     naam = zonderExtensie;
     ploeg = "";
   } else if (vooraan) {
@@ -336,7 +350,12 @@ for (const { map, bestand, altijdTrainer } of teDoen) {
   const knipPad = join(UITGEKNIPT, `${bestand.replace(/\.[^.]+$/, "")}.png`);
   const portretBreed = Math.round((GROOT * 3) / 4);
 
-  if (existsSync(knipPad)) {
+  // Een uitsnede van een duimnagel levert alleen maar een vlek op; dan is de
+  // gewone foto beter af.
+  const knipMaat = existsSync(knipPad) ? await sharp(knipPad).metadata() : null;
+  const bruikbareKnip = knipMaat !== null && Math.max(knipMaat.width, knipMaat.height) >= 400;
+
+  if (bruikbareKnip) {
     // Verkleinen maakt een beeld altijd wat weker, en op een donkere wand
     // ogen de shirts al snel flets. Daarom na het verkleinen verscherpen en
     // de kleur en het contrast wat aanzetten; dat haalt het rood terug.
@@ -351,28 +370,35 @@ for (const { map, bestand, altijdTrainer } of teDoen) {
       .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
       .toBuffer();
     const maat = await sharp(persoon).metadata();
+    const persoonLinks = Math.round((portretBreed - maat.width) / 2);
+    const persoonTop = GROOT - maat.height;
 
     await sharp(await clubwand(portretBreed, GROOT))
-      .composite([
-        {
-          input: persoon,
-          left: Math.round((portretBreed - maat.width) / 2),
-          top: GROOT - maat.height,
-        },
-      ])
+      .composite([{ input: persoon, left: persoonLinks, top: persoonTop }])
       .webp({ quality: 86 })
       .toFile(grootPad);
 
-    // Het vierkantje is de bovenkant van datzelfde beeld: kop en schouders,
-    // op dezelfde wand.
-    const zijde = Math.round(GROOT * 0.62);
+    // Het vierkantje wordt om het hoofd gelegd in plaats van om een vaste
+    // plek in het beeld. De bovenkant van de uitsnede is de kruin, en een kop
+    // met schouders is ongeveer even hoog als de speler breed is. Zo staat
+    // iedereen goed, of hij nu ten voeten uit of tot de borst gefotografeerd
+    // is.
+    const zijde = Math.min(
+      portretBreed,
+      GROOT,
+      Math.round(Math.min(maat.width * 1.2, maat.height))
+    );
+    const zijLinks = Math.max(
+      0,
+      Math.min(portretBreed - zijde, Math.round(persoonLinks + maat.width / 2 - zijde / 2))
+    );
+    const zijTop = Math.max(
+      0,
+      Math.min(GROOT - zijde, Math.round(persoonTop - zijde * 0.06))
+    );
+
     await sharp(grootPad)
-      .extract({
-        left: Math.round((portretBreed - zijde) / 2),
-        top: Math.round(GROOT * 0.04),
-        width: zijde,
-        height: zijde,
-      })
+      .extract({ left: zijLinks, top: zijTop, width: zijde, height: zijde })
       .resize(KLEIN, KLEIN)
       .webp({ quality: 82 })
       .toFile(kleinPad);
