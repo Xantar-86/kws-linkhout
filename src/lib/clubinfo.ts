@@ -316,10 +316,10 @@ Onder het Dagelijks Bestuur werkt de club met cellen. Elke cel heeft haar eigen 
 
 **De vzw**
 
-- Gert Peremans, voorzitter
-- Jos Keldermans, secretaris
+- Gert Peremans, voorzitter en blauwe kaarthouder
+- Jos Minten, secretaris en blauwe kaarthouder
 - Erwin Doggen, bestuurder
-- Joël Bynens, bestuurder
+- Joël Bynens, bestuurder en blauwe kaarthouder
 - Yves Frenay, bestuurder
 
 **Dagelijks Bestuur**
@@ -329,6 +329,7 @@ Voorzitter: Gert Peremans
 **De cellen**
 
 **Organisatie**
+- Onderhoud velden en accommodatie: Erwin Doggen en Jos Minten
 - Kledij: Lindsay Serré en Cindy Vanheukelom
 - Activiteiten: Maarten C., Wim C., Staf V. en Robrecht R.
 - Sponsoring: Ben Jouck
@@ -339,29 +340,34 @@ Voorzitter: Gert Peremans
 - Joël Bynens en Maarten Cleeren
 - Webdesign: Jochen Thoelen
 
-**Onderhoud velden en accommodatie**
-- Erwin Doggen en Jos Minten
-
 **Sport technisch**
 - Jos Minten en Bart Lenaerts
-- Senior ploegen, sportief verantwoordelijke: Ramon Fernandez
-- Dames ploegen, coördinator: Ben Jouck
-- Keepers dames: Steven B.
+- Coördinatoren afgevaardigden: Jochen Thoelen en Kelly Smits
+
+Onder deze cel hangen drie takken: de jeugdwerking, de meisjes en dames, en de seniorploegen. De coördinatoren afgevaardigden werken over die drie takken heen.
+
+**Jeugdwerking**
+- AVJO: Maarten Cleeren
+- TVJO: Steven Bosman
+- Coördinatoren: Staf Vaes, Kristof Baeten en Maarten Cleeren
+- Jeugd- en keeperstrainers
+- Afgevaardigden jeugd
+
+**Meisjes en dames**
+- Futbalista: Ben Jouck
+- Trainers en keeperstrainers van de jeugd en de seniordames
+- Afgevaardigden meisjes en dames
+
+**Seniorploegen**
+- Sportief verantwoordelijke senior heren en doorstroming: Ramon Fernandez
+- Trainers en keeperstrainers senior heren
+- Afgevaardigden seniors
 
 **GC (gerechtigd correspondent)**
 - Gert Peremans
 
 **API (Aanspreekpunt Integriteit)**
 - Lincy Mechelmans
-
-**Jeugdwerking**
-
-De jeugd valt onder de sport technische cel en heeft een eigen werking.
-
-- AVJO: Maarten Cleeren
-- TVJO: Steven Bosman
-- Coördinatoren: Staf Vaes, Kristof Baeten en Wesly Thomas
-- Keepers: Staf Vaes
 
 **AVJO**
 
@@ -378,7 +384,7 @@ Functieomschrijving:
 - Uitwerking opleidingsvisie voor de jeugd`,
     highlights: [
       "Beheerraad en Dagelijks Bestuur",
-      "Zes cellen met eigen verantwoordelijken",
+      "Cellen met eigen verantwoordelijken",
       "Eigen jeugdwerking met AVJO en TVJO",
       "Aanspreekpunt Integriteit binnen de club"
     ]
