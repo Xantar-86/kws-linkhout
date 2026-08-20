@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { SiteOmlijsting } from "@/components/layout/SiteOmlijsting";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { CacheBuster } from "@/components/CacheBuster";
 
@@ -55,11 +54,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
         <CacheBuster />
         <ScrollToTop />
-        <Header />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <SiteOmlijsting>{children}</SiteOmlijsting>
       </body>
     </html>
   );
