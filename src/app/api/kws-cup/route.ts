@@ -9,34 +9,22 @@
 //   - omgevingsvariabele KWS_CUP_TOKEN met een lang, willekeurig wachtwoord
 //     (datzelfde token vul je in bij de Tornooiplanner)
 
-import { put, list } from "@vercel/blob";
+import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { BESTAND, leesSchema } from "../../kws-cup-2026/schema";
 
 export const dynamic = "force-dynamic";   // nooit cachen: het schema kan wijzigen
 export const runtime = "nodejs";
 
-const BESTAND = "kws-cup/schema.json";
-
 export async function GET() {
-  try {
-    const { blobs } = await list({ prefix: BESTAND, limit: 1 });
-    if (blobs.length === 0) {
-      return NextResponse.json(
-        { fout: "Er is nog geen schema gepubliceerd." },
-        { status: 404, headers: { "Cache-Control": "no-store" } },
-      );
-    }
-    const antwoord = await fetch(blobs[0].url, { cache: "no-store" });
-    const gegevens = await antwoord.json();
-    return NextResponse.json(gegevens, {
-      headers: { "Cache-Control": "no-store" },
-    });
-  } catch (e) {
+  const gegevens = await leesSchema();
+  if (!gegevens) {
     return NextResponse.json(
-      { fout: "Kon het schema niet ophalen." },
-      { status: 500, headers: { "Cache-Control": "no-store" } },
+      { fout: "Er is nog geen schema gepubliceerd." },
+      { status: 404, headers: { "Cache-Control": "no-store" } },
     );
   }
+  return NextResponse.json(gegevens, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(request: Request) {

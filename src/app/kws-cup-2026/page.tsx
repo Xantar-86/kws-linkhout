@@ -4,7 +4,8 @@
 // hij is alleen bereikbaar via de link die we zelf doorgeven.
 
 import type { Metadata } from "next";
-import TornooiClient, { type Tornooi } from "./TornooiClient";
+import TornooiClient from "./TornooiClient";
+import { leesSchema } from "./schema";
 
 export const dynamic = "force-dynamic";   // altijd het actuele schema tonen
 
@@ -16,21 +17,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },   // niet in Google, wel bereikbaar
 };
 
-async function haalSchema(): Promise<Tornooi | null> {
-  const basis =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-  try {
-    const antwoord = await fetch(`${basis}/api/kws-cup`, { cache: "no-store" });
-    if (!antwoord.ok) return null;
-    return (await antwoord.json()) as Tornooi;
-  } catch {
-    return null;
-  }
-}
-
 export default async function Pagina() {
-  const tornooi = await haalSchema();
+  const tornooi = await leesSchema();
 
   if (!tornooi) {
     return (
