@@ -35,6 +35,13 @@ export type Wedstrijd = {
   thuis: string;
   uit: string;
   vriendschappelijk: boolean;
+  /**
+   * Wie de wedstrijd fluit.
+   *
+   * Mag ontbreken: het schema wordt al gepubliceerd voor de lijst met
+   * scheidsrechters rond is, en niet elke wedstrijd krijgt er een.
+   */
+  scheidsrechter?: string;
 };
 
 export type Poule = {
@@ -202,6 +209,39 @@ function wedstrijdduur(tornooi: Tornooi) {
     );
 }
 
+/**
+ * Per leeftijdsreeks: welke dag, van wanneer tot wanneer, op welke velden en
+ * hoe lang er gespeeld wordt.
+ *
+ * Ook dit komt uit het schema zelf en niet uit een lijst die met de hand
+ * bijgehouden wordt. De velden lezen we af uit de wedstrijden, want dat is wat
+ * er echt gebruikt wordt; in de planner kunnen er meer aangevinkt staan dan er
+ * uiteindelijk nodig blijken.
+ */
+function veldenEnTijden(tornooi: Tornooi) {
+  return [...tornooi.reeksen]
+    .sort((a, b) => reeksVolgorde(a.naam) - reeksVolgorde(b.naam))
+    .map((reeks) => {
+      const velden: string[] = [];
+      tornooi.wedstrijden
+        .filter((w) => w.reeks === reeks.naam)
+        .forEach((w) => w.velden.forEach((v) => velden.includes(v) || velden.push(v)));
+
+      const duren = [...new Set(reeks.poules.map((p) => p.minuten))].sort((a, b) => a - b);
+
+      return {
+        reeks: reeks.naam,
+        dag: reeks.dag,
+        van: reeks.start,
+        tot: reeks.eind,
+        velden: velden.sort((a, b) => a.localeCompare(b, "nl")),
+        // Loopt de duur uiteen tussen de poules, dan tonen we het bereik. De
+        // uitsplitsing per poule staat er verderop toch onder.
+        duur: duren.length === 1 ? `${duren[0]} min` : `${duren[0]} tot ${duren[duren.length - 1]} min`,
+      };
+    });
+}
+
 /** De praktische afspraken voor op de dag zelf. */
 const AFSPRAKEN = [
   {
@@ -340,6 +380,13 @@ function WedstrijdRij({
           <Logo ploeg={ploegIndex.get(w.uit)} maat={20} />
           <span className={`truncate text-[15px] ${dik(w.uit)}`}>{w.uit}</span>
         </div>
+
+        {(w.scheidsrechter || w.vriendschappelijk) && (
+          <p className="mt-1 flex flex-wrap gap-x-2 text-[11px] text-gray-400">
+            {w.vriendschappelijk && <span>vriendschappelijk</span>}
+            {w.scheidsrechter && <span>scheidsrechter: {w.scheidsrechter}</span>}
+          </p>
+        )}
       </div>
 
       <div className="flex w-14 shrink-0 flex-col items-end justify-center">
@@ -955,6 +1002,7 @@ export default function TornooiClient({
                 </p>
                 <p className="mt-0.5 text-sm text-white/70">
                   {volgende.dag} · {volgende.reeks} · {volgende.poule}
+                  {volgende.scheidsrechter && <> · scheidsrechter {volgende.scheidsrechter}</>}
                 </p>
               </div>
             )}
@@ -1177,12 +1225,6 @@ export default function TornooiClient({
                     </a>
                   </dd>
                 </div>
-                <div className="flex gap-3">
-                  <dt className="w-20 shrink-0 text-gray-500 sm:w-24">Velden</dt>
-                  <dd className="text-gray-900">
-                    A-plein: A1 tot A4 · B-veld: B1 en B2 · C-terrein: C1 tot C6
-                  </dd>
-                </div>
                 {tornooi.dagen.map((d) => (
                   <div key={d.naam} className="flex gap-3">
                     <dt className="w-20 shrink-0 capitalize text-gray-500 sm:w-24">
@@ -1194,6 +1236,55 @@ export default function TornooiClient({
                   </div>
                 ))}
               </dl>
+            </article>
+
+            <article className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+              <div className="px-5 pt-5">
+                <h3 className="text-lg font-bold text-gray-900">Velden en tijden</h3>
+                <p className="mt-0.5 text-sm text-gray-500">
+                  Waar en wanneer elke leeftijdsreeks speelt.
+                </p>
+              </div>
+
+              {/* Op een telefoon onder elkaar, vanaf tablet als kolommen. Vijf
+                  kolommen naast elkaar op een smal scherm wordt onleesbaar. */}
+              <div className="mt-3 hidden border-t border-gray-100 px-5 py-2 text-xs font-semibold
+                              uppercase tracking-wide text-gray-400 sm:flex sm:gap-3">
+                <span className="w-14 shrink-0">Reeks</span>
+                <span className="w-44 shrink-0">Dag</span>
+                <span className="w-28 shrink-0">Van tot</span>
+                <span className="min-w-0 flex-1">Velden</span>
+                <span className="w-24 shrink-0 text-right">Duur</span>
+              </div>
+
+              <ul className="sm:mt-0">
+                {veldenEnTijden(tornooi).map((r) => (
+                  <li
+                    key={r.reeks}
+                    className="border-t border-gray-100 px-5 py-2.5 text-sm sm:flex sm:gap-3"
+                  >
+                    <span className="font-bold text-primary sm:w-14 sm:shrink-0">{r.reeks}</span>
+                    <span className="ml-2 text-gray-600 sm:ml-0 sm:w-44 sm:shrink-0">{r.dag}</span>
+                    <span className="mt-0.5 block text-gray-900 sm:mt-0 sm:hidden">
+                      {r.van}–{r.tot} · veld {r.velden.join(", ")} · {r.duur}
+                    </span>
+                    <span className="hidden tabular-nums text-gray-900 sm:block sm:w-28 sm:shrink-0">
+                      {r.van}–{r.tot}
+                    </span>
+                    <span className="hidden text-gray-900 sm:block sm:min-w-0 sm:flex-1">
+                      {r.velden.join(", ")}
+                    </span>
+                    <span className="hidden text-gray-600 sm:block sm:w-24 sm:shrink-0 sm:text-right">
+                      {r.duur}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <p className="border-t border-gray-100 px-5 py-3 text-sm text-gray-500">
+                Bij U6 en U7 speelt één ploeg op twee veldjes tegelijk. De ligging van de
+                velden staat op de plattegrond hieronder.
+              </p>
             </article>
 
             <div className="grid gap-5 lg:grid-cols-2">
@@ -1279,7 +1370,6 @@ export default function TornooiClient({
             <article className="rounded-xl border border-gray-200 bg-white p-5">
               <h3 className="text-lg font-bold text-gray-900">Goed om te weten</h3>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-700">
-                <li>Bij U6 en U7 speelt één ploeg tegelijk op meerdere veldjes.</li>
                 <li>
                   Het schema kan tijdens het tornooi wijzigen, bijvoorbeeld als een ploeg
                   afzegt. Deze pagina toont altijd de laatste versie.
