@@ -233,13 +233,6 @@ const AFSPRAKEN = [
     titel: "Catering",
     tekst: "Zin in een snack? Kom langs bij onze stand voor een hotdog en een drankje.",
   },
-  {
-    teken: "🎁",
-    titel: "Goodiebag bij vertrek",
-    tekst:
-      "Voor elke speler ligt er een goodiebag klaar aan het onthaal, als dank voor " +
-      "jullie deelname. Haal die op bij het naar huis gaan, en alleen dan.",
-  },
 ] as const;
 
 /** Zoeken zonder te struikelen over hoofdletters, punten of accenten. */
