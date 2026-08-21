@@ -210,6 +210,20 @@ function wedstrijdduur(tornooi: Tornooi) {
 }
 
 /**
+ * Uren die de club anders aankondigt dan wat er uit het schema volgt.
+ *
+ * De uitvoer van de planner leidt het uur van een reeks af uit zijn
+ * wedstrijden. Waar de club een ander uur communiceert, staat dat hier.
+ *
+ * Dit hoort hier eigenlijk niet thuis: zodra de planner het aangekondigde uur
+ * zelf meestuurt, of het schema herrekend wordt zodat beide gelijklopen, mag
+ * deze lijst weg.
+ */
+const AANGEKONDIGD: Record<string, { van: string; tot: string }> = {
+  U15: { van: "16:15", tot: "19:15" },
+};
+
+/**
  * Per leeftijdsreeks: welke dag, van wanneer tot wanneer, op welke velden en
  * hoe lang er gespeeld wordt.
  *
@@ -229,11 +243,13 @@ function veldenEnTijden(tornooi: Tornooi) {
 
       const duren = [...new Set(reeks.poules.map((p) => p.minuten))].sort((a, b) => a - b);
 
+      const aangekondigd = AANGEKONDIGD[reeks.naam];
+
       return {
         reeks: reeks.naam,
         dag: reeks.dag,
-        van: reeks.start,
-        tot: reeks.eind,
+        van: aangekondigd?.van ?? reeks.start,
+        tot: aangekondigd?.tot ?? reeks.eind,
         velden: velden.sort((a, b) => a.localeCompare(b, "nl")),
         // Loopt de duur uiteen tussen de poules, dan tonen we het bereik. De
         // uitsplitsing per poule staat er verderop toch onder.
