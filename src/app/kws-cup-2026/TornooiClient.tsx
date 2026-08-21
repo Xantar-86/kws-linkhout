@@ -15,6 +15,7 @@ import {
   Info,
   LayoutGrid,
   Maximize2,
+  Minimize2,
   RefreshCw,
   Search,
   Star,
@@ -309,9 +310,17 @@ function WedstrijdRij({
         staat === "gespeeld" ? "opacity-60" : ""
       }`}
     >
-      <div className="flex w-12 shrink-0 flex-col items-center justify-center">
-        <span className="text-base font-bold tabular-nums text-gray-900">{w.start}</span>
-        <span className="text-[11px] tabular-nums text-gray-400">{w.eind}</span>
+      {/* Uur en veld staan samen links: dat is wat je als eerste zoekt, en
+          zo hoeft er op een telefoon niets opzij geschoven te worden. */}
+      <div className="flex w-14 shrink-0 flex-col items-center justify-center gap-1">
+        <div className="text-center leading-tight">
+          <div className="text-base font-bold tabular-nums text-gray-900">{w.start}</div>
+          <div className="text-[11px] tabular-nums text-gray-400">{w.eind}</div>
+        </div>
+        <span className="whitespace-nowrap rounded bg-gray-800 px-1.5 py-0.5 text-[11px]
+                         font-bold tracking-wide text-white">
+          {w.velden.join("+")}
+        </span>
       </div>
 
       <div className="min-w-0 flex-1 border-l border-gray-100 pl-3">
@@ -325,7 +334,7 @@ function WedstrijdRij({
         </div>
       </div>
 
-      <div className="flex w-20 shrink-0 flex-col items-end justify-center gap-1">
+      <div className="flex w-14 shrink-0 flex-col items-end justify-center">
         {staat === "bezig" ? (
           <span className="flex items-center gap-1 rounded-full bg-primary px-2 py-0.5
                            text-[11px] font-bold text-white">
@@ -337,9 +346,6 @@ function WedstrijdRij({
             {w.reeks}
           </span>
         )}
-        <span className="rounded bg-gray-100 px-2 py-0.5 text-[11px] font-semibold text-gray-600">
-          {w.velden.join(" + ")}
-        </span>
       </div>
     </article>
   );
@@ -470,10 +476,12 @@ function Plan({
   uitleg: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [ingezoomd, setIngezoomd] = useState(false);
   const [ontbreekt, setOntbreekt] = useState(false);
 
   useEffect(() => {
     if (!open) return;
+    setIngezoomd(false);
     const opToets = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", opToets);
     const vorige = document.body.style.overflow;
@@ -542,11 +550,36 @@ function Plan({
           >
             <X className="h-6 w-6" />
           </button>
-          {/* Het plan mag groter dan het scherm: je moet erop kunnen inzoomen
-              en erin kunnen schuiven om een veldnummer te lezen. */}
-          <div className="max-h-full w-full overflow-auto" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIngezoomd((v) => !v);
+            }}
+            className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-white/15
+                       px-3 py-2 text-sm font-medium text-white hover:bg-white/25"
+          >
+            {ingezoomd ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            {ingezoomd ? "passend" : "inzoomen"}
+          </button>
+
+          {/* Het plan past standaard op het scherm, want ongevraagd opzij
+              moeten schuiven is vervelend. Wie een veldnummer wil lezen zet
+              het groter en kan er dan wel in schuiven. */}
+          <div
+            className={`flex max-h-full w-full ${ingezoomd ? "overflow-auto" : "justify-center"}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={bron} alt={titel} className="mx-auto min-w-[900px] max-w-none" />
+            <img
+              src={bron}
+              alt={titel}
+              className={
+                ingezoomd
+                  ? "mx-auto min-w-[1400px] max-w-none"
+                  : "max-h-[80vh] w-auto max-w-full object-contain"
+              }
+            />
           </div>
           <p className="pointer-events-none absolute bottom-4 left-0 right-0 text-center
                         text-sm text-white/70">
@@ -566,7 +599,6 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
   const [zoekPloegen, setZoekPloegen] = useState("");
   const [dag, setDag] = useState("alle");
   const [schemaReeks, setSchemaReeks] = useState("alle");
-  const [veld, setVeld] = useState("alle");
   const [ververst, setVerverst] = useState<Date | null>(null);
   const [bezig, setBezig] = useState(false);
   const [nu, setNu] = useState<Date | null>(null);
@@ -714,10 +746,9 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
       tornooi.wedstrijden.filter(
         (w) =>
           (dag === "alle" || w.dag === dag) &&
-          (schemaReeks === "alle" || w.reeks === schemaReeks) &&
-          (veld === "alle" || w.velden.includes(veld)),
+          (schemaReeks === "alle" || w.reeks === schemaReeks),
       ),
-    [tornooi.wedstrijden, dag, schemaReeks, veld],
+    [tornooi.wedstrijden, dag, schemaReeks],
   );
 
   return (
@@ -901,7 +932,7 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
         {tab === "schema" && (
           <section>
             <div className="space-y-2">
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="flex flex-wrap gap-2">
                 <Chip actief={dag === "alle"} onClick={() => setDag("alle")}>
                   alle dagen
                 </Chip>
@@ -918,7 +949,7 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
                   </Chip>
                 ))}
               </div>
-              <div className="flex gap-2 overflow-x-auto pb-1">
+              <div className="flex flex-wrap gap-2">
                 <Chip actief={schemaReeks === "alle"} onClick={() => setSchemaReeks("alle")}>
                   alle reeksen
                 </Chip>
@@ -933,16 +964,6 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
                       {r.naam}
                     </Chip>
                   ))}
-              </div>
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                <Chip actief={veld === "alle"} onClick={() => setVeld("alle")}>
-                  alle velden
-                </Chip>
-                {tornooi.velden.map((v) => (
-                  <Chip key={v} actief={veld === v} onClick={() => setVeld(v)}>
-                    {v}
-                  </Chip>
-                ))}
               </div>
             </div>
 
@@ -1069,7 +1090,7 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
               <h3 className="text-lg font-bold text-gray-900">Praktisch</h3>
               <dl className="mt-3 space-y-2 text-sm">
                 <div className="flex gap-3">
-                  <dt className="w-24 shrink-0 text-gray-500">Waar</dt>
+                  <dt className="w-20 shrink-0 text-gray-500 sm:w-24">Waar</dt>
                   <dd className="text-gray-900">
                     K.W.S. Linkhout, Kapelstraat, Lummen
                     <a
@@ -1083,14 +1104,14 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
                   </dd>
                 </div>
                 <div className="flex gap-3">
-                  <dt className="w-24 shrink-0 text-gray-500">Velden</dt>
+                  <dt className="w-20 shrink-0 text-gray-500 sm:w-24">Velden</dt>
                   <dd className="text-gray-900">
                     A-plein: A1 tot A4 · B-veld: B1 en B2 · C-terrein: C1 tot C6
                   </dd>
                 </div>
                 {tornooi.dagen.map((d) => (
                   <div key={d.naam} className="flex gap-3">
-                    <dt className="w-24 shrink-0 capitalize text-gray-500">
+                    <dt className="w-20 shrink-0 capitalize text-gray-500 sm:w-24">
                       {d.naam.split(" ")[0]}
                     </dt>
                     <dd className="text-gray-900">
@@ -1137,11 +1158,15 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
                 {WEDSTRIJDDUUR.map((d) => (
                   <li
                     key={`${d.reeks}-${d.poules}`}
-                    className="flex gap-3 border-t border-gray-100 px-5 py-2.5 text-sm"
+                    className="border-t border-gray-100 px-5 py-2.5 text-sm sm:flex sm:gap-3"
                   >
-                    <span className="w-12 shrink-0 font-bold text-primary">{d.reeks}</span>
-                    <span className="w-24 shrink-0 text-gray-500">{d.poules}</span>
-                    <span className="min-w-0 flex-1 text-gray-800">{d.tekst}</span>
+                    <span className="flex gap-2 sm:contents">
+                      <span className="font-bold text-primary sm:w-12 sm:shrink-0">{d.reeks}</span>
+                      <span className="text-gray-500 sm:w-24 sm:shrink-0">{d.poules}</span>
+                    </span>
+                    <span className="mt-0.5 block text-gray-800 sm:mt-0 sm:min-w-0 sm:flex-1">
+                      {d.tekst}
+                    </span>
                   </li>
                 ))}
               </ul>
