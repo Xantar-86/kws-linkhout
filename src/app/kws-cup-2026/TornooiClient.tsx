@@ -162,30 +162,35 @@ const PLANNEN = [
 const BIJLAGEN: { naam: string; bron: string }[] = [];
 
 /**
- * Hoe lang er per poule gespeeld wordt.
+ * Hoe lang er per poule gespeeld wordt, afgeleid uit het schema zelf.
  *
- * Dit komt van de tornooileiding en staat niet in de uitvoer van de
- * Tornooiplanner, dus het staat hier met de hand.
+ * Dit stond eerst met de hand ingevuld en liep achter zodra de indeling
+ * wijzigde. Alles wat hier staat komt nu uit de uitvoer van de
+ * Tornooiplanner, dus het klopt altijd met de wedstrijden ernaast.
  */
-const WEDSTRIJDDUUR = [
-  { reeks: "U6", poules: "Poule A", tekst: "2 × 3 min (2v2), 1 ploeg speelt gelijktijdig op 3 terreinen" },
-  { reeks: "U6", poules: "Poule B", tekst: "2 × 3 min (2v2), 1 ploeg speelt gelijktijdig op 3 terreinen" },
-  { reeks: "U7", poules: "Poule A, B, C, D", tekst: "2 × 5 min (3v3), 1 ploeg speelt gelijktijdig op 2 terreinen, in totaal 3 × 10 min" },
-  { reeks: "U8", poules: "Poule A, B", tekst: "1 × 15 min (5v5), in totaal 3 × 15 min" },
-  { reeks: "U8", poules: "Poule C", tekst: "1 × 20 min (5v5), in totaal 2 × 20 min" },
-  { reeks: "U9", poules: "Poule A", tekst: "2 × 10 min (5v5), in totaal 3 × 20 min" },
-  { reeks: "U9", poules: "Poule B", tekst: "1 × 15 min (5v5), in totaal 4 × 15 min" },
-  { reeks: "U10", poules: "Poule A, C, D", tekst: "1 × 15 min (8v8), in totaal 3 × 15 min" },
-  { reeks: "U10", poules: "Poule B", tekst: "2 × 15 min (8v8), in totaal 2 × 30 min" },
-  { reeks: "U11", poules: "Poule A, B", tekst: "1 × 20 min (8v8), in totaal 3 × 20 min" },
-  { reeks: "U11", poules: "Poule C", tekst: "1 × 15 min (8v8), in totaal 4 × 15 min" },
-  { reeks: "U12", poules: "Poule A, B", tekst: "1 × 20 min (8v8), in totaal 3 × 20 min" },
-  { reeks: "U13", poules: "Poule A", tekst: "1 × 15 min (8v8), in totaal 4 × 15 min" },
-  { reeks: "U13", poules: "Poule B", tekst: "2 × 10 min (8v8), in totaal 3 × 20 min" },
-  { reeks: "U15", poules: "Poule A, B, C", tekst: "1 × 35 min (11v11), in totaal 3 × 35 min" },
-  { reeks: "WU16", poules: "Poule A, B", tekst: "2 × 15 min (8v8), in totaal 3 × 30 min" },
-  { reeks: "WU20", poules: "Poule A", tekst: "1 × 25 min (11v11), in totaal 3 × 25 min" },
-] as const;
+function wedstrijdduur(tornooi: Tornooi) {
+  return [...tornooi.reeksen]
+    .sort((a, b) => reeksVolgorde(a.naam) - reeksVolgorde(b.naam))
+    .flatMap((reeks) =>
+      reeks.poules.map((poule) => {
+        const wedstrijden = tornooi.wedstrijden.filter(
+          (w) => w.reeks === reeks.naam && w.poule === poule.naam,
+        );
+        // Bij de allerkleinsten speelt een ploeg op twee veldjes tegelijk.
+        const velden = Math.max(1, ...wedstrijden.map((w) => w.velden.length));
+        const perPloeg = Math.max(0, ...poule.ploegen.map((p) => p.wedstrijden));
+        return {
+          sleutel: `${reeks.naam}-${poule.naam}`,
+          reeks: reeks.naam,
+          poule: poule.naam,
+          minuten: poule.minuten,
+          perPloeg,
+          velden,
+          ploegen: poule.ploegen.length,
+        };
+      }),
+    );
+}
 
 /** De praktische afspraken voor op de dag zelf. */
 const AFSPRAKEN = [
@@ -1151,21 +1156,29 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
               <div className="px-5 pt-5">
                 <h3 className="text-lg font-bold text-gray-900">Wedstrijdduur per poule</h3>
                 <p className="mt-0.5 text-sm text-gray-500">
-                  Zoals de tornooileiding het heeft ingedeeld.
+                  Rechtstreeks uit het schema, dus altijd gelijk aan de wedstrijden.
                 </p>
               </div>
               <ul className="mt-3">
-                {WEDSTRIJDDUUR.map((d) => (
+                {wedstrijdduur(tornooi).map((d) => (
                   <li
-                    key={`${d.reeks}-${d.poules}`}
+                    key={d.sleutel}
                     className="border-t border-gray-100 px-5 py-2.5 text-sm sm:flex sm:gap-3"
                   >
                     <span className="flex gap-2 sm:contents">
                       <span className="font-bold text-primary sm:w-12 sm:shrink-0">{d.reeks}</span>
-                      <span className="text-gray-500 sm:w-24 sm:shrink-0">{d.poules}</span>
+                      <span className="text-gray-500 sm:w-24 sm:shrink-0">{d.poule}</span>
                     </span>
                     <span className="mt-0.5 block text-gray-800 sm:mt-0 sm:min-w-0 sm:flex-1">
-                      {d.tekst}
+                      {d.minuten} min per wedstrijd ·{" "}
+                      {d.perPloeg} {d.perPloeg === 1 ? "wedstrijd" : "wedstrijden"} per ploeg ·{" "}
+                      {d.ploegen} {d.ploegen === 1 ? "ploeg" : "ploegen"}
+                      {d.velden > 1 && (
+                        <span className="text-gray-500">
+                          {" "}
+                          · één ploeg speelt op {d.velden} veldjes tegelijk
+                        </span>
+                      )}
                     </span>
                   </li>
                 ))}
