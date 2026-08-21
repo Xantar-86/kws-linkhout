@@ -17,14 +17,26 @@ export const dynamic = "force-dynamic";   // nooit cachen: het schema kan wijzig
 export const runtime = "nodejs";
 
 export async function GET() {
-  const gegevens = await leesSchema();
-  if (!gegevens) {
+  const uitkomst = await leesSchema();
+
+  if (uitkomst.staat === "leeg") {
     return NextResponse.json(
       { fout: "Er is nog geen schema gepubliceerd." },
       { status: 404, headers: { "Cache-Control": "no-store" } },
     );
   }
-  return NextResponse.json(gegevens, { headers: { "Cache-Control": "no-store" } });
+
+  // Een opslag die weigert is geen leeg tornooi. Dat verschil hoort in het
+  // antwoord te staan, anders zoekt de volgende die dit uitzoekt te lang.
+  if (uitkomst.staat === "fout") {
+    console.error("[kws-cup] schema onbereikbaar:", uitkomst.reden);
+    return NextResponse.json(
+      { fout: "Kon het schema niet ophalen.", reden: uitkomst.reden },
+      { status: 502, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
+  return NextResponse.json(uitkomst.tornooi, { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(request: Request) {
@@ -54,6 +66,10 @@ export async function POST(request: Request) {
     contentType: "application/json",
     addRandomSuffix: false,
     allowOverwrite: true,
+    // Een minuut, niet langer: de bezoekers halen dit rechtstreeks op en een
+    // wijziging tijdens de tornooidag moet snel doorkomen. Binnen die minuut
+    // komt het uit de cache van het netwerk en kost het niets.
+    cacheControlMaxAge: 60,
   });
 
   return NextResponse.json({

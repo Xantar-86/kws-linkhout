@@ -596,7 +596,22 @@ function Plan({
   );
 }
 
-export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) {
+export default function TornooiClient({
+  tornooi: begin,
+  adres,
+}: {
+  tornooi: Tornooi;
+  /**
+   * Het vaste adres van het schema in de opslag.
+   *
+   * Daar halen we het elke minuut vandaan, rechtstreeks vanuit de browser.
+   * Langs onze eigen API zou elke bezoeker elke minuut een serverfunctie
+   * wakker maken en daar een zoekopdracht in de opslag laten doen; dat heeft
+   * de opslag eerder al eens plat gelegd. Is het adres onbekend, dan valt het
+   * terug op die API.
+   */
+  adres: string | null;
+}) {
   const [tornooi, setTornooi] = useState(begin);
   // De infopagina is het startscherm: wie de link krijgt wil eerst weten
   // waar en wanneer, en pas daarna zijn eigen wedstrijden.
@@ -613,7 +628,7 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
   const haalOp = useCallback(async () => {
     setBezig(true);
     try {
-      const antwoord = await fetch("/api/kws-cup", { cache: "no-store" });
+      const antwoord = await fetch(adres ?? "/api/kws-cup", { cache: "no-store" });
       if (antwoord.ok) {
         setTornooi((await antwoord.json()) as Tornooi);
         setVerverst(new Date());
@@ -623,7 +638,7 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
     } finally {
       setBezig(false);
     }
-  }, []);
+  }, [adres]);
 
   useEffect(() => {
     const timer = setInterval(haalOp, 60_000);
