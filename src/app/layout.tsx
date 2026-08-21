@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteOmlijsting } from "@/components/layout/SiteOmlijsting";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { CacheBuster } from "@/components/CacheBuster";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -55,6 +56,9 @@ export default function RootLayout({
         <CacheBuster />
         <ScrollToTop />
         <SiteOmlijsting>{children}</SiteOmlijsting>
+        {/* Telt paginaweergaven. De cijfers staan bij het project op Vercel,
+            onder Analytics; er wordt niets van de bezoeker zelf bewaard. */}
+        <Analytics />
       </body>
     </html>
   );
