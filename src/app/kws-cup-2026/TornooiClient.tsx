@@ -404,8 +404,8 @@ function WedstrijdLijst({
     <div className="space-y-5">
       {perDag.map(([dag, lijst]) => (
         <section key={dag}>
-          <h3 className="sticky top-14 z-20 bg-gray-50/95 py-2 text-xs font-bold uppercase
-                         tracking-wide text-gray-500 backdrop-blur sm:top-[6.25rem]">
+          <h3 className="sticky top-[4.75rem] z-20 bg-gray-50/95 py-2 text-xs font-bold
+                         uppercase tracking-wide text-gray-500 backdrop-blur sm:top-[4.25rem]">
             {dag}
             <span className="ml-2 font-medium normal-case tracking-normal text-gray-400">
               {lijst.length} wedstrijden
@@ -598,7 +598,9 @@ function Plan({
 
 export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) {
   const [tornooi, setTornooi] = useState(begin);
-  const [tab, setTab] = useState<TabId>("mijn");
+  // De infopagina is het startscherm: wie de link krijgt wil eerst weten
+  // waar en wanneer, en pas daarna zijn eigen wedstrijden.
+  const [tab, setTab] = useState<TabId>("info");
   const [keuze, setKeuze] = useState("");
   const [zoek, setZoek] = useState("");
   const [zoekPloegen, setZoekPloegen] = useState("");
@@ -657,6 +659,16 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
   );
 
   const dagVolgorde = useMemo(() => tornooi.dagen.map((d) => d.naam), [tornooi.dagen]);
+
+  /** "Vrijdag 28 augustus 2026 tot zondag 30 augustus 2026", voor onder de titel. */
+  const dagbereik = useMemo(() => {
+    const namen = tornooi.dagen.map((d) => d.naam);
+    if (namen.length === 0) return "";
+    const groot = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+    const eerste = `${groot(namen[0])} ${tornooi.jaar}`;
+    if (namen.length === 1) return eerste;
+    return `${eerste} tot ${namen[namen.length - 1]} ${tornooi.jaar}`;
+  }, [tornooi.dagen, tornooi.jaar]);
 
   const ploegIndex = useMemo(() => {
     const kaart = new Map<string, Ploeg>();
@@ -757,54 +769,80 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 pb-20 sm:pb-0">
-      {/* Vaste balk boven, zoals de titelbalk van een toepassing. */}
-      <header className="sticky top-0 z-40 bg-primary text-white shadow-sm">
-        <div className="container-custom flex h-14 items-center gap-3">
+    <div className="flex min-h-screen flex-col bg-gray-50 pb-10">
+      {/* De kop van de toepassing: een beeld van het terrein met het schild,
+          de naam en de dagen erop, en daaronder de tabbalk die als kaart over
+          de onderrand valt. Die balk blijft plakken zodra je scrollt, zodat je
+          altijd van tabblad kan wisselen. */}
+      <header className="relative">
+        <div className="relative h-60 overflow-hidden sm:h-72 lg:h-80">
           <Image
-            src="/images/logo-kws.png"
+            src="/kws-cup/achtergrond.jpg"
             alt=""
-            width={28}
-            height={28}
-            className="h-7 w-7 shrink-0 object-contain"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[15px] font-bold leading-tight">{tornooi.titel}</p>
-            <p className="truncate text-[11px] leading-tight text-white/70">
-              K.W.S. Linkhout · {tornooi.wedstrijden.length} wedstrijden
-            </p>
-          </div>
+          {/* Zonder verduistering leest witte tekst niet op een lucht. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/35 to-black/65" />
+
           <button
             type="button"
             onClick={haalOp}
-            className="rounded-full p-2 hover:bg-white/15"
+            className="absolute right-3 top-3 rounded-full bg-black/30 p-2 text-white
+                       backdrop-blur hover:bg-black/50"
             aria-label="Schema opnieuw ophalen"
           >
             <RefreshCw className={`h-4 w-4 ${bezig ? "animate-spin" : ""}`} />
           </button>
-        </div>
 
-        {/* Op een breed scherm staan de tabbladen hier; op een telefoon onderaan. */}
-        <nav className="hidden border-t border-white/15 sm:block">
-          <div className="container-custom flex gap-1">
+          <div className="relative flex h-full flex-col items-center justify-center px-4 pb-8
+                          text-center">
+            <Image
+              src="/images/logo-kws.png"
+              alt="K.W.S. Linkhout"
+              width={96}
+              height={96}
+              priority
+              className="h-16 w-16 object-contain drop-shadow-lg sm:h-20 sm:w-20"
+            />
+            <h1 className="mt-3 text-3xl font-bold uppercase tracking-wide text-white
+                           drop-shadow-lg sm:text-4xl">
+              {tornooi.titel}
+            </h1>
+            <p className="mt-1 text-sm text-white/90 drop-shadow sm:text-base">{dagbereik}</p>
+          </div>
+        </div>
+      </header>
+
+      {/* Het blijvende deel moet de buitenste kolom als houvast hebben, anders
+          is de omhulling even hoog als de balk zelf en schuift er niets mee.
+          w-full is nodig omdat container-custom automatische zijmarges heeft:
+          zonder dat krimpt dit tot de breedte van de tekst erin. */}
+      <div className="container-custom sticky top-2 z-40 -mt-7 w-full">
+        <nav className="rounded-2xl bg-primary shadow-lg shadow-primary/25">
+          <div className="flex">
             {TABS.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium
-                            transition-colors ${
+                className={`flex flex-1 flex-col items-center gap-1 rounded-2xl px-1 py-2.5
+                            text-[11px] font-medium transition-colors sm:flex-row
+                            sm:justify-center sm:gap-2 sm:py-4 sm:text-base ${
                               tab === t.id
-                                ? "border-white text-white"
-                                : "border-transparent text-white/70 hover:text-white"
+                                ? "bg-white/20 text-white"
+                                : "text-white/70 hover:text-white"
                             }`}
+                aria-current={tab === t.id ? "page" : undefined}
               >
-                <t.icoon className="h-4 w-4" />
+                <t.icoon className="h-5 w-5 sm:h-4 sm:w-4" />
                 {t.label}
               </button>
             ))}
           </div>
         </nav>
-      </header>
+      </div>
 
       <div className="container-custom flex-1 py-5">
         {/* MIJN PLOEG */}
@@ -1232,28 +1270,6 @@ export default function TornooiClient({ tornooi: begin }: { tornooi: Tornooi }) 
         )}
       </div>
 
-      {/* Tabbalk onderaan op een telefoon, waar de duim hem kan bereiken. */}
-      <nav
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white/95
-                   backdrop-blur sm:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      >
-        <div className="flex">
-          {TABS.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium
-                          transition-colors ${
-                            tab === t.id ? "text-primary" : "text-gray-400"
-                          }`}
-            >
-              <t.icoon className="h-5 w-5" />
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </nav>
     </div>
   );
 }
