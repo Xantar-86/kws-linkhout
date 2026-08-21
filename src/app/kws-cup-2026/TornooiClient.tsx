@@ -8,7 +8,7 @@
 // (bijvoorbeeld een ploeg die niet komt opdagen) meteen zichtbaar is.
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CalendarDays,
   FileText,
@@ -81,6 +81,16 @@ const TABS = [
   { id: "info", label: "Info", icoon: Info },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
+
+/**
+ * Hoe vaak de pagina gaat kijken of het schema gewijzigd is.
+ *
+ * Twintig seconden voelt bijna rechtstreeks aan zonder iets te kosten: zolang
+ * er niets gewijzigd is antwoordt de opslag met "niets nieuws" en komt er geen
+ * enkele byte over de lijn. Alleen na een echte wijziging wordt het schema
+ * opnieuw opgehaald.
+ */
+const VERVERSING = 20_000;
 
 /** Reeksen op leeftijd sorteren: U6, U7, U8, ... WU16 achteraan. */
 function reeksVolgorde(naam: string) {
@@ -625,12 +635,25 @@ export default function TornooiClient({
   const [bezig, setBezig] = useState(false);
   const [nu, setNu] = useState<Date | null>(null);
 
+  // Het schema zoals we het laatst binnenkregen, als tekst. Daarmee zien we of
+  // er echt iets gewijzigd is en hoeven we de pagina niet opnieuw op te bouwen
+  // voor een schema dat identiek is aan wat er al staat.
+  const laatste = useRef<string>("");
+
   const haalOp = useCallback(async () => {
     setBezig(true);
     try {
-      const antwoord = await fetch(adres ?? "/api/kws-cup", { cache: "no-store" });
+      // "no-cache" en niet "no-store": zo vraagt de browser aan de opslag of er
+      // sinds de vorige keer iets gewijzigd is. Is dat niet zo, dan antwoordt
+      // die met 304 en komt er geen inhoud mee. Zelf een If-None-Match
+      // meesturen kan niet, dat is geen kop die van buitenaf toegelaten is.
+      const antwoord = await fetch(adres ?? "/api/kws-cup", { cache: "no-cache" });
       if (antwoord.ok) {
-        setTornooi((await antwoord.json()) as Tornooi);
+        const tekst = await antwoord.text();
+        if (tekst !== laatste.current) {
+          laatste.current = tekst;
+          setTornooi(JSON.parse(tekst) as Tornooi);
+        }
         setVerverst(new Date());
       }
     } catch {
@@ -641,7 +664,7 @@ export default function TornooiClient({
   }, [adres]);
 
   useEffect(() => {
-    const timer = setInterval(haalOp, 60_000);
+    const timer = setInterval(haalOp, VERVERSING);
     const bijTerugkeer = () => document.visibilityState === "visible" && haalOp();
     document.addEventListener("visibilitychange", bijTerugkeer);
     return () => {
