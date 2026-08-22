@@ -353,8 +353,6 @@ export const teams: Team[] = [
     trainingTime: "18:00 - 19:30",
     trainingLocation: "KWS",
     coach: "Gunther Vanneroem",
-    assistantCoach: "Staf Vaes",
-    trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -372,8 +370,6 @@ export const teams: Team[] = [
     trainingTime: "18:00 - 19:30",
     trainingLocation: "KWS",
     coach: "Gunther Vanneroem",
-    assistantCoach: "Staf Vaes",
-    trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
