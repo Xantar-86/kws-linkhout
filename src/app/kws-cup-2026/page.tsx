@@ -3,7 +3,7 @@
 // Publieke pagina van het jeugdtornooi. Staat bewust niet in de navigatie:
 // hij is alleen bereikbaar via de link die we zelf doorgeven.
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import TornooiClient from "./TornooiClient";
 import { leesSchema, schemaAdres } from "./schema";
 
@@ -15,6 +15,23 @@ export const metadata: Metadata = {
     "Wedstrijdschema en poule-indeling van het jeugdtornooi van K.W.S. Linkhout, " +
     "28, 29 en 30 augustus 2026.",
   robots: { index: false, follow: false },   // niet in Google, wel bereikbaar
+
+  // Alleen deze pagina is een installeerbare app; de rest van de site niet.
+  // Vandaar het manifest hier en niet in de omhullende layout.
+  manifest: "/kws-cup/manifest.webmanifest",
+  icons: { apple: "/kws-cup/icon-180.png" },
+  appleWebApp: {
+    capable: true,
+    title: "KWS Cup",
+    // "black" en niet "black-translucent": met dat laatste schuift de pagina
+    // tot onder de klok van de iPhone, en dan valt de verversknop rechtsboven
+    // achter het batterijpictogram.
+    statusBarStyle: "black",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#dc2626",
 };
 
 export default async function Pagina() {

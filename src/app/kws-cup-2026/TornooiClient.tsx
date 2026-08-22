@@ -20,8 +20,10 @@ import {
   Search,
   Star,
   Users,
+  WifiOff,
   X,
 } from "lucide-react";
+import AppInstallatie from "./AppInstallatie";
 
 export type Wedstrijd = {
   nr: number;
@@ -675,6 +677,12 @@ export default function TornooiClient({
   const [bezig, setBezig] = useState(false);
   const [nu, setNu] = useState<Date | null>(null);
 
+  // Of we het schema nog kunnen ophalen. Als de pagina op het beginscherm staat
+  // en de opslag van de app hem toont, is dat het verschil tussen "dit is het
+  // schema" en "dit was het schema toen je nog bereik had".
+  const [offline, setOffline] = useState(false);
+  const [gelezen, setGelezen] = useState<Date | null>(null);
+
   // Het schema zoals we het laatst binnenkregen, als tekst. Daarmee zien we of
   // er echt iets gewijzigd is en hoeven we de pagina niet opnieuw op te bouwen
   // voor een schema dat identiek is aan wat er al staat.
@@ -694,10 +702,24 @@ export default function TornooiClient({
           laatste.current = tekst;
           setTornooi(JSON.parse(tekst) as Tornooi);
         }
-        setVerverst(new Date());
+
+        // Staat de pagina op het beginscherm, dan kan dit antwoord uit haar
+        // eigen opslag komen in plaats van van het net. Het schema is dan het
+        // beste wat we hebben, maar "bijgewerkt om nu" zou een leugen zijn.
+        if (antwoord.headers.get("x-kws-uit-opslag") === "1") {
+          setOffline(true);
+        } else {
+          const moment = new Date();
+          setVerverst(moment);
+          setGelezen(moment);
+          setOffline(false);
+          localStorage.setItem("kws-cup-gelezen", moment.toISOString());
+        }
       }
     } catch {
-      /* stil: bij een haperende verbinding blijft het huidige schema staan */
+      // Stil: bij een haperende verbinding blijft het huidige schema staan. We
+      // zeggen er wel bij dat het niet meer bijgewerkt wordt.
+      setOffline(true);
     } finally {
       setBezig(false);
     }
@@ -712,6 +734,34 @@ export default function TornooiClient({
       document.removeEventListener("visibilitychange", bijTerugkeer);
     };
   }, [haalOp]);
+
+  // Wat de browser zelf over de verbinding weet. Dat komt sneller binnen dan
+  // een mislukte poging, en bij terugkeer van het netwerk halen we meteen op in
+  // plaats van tot de volgende ronde te wachten.
+  useEffect(() => {
+    const aan = () => {
+      setOffline(false);
+      haalOp();
+    };
+    const uit = () => setOffline(true);
+    setOffline(!navigator.onLine);
+    window.addEventListener("online", aan);
+    window.addEventListener("offline", uit);
+    return () => {
+      window.removeEventListener("online", aan);
+      window.removeEventListener("offline", uit);
+    };
+  }, [haalOp]);
+
+  // Het tijdstip van de vorige keer, voor wie de app zonder bereik opent: dan
+  // is er nog niets ververst en staat er anders geen enkel houvast bij.
+  useEffect(() => {
+    const bewaard = localStorage.getItem("kws-cup-gelezen");
+    if (bewaard) {
+      const moment = new Date(bewaard);
+      if (!Number.isNaN(moment.getTime())) setGelezen(moment);
+    }
+  }, []);
 
   // De klok pas na het inladen zetten: op de server is er geen "nu", en anders
   // zou het beeld daar anders uitvallen dan in de browser.
@@ -874,6 +924,21 @@ export default function TornooiClient({
           >
             <RefreshCw className={`h-4 w-4 ${bezig ? "animate-spin" : ""}`} />
           </button>
+
+          {offline && (
+            <span
+              className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full
+                         bg-black/40 px-2.5 py-1 text-xs font-medium text-white backdrop-blur"
+            >
+              <WifiOff className="h-3.5 w-3.5" />
+              offline
+              {gelezen && (
+                <span className="font-normal text-white/70">
+                  · {gelezen.toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" })}
+                </span>
+              )}
+            </span>
+          )}
 
           <div className="relative flex h-full flex-col items-center justify-center px-4 pb-8
                           text-center">
@@ -1367,6 +1432,8 @@ export default function TornooiClient({
             </article>
             )}
 
+            <AppInstallatie />
+
             <article className="rounded-xl border border-gray-200 bg-white p-5">
               <h3 className="text-lg font-bold text-gray-900">Goed om te weten</h3>
               <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-700">
@@ -1380,12 +1447,19 @@ export default function TornooiClient({
 
             <p className="px-1 pb-2 text-sm text-gray-500">
               K.W.S. Linkhout · {tornooi.titel}
-              {ververst && (
-                <>
-                  {" · "}bijgewerkt om{" "}
-                  {ververst.toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" })}
-                </>
-              )}
+              {offline
+                ? gelezen && (
+                    <>
+                      {" · "}geen verbinding, laatst bijgewerkt om{" "}
+                      {gelezen.toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" })}
+                    </>
+                  )
+                : ververst && (
+                    <>
+                      {" · "}bijgewerkt om{" "}
+                      {ververst.toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" })}
+                    </>
+                  )}
             </p>
           </section>
         )}

@@ -1,0 +1,23 @@
+{
+  "name": "KWS Cup 2026",
+  "short_name": "KWS Cup",
+  "description": "Wedstrijdschema en poule-indeling van het jeugdtornooi van K.W.S. Linkhout.",
+  "lang": "nl-BE",
+  "dir": "ltr",
+  "start_url": "/kws-cup-2026",
+  "scope": "/kws-cup-2026",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f9fafb",
+  "theme_color": "#dc2626",
+  "icons": [
+    { "src": "/kws-cup/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/kws-cup/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/kws-cup/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
