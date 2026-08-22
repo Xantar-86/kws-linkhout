@@ -483,12 +483,12 @@ U kan hiervoor een mail sturen naar info@kwslinkhout.be
 
 **Klachten**
 
-Tenslotte willen we u ook meegeven dat u beschikt over het recht een klacht in te dienen bij de Privacy Commissie:
+Tenslotte willen we u ook meegeven dat u beschikt over het recht een klacht in te dienen bij de Gegevensbeschermingsautoriteit:
 
-Privacy Commissie -- Commission for the Protection of Privacy
+Gegevensbeschermingsautoriteit
 Drukpersstraat 35, 1000 Brussel
 Telefoon: +32 (0)2 274 48 00
-Email: commission@privacycommission.be
+Email: contact@apd-gba.be
 
 **Wijzigingen aan onze privacyverklaring**
 
