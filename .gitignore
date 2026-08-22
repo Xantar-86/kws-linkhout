@@ -69,5 +69,9 @@ public/images/spelers p1 p2 kws ladies 2026-2027/
 # public/ wordt publiek uitgeserveerd. De kern zelf staat in src/lib/kernen.ts.
 public/Docs/Overzicht spelers*.xlsx
 
+# De aangeleverde map met de mutualiteitsformulieren; de bestanden zelf staan
+# er los naast onder hun eigen naam, deze map zou ze alleen verdubbelen.
+public/Docs/documenten-mutualiteit/2026-2027/
+
 # Uitgeknipte spelers; afgeleid, wordt lokaal opnieuw gemaakt
 public/images/uitgeknipt/
