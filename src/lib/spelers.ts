@@ -454,6 +454,12 @@ export const spelers: Speler[] = [
 
 export const trainers: Speler[] = [
   {
+    "naam": "Danny Gaethofs",
+    "ploeg": "",
+    "klein": "/images/spelers/danny-gaethofs-754da9cd-klein.webp",
+    "groot": "/images/spelers/danny-gaethofs-754da9cd.webp"
+  },
+  {
     "naam": "Frank Schroyen",
     "ploeg": "Dames P1",
     "klein": "/images/spelers/frank-schroyen-18ceb24a-klein.webp",
