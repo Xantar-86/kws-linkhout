@@ -422,7 +422,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:00 - 19:15",
     trainingLocation: "KWS",
-    coach: "Lennert Mellebeek",
+    coach: "Lennert Neuteleers",
     assistantCoach: "Simon Biesmans",
     trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
@@ -440,7 +440,7 @@ export const teams: Team[] = [
     trainingDays: ["Maandag", "Woensdag"],
     trainingTime: "18:00 - 19:15",
     trainingLocation: "KWS",
-    coach: "Lennert Mellebeek",
+    coach: "Lennert Neuteleers",
     assistantCoach: "Simon Biesmans",
     trainersTitel: "Trainer",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
