@@ -174,7 +174,7 @@ export const teams: Team[] = [
     trainingTime: "19:30 - 21:00",
     trainingLocation: "Zelem",
     coach: "Danny Gaethofs",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/women-U20-2025.jpg
+    image: "/images/teams/women-U20-2026.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description: "De brug tussen jeugd en senioren voor onze meisjestalenten.",
