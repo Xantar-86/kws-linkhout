@@ -311,6 +311,41 @@ function Logo({ ploeg, maat = 22 }: { ploeg?: Ploeg; maat?: number }) {
   );
 }
 
+/**
+ * Een scheidsrechtersfluitje.
+ *
+ * Zelf getekend, want lucide heeft er geen. Hij neemt de kleur van de tekst
+ * eromheen over, zodat hij ook wit uitkomt op de rode kaart van de volgende
+ * wedstrijd. De naam ernaast zegt genoeg, dus voor een schermlezer staat er
+ * het woord zelf; het fluitje is voor hem niet meer dan een plaatje.
+ */
+function Fluitje({ maat = 15 }: { maat?: number }) {
+  return (
+    <svg
+      width={maat}
+      height={maat}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="shrink-0"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {/* het lijf met het mondstuk, in één omtrek */}
+      <path d="M9 8.6H20.7a0.7 0.7 0 0 1 0.7 0.7v1.8a0.7 0.7 0 0 1-0.6 0.7L14 12.5A5.2 5.2 0 1 1 9 8.6Z" />
+      <circle cx="9" cy="13.8" r="2.6" />
+      {/* het ringetje voor het koord, en het gaatje waar de lucht uit gaat */}
+      <circle cx="4.6" cy="17.9" r="1.5" />
+      <path d="M11.4 8.6v1.3h2.2V8.6" />
+      {/* de streepjes die het fluiten voorstellen */}
+      <path d="M10.5 4.2 11.2 6.3M12.6 3.6V5.9M14.7 4.2 14 6.3" />
+    </svg>
+  );
+}
+
 /** Eén keuzeknop in een rij filters. Leest vlotter dan een keuzelijst. */
 function Chip({
   actief,
@@ -386,7 +421,13 @@ function WedstrijdRij({
         {(w.scheidsrechter || w.vriendschappelijk) && (
           <p className="mt-1 flex flex-wrap gap-x-2 text-[11px] text-gray-400">
             {w.vriendschappelijk && <span>vriendschappelijk</span>}
-            {w.scheidsrechter && <span>scheidsrechter: {w.scheidsrechter}</span>}
+            {w.scheidsrechter && (
+              <span className="inline-flex items-center gap-1">
+                <Fluitje />
+                <span className="sr-only">scheidsrechter: </span>
+                {w.scheidsrechter}
+              </span>
+            )}
           </p>
         )}
       </div>
@@ -1067,7 +1108,16 @@ export default function TornooiClient({
                 </p>
                 <p className="mt-0.5 text-sm text-white/70">
                   {volgende.dag} · {volgende.reeks} · {volgende.poule}
-                  {volgende.scheidsrechter && <> · scheidsrechter {volgende.scheidsrechter}</>}
+                  {volgende.scheidsrechter && (
+                    <>
+                      {" · "}
+                      <span className="inline-flex items-center gap-1 align-middle">
+                        <Fluitje />
+                        <span className="sr-only">scheidsrechter: </span>
+                        {volgende.scheidsrechter}
+                      </span>
+                    </>
+                  )}
                 </p>
               </div>
             )}
