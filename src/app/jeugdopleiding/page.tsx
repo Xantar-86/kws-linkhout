@@ -13,7 +13,8 @@ import {
   Target,
   Users,
   BookOpen,
-  Lightbulb
+  Lightbulb,
+  HandCoins
 } from "lucide-react";
 import Link from "next/link";
 
@@ -66,6 +67,13 @@ const jeugdModules = [
     description: "Informatie over het Foot Pass systeem",
     icon: Globe,
     color: "bg-teal-500"
+  },
+  {
+    id: "lidgeld-ondersteuning",
+    title: "Ondersteuning bij het lidgeld",
+    description: "Hulp via de gemeente Lummen of via de club zelf",
+    icon: HandCoins,
+    color: "bg-amber-500"
   }
 ];
 

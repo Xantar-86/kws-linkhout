@@ -60,6 +60,7 @@ const navItems = [
       { name: "Panathlon Charter", href: "/jeugdopleiding/panathloncharter" },
       { name: "Anti-Racisme", href: "/jeugdopleiding/charter-anti-racisme" },
       { name: "Foot Pass", href: "/jeugdopleiding/foot-pass" },
+      { name: "Ondersteuning lidgeld", href: "/jeugdopleiding/lidgeld-ondersteuning" },
     ],
   },
   {
