@@ -299,7 +299,7 @@ export const teams: Team[] = [
     category: "jeugd",
     division: "2-Gewestelijk",
     trainingDays: ["Maandag", "Woensdag"],
-    trainingTime: "17:55 - 19:20",
+    trainingTime: "18:00 - 19:15",
     trainingLocation: "KWS",
     coach: "Franky Forier",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U12-2025.jpg
