@@ -253,10 +253,10 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/lennert-mellebeek-00e80321.webp"
   },
   {
-    "naam": "Lilly Luyckx",
+    "naam": "Lilly Luyck",
     "ploeg": "Dames P2",
-    "klein": "/images/spelers/lilly-luyckx-178fbbba-klein.webp",
-    "groot": "/images/spelers/lilly-luyckx-178fbbba.webp"
+    "klein": "/images/spelers/lilly-luyck-178fbbba-klein.webp",
+    "groot": "/images/spelers/lilly-luyck-178fbbba.webp"
   },
   {
     "naam": "Lola Jouck",

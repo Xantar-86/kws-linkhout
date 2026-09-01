@@ -98,7 +98,7 @@ export const KERNEN: Record<string, Kernspeler[]> = {
     { naam: "Kaat Smeulders" },
     { naam: "Kara Peeters" },
     { naam: "Kyare Houben" },
-    { naam: "Lilly Luyckx" },
+    { naam: "Lilly Luyck" },
     { naam: "Meyra Cesur" },
     { naam: "Oona Vansteenwegen Walterus" },
     { naam: "Raissa Ciavarro" },
