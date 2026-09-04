@@ -1,3 +1,4 @@
+import { Aankondiging } from "@/components/home/Aankondiging";
 import { HeroSection } from "@/components/home/HeroSection";
 import { VolgendeWedstrijd } from "@/components/home/VolgendeWedstrijd";
 import { AboutSection } from "@/components/home/AboutSection";
@@ -18,6 +19,9 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen">
+      {/* Tijdelijk: verdwijnt vanzelf na zaterdag 3 oktober 2026. */}
+      <Aankondiging />
+
       <HeroSection />
 
       <AboutSection />
