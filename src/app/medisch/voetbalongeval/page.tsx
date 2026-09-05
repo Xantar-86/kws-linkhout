@@ -81,13 +81,13 @@ export default function VoetbalongevalPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
+            className="kaart mb-8 p-8"
           >
             <div className="flex items-center gap-3 mb-4">
               <Clock className="w-6 h-6 text-blue-600" />
-              <h2 className="text-xl font-bold text-blue-900">Wanneer kan u een ongevalsaangifte laten invullen?</h2>
+              <h2 className="text-xl font-bold text-gray-700">Wanneer kan u een ongevalsaangifte laten invullen?</h2>
             </div>
-            <p className="text-blue-800">
+            <p className="text-gray-700">
               Bij een doktersbezoek dat voortvloeit uit een kwetsuur opgelopen op training of wedstrijd.
             </p>
           </motion.div>
@@ -99,35 +99,35 @@ export default function VoetbalongevalPage() {
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
-            <div className="bg-green-600 text-white px-6 py-4">
+            <div className="border-b border-zand-200/70 px-6 py-5">
               <h2 className="text-xl font-bold">Wat te doen om in aanmerking te komen voor terugbetaling van de kosten?</h2>
             </div>
             <div className="p-6 space-y-8">
               {/* Stap 1 */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">1</span>
                   Eerste consultatie
                 </h3>
                 <ul className="space-y-2 ml-10 text-gray-700">
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>De speler consulteert zo vlug mogelijk na het voetbalongeval een arts en neemt het formulier "Aangifte voor ongeval" mee. De arts vult de zijde "Medisch getuigschrift" in.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Gelieve op een bijgevoegd papiertje te beschrijven hoe het ongeval is gebeurd en tijdens welke training of wedstrijd, en de omstandigheden van het ongeval (bijv. trap, val, voet verzwikt, bal op neus, …)</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Vervolgens bezorgt u het ongevallenformulier, voorzien van een kleefstrookje van de mutualiteit en het papiertje met de bijkomende info en de beschrijving van de feiten aan de GC.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Onze GC moet het ingevulde formulier opsturen naar de voetbalbond en dat moet gebeuren <strong>uiterlijk binnen de 21 kalenderdagen</strong> na het voetbalongeval. Vandaar het belang om zo vlug mogelijk de ongevalsaangifte ingevuld terug te bezorgen aan de club.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>De speler moet, vanaf het moment van het voetbalongeval, alle originele bewijsstukken van de gemaakte kosten met betrekking tot het voetbalongeval verzamelen.</span>
                   </li>
                 </ul>
@@ -154,16 +154,16 @@ export default function VoetbalongevalPage() {
               {/* Stap 2 */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">2</span>
                   Bijkomende behandelingen
                 </h3>
                 <ul className="space-y-2 ml-10 text-gray-700">
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Eenmaal dit formulier is opgestuurd en er in Brussel een dossier is aangelegd, zal u een formulier ontvangen "Geneeskundig getuigschrift van herstel". Dit document houdt u bij en laat u pas invullen door de arts op het moment van genezing.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Indien de arts beslist dat er bijkomende sessies nodig zijn voor de kinesitherapeut, ga dan met het afschrift van de arts bij de GC die op haar beurt een aanvraag zal indienen in Brussel. Dit dient te gebeuren vooraleer de volgende sessie moet aangevat worden. De voetbalbond moet eerst zijn toestemming geven voor een welbepaald aantal behandelingen vanaf een bepaalde datum.</span>
                   </li>
                 </ul>
@@ -190,24 +190,24 @@ export default function VoetbalongevalPage() {
               {/* Stap 3 */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">3</span>
                   Afsluiting dossier
                 </h3>
                 <ul className="space-y-2 ml-10 text-gray-700">
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Van zodra de arts beslist dat de speler opnieuw mag gaan voetballen (definitieve genezing), laat u het formulier "Geneeskundig getuigschrift van herstel" door hem invullen.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Aan dit formulier voegt u het volledig detail van tegemoetkomingen van het ziekenfonds, evenals alle originele bewijsstukken van de gemaakte kosten met betrekking tot het voetbalongeval toe en u bezorgt dit alles aan de GC die dit onmiddellijk opstuurt naar Brussel.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>Eenmaal het dossier is afgesloten in Brussel, ontvangt KWS Linkhout het bedrag van de tussenkomst.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                     <span>De speler/ouder ontvangt dit bedrag van de gerechtigd correspondent of laat het storten op een bankrekening.</span>
                   </li>
                 </ul>
@@ -268,18 +268,18 @@ export default function VoetbalongevalPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
+            className="kaart mb-8 p-8"
           >
             <div className="flex items-center gap-3 mb-4">
               <Shield className="w-6 h-6 text-blue-600" />
-              <h3 className="text-xl font-bold text-blue-900">Federaal Solidariteitsfonds (F.S.F.)</h3>
+              <h3 className="text-xl font-bold text-gray-700">Federaal Solidariteitsfonds (F.S.F.)</h3>
             </div>
-            <p className="text-blue-800 leading-relaxed mb-4">
+            <p className="text-gray-700 leading-relaxed mb-4">
               Wanneer men als aangesloten speler, oefenmeester of begeleider van KWS Linkhout een blessure oploopt 
               tijdens een wedstrijd of een training, dan kan men een beroep doen op het Federaal Solidariteitsfonds 
               (F.S.F.) van de KBVB.
             </p>
-            <p className="text-blue-800 leading-relaxed mb-4">
+            <p className="text-gray-700 leading-relaxed mb-4">
               De financiële tussenkomsten worden betaald door het Federaal Solidariteitsfonds (F.S.F.) van de KBVB. 
               Dit fonds – <strong>géén verzekering</strong> – verleent financiële hulp aan de slachtoffers van een sportongeval. 
               Het F.S.F. dekt alle kosten veroorzaakt door sportongevallen, na aftrek van de door de ziekenfondsen 
@@ -287,7 +287,7 @@ export default function VoetbalongevalPage() {
               door het RIZIV bepaalde prijs). Er wordt enkel tussengekomen in die gevallen die ook door de ziekenfondsen 
               worden gedekt !!
             </p>
-            <p className="text-blue-800 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed">
               Het is misschien wel het overwegen waard om een individuele bijkomende ongevallenverzekering af te sluiten. 
               De terugbetaling kan daar hoger liggen !! Uiteraard is dit volledig vrijblijvend.
             </p>
