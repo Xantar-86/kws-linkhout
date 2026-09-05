@@ -12,7 +12,7 @@ const aedLocaties = [
     locatie: "Kantine - Hoofdingang (buiten)",
     beschrijving: "AED bevestigd aan de buitenmuur van de kantine bij de hoofdingang. Altijd toegankelijk, ook wanneer de kantine gesloten is.",
     beschikbaar: "24/7 toegankelijk",
-    fotos: [] as string[]
+    fotos: ["/images/AED/AED Linkhout.jpeg"] as string[]
   },
   {
     naam: "Locatie Zelem",
@@ -98,7 +98,7 @@ export default function ReanimatieDefibrillatorPage() {
                             <button
                               key={i}
                               onClick={() => setLightbox(foto)}
-                              className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 hover:ring-2 hover:ring-pink-400 transition"
+                              className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 hover:ring-2 hover:ring-primary/40 transition"
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
