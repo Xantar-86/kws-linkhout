@@ -78,7 +78,7 @@ export default function ContactPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white rounded-2xl p-6 shadow-xl"
+              className="kaart p-6"
             >
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
                 <Mail className="w-6 h-6" />
@@ -95,7 +95,7 @@ export default function ContactPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-2xl p-6 shadow-xl"
+              className="kaart p-6"
             >
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
                 <MapPin className="w-6 h-6" />
@@ -110,7 +110,7 @@ export default function ContactPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl p-6 shadow-xl"
+              className="kaart p-6"
             >
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
                 <Clock className="w-6 h-6" />
@@ -129,7 +129,7 @@ export default function ContactPage() {
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="heading-2 mb-4">
                 Contactpersonen
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -145,7 +145,7 @@ export default function ContactPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+                  className="kaart kaart-tilt p-6"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
@@ -196,7 +196,7 @@ export default function ContactPage() {
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="heading-2 mb-4">
                 Locatie & Faciliteiten
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -211,14 +211,14 @@ export default function ContactPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="bg-white rounded-2xl p-8 shadow-lg flex flex-col"
+                  className="kaart p-8 flex flex-col"
                 >
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                       <MapPin className="w-7 h-7" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">{facility.name}</h3>
+                      <h3 className="heading-3">{facility.name}</h3>
                       <p className="text-gray-600">{facility.address}</p>
                     </div>
                   </div>
@@ -300,7 +300,7 @@ export default function ContactPage() {
                 <HelpCircle className="w-4 h-4" />
                 Veelgestelde vragen
               </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="heading-2 mb-4">
                 FAQ
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -316,7 +316,7 @@ export default function ContactPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden"
+                  className="kaart overflow-hidden"
                 >
                   <button
                     onClick={() => toggleFaq(faq.id)}
@@ -345,10 +345,10 @@ export default function ContactPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12"
+              className="kaart p-8 md:p-12"
             >
               <div className="max-w-2xl mx-auto text-center mb-10">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                <h2 className="heading-2 mb-4">
                   Stuur ons een bericht
                 </h2>
                 <p className="text-gray-600">
@@ -365,7 +365,7 @@ export default function ContactPage() {
                   <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="w-10 h-10 text-green-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h3 className="heading-3 mb-2">
                     Bedankt voor je bericht!
                   </h3>
                   <p className="text-gray-600">

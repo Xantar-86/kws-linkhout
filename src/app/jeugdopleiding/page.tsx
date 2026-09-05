@@ -122,7 +122,7 @@ export default function JeugdopleidingPage() {
             <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Lightbulb className="w-7 h-7 text-primary" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="heading-2 mb-4">
               Missie & Visie
             </h2>
           </motion.div>
@@ -252,7 +252,7 @@ export default function JeugdopleidingPage() {
             <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Download className="w-7 h-7 text-primary" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="heading-2 mb-4">
               Documenten
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -275,7 +275,7 @@ export default function JeugdopleidingPage() {
                     href={`/Docs/jeugdopleiding/${file.filename}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-start gap-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/30"
+                    className="group flex items-start gap-4 kaart kaart-tilt p-6 border border-gray-100 hover:border-primary/30"
                   >
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors text-primary">
                       <Icon className="w-6 h-6" />
@@ -309,7 +309,7 @@ export default function JeugdopleidingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="heading-2 mb-4">
               Alle informatie over onze jeugd
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
@@ -330,12 +330,12 @@ export default function JeugdopleidingPage() {
                 >
                   <Link
                     href={`/jeugdopleiding/${module.id}`}
-                    className="group block bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 h-full border border-gray-100"
+                    className="group block kaart kaart-tilt p-6 hover:-translate-y-1 h-full border border-gray-100"
                   >
                     <div className={`w-14 h-14 ${module.color} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform`}>
                       <Icon className="w-7 h-7" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                    <h3 className="heading-3 mb-2 group-hover:text-primary transition-colors">
                       {module.title}
                     </h3>
                     <p className="text-gray-600">

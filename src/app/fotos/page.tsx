@@ -144,7 +144,7 @@ export default async function FotosPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
+            <div className="text-center py-16 kaart">
               <p className="text-gray-600 text-lg">
                 Nog geen foto albums beschikbaar.
               </p>

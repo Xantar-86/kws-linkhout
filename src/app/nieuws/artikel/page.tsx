@@ -14,7 +14,7 @@ import { PaginaKop } from "@/components/PaginaKop";
 const parseContent = (content: string) => {
   let html = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  html = html.replace(/##\s+(.*?)(?=\n|$)/g, '<h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">$1</h2>');
+  html = html.replace(/##\s+(.*?)(?=\n|$)/g, '<h2 class="heading-3 mt-8 mb-4">$1</h2>');
   html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-medium">$1</a>');
   html = html.replace(/^-\s+(.*?)(?=\n|$)/gm, '<li class="flex items-start gap-2"><span class="text-primary mt-1.5">•</span><span>$1</span></li>');
   html = html.replace(/(<li.*?>.*?<\/li>\n?)+/g, '<ul class="space-y-2 my-4">$&</ul>');
@@ -99,7 +99,7 @@ function ArticleContent() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="heading-3 mb-4">
             Artikel niet gevonden
           </h1>
           <p className="text-gray-600 mb-6">

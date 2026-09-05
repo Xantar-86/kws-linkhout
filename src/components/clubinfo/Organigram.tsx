@@ -42,7 +42,7 @@ export function Organigram({ beelden }: { beelden: OrganigramBeeld[] }) {
       <div className="space-y-8">
         {beelden.map((beeld, i) => (
           <figure key={beeld.bron} className="mx-auto">
-            <h3 className="mb-3 text-center text-xl font-bold text-gray-900">
+            <h3 className="mb-3 text-center heading-3">
               {beeld.titel}
             </h3>
 

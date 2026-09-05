@@ -65,7 +65,7 @@ export default async function PressPage() {
           {/* Articles by Year */}
           {sortedYears.map(year => (
             <div key={year} className="mb-12">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+              <h2 className="heading-3 mb-6 flex items-center gap-3">
                 <span className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center text-lg">
                   {year}
                 </span>
@@ -147,7 +147,7 @@ export default async function PressPage() {
 
           {/* Empty state */}
           {pressArticles.length === 0 && (
-            <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
+            <div className="text-center py-16 kaart">
               <p className="text-gray-600 text-lg">
                 Nog geen krantenartikelen beschikbaar.
               </p>
@@ -155,8 +155,8 @@ export default async function PressPage() {
           )}
 
           {/* Contact CTA */}
-          <div className="mt-16 bg-white rounded-3xl p-8 md:p-12 shadow-lg text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <div className="mt-16 kaart p-8 md:p-12 text-center">
+            <h2 className="heading-3 mb-4">
               Perscontact
             </h2>
             <p className="text-gray-600 mb-6 max-w-xl mx-auto">

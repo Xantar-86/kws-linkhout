@@ -97,7 +97,7 @@ export default function LidgeldOndersteuningPagina() {
             viewport={{ once: true }}
             className="mb-8"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Via de gemeente Lummen</h2>
+            <h2 className="heading-2 mb-3">Via de gemeente Lummen</h2>
             <p className="text-gray-600 max-w-3xl">
               De gemeente heeft hier eigen kanalen voor. Wat je precies krijgt hangt af van je
               situatie, dus vraag het na bij de dienst zelf.
@@ -146,7 +146,7 @@ export default function LidgeldOndersteuningPagina() {
             viewport={{ once: true }}
             className="mb-8"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Via KWS Linkhout</h2>
+            <h2 className="heading-2 mb-3">Via KWS Linkhout</h2>
             <p className="text-gray-600 max-w-3xl">
               Ook zonder de gemeente valt er iets te regelen. We doen dat liever dan een speler te
               verliezen.
@@ -186,7 +186,7 @@ export default function LidgeldOndersteuningPagina() {
               <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center text-white">
                 <Lock className="w-5 h-5" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">Hoe neem je contact op?</h3>
+              <h3 className="heading-3">Hoe neem je contact op?</h3>
             </div>
             <p className="text-gray-700 mb-6 max-w-3xl">
               Een bericht volstaat. Wat je vertelt blijft bij de persoon die je aanspreekt en bij

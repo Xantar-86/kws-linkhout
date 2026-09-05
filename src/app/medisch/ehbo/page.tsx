@@ -230,7 +230,7 @@ export default function EhboPage() {
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                 <ListChecks className="w-5 h-5" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">De 4 gouden stappen</h2>
+              <h2 className="heading-3">De 4 gouden stappen</h2>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {goudenStappen.map((stap, index) => (
@@ -257,7 +257,7 @@ export default function EhboPage() {
               <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white">
                 <Bandage className="w-5 h-5" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="heading-3">
                 Eerste hulp bij veelvoorkomende blessures
               </h2>
             </div>
@@ -303,7 +303,7 @@ export default function EhboPage() {
               <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center text-white">
                 <Plus className="w-5 h-5" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">De EHBO-koffer</h2>
+              <h2 className="heading-3">De EHBO-koffer</h2>
             </div>
             <p className="text-gray-600 mb-6">
               In Linkhout vind je de EHBO-koffer in de kantine, in Zelem in het scheidsrechterslokaal.

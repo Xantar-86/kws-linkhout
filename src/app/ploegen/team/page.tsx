@@ -89,7 +89,7 @@ function TeamContent() {
                   </div>
                 </div>
                 <div className="p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  <h2 className="heading-3 mb-4">
                     Over deze ploeg
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
@@ -105,7 +105,7 @@ function TeamContent() {
             {/* Right: Info Cards */}
             <div className="space-y-6">
               {/* Competition Info */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="kaart p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
                   <Trophy className="w-5 h-5 mr-2 text-primary" />
                   Competitie
@@ -189,7 +189,7 @@ function TeamContent() {
               </div>
 
               {/* Training Info */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="kaart p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
                   <Clock className="w-5 h-5 mr-2 text-primary" />
                   Training
@@ -222,7 +222,7 @@ function TeamContent() {
               </div>
 
               {/* Coaches */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <div className="kaart p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
                   <Users className="w-5 h-5 mr-2 text-primary" />
                   Trainers
@@ -284,7 +284,7 @@ function TeamContent() {
               en boven de kalender want die is een blok van zichzelf. */}
           {team.spelersGroep && spelersVan(team.spelersGroep).length > 0 && (
             <div className="mt-12">
-              <h2 className="mb-5 flex items-center text-2xl font-bold text-gray-900">
+              <h2 className="mb-5 flex items-center heading-3">
                 <Users className="mr-2 h-6 w-6 text-primary" />
                 Spelerskern
                 <span className="ml-3 text-base font-normal text-gray-500">
@@ -331,7 +331,7 @@ function TeamContent() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-full sm:max-w-[95vw] max-h-[90vh] overflow-hidden mx-2 sm:mx-0"
+              className="kaart w-full max-w-full sm:max-w-[95vw] max-h-[90vh] overflow-hidden mx-2 sm:mx-0"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
@@ -391,7 +391,7 @@ function TeamContent() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-full sm:max-w-[95vw] max-h-[90vh] overflow-hidden mx-2 sm:mx-0"
+              className="kaart w-full max-w-full sm:max-w-[95vw] max-h-[90vh] overflow-hidden mx-2 sm:mx-0"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}

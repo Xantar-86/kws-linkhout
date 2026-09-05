@@ -39,7 +39,7 @@ export default function FootPassPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-primary text-white px-6 py-4">
               <div className="flex items-center gap-3">
@@ -79,7 +79,7 @@ export default function FootPassPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-amber-500 text-white px-6 py-4">
               <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ export default function FootPassPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center mb-8"
+            className="kaart border border-gray-100 p-8 text-center mb-8"
           >
             <div className="w-32 h-32 mx-auto mb-4 relative">
               <Image
@@ -123,23 +123,23 @@ export default function FootPassPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Voordelen van Foot Pass</h2>
+            <h2 className="heading-3 mb-6 text-center">Voordelen van Foot Pass</h2>
             <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100 text-center">
+              <div className="kaart p-6 border border-gray-100 text-center">
                 <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="w-6 h-6 text-teal-600" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Kwaliteitsaudit</h3>
                 <p className="text-gray-600 text-sm">Objectieve meting van je jeugdopleiding</p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100 text-center">
+              <div className="kaart p-6 border border-gray-100 text-center">
                 <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <Trophy className="w-6 h-6 text-teal-600" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Subsidies</h3>
                 <p className="text-gray-600 text-sm">Financiële ondersteuning voor jeugdwerking</p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100 text-center">
+              <div className="kaart p-6 border border-gray-100 text-center">
                 <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                   <Award className="w-6 h-6 text-teal-600" />
                 </div>

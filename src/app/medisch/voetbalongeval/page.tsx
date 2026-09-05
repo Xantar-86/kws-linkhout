@@ -39,7 +39,7 @@ export default function VoetbalongevalPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-primary text-white px-6 py-4">
               <div className="flex items-center gap-3">
@@ -97,7 +97,7 @@ export default function VoetbalongevalPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-green-600 text-white px-6 py-4">
               <h2 className="text-xl font-bold">Wat te doen om in aanmerking te komen voor terugbetaling van de kosten?</h2>

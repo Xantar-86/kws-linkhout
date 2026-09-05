@@ -83,7 +83,7 @@ export default async function BerichtPage({ params }: { params: Promise<Params> 
       {bericht.videos.length > 0 && (
         <section className="section-padding bg-white pt-0">
           <div className="container-custom max-w-3xl space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="heading-3">
               Video{bericht.videos.length > 1 ? "'s" : ""}
             </h2>
             {bericht.videos.map((v, i) => {
@@ -137,7 +137,7 @@ export default async function BerichtPage({ params }: { params: Promise<Params> 
       {bericht.fotos.length > 0 && (
         <section className="section-padding bg-gray-50 pt-0">
           <div className="container-custom max-w-5xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Foto&apos;s</h2>
+            <h2 className="heading-3 mb-6">Foto&apos;s</h2>
             <PhotoGallery images={bericht.fotos} title={bericht.title} />
           </div>
         </section>

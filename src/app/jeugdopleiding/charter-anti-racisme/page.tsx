@@ -87,7 +87,7 @@ export default function CharterAntiRacismePage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-primary text-white px-6 py-4">
               <h2 className="text-xl font-bold flex items-center gap-3">
@@ -173,7 +173,7 @@ export default function CharterAntiRacismePage() {
             viewport={{ once: true }}
             className="mt-8"
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Onze Engagementen</h2>
+            <h2 className="heading-3 mb-6">Onze Engagementen</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {engagementen.map((engagement, index) => {
                 const Icon = engagement.icon;
@@ -184,7 +184,7 @@ export default function CharterAntiRacismePage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-white rounded-xl p-6 shadow-md border border-gray-100 text-center"
+                    className="kaart p-6 border border-gray-100 text-center"
                   >
                     <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                       <Icon className="w-6 h-6 text-indigo-600" />

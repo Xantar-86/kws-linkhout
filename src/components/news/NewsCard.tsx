@@ -70,7 +70,7 @@ export function NewsCard({ article, index = 0 }: NewsCardProps) {
             </span>
           </div>
 
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="heading-3 mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {article.title}
           </h3>
 

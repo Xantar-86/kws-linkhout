@@ -34,7 +34,7 @@ export default function ClubInfoPage() {
               viewport={{ once: true }}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              <h2 className="heading-2 mb-4">
                 Belangrijke informatie
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -59,14 +59,14 @@ export default function ClubInfoPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-gray-100"
+            className="kaart p-8 md:p-12 border border-gray-100"
           >
             <div className="flex items-center gap-4 mb-8">
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                 <FileText className="w-8 h-8" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-gray-900">
+                <h2 className="heading-2">
                   Documenten downloaden
                 </h2>
                 <p className="text-gray-600 mt-1">
@@ -84,7 +84,7 @@ export default function ClubInfoPage() {
                       <FileText className="w-7 h-7" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      <h3 className="heading-3 mb-2">
                         Huishoudelijk Reglement
                       </h3>
                       <p className="text-gray-600 text-sm mb-4">
@@ -122,7 +122,7 @@ export default function ClubInfoPage() {
                       <FileText className="w-7 h-7" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      <h3 className="heading-3 mb-2">
                         Privacyverklaring
                       </h3>
                       <p className="text-gray-600 text-sm mb-4">

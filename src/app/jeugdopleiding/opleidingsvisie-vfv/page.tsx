@@ -89,7 +89,7 @@ export default function OpleidingsvisiePage() {
               </a>
             </motion.div>
 
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Onze Visie</h2>
+            <h2 className="heading-3 mb-6">Onze Visie</h2>
             
             <p className="text-gray-700 mb-4">
               Bij KWS Linkhout geloven we dat elke jeugdspeler het recht heeft op een kwalitatieve 
@@ -102,7 +102,7 @@ export default function OpleidingsvisiePage() {
               ontwikkelingsfase van elke leeftijdsgroep.
             </p>
 
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Kernpunten van onze visie</h2>
+            <h2 className="heading-3 mb-6">Kernpunten van onze visie</h2>
             
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               {visiePunten.map((punt, index) => {
@@ -113,7 +113,7 @@ export default function OpleidingsvisiePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                    className="bg-white rounded-xl p-6 shadow-md border border-gray-100"
+                    className="kaart p-6 border border-gray-100"
                   >
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                       <Icon className="w-5 h-5 text-primary" />

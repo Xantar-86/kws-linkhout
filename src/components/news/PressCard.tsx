@@ -32,7 +32,7 @@ export function PressCard({ article, index = 0 }: PressCardProps) {
         href={article.pdf}
         target="_blank"
         rel="noopener noreferrer"
-        className="group block bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100"
+        className="group block kaart kaart-tilt p-6 hover:-translate-y-1 border border-gray-100"
       >
         <div className="flex items-start gap-4">
           <div className="relative w-16 h-16 bg-gray-100 rounded-xl flex-shrink-0 overflow-hidden">

@@ -144,7 +144,7 @@ function Campus({
         >
           <div className="flex items-center gap-3 mb-2">
             <MapPin className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold text-gray-900">{naam}</h2>
+            <h2 className="heading-3">{naam}</h2>
           </div>
           <p className="text-gray-600 ml-9">{adres}</p>
         </motion.div>
@@ -153,7 +153,7 @@ function Campus({
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+          className="kaart border border-gray-200 overflow-hidden"
         >
           <div className="overflow-x-auto">
             <table className="w-full">

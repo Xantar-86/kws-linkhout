@@ -70,7 +70,7 @@ export default function VoorstellingPage() {
                     <div className={`w-12 h-12 ${punt.kleur} rounded-xl flex items-center justify-center text-white mb-4`}>
                       <Icon className="w-6 h-6" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{punt.titel}</h3>
+                    <h3 className="heading-3 mb-2">{punt.titel}</h3>
                     <p className="text-gray-600">{punt.beschrijving}</p>
                   </motion.div>
                 );

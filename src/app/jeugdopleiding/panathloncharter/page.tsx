@@ -137,7 +137,7 @@ export default function PanathloncharterPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-green-600 text-white px-6 py-4">
               <h2 className="text-xl font-bold flex items-center gap-3">
@@ -164,7 +164,7 @@ export default function PanathloncharterPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-blue-600 text-white px-6 py-4">
               <h2 className="text-xl font-bold flex items-center gap-3">
@@ -214,7 +214,7 @@ export default function PanathloncharterPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-purple-600 text-white px-6 py-4">
               <h2 className="text-xl font-bold flex items-center gap-3">
@@ -243,7 +243,7 @@ export default function PanathloncharterPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            <h2 className="heading-3 mb-6 text-center">
               Documenten
             </h2>
             <div className="space-y-4">
@@ -261,7 +261,7 @@ export default function PanathloncharterPage() {
                       href={`/Docs/jeugdopleiding/${file.filename}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-start gap-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-primary/30"
+                      className="group flex items-start gap-4 kaart kaart-tilt p-6 border border-gray-100 hover:border-primary/30"
                     >
                       <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors text-primary">
                         <Icon className="w-6 h-6" />

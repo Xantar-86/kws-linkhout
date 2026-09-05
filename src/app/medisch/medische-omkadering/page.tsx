@@ -112,7 +112,7 @@ export default function MedischeOmkaderingPage() {
                 <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
                   <Package className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Medische Uitrusting</h2>
+                <h2 className="heading-3">Medische Uitrusting</h2>
               </div>
               <div className="grid md:grid-cols-3 gap-6">
                 {uitrusting.map((cat, index) => (

@@ -37,7 +37,7 @@ export default async function NewsletterPage() {
         <div className="container-custom max-w-4xl">
           <div className="flex items-center gap-2 mb-8">
             <FileText className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            <h2 className="text-2xl md:heading-2">
               Eerdere nieuwsbrieven
             </h2>
           </div>
@@ -48,7 +48,7 @@ export default async function NewsletterPage() {
                 <Link
                   key={n.slug}
                   href={`/nieuwsbrief/${n.slug}`}
-                  className="group block bg-white rounded-2xl shadow-lg border border-gray-100 p-6 md:p-8 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                  className="group block kaart border border-gray-100 p-6 md:p-8 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
                 >
                   {n.date && (
                     <div className="inline-flex items-center gap-1.5 text-sm text-gray-500 mb-2">
@@ -56,7 +56,7 @@ export default async function NewsletterPage() {
                       {formatDate(n.date)}
                     </div>
                   )}
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                  <h3 className="text-xl md:heading-3 mb-3 group-hover:text-primary transition-colors">
                     {n.title}
                   </h3>
                   {n.preview && (
@@ -72,7 +72,7 @@ export default async function NewsletterPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-white rounded-2xl shadow-sm">
+            <div className="text-center py-12 kaart">
               <p className="text-gray-600">Nog geen nieuwsbrieven beschikbaar.</p>
             </div>
           )}

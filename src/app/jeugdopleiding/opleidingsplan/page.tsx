@@ -329,7 +329,7 @@ export default function OpleidingsplanPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+                className="kaart border border-gray-100 overflow-hidden"
               >
                 {/* Header */}
                 <div className="bg-primary text-white px-6 py-4">

@@ -39,7 +39,7 @@ export function ClubInfoCard({ section, index = 0 }: ClubInfoCardProps) {
     >
       <Link
         href={`/clubinfo/sectie?slug=${section.slug}`}
-        className="group block bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 h-full border border-gray-100"
+        className="group block kaart kaart-tilt p-6 hover:-translate-y-1 h-full border border-gray-100"
       >
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors text-primary">
@@ -47,7 +47,7 @@ export function ClubInfoCard({ section, index = 0 }: ClubInfoCardProps) {
           </div>
 
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+            <h3 className="heading-3 mb-2 group-hover:text-primary transition-colors">
               {section.title}
             </h3>
             <p className="text-gray-600 text-sm mb-4">

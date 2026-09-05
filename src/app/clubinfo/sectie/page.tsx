@@ -45,7 +45,7 @@ function ClubInfoContent() {
       // Headers
       if (line.startsWith('**') && line.endsWith('**')) {
         return (
-          <h3 key={index} className="text-xl font-bold text-gray-900 mt-8 mb-4">
+          <h3 key={index} className="heading-3 mt-8 mb-4">
             {line.replace(/\*\*/g, '')}
           </h3>
         );
@@ -91,7 +91,7 @@ function ClubInfoContent() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="heading-3 mb-4">
             Sectie niet gevonden
           </h1>
           <p className="text-gray-600 mb-6">
@@ -219,7 +219,7 @@ function ClubInfoContent() {
                   
                   {/* Content */}
                   <div className="flex-1 text-center md:text-left">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h3 className="heading-3 mb-2">
                       Maak kennis met Lincy
                     </h3>
                     <p className="text-green-700 font-medium mb-4">
@@ -309,7 +309,7 @@ function ClubInfoContent() {
       {/* Other Sections */}
       <section className="section-padding bg-gray-50">
         <div className="container-custom">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">
+          <h2 className="heading-3 mb-8">
             Andere onderwerpen
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -322,7 +322,7 @@ function ClubInfoContent() {
                   <Link
                     key={otherSection.id}
                     href={`/clubinfo/sectie?slug=${otherSection.slug}`}
-                    className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+                    className="flex items-center gap-4 p-4 kaart hover:shadow-md transition-shadow"
                   >
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                       <OtherIcon className="w-6 h-6" />

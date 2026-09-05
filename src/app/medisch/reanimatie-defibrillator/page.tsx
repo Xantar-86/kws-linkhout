@@ -130,7 +130,7 @@ export default function ReanimatieDefibrillatorPage() {
                 <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white">
                   <Activity className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Reanimatie: De 4 Stappen</h2>
+                <h2 className="heading-3">Reanimatie: De 4 Stappen</h2>
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 {reanimatieStappen.map((stap, index) => (

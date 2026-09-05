@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { CreditCard, ArrowLeft, Download, QrCode, HelpCircle, Smartphone } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { PaginaKop } from "@/components/PaginaKop";
 
 // Afbeelding paden
 const FOTO1 = "/images/digitaal-betalen/foto1.PNG";
@@ -17,24 +18,14 @@ export default function DigitaalBetalenPage() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* Hero */}
-      <section className="py-16" style={{ background: 'linear-gradient(to bottom right, #8c1d1c, #a82424, #8c1d1c)' }}>
-        <div className="container-custom text-center text-white">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6 }}
-          >
-            <CreditCard className="w-16 h-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Digitaal betalen
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Beste KWS&apos;ers, vanaf heden is het mogelijk om ook digitaal te betalen @ KWS Linkhout.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/", label: "Terug naar de startpagina" }}
+        opschrift="Aan de toog"
+        icoon={CreditCard}
+        titel="Digitaal betalen"
+        accent="betalen"
+        onder="Met de clubkaart, met je bankkaart of met Payconiq. Hieronder staat hoe elk van de drie werkt."
+      />
 
       {/* Content */}
       <section className="section-padding">
@@ -57,7 +48,7 @@ export default function DigitaalBetalenPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="text-white px-6 py-4" style={{ backgroundColor: '#8c1d1c' }}>
               <h2 className="text-xl font-bold">Betalen kan met:</h2>
@@ -122,7 +113,7 @@ export default function DigitaalBetalenPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8"
+            className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-amber-500 text-white px-6 py-4">
               <h2 className="text-xl font-bold">Hoe kan ik mijn clubkaart opladen?</h2>
@@ -232,7 +223,7 @@ export default function DigitaalBetalenPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+            className="kaart border border-gray-100 overflow-hidden"
           >
             <div className="bg-gray-900 text-white px-6 py-4">
               <h2 className="text-xl font-bold flex items-center gap-2">

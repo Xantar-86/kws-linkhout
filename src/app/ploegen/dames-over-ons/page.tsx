@@ -24,13 +24,13 @@ export default function DamesOverOnsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-2xl p-8 md:p-10 shadow-lg mb-8"
+            className="kaart p-8 md:p-10 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                 <History className="w-5 h-5 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Geschiedenis</h2>
+              <h2 className="heading-3">Geschiedenis</h2>
             </div>
             <div className="prose prose-lg text-gray-700 space-y-4">
               <p>
@@ -56,13 +56,13 @@ export default function DamesOverOnsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-white rounded-2xl p-8 md:p-10 shadow-lg mb-8"
+            className="kaart p-8 md:p-10 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Heden</h2>
+              <h2 className="heading-3">Heden</h2>
             </div>
             <div className="prose prose-lg text-gray-700 space-y-4">
               <p>
@@ -92,13 +92,13 @@ export default function DamesOverOnsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-2xl p-8 md:p-10 shadow-lg mb-8"
+            className="kaart p-8 md:p-10 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                 <Heart className="w-5 h-5 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Werking</h2>
+              <h2 className="heading-3">Werking</h2>
             </div>
             <div className="prose prose-lg text-gray-700 space-y-4">
               <p>
@@ -140,12 +140,12 @@ export default function DamesOverOnsPage() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-8 md:p-10"
           >
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            <h2 className="heading-3 mb-6 text-center">
               Aarzel dus niet, KWS Linkhout verwelkomt je graag!
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-xl p-5 shadow-sm text-center">
+              <div className="kaart p-5 text-center">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Users className="w-5 h-5 text-primary" />
                 </div>
@@ -160,7 +160,7 @@ export default function DamesOverOnsPage() {
                 </a>
               </div>
 
-              <div className="bg-white rounded-xl p-5 shadow-sm text-center">
+              <div className="kaart p-5 text-center">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Users className="w-5 h-5 text-primary" />
                 </div>

@@ -97,7 +97,7 @@ export default async function NewsPage() {
           {/* Grid met ALLE andere artikelen (CMS + andere) */}
           {otherArticles.length > 0 && (
             <div className="mb-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="heading-3 mb-6">
                 Meer nieuws
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -105,7 +105,7 @@ export default async function NewsPage() {
                   <Link
                     key={article.id}
                     href={`/nieuws/artikel?slug=${article.slug}`}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer block"
+                    className="kaart overflow-hidden hover:shadow-xl transition-shadow cursor-pointer block"
                   >
                     {/* Afbeelding */}
                     {article.image && (
@@ -141,7 +141,7 @@ export default async function NewsPage() {
 
           {/* Empty state */}
           {allArticles.length === 0 && (
-            <div className="text-center py-16 bg-white rounded-2xl shadow-sm mb-16">
+            <div className="text-center py-16 kaart mb-16">
               <p className="text-gray-600 text-lg mb-4">
                 Nog geen nieuwsberichten beschikbaar.
               </p>
@@ -155,7 +155,7 @@ export default async function NewsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <Link href="/digitaal-betalen">
               <div
-                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+                className="kaart p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -176,7 +176,7 @@ export default async function NewsPage() {
 
             <Link href="/documenten-mutualiteit">
               <div
-                className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+                className="kaart p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -198,14 +198,14 @@ export default async function NewsPage() {
 
           {/* Volledige Nieuwsbrief PDF */}
           <div
-            className="mb-16 bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
+            className="mb-16 kaart p-6 border border-gray-100"
           >
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <FileText className="w-8 h-8 text-red-600" />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="heading-3 mb-2">
                   Volledige nieuwsbrief bekijken
                 </h3>
                 <p className="text-gray-600">
@@ -248,7 +248,7 @@ export default async function NewsPage() {
 
           {/* In de Krant Section */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="heading-3 mb-2">
               KWS Linkhout in de media
             </h2>
             <p className="text-gray-600">

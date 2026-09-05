@@ -49,7 +49,7 @@ export default async function BerichtenPage() {
                   href={`/berichten/${bericht.slug}`}
                   className="group w-full max-w-xl"
                 >
-                  <article className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+                  <article className="kaart border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
                     {bericht.cover && (
                       <div className="relative h-56 w-full overflow-hidden">
                         <Image
@@ -73,7 +73,7 @@ export default async function BerichtenPage() {
                           {formatDate(bericht.date)}
                         </div>
                       )}
-                      <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                      <h2 className="heading-3 mb-2 group-hover:text-primary transition-colors">
                         {bericht.title}
                       </h2>
                       {bericht.intro && (
@@ -87,7 +87,7 @@ export default async function BerichtenPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
+            <div className="text-center py-16 kaart">
               <p className="text-gray-600 text-lg">Nog geen berichten beschikbaar.</p>
             </div>
           )}

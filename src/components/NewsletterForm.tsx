@@ -56,7 +56,7 @@ export function NewsletterForm() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white rounded-2xl p-6 shadow-lg text-center"
+            className="kaart p-6 text-center"
           >
             <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mx-auto mb-4">
               {getIcon(benefit.icon)}
@@ -73,9 +73,9 @@ export function NewsletterForm() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-3xl shadow-xl p-8 md:p-12"
+            className="kaart p-8 md:p-12"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">Schrijf je in</h2>
+            <h2 className="heading-2 mb-2 text-center">Schrijf je in</h2>
             <p className="text-gray-600 text-center mb-8">
               Vul je gegevens in en kies waarover je op de hoogte wilt blijven.
             </p>
@@ -174,12 +174,12 @@ export function NewsletterForm() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-3xl shadow-xl p-12 text-center"
+            className="kaart p-12 text-center"
           >
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Check className="w-10 h-10 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Bedankt voor je inschrijving!</h2>
+            <h2 className="heading-2 mb-4">Bedankt voor je inschrijving!</h2>
             <p className="text-gray-600 mb-8">
               Je ontvangt binnenkort een bevestigingsmail. Vanaf nu houden we je op de hoogte van
               alles wat er gebeurt bij KWS Linkhout.
