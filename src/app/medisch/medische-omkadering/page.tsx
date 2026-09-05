@@ -53,15 +53,15 @@ export default function MedischeOmkaderingPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <FileText className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-blue-900">Medische omkadering</h2>
+                <h2 className="text-2xl font-bold text-gray-700">Medische omkadering</h2>
               </div>
-              <div className="space-y-4 text-blue-800">
+              <div className="space-y-4 text-gray-700">
                 <p className="leading-relaxed">
                   Zodra een kind langer dan 2 weken afwezig is owv een medische reden, dient aan de trainer 
                   een attest van de arts voorgelegd te worden dat sporthervatting mogelijk is, eventueel met 
@@ -83,19 +83,19 @@ export default function MedischeOmkaderingPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <Award className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-green-900">Certificeringen</h2>
+                <h2 className="text-2xl font-bold text-gray-700">Certificeringen</h2>
               </div>
               <ul className="space-y-3">
                 {certificeringen.map((cert, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-green-800">{cert}</span>
+                    <CheckCircle className="w-5 h-5 text-gray-700 flex-shrink-0 mt-0.5" />
+                    <span className="text-gray-700">{cert}</span>
                   </li>
                 ))}
               </ul>
@@ -109,7 +109,7 @@ export default function MedischeOmkaderingPage() {
               className="bg-gray-50 rounded-2xl p-8 border border-gray-100 mb-8"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <Package className="w-5 h-5" />
                 </div>
                 <h2 className="heading-3">Medische Uitrusting</h2>
@@ -121,7 +121,7 @@ export default function MedischeOmkaderingPage() {
                     <ul className="space-y-1">
                       {cat.items.map((item, i) => (
                         <li key={i} className="text-gray-600 text-sm flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                          <span className="w-1.5 h-1.5 bg-primary rounded-full" />
                           {item}
                         </li>
                       ))}
@@ -136,25 +136,25 @@ export default function MedischeOmkaderingPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <Stethoscope className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-blue-900">EHBO & Medische Ondersteuning</h2>
+                <h2 className="text-2xl font-bold text-gray-700">EHBO & Medische Ondersteuning</h2>
               </div>
-              <div className="space-y-4 text-blue-800">
+              <div className="space-y-4 text-gray-700">
                 <p>
-                  <strong className="text-blue-900">EHBO aanwezigheid:</strong> Bij alle trainingen en wedstrijden is er minstens 
+                  <strong className="text-gray-700">EHBO aanwezigheid:</strong> Bij alle trainingen en wedstrijden is er minstens 
                   één persoon met geldig EHBO certificaat aanwezig.
                 </p>
                 <p>
-                  <strong className="text-blue-900">Eerste hulp:</strong> Directe eerste hulp bij ongevallen, 
+                  <strong className="text-gray-700">Eerste hulp:</strong> Directe eerste hulp bij ongevallen, 
                   begeleiding naar ziekenhuis of huisarts indien nodig.
                 </p>
                 <p>
-                  <strong className="text-blue-900">Blessurepreventie:</strong> Aandacht voor warming-up, cooling-down 
+                  <strong className="text-gray-700">Blessurepreventie:</strong> Aandacht voor warming-up, cooling-down 
                   en veilige trainingsmethodes.
                 </p>
               </div>

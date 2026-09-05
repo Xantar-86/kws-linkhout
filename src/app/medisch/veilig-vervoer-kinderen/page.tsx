@@ -61,15 +61,15 @@ export default function VeiligVervoerKinderenPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
             >
-              <p className="text-green-800 leading-relaxed mb-4">
+              <p className="text-gray-700 leading-relaxed mb-4">
                 Het is soms handig om je kind met een andere ouder mee te geven naar een training of match.
               </p>
-              <p className="text-green-800 leading-relaxed mb-4">
+              <p className="text-gray-700 leading-relaxed mb-4">
                 Hieronder kan je tips vinden en de wet nalezen omtrent het vastmaken van kinderen in de auto.
               </p>
-              <p className="text-green-800 font-semibold">
+              <p className="text-gray-700 font-semibold">
                 KWS Linkhout wenst iedereen een veilige rit toe!
               </p>
             </motion.div>
@@ -103,19 +103,19 @@ export default function VeiligVervoerKinderenPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-orange-50 rounded-2xl p-8 border border-orange-100 mb-6"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <CheckCircle className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-orange-900">Basisregels</h2>
+                <h2 className="text-2xl font-bold text-gray-700">Basisregels</h2>
               </div>
               <ul className="space-y-3">
                 {basisRegels.map((regel, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0" />
-                    <span className="text-orange-800">{regel}</span>
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                    <span className="text-gray-700">{regel}</span>
                   </li>
                 ))}
               </ul>
@@ -126,19 +126,19 @@ export default function VeiligVervoerKinderenPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-6"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <Users className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-blue-900">Organisatie</h2>
+                <h2 className="text-2xl font-bold text-gray-700">Organisatie</h2>
               </div>
               <ul className="space-y-3">
                 {organisatieRegels.map((regel, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
-                    <span className="text-blue-800">{regel}</span>
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                    <span className="text-gray-700">{regel}</span>
                   </li>
                 ))}
               </ul>

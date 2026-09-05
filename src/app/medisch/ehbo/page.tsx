@@ -51,9 +51,6 @@ const goudenStappen = [
 const blessures = [
   {
     icon: Bone,
-    kleur: "bg-amber-500",
-    lichtKleur: "bg-amber-50",
-    tekstKleur: "text-amber-900",
     titel: "Verstuiking of kneuzing",
     intro: "Volg het RICE-principe:",
     punten: [
@@ -65,9 +62,6 @@ const blessures = [
   },
   {
     icon: Bandage,
-    kleur: "bg-red-500",
-    lichtKleur: "bg-red-50",
-    tekstKleur: "text-red-900",
     titel: "Wonden & schaafwonden",
     intro: "Reinigen en beschermen:",
     punten: [
@@ -79,9 +73,6 @@ const blessures = [
   },
   {
     icon: Droplet,
-    kleur: "bg-rose-500",
-    lichtKleur: "bg-rose-50",
-    tekstKleur: "text-rose-900",
     titel: "Bloedneus",
     intro: "Kalm blijven en:",
     punten: [
@@ -93,9 +84,6 @@ const blessures = [
   },
   {
     icon: Brain,
-    kleur: "bg-purple-500",
-    lichtKleur: "bg-purple-50",
-    tekstKleur: "text-purple-900",
     titel: "Hoofdletsel / hersenschudding",
     intro: "Wees altijd voorzichtig:",
     punten: [
@@ -107,9 +95,6 @@ const blessures = [
   },
   {
     icon: Activity,
-    kleur: "bg-orange-500",
-    lichtKleur: "bg-orange-50",
-    tekstKleur: "text-orange-900",
     titel: "Spierkramp",
     intro: "Ontspannen en hydrateren:",
     punten: [
@@ -121,9 +106,6 @@ const blessures = [
   },
   {
     icon: Bone,
-    kleur: "bg-slate-500",
-    lichtKleur: "bg-slate-50",
-    tekstKleur: "text-slate-900",
     titel: "Botbreuk of ontwrichting",
     intro: "Niet bewegen, wél stabiliseren:",
     punten: [
@@ -135,9 +117,6 @@ const blessures = [
   },
   {
     icon: Thermometer,
-    kleur: "bg-sky-500",
-    lichtKleur: "bg-sky-50",
-    tekstKleur: "text-sky-900",
     titel: "Oververhitting & uitdroging",
     intro: "Afkoelen en drinken:",
     punten: [
@@ -149,9 +128,6 @@ const blessures = [
   },
   {
     icon: Plus,
-    kleur: "bg-teal-500",
-    lichtKleur: "bg-teal-50",
-    tekstKleur: "text-teal-900",
     titel: "Tandletsel",
     intro: "Snelheid is belangrijk:",
     punten: [
@@ -202,15 +178,15 @@ export default function EhboPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-teal-50 rounded-2xl p-8 border border-teal-100"
+            className="kaart p-8"
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Shield className="w-5 h-5" />
               </div>
-              <h2 className="text-2xl font-bold text-teal-900">Wat is EHBO?</h2>
+              <h2 className="text-2xl font-bold text-gray-700">Wat is EHBO?</h2>
             </div>
-            <p className="text-teal-800 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed">
               EHBO staat voor <strong>Eerste Hulp Bij Ongevallen</strong>: de hulp die je onmiddellijk
               verleent aan een gewonde of onwel geworden persoon, vóór professionele hulpverleners ter
               plaatse zijn. Op en rond het voetbalveld gebeuren nu eenmaal ongevallen, van een
@@ -265,23 +241,18 @@ export default function EhboPage() {
               {blessures.map((b, index) => {
                 const Icon = b.icon;
                 return (
-                  <div
-                    key={index}
-                    className={`${b.lichtKleur} rounded-2xl p-6 border border-black/5 h-full`}
-                  >
-                    <div className="flex items-center gap-3 mb-4">
-                      <div
-                        className={`w-12 h-12 ${b.kleur} rounded-xl flex items-center justify-center text-white flex-shrink-0`}
-                      >
-                        <Icon className="w-6 h-6" />
+                  <div key={index} className="kaart h-full p-6">
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <Icon className="h-6 w-6" />
                       </div>
-                      <h3 className={`text-lg font-bold ${b.tekstKleur}`}>{b.titel}</h3>
+                      <h3 className="text-lg font-bold text-gray-900">{b.titel}</h3>
                     </div>
-                    <p className={`text-sm font-medium mb-3 ${b.tekstKleur}`}>{b.intro}</p>
+                    <p className="mb-3 text-sm font-medium text-gray-800">{b.intro}</p>
                     <ul className="space-y-2">
                       {b.punten.map((punt, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary/70" />
                           <span>{punt}</span>
                         </li>
                       ))}
@@ -297,10 +268,10 @@ export default function EhboPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-white rounded-2xl p-8 border border-gray-100 shadow-lg"
+            className="kaart p-8"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Plus className="w-5 h-5" />
               </div>
               <h2 className="heading-3">De EHBO-koffer</h2>
@@ -328,10 +299,10 @@ export default function EhboPage() {
           >
             <Link
               href="/medisch/reanimatie-defibrillator"
-              className="group block bg-pink-50 rounded-2xl p-8 border border-pink-100 hover:shadow-lg transition-all"
+              className="group block bg-primary/5 rounded-2xl p-8 border border-pink-100 hover:shadow-lg transition-all"
             >
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-pink-500 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0">
+                <div className="w-14 h-14 bg-primary/50 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0">
                   <Heart className="w-7 h-7" />
                 </div>
                 <div>

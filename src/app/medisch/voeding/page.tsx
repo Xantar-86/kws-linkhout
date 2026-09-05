@@ -62,11 +62,11 @@ export default function VoedingPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-emerald-50 rounded-2xl p-8 border border-emerald-100"
+            className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70"
           >
-            <h2 className="text-2xl font-bold text-emerald-900 mb-6">Voedingsdriehoek</h2>
+            <h2 className="text-2xl font-bold text-gray-700 mb-6">Voedingsdriehoek</h2>
             
-            <div className="space-y-6 text-emerald-800">
+            <div className="space-y-6 text-gray-700">
               <p>
                 Een voeding evenwichtig samenstellen betekent de juiste balans vinden tussen de inname 
                 van macronutriënten (vetten, koolhydraten, eiwitten en voedingsvezels), micronutriënten 
@@ -91,28 +91,28 @@ export default function VoedingPage() {
                 <p className="font-semibold mb-3">Gezond eten betekent:</p>
                 <ul className="space-y-2 ml-4">
                   <li className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
                     <span><strong>Evenwicht:</strong> kiezen uit de verschillende groepen voedingsmiddelen en de verhouding respecteren.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
                     <span><strong>Variatie:</strong> binnen elke groep variëren in de soorten, bijvoorbeeld niet elke dag dezelfde groenten eten.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
                     <span><strong>Matigheid:</strong> de dagelijks aanbevolen hoeveelheden per groep respecteren</span>
                   </li>
                 </ul>
               </div>
               
-              <div className="pt-4 border-t border-emerald-200">
+              <div className="pt-4 border-t border-zand-200/70">
                 <p className="font-semibold mb-3">Meer informatie kan u altijd vinden via:</p>
                 <div className="flex flex-wrap gap-4">
                   <a 
                     href="https://www.health.belgium.be/nl" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-900 underline transition-colors"
+                    className="inline-flex items-center gap-2 text-gray-700 hover:text-gray-700 underline transition-colors"
                   >
                     health.belgium.be
                   </a>
@@ -120,7 +120,7 @@ export default function VoedingPage() {
                     href="https://www.gezondleven.be/themas/voeding/voedingsdriehoek" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-900 underline transition-colors"
+                    className="inline-flex items-center gap-2 text-gray-700 hover:text-gray-700 underline transition-colors"
                   >
                     gezondleven.be - Voedingsdriehoek
                   </a>
@@ -144,19 +144,19 @@ export default function VoedingPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-emerald-50 rounded-2xl p-8 border border-emerald-100 mb-6"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <Apple className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-emerald-900">Algemene Richtlijnen</h2>
+                <h2 className="text-2xl font-bold text-gray-700">Algemene Richtlijnen</h2>
               </div>
               <ul className="space-y-3">
                 {algemeneRichtlijnen.map((regel, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
-                    <span className="text-emerald-800">{regel}</span>
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                    <span className="text-gray-700">{regel}</span>
                   </li>
                 ))}
               </ul>
@@ -170,15 +170,15 @@ export default function VoedingPage() {
               className="grid md:grid-cols-3 gap-4 mb-6"
             >
               {/* Voor Training */}
-              <div className="bg-orange-50 rounded-2xl p-6 border border-orange-100">
+              <div className="bg-primary/5 rounded-2xl p-6 border border-zand-200/70">
                 <div className="flex items-center gap-2 mb-4">
-                  <Clock className="w-5 h-5 text-orange-600" />
-                  <h3 className="text-lg font-bold text-orange-900">Voor Training</h3>
+                  <Clock className="w-5 h-5 text-gray-700" />
+                  <h3 className="text-lg font-bold text-gray-700">Voor Training</h3>
                 </div>
                 <ul className="space-y-2">
                   {voorTraining.map((item, index) => (
-                    <li key={index} className="text-orange-800 text-sm flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1.5 flex-shrink-0" />
+                    <li key={index} className="text-gray-700 text-sm flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -186,15 +186,15 @@ export default function VoedingPage() {
               </div>
 
               {/* Tijdens Training */}
-              <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
+              <div className="bg-primary/5 rounded-2xl p-6 border border-zand-200/70">
                 <div className="flex items-center gap-2 mb-4">
-                  <Droplets className="w-5 h-5 text-blue-600" />
-                  <h3 className="text-lg font-bold text-blue-900">Tijdens Training</h3>
+                  <Droplets className="w-5 h-5 text-gray-700" />
+                  <h3 className="text-lg font-bold text-gray-700">Tijdens Training</h3>
                 </div>
                 <ul className="space-y-2">
                   {tijdensTraining.map((item, index) => (
-                    <li key={index} className="text-blue-800 text-sm flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
+                    <li key={index} className="text-gray-700 text-sm flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -202,15 +202,15 @@ export default function VoedingPage() {
               </div>
 
               {/* Na Training */}
-              <div className="bg-green-50 rounded-2xl p-6 border border-green-100">
+              <div className="bg-primary/5 rounded-2xl p-6 border border-zand-200/70">
                 <div className="flex items-center gap-2 mb-4">
-                  <Apple className="w-5 h-5 text-green-600" />
-                  <h3 className="text-lg font-bold text-green-900">Na Training</h3>
+                  <Apple className="w-5 h-5 text-gray-700" />
+                  <h3 className="text-lg font-bold text-gray-700">Na Training</h3>
                 </div>
                 <ul className="space-y-2">
                   {naTraining.map((item, index) => (
-                    <li key={index} className="text-green-800 text-sm flex items-start gap-2">
-                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-1.5 flex-shrink-0" />
+                    <li key={index} className="text-gray-700 text-sm flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
