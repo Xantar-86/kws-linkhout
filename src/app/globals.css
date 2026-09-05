@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  /* KWS Linkhout Clubkleuren - Rood & Wit */
+  /* ---------------------------------------------------------------------
+     Clubkleuren: rood en wit.
+     --------------------------------------------------------------------- */
   --color-primary-50: #fef2f2;
   --color-primary-100: #fee2e2;
   --color-primary-200: #fecaca;
@@ -13,19 +15,53 @@
   --color-primary-800: #991b1b;
   --color-primary-900: #7f1d1d;
   --color-primary-950: #450a0a;
-  
-  /* Primary = Clubrood */
+
   --color-primary: #dc2626;
-  
-  /* Secondary = Wit */
+
   --color-secondary: #ffffff;
   --color-secondary-foreground: #1f2937;
-  
-  /* Accent = Donkerder rood voor accenten */
+
   --color-accent: #991b1b;
   --color-accent-foreground: #ffffff;
-  
-  /* Animaties */
+
+  /* ---------------------------------------------------------------------
+     Inkt: de donkere kant van de site.
+
+     Geen zuiver zwart maar zwart met een rode ondertoon, zodat een donkere
+     sectie naast het clubrood staat in plaats van ertegen. Zuiver zwart
+     naast rood leest altijd een beetje goedkoop.
+     --------------------------------------------------------------------- */
+  --color-inkt-950: #0a0607;
+  --color-inkt-900: #120c0d;
+  --color-inkt-800: #1c1415;
+  --color-inkt-700: #2a1f20;
+  --color-inkt-600: #3d2e2f;
+
+  /* ---------------------------------------------------------------------
+     Zand: de lichte kant.
+
+     Warme neutralen in plaats van het kille blauwgrijs van de standaard.
+     Het verschil is klein per vlak en groot over een hele pagina: het maakt
+     wit papierachtig in plaats van schermwit.
+     --------------------------------------------------------------------- */
+  --color-zand-50: #faf8f6;
+  --color-zand-100: #f4f1ec;
+  --color-zand-200: #e9e4dc;
+  --color-zand-300: #d8d1c7;
+
+  /* ---------------------------------------------------------------------
+     Schaduwen.
+
+     Elke schaduw is gelaagd: een korte, donkere onder het element en een
+     lange, zachte eronder. Een enkele schaduw ziet er altijd uit als een
+     sticker; twee lagen lezen als diepte.
+     --------------------------------------------------------------------- */
+  --shadow-zacht: 0 1px 2px rgb(18 12 13 / 0.04), 0 4px 12px rgb(18 12 13 / 0.05);
+  --shadow-blad: 0 2px 4px rgb(18 12 13 / 0.05), 0 12px 28px -8px rgb(18 12 13 / 0.1);
+  --shadow-zwevend: 0 4px 8px rgb(18 12 13 / 0.06), 0 24px 48px -12px rgb(18 12 13 / 0.16);
+  --shadow-opgetild: 0 8px 16px rgb(18 12 13 / 0.08), 0 40px 72px -16px rgb(18 12 13 / 0.22);
+
+  /* Animaties (bestaand, blijft in gebruik bij de aankondiging). */
   --animate-fade-in: fadeIn 0.5s ease-in-out;
   --animate-slide-up: slideUp 0.5s ease-out;
   --animate-slide-down: slideDown 0.3s ease-out;
@@ -46,53 +82,342 @@
   100% { transform: translateY(0); opacity: 1; }
 }
 
+/* -----------------------------------------------------------------------
+   Scrollen.
+
+   Bewust geen script dat het scrollen overneemt. Zulke vloeiende scrollers
+   ogen duur, maar ze breken zoeken-in-pagina, ze vechten met het trackpad
+   en ze lopen achter op de toetsen. Alle beweging op deze site rijdt op de
+   scroll van de browser zelf; dat is even filmisch en het blijft van de
+   bezoeker.
+
+   `scroll-behavior: smooth` geldt dus alleen voor sprongen naar een anker.
+   ----------------------------------------------------------------------- */
 html {
-  scroll-behavior: auto;
-  scroll-padding-top: 0;
+  scroll-behavior: smooth;
+  /* Onder de vaste navigatiebalk door springen zou de kop verbergen. */
+  scroll-padding-top: 6rem;
 }
 
 body {
-  background-color: white;
-  color: #111827;
+  background-color: #ffffff;
+  color: #120c0d;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Houdt de zijwaartse ruimte weg die een parallaxlaag kan opduwen. */
+  overflow-x: hidden;
 }
 
-/* Custom component classes */
+/* -----------------------------------------------------------------------
+   Minder beweging.
+
+   framer-motion vangt zijn eigen animaties af via MotionConfig in
+   app/layout.tsx. Wat hieronder staat, dekt de rest: CSS-overgangen,
+   keyframes en het springen naar een anker.
+
+   Let op de keuze: duur op 0.01ms in plaats van 0. Een echte nul laat
+   sommige browsers de overgang helemaal overslaan, waardoor `transitionend`
+   nooit afgaat en code die daarop wacht blijft hangen.
+   ----------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -----------------------------------------------------------------------
+   Toetsenbord.
+
+   Een zichtbare, consistente focusring over de hele site, en alleen voor wie
+   met het toetsenbord navigeert. Wie klikt, ziet niets.
+   ----------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* -----------------------------------------------------------------------
+   Typografie.
+
+   Een doorlopende schaal op clamp: geen breekpunten waar de kop plots
+   verspringt, maar een grootte die met het scherm meeloopt. De negatieve
+   letterafstand op de grote maten is wat een kop duur doet ogen; zonder
+   valt hij uiteen in losse letters.
+   ----------------------------------------------------------------------- */
 .container-custom {
   @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
 }
 
-.btn-primary {
-  @apply inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 
-         text-white font-semibold transition-all duration-200 
-         hover:bg-primary-800 hover:shadow-lg hover:-translate-y-0.5
-         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
-}
-
-.btn-secondary {
-  @apply inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 
-         text-primary font-semibold border-2 border-primary transition-all duration-200 
-         hover:bg-primary-50 hover:shadow-md
-         focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
-}
-
-.section-padding {
-  @apply py-16 md:py-24;
+.heading-display {
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(2.75rem, 7.5vw, 6.5rem);
+  font-weight: 800;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
 }
 
 .heading-1 {
-  @apply text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900;
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  @apply text-gray-900;
 }
 
 .heading-2 {
-  @apply text-3xl md:text-4xl font-bold tracking-tight text-gray-900;
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(1.875rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  @apply text-gray-900;
 }
 
 .heading-3 {
-  @apply text-2xl md:text-3xl font-bold text-gray-900;
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  @apply text-gray-900;
 }
 
 .text-body {
-  @apply text-base md:text-lg text-gray-600 leading-relaxed;
+  font-size: clamp(1rem, 1.1vw, 1.125rem);
+  line-height: 1.7;
+  @apply text-gray-600;
+}
+
+/* Het opschrift boven een sectiekop: klein, gespatieerd, in clubrood. Het
+   kost niets en het geeft elke sectie meteen een hiërarchie. */
+.opschrift {
+  @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary;
+}
+
+.section-padding {
+  @apply py-20 md:py-28;
+}
+
+/* -----------------------------------------------------------------------
+   Knoppen.
+
+   De verplaatsing bij aanwijzen is een enkele pixel, niet vier. Vier leest
+   als een knop die schrikt; een pixel leest als een knop die reageert.
+   ----------------------------------------------------------------------- */
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-full bg-primary px-7 py-3.5
+         text-white font-semibold tracking-tight
+         transition-[background-color,box-shadow,transform] duration-200 ease-out
+         hover:bg-primary-700 hover:shadow-zwevend hover:-translate-y-px
+         active:translate-y-0 active:duration-75;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-full bg-transparent px-7 py-3.5
+         text-primary font-semibold tracking-tight border border-primary/30
+         transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out
+         hover:bg-primary/5 hover:border-primary/60 hover:-translate-y-px
+         active:translate-y-0 active:duration-75;
+}
+
+/* -----------------------------------------------------------------------
+   Een kaart.
+
+   Alles wat op de site een kaart is, hoort hetzelfde te vallen: dezelfde
+   ronding, dezelfde rand, dezelfde manier van optillen. Daarom staat het
+   hier en niet acht keer in acht componenten.
+   ----------------------------------------------------------------------- */
+.kaart {
+  @apply relative rounded-2xl border border-zand-200/70 bg-white shadow-zacht
+         transition-[box-shadow,transform,border-color] duration-300;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kaart-tilt:hover {
+  @apply -translate-y-1 border-zand-300 shadow-zwevend;
+}
+
+/* Een dunne lichtlijn langs de bovenrand van een donkere sectie: de rand
+   tussen twee donkere vlakken wordt zichtbaar zonder een harde lijn. */
+.lichtrand {
+  @apply relative;
+}
+
+.lichtrand::before {
+  content: "";
+  @apply absolute inset-x-0 top-0 h-px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgb(255 255 255 / 0.18) 30%,
+    rgb(255 255 255 / 0.18) 70%,
+    transparent
+  );
+}
+
+/* De korrel over donkere vlakken. Een egaal verloop op een groot vlak toont
+   banden op goedkope schermen; een nauwelijks zichtbare ruis breekt die. */
+.korrel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* -----------------------------------------------------------------------
+   De opening.
+
+   Het doek dat over de startpagina ligt bij het eerste bezoek van een
+   sessie. Zie components/beweging/Opening.tsx voor het waarom.
+
+   De tijdlijn, van boven naar beneden gelezen:
+
+     0,00 - 0,55   het logo komt uit de onscherpte omhoog
+     0,30 - 0,85   het jaartal verschijnt eronder
+     0,40 - 1,00   het lijntje loopt vol
+     0,85 - 1,05   het merk vervaagt
+     0,95 - 1,55   de twee helften trekken uit elkaar
+     1,55          het doek is weg en raakt niets meer aan
+
+   Alle animaties eindigen op `forwards`. Dat is hier geen stijlkwestie maar
+   een vangnet: ook als er verder niets meer gebeurt op de pagina, blijft het
+   doek in zijn eindtoestand staan, en die is onzichtbaar en onaanraakbaar.
+   ----------------------------------------------------------------------- */
+#opening {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  /* Vanaf het eerste beeldje onaanraakbaar: wie meteen wil scrollen of
+     klikken, hoeft niet te wachten tot het doek weg is. */
+  pointer-events: none;
+  animation: opening-einde 0.01s linear 1.55s forwards;
+}
+
+/* Het scriptje in app/layout.tsx zet dit zodra de opening niet hoort te
+   spelen: geen eerste bezoek, geen startpagina, of minder beweging gevraagd.
+   Ook het overslaan met een toets of een klik komt hier terecht. */
+html[data-opening="over"] #opening {
+  display: none;
+}
+
+.opening-helft {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%; /* Een halve procent overlap, anders blijft er een haarlijn open staan. */
+  background-color: #0a0607;
+}
+
+.opening-boven {
+  top: 0;
+  animation: opening-boven 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.95s forwards;
+}
+
+.opening-onder {
+  bottom: 0;
+  animation: opening-onder 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.95s forwards;
+}
+
+.opening-merk {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  animation: opening-merk-weg 0.2s ease-out 0.85s forwards;
+}
+
+.opening-logo {
+  width: clamp(84px, 12vw, 132px);
+  height: auto;
+  opacity: 0;
+  animation: opening-logo 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.opening-lijn {
+  display: block;
+  width: clamp(120px, 16vw, 200px);
+  height: 1px;
+  background: linear-gradient(to right, transparent, #dc2626, transparent);
+  transform: scaleX(0);
+  animation: opening-lijn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+}
+
+.opening-tekst {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.5);
+  /* De letterafstand duwt het woord naar links; dit zet het weer in het midden. */
+  text-indent: 0.36em;
+  opacity: 0;
+  animation: opening-tekst 0.55s ease-out 0.3s forwards;
+}
+
+@keyframes opening-logo {
+  from { opacity: 0; transform: translateY(14px) scale(0.92); filter: blur(10px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes opening-tekst {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes opening-lijn {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes opening-merk-weg {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes opening-boven {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-100%); }
+}
+
+@keyframes opening-onder {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
+
+@keyframes opening-einde {
+  to { visibility: hidden; }
+}
+
+/* Wie minder beweging vraagt hoort geen doek te zien. Het scriptje in de
+   layout vangt dit al af, maar mocht dat niet gedraaid hebben, dan is dit het
+   tweede slot op de deur. */
+@media (prefers-reduced-motion: reduce) {
+  #opening {
+    display: none;
+  }
+}
+
+/* Het koplettertype los inzetbaar, voor cijfers en losse woorden die de
+   nadruk van een kop mogen krijgen zonder er een te zijn. */
+.font-display {
+  font-family: var(--font-display), var(--font-inter), system-ui, sans-serif;
 }

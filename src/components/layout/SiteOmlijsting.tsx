@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { PaginaOvergang } from "@/components/beweging/PaginaOvergang";
 
 /**
  * De vaste omlijsting van de site: de navigatiebalk boven en de voettekst
@@ -26,7 +27,9 @@ export function SiteOmlijsting({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="flex-grow">{children}</main>
+      <main className="grow">
+        <PaginaOvergang>{children}</PaginaOvergang>
+      </main>
       <Footer />
     </>
   );
