@@ -64,14 +64,14 @@ export default async function NewsPage() {
 
                   <div className="p-8 md:p-12 flex flex-col justify-center">
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                      <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold capitalize">
+                      <span className="rounded-full bg-inkt-950/70 px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-sm">
                         {featuredArticle.category}
                       </span>
                       <span>{featuredArticle.date}</span>
                       <span>{featuredArticle.readTime} min</span>
                     </div>
 
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors">
+                    <h2 className="heading-2 mb-4 transition-colors group-hover:text-primary">
                       {featuredArticle.title}
                     </h2>
 
@@ -105,7 +105,7 @@ export default async function NewsPage() {
                   <Link
                     key={article.id}
                     href={`/nieuws/artikel?slug=${article.slug}`}
-                    className="kaart overflow-hidden hover:shadow-xl transition-shadow cursor-pointer block"
+                    className="kaart kaart-tilt block overflow-hidden"
                   >
                     {/* Afbeelding */}
                     {article.image && (
@@ -155,14 +155,14 @@ export default async function NewsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <Link href="/digitaal-betalen">
               <div
-                className="kaart p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+                className="kaart kaart-tilt h-full p-6"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <CreditCard className="w-7 h-7 text-green-600" />
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                    <CreditCard className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    <h3 className="mb-1 text-lg font-bold text-gray-900">
                       Digitaal Betalen
                     </h3>
                     <p className="text-gray-600 text-sm">
@@ -176,14 +176,14 @@ export default async function NewsPage() {
 
             <Link href="/documenten-mutualiteit">
               <div
-                className="kaart p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full"
+                className="kaart kaart-tilt h-full p-6"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-7 h-7 text-blue-600" />
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                    <Shield className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    <h3 className="mb-1 text-lg font-bold text-gray-900">
                       Documenten Mutualiteit
                     </h3>
                     <p className="text-gray-600 text-sm">
@@ -230,7 +230,7 @@ export default async function NewsPage() {
             className="korrel lichtrand relative mb-16 overflow-hidden rounded-3xl bg-inkt-950 p-8 text-center text-white md:p-12"
           >
             <Mail className="w-12 h-12 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="heading-2 mb-4 text-white">
               Blijf op de hoogte
             </h2>
             <p className="text-white/90 mb-6 max-w-xl mx-auto">
