@@ -72,7 +72,7 @@ export default async function BerichtPage({ params }: { params: Promise<Params> 
         <section className="section-padding bg-white pt-0">
           <div className="container-custom max-w-3xl">
             <article
-              className="text-gray-700 leading-relaxed prose prose-lg max-w-none"
+              className="lopende-tekst"
               dangerouslySetInnerHTML={{ __html: parseMarkdown(bericht.body) }}
             />
           </div>

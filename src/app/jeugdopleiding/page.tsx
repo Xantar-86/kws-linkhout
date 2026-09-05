@@ -134,8 +134,8 @@ export default function JeugdopleidingPage() {
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mb-12"
           >
-            <h3 className="text-2xl font-bold text-primary mb-6">Visie</h3>
-            <div className="space-y-4 text-gray-700 leading-relaxed">
+            <h3 className="heading-3 mb-6 text-primary">Visie</h3>
+            <div className="lopende-tekst">
               <p>
                 Het aanbieden van voetbal(plezier) aan al zijn spelers waardoor elke speler 
                 zijn/haar persoonlijke droom kan waarmaken en zijn/haar favoriete sport kan 
@@ -160,7 +160,7 @@ export default function JeugdopleidingPage() {
                 krijgen zichzelf te ontwikkelen. Hierdoor zal hij reeds heel vroeg een lifestyle 
                 moeten aanmeten waarin zelfverantwoordelijkheid een sleutelrol speelt.
               </p>
-              <ul className="space-y-2 ml-6 list-disc">
+              <ul>
                 <li>Absolute prioriteit voor studie geven</li>
                 <li>Elke speler moet kunnen spelen en trainen in een team waarin hij ingegeven door zijn kwaliteiten thuishoort</li>
                 <li>Iedere speler, ook hij die de A-kern niet haalt, moet een warm en positief gevoel overhouden aan zijn verblijf in onze rangen</li>
@@ -177,9 +177,9 @@ export default function JeugdopleidingPage() {
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mb-12"
           >
-            <h3 className="text-2xl font-bold text-primary mb-6">Missie - Sportief</h3>
-            <div className="space-y-4 text-gray-700 leading-relaxed">
-              <ul className="space-y-3 ml-6 list-disc">
+            <h3 className="heading-3 mb-6 text-primary">Missie - Sportief</h3>
+            <div className="lopende-tekst">
+              <ul>
                 <li>
                   Kinderen uit de regio een gezond en plezant alternatief aanbieden voor hun 
                   vrijetijdsbesteding, waarin bovendien de sociale vaardigheden optimaal worden ontwikkeld.
@@ -217,9 +217,9 @@ export default function JeugdopleidingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           >
-            <h3 className="text-2xl font-bold text-primary mb-6">Missie - Zakelijk</h3>
-            <div className="space-y-4 text-gray-700 leading-relaxed">
-              <ul className="space-y-3 ml-6 list-disc">
+            <h3 className="heading-3 mb-6 text-primary">Missie - Zakelijk</h3>
+            <div className="lopende-tekst">
+              <ul>
                 <li>Financieel gezond zijn en blijven.</li>
                 <li>
                   Een sterke organisatiestructuur, gebaseerd op verantwoordelijkheid, vrijwilligheid, 

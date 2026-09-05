@@ -58,7 +58,7 @@ export default async function NieuwsbriefDetailPage({ params }: { params: Promis
         <section className="section-padding bg-white pt-0">
           <div className="container-custom max-w-3xl">
             <article
-              className="text-gray-700 leading-relaxed prose prose-lg max-w-none"
+              className="lopende-tekst"
               dangerouslySetInnerHTML={{ __html: parseMarkdown(n.body) }}
             />
           </div>

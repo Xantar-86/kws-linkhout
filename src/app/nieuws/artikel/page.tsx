@@ -191,7 +191,7 @@ function ArticleContent() {
               {article.excerpt}
             </p>
             <div 
-              className="text-gray-700 leading-relaxed prose prose-lg max-w-none"
+              className="lopende-tekst"
               dangerouslySetInnerHTML={{ __html: parseContent(article.content) }}
             />
           </article>
