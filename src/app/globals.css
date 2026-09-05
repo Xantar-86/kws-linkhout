@@ -222,6 +222,49 @@ body {
   }
 }
 
+/* -----------------------------------------------------------------------
+   Lopende tekst.
+
+   De reglementen en de opleidingsvisie zijn lange documenten. Die lezen niet
+   op de volle breedte van een scherm: een regel van honderd tekens dwingt het
+   oog telkens terug te springen en de lezer verliest de regel. Achtenzestig
+   tekens is de maat waarop een alinea vanzelf doorleest.
+   ----------------------------------------------------------------------- */
+.lopende-tekst {
+  max-width: 68ch;
+  font-size: clamp(1rem, 1.05vw, 1.0625rem);
+  line-height: 1.75;
+}
+
+.lopende-tekst > p {
+  @apply mb-4 text-gray-700;
+}
+
+.lopende-tekst ul {
+  @apply mb-5 ml-1 space-y-2;
+}
+
+.lopende-tekst li {
+  @apply relative pl-6 text-gray-700;
+}
+
+/* Een bolletje in de clubkleur in plaats van de standaard opsomming: het is
+   hetzelfde teken dat de kaarten en de sectiekoppen gebruiken. */
+.lopende-tekst li::before {
+  content: "";
+  @apply absolute left-0 top-[0.6em] h-1.5 w-1.5 rounded-full bg-primary/60;
+}
+
+.lopende-tekst > h3,
+.lopende-tekst > h4 {
+  @apply mt-10 mb-3;
+}
+
+.lopende-tekst > h3:first-child,
+.lopende-tekst > h4:first-child {
+  @apply mt-0;
+}
+
 .section-padding {
   @apply py-20 md:py-28;
 }

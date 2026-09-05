@@ -39,52 +39,87 @@ function ClubInfoContent() {
 
   const Icon = section ? iconMap[section.icon] || Target : Target;
 
-  // Format content with markdown-like styling
+  /**
+   * De reglementen komen als platte tekst binnen, met sterretjes voor de
+   * koppen en streepjes voor de opsommingen.
+   *
+   * Opsommingen worden hier per groep in één lijst gezet. Voordien kreeg elk
+   * streepje zijn eigen los lijst-item zonder lijst eromheen: dat is geen
+   * geldige opmaak, en een schermlezer kondigt dan tien keer "lijst met één
+   * item" aan in plaats van één keer "lijst met tien items".
+   */
   const formatContent = (content: string) => {
-    return content.split('\n').map((line, index) => {
-      // Headers
-      if (line.startsWith('**') && line.endsWith('**')) {
-        return (
-          <h3 key={index} className="heading-3 mt-8 mb-4">
-            {line.replace(/\*\*/g, '')}
-          </h3>
-        );
-      }
-      // Subheaders (like **2. Aanwezigheid**)
-      if (line.match(/^\*\*\d+\./)) {
-        return (
-          <h4 key={index} className="text-lg font-bold text-gray-900 mt-6 mb-3">
-            {line.replace(/\*\*/g, '')}
-          </h4>
-        );
-      }
-      // Bullet points with indent
-      if (line.startsWith('  * ')) {
-        return (
-          <li key={index} className="ml-12 mb-1 text-gray-700 list-disc">
-            {line.replace('  * ', '')}
-          </li>
-        );
-      }
-      // Regular bullet points
-      if (line.startsWith('- ') || line.startsWith('* ')) {
-        return (
-          <li key={index} className="ml-6 mb-2 text-gray-700 list-disc">
-            {line.replace(/^[-*] /, '')}
-          </li>
-        );
-      }
-      // Empty lines
-      if (line.trim() === '') {
-        return <div key={index} className="h-2" />;
-      }
-      // Regular text
-      return (
-        <p key={index} className="text-gray-700 mb-3 leading-relaxed">
-          {line}
-        </p>
+    const blokken: React.ReactNode[] = [];
+    const koppen: { id: string; tekst: string }[] = [];
+    let lijst: { tekst: string; diep: boolean }[] = [];
+
+    /** Een kop wordt een anker: "5. Accommodatie" wordt "5-accommodatie". */
+    const anker = (tekst: string) =>
+      tekst
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    const sluitLijst = () => {
+      if (lijst.length === 0) return;
+      blokken.push(
+        <ul key={`lijst-${blokken.length}`}>
+          {lijst.map((item, i) => (
+            <li key={i} className={item.diep ? "ml-6" : undefined}>
+              {item.tekst}
+            </li>
+          ))}
+        </ul>,
       );
+      lijst = [];
+    };
+
+    content.split("\n").forEach((regel, index) => {
+      const kaal = regel.trim();
+
+      if (regel.startsWith("  * ")) {
+        lijst.push({ tekst: regel.replace("  * ", ""), diep: true });
+        return;
+      }
+      if (kaal.startsWith("- ") || kaal.startsWith("* ")) {
+        lijst.push({ tekst: kaal.replace(/^[-*] /, ""), diep: false });
+        return;
+      }
+
+      sluitLijst();
+
+      if (kaal === "") return;
+
+      if (kaal.match(/^\*\*\d+\./)) {
+        const tekst = kaal.replace(/\*\*/g, "");
+        const id = anker(tekst);
+        koppen.push({ id, tekst });
+        blokken.push(
+          <h4 key={index} id={id} className="scroll-mt-28 text-lg font-bold text-gray-900">
+            {tekst}
+          </h4>,
+        );
+        return;
+      }
+      if (kaal.startsWith("**") && kaal.endsWith("**")) {
+        const tekst = kaal.replace(/\*\*/g, "");
+        const id = anker(tekst);
+        koppen.push({ id, tekst });
+        blokken.push(
+          <h3 key={index} id={id} className="heading-3 scroll-mt-28">
+            {tekst}
+          </h3>,
+        );
+        return;
+      }
+
+      blokken.push(<p key={index}>{regel}</p>);
     });
+
+    sluitLijst();
+    return { blokken, koppen };
   };
 
   if (!section) {
@@ -171,10 +206,42 @@ function ClubInfoContent() {
               </div>
             )}
 
-            {/* Main Content */}
-            <div className="prose prose-lg max-w-none">
-              {formatContent(section.content)}
-            </div>
+            {/* De tekst, met links een inhoudsopgave zodra het document
+                genoeg hoofdstukken heeft om in te verdwalen. */}
+            {(() => {
+              const { blokken, koppen } = formatContent(section.content);
+              const metOpgave = koppen.length >= 4;
+
+              return (
+                <div className={metOpgave ? "lg:flex lg:gap-12" : undefined}>
+                  {metOpgave && (
+                    <nav
+                      aria-label="Op deze pagina"
+                      className="mb-10 shrink-0 lg:sticky lg:top-28 lg:mb-0 lg:h-fit lg:w-56 lg:order-last"
+                    >
+                      <p className="opschrift mb-3">
+                        <span aria-hidden="true" className="h-px w-6 bg-primary/40" />
+                        Op deze pagina
+                      </p>
+                      <ul className="space-y-2 border-l border-zand-200 pl-4 text-sm">
+                        {koppen.map((k) => (
+                          <li key={k.id}>
+                            <a
+                              href={`#${k.id}`}
+                              className="text-gray-500 transition-colors hover:text-primary"
+                            >
+                              {k.tekst}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </nav>
+                  )}
+
+                  <div className="lopende-tekst">{blokken}</div>
+                </div>
+              );
+            })()}
 
             {/* Special CTA for Registration */}
             {section.slug === "nieuwe-aansluiting" && (
