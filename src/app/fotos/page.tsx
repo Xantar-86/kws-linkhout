@@ -116,8 +116,8 @@ export default async function FotosPage() {
       {/* Info Banner */}
       <section className="bg-white border-b">
         <div className="container-custom py-6">
-          <div className="flex items-start gap-3 text-sm text-gray-600 bg-blue-50 rounded-xl p-4">
-            <Camera className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3 text-sm text-gray-600 bg-primary/5 rounded-xl p-4">
+            <Camera className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
             <p>
               Klik op een album om de foto&apos;s te bekijken.
               Heb je zelf leuke foto&apos;s? Stuur ze naar <a href="mailto:info@kwslinkhout.be" className="text-primary hover:underline">info@kwslinkhout.be</a>

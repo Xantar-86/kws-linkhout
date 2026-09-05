@@ -49,16 +49,16 @@ export default function OpleidingsvisiePage() {
             className="prose prose-lg max-w-none"
           >
             {/* FTS Visie */}
-            <div className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8">
-              <h2 className="text-2xl font-bold text-green-900 mb-4">Federale Trainersschool (FTS)</h2>
-              <p className="text-green-800 mb-4">
+            <div className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8">
+              <h2 className="text-2xl font-bold text-primary mb-4">Federale Trainersschool (FTS)</h2>
+              <p className="text-primary mb-4">
                 De opleidingsvisie van de Federale Trainersschool (FTS) is het vertrekpunt:
               </p>
-              <ul className="space-y-2 text-green-800 ml-6 list-disc mb-4">
+              <ul className="space-y-2 text-primary ml-6 list-disc mb-4">
                 <li>al sinds 2000 ontwikkeld, gedoceerd, geëvalueerd en bijgestuurd.</li>
                 <li>getest in de praktijk tijdens de trainingen in de topsportschool en met de nationale jeugdploegen.</li>
               </ul>
-              <p className="text-green-800">
+              <p className="text-primary">
                 Deze visie werd naar alle KBVB-projecten uitgebreid en wordt in de meeste Belgische clubs toegepast. 
                 Het eindproduct heeft een breed draagvlak aangezien er overleg en feedback van de clubs, 
                 de jeugdopleiders, de lesgevers, enz… was.

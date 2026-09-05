@@ -26,9 +26,9 @@ const parseContent = (content: string) => {
 };
 
 const categoryColors: Record<string, string> = {
-  clubnieuws: "bg-blue-600",
-  ploegnieuws: "bg-green-600", 
-  evenementen: "bg-orange-600"
+  clubnieuws: "bg-primary",
+  ploegnieuws: "bg-primary", 
+  evenementen: "bg-primary"
 };
 
 const categoryLabels: Record<string, string> = {

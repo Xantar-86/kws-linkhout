@@ -31,9 +31,9 @@ export default function AlcoholPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-purple-50 rounded-2xl p-8 border border-purple-100"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70"
             >
-              <div className="space-y-6 text-purple-800">
+              <div className="space-y-6 text-primary">
                 <p>
                   Gezondheid is een begrip dat door ons hoog in het vaandel wordt gedragen. 
                   Vandaar dat we jullie via deze weg willen laten weten dat we rond het thema 
@@ -75,22 +75,22 @@ export default function AlcoholPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-blue-50 rounded-2xl p-8 border border-blue-100"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <Shield className="w-5 h-5" />
                 </div>
-                <h2 className="text-xl font-bold text-blue-900">Meer Informatie</h2>
+                <h2 className="text-xl font-bold text-primary">Meer Informatie</h2>
               </div>
-              <p className="text-blue-800 mb-4">
+              <p className="text-primary mb-4">
                 Voor meer informatie over alcohol- en drugsbeleid kunt u terecht bij:
               </p>
               <a 
                 href="https://www.integra-limburg.be/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-blue-700 hover:text-blue-900 underline transition-colors font-medium"
+                className="inline-flex items-center gap-2 text-primary hover:text-primary underline transition-colors font-medium"
               >
                 integra-limburg.be
               </a>

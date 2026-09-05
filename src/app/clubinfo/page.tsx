@@ -118,7 +118,7 @@ export default function ClubInfoPage() {
               <div className="group relative overflow-hidden rounded-2xl border-2 border-gray-200 hover:border-primary transition-colors">
                 <div className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 flex-shrink-0">
+                    <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary flex-shrink-0">
                       <FileText className="w-7 h-7" />
                     </div>
                     <div className="flex-1">
@@ -149,7 +149,7 @@ export default function ClubInfoPage() {
                     </div>
                   </div>
                 </div>
-                <div className="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110" />
+                <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110" />
               </div>
             </div>
 

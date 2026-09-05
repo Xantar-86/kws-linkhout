@@ -220,9 +220,9 @@ export default function TrainingsschemaPage() {
               </p>
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <Calendar className="w-5 h-5 text-blue-600" />
+            <div className="bg-primary/5 rounded-xl p-6 border border-zand-200/70">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <Calendar className="w-5 h-5 text-primary" />
               </div>
               <h3 className="font-bold text-gray-900 mb-2">Trainingkledij</h3>
               <p className="text-gray-600 text-sm">
@@ -231,9 +231,9 @@ export default function TrainingsschemaPage() {
               </p>
             </div>
 
-            <div className="bg-green-50 rounded-xl p-6 border border-green-100">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <MapPin className="w-5 h-5 text-green-600" />
+            <div className="bg-primary/5 rounded-xl p-6 border border-zand-200/70">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                <MapPin className="w-5 h-5 text-primary" />
               </div>
               <h3 className="font-bold text-gray-900 mb-2">Locaties</h3>
               <p className="text-gray-600 text-sm">

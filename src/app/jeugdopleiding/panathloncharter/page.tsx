@@ -97,9 +97,9 @@ export default function PanathloncharterPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-orange-50 rounded-2xl p-8 border border-orange-100 mb-8"
+            className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
           >
-            <h2 className="text-2xl font-bold text-orange-900 mb-6">
+            <h2 className="text-2xl font-bold text-primary mb-6">
               Alle kinderen hebben het recht om:
             </h2>
             <ul className="space-y-3">
@@ -112,8 +112,8 @@ export default function PanathloncharterPage() {
                   transition={{ duration: 0.55, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
                   className="flex items-start gap-3"
                 >
-                  <CheckCircle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-orange-900">{recht}</span>
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-primary">{recht}</span>
                 </motion.li>
               ))}
             </ul>
@@ -139,7 +139,7 @@ export default function PanathloncharterPage() {
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
-            <div className="bg-green-600 text-white px-6 py-4">
+            <div className="border-b border-zand-200/70 px-6 py-5">
               <h2 className="text-xl font-bold flex items-center gap-3">
                 <Heart className="w-6 h-6" />
                 De tien geboden van de Fair Play
@@ -149,7 +149,7 @@ export default function PanathloncharterPage() {
               <ol className="space-y-3">
                 {tienGeboden.map((gebod, index) => (
                   <li key={index} className="flex items-start gap-4">
-                    <span className="w-7 h-7 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                    <span className="w-7 h-7 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
                       {index + 1}
                     </span>
                     <span className="text-gray-700">{gebod}</span>
@@ -166,7 +166,7 @@ export default function PanathloncharterPage() {
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
-            <div className="bg-blue-600 text-white px-6 py-4">
+            <div className="border-b border-zand-200/70 px-6 py-5">
               <h2 className="text-xl font-bold flex items-center gap-3">
                 <Users className="w-6 h-6" />
                 Gedragscode voor Ouders
@@ -178,7 +178,7 @@ export default function PanathloncharterPage() {
                 <ul className="space-y-2 ml-4">
                   {gedragscodeOuders.voorDeMatch.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-gray-700">
-                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -189,7 +189,7 @@ export default function PanathloncharterPage() {
                 <ul className="space-y-2 ml-4">
                   {gedragscodeOuders.tijdensDeMatch.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-gray-700">
-                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -200,7 +200,7 @@ export default function PanathloncharterPage() {
                 <ul className="space-y-2 ml-4">
                   {gedragscodeOuders.naDeMatch.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-gray-700">
-                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -216,7 +216,7 @@ export default function PanathloncharterPage() {
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
-            <div className="bg-purple-600 text-white px-6 py-4">
+            <div className="border-b border-zand-200/70 px-6 py-5">
               <h2 className="text-xl font-bold flex items-center gap-3">
                 <Users className="w-6 h-6" />
                 Gedragscode voor Supporters
@@ -226,12 +226,12 @@ export default function PanathloncharterPage() {
               <ul className="space-y-3">
                 {gedragscodeSupporters.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-gray-700">
-                    <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <p className="mt-6 text-center font-semibold text-purple-700">
+              <p className="mt-6 text-center font-semibold text-primary">
                 Welke sportouder of supporter ben jij?
               </p>
             </div>

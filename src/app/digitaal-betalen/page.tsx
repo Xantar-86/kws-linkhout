@@ -54,8 +54,8 @@ export default function DigitaalBetalenPage() {
             </div>
             <div className="p-6 space-y-6">
               <div className="flex gap-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <CreditCard className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">KWS Clubkaart</h3>
@@ -69,8 +69,8 @@ export default function DigitaalBetalenPage() {
               </div>
 
               <div className="flex gap-4">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <CreditCard className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">Bancontact</h3>
@@ -81,8 +81,8 @@ export default function DigitaalBetalenPage() {
               </div>
 
               <div className="flex gap-4">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <QrCode className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <QrCode className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">Payconiq</h3>
@@ -114,7 +114,7 @@ export default function DigitaalBetalenPage() {
             transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="kaart mb-8 overflow-hidden"
           >
-            <div className="bg-amber-500 text-white px-6 py-4">
+            <div className="border-b border-zand-200/70 px-6 py-5">
               <h2 className="text-xl font-bold">Hoe kan ik mijn clubkaart opladen?</h2>
             </div>
             <div className="p-6 space-y-6">
@@ -131,8 +131,8 @@ export default function DigitaalBetalenPage() {
               </div>
 
               <div className="flex gap-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Smartphone className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Smartphone className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">Via de Knip app</h3>
@@ -203,16 +203,16 @@ export default function DigitaalBetalenPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8"
+            className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
           >
             <div className="flex items-center gap-3 mb-4">
-              <HelpCircle className="w-6 h-6 text-green-600" />
-              <h3 className="text-xl font-bold text-green-900">Heeft u nog vragen?</h3>
+              <HelpCircle className="w-6 h-6 text-primary" />
+              <h3 className="text-xl font-bold text-primary">Heeft u nog vragen?</h3>
             </div>
-            <p className="text-green-800">
+            <p className="text-primary">
               Vraag hulp aan een KWS medewerker of bekijk hier de veelgestelde vragen.
             </p>
-            <p className="text-green-800 mt-2">
+            <p className="text-primary mt-2">
               Om het proces te vergemakkelijken, kan u de Knip app reeds thuis installeren en registreren, zonder een kaart toe te voegen.
             </p>
           </motion.div>
@@ -239,7 +239,7 @@ export default function DigitaalBetalenPage() {
                     href="https://apps.apple.com/nl/app/knip/id1034721738" 
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
+                    className="inline-flex items-center gap-2 text-primary hover:text-primary font-medium"
                   >
                     Download voor iOS
                   </a>
@@ -264,7 +264,7 @@ export default function DigitaalBetalenPage() {
                     href="https://play.google.com/store/apps/details?id=nl.lecreditsportif.knip&hl=nl" 
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-green-600 hover:text-green-800 font-medium"
+                    className="inline-flex items-center gap-2 text-primary hover:text-primary font-medium"
                   >
                     Download voor Android
                   </a>

@@ -45,9 +45,9 @@ export default function ContactPage() {
   };
 
   const categoryColors: { [key: string]: string } = {
-    bestuur: "bg-blue-100 text-blue-700",
-    jeugd: "bg-green-100 text-green-700",
-    dames: "bg-pink-100 text-pink-700",
+    bestuur: "bg-primary/10 text-primary",
+    jeugd: "bg-primary/10 text-primary",
+    dames: "bg-primary/10 text-primary",
     senioren: "bg-red-100 text-red-700",
     administratie: "bg-gray-100 text-gray-700"
   };
@@ -228,7 +228,7 @@ export default function ContactPage() {
                   <div className="grid grid-cols-2 gap-3 mb-6">
                     {facility.features.map((feature, i) => (
                       <div key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
                         {feature}
                       </div>
                     ))}
@@ -362,8 +362,8 @@ export default function ContactPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="text-center py-12"
                 >
-                  <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="w-10 h-10 text-green-600" />
+                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle className="w-10 h-10 text-primary" />
                   </div>
                   <h3 className="heading-3 mb-2">
                     Bedankt voor je bericht!

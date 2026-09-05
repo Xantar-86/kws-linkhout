@@ -266,7 +266,7 @@ function ClubInfoContent() {
 
             {/* Maak kennis met Lincy - Photo Section */}
             {section.slug === "api" && (
-              <div className="mt-12 p-8 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl border border-green-200">
+              <div className="mt-12 p-8 bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl border border-zand-200/70">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   {/* Photo */}
                   <div className="flex-shrink-0">
@@ -278,7 +278,7 @@ function ClubInfoContent() {
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg">
+                      <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg">
                         <Shield className="w-6 h-6" />
                       </div>
                     </div>
@@ -289,7 +289,7 @@ function ClubInfoContent() {
                     <h3 className="heading-3 mb-2">
                       Maak kennis met Lincy
                     </h3>
-                    <p className="text-green-700 font-medium mb-4">
+                    <p className="text-primary font-medium mb-4">
                       Jouw vertrouwenspersoon binnen KWS Linkhout
                     </p>
                     <p className="text-gray-600 mb-6 leading-relaxed">
@@ -300,14 +300,14 @@ function ClubInfoContent() {
                     <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
                       <a 
                         href="mailto:api.kwslinkhout@gmail.com"
-                        className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-green-700 transition-colors"
+                        className="inline-flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-medium hover:bg-green-700 transition-colors"
                       >
                         <Mail className="w-4 h-4" />
                         E-mail Lincy
                       </a>
                       <a 
                         href="tel:0494853610"
-                        className="inline-flex items-center justify-center gap-2 bg-white text-green-700 border-2 border-green-600 px-5 py-2.5 rounded-xl font-medium hover:bg-green-50 transition-colors"
+                        className="inline-flex items-center justify-center gap-2 bg-white text-primary border-2 border-green-600 px-5 py-2.5 rounded-xl font-medium hover:bg-primary/5 transition-colors"
                       >
                         <Phone className="w-4 h-4" />
                         Bel (0494) 85.36.10

@@ -16,13 +16,13 @@ const beleidsPunten = [
     titel: "Veiligheid Voorop",
     beschrijving: "We hanteren strikte veiligheidsprotocollen, van veilige vervoersregels tot blessurepreventie en correcte warming-up.",
     icoon: Shield,
-    kleur: "bg-blue-500"
+    kleur: "bg-primary"
   },
   {
     titel: "Snelle Respons",
     beschrijving: "Bij incidenten weten onze vrijwilligers exact wat te doen: van eerste hulp tot contact met 112 en ouders.",
     icoon: AlertTriangle,
-    kleur: "bg-orange-500"
+    kleur: "bg-primary"
   }
 ];
 
@@ -82,19 +82,19 @@ export default function VoorstellingPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <CheckCircle className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-green-900">Onze Verantwoordelijkheden</h2>
+                <h2 className="text-2xl font-bold text-primary">Onze Verantwoordelijkheden</h2>
               </div>
               <ul className="grid md:grid-cols-2 gap-3">
                 {verantwoordelijkheden.map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-green-800">{item}</span>
+                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-primary">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -105,14 +105,14 @@ export default function VoorstellingPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-blue-50 rounded-2xl p-8 border border-blue-100"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70"
             >
-              <h2 className="text-2xl font-bold text-blue-900 mb-4">Samenwerking</h2>
-              <p className="text-blue-800 mb-4">
+              <h2 className="text-2xl font-bold text-primary mb-4">Samenwerking</h2>
+              <p className="text-primary mb-4">
                 Hoewel we geen vaste clubarts of fysiotherapeut in dienst hebben, werken we nauw samen 
                 met lokale zorgverleners:
               </p>
-              <ul className="space-y-2 text-blue-800">
+              <ul className="space-y-2 text-primary">
                 <li className="flex items-center gap-2">
                   <Users className="w-5 h-5" />
                   <span>Huisartsenpraktijken in de buurt voor snelle doorverwijzing</span>

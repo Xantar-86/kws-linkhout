@@ -119,13 +119,13 @@ export default function CharterAntiRacismePage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
+            className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
           >
-            <h2 className="text-xl font-bold text-blue-900 mb-4">Bekendmaking</h2>
-            <p className="text-blue-800 mb-4">
+            <h2 className="text-xl font-bold text-primary mb-4">Bekendmaking</h2>
+            <p className="text-primary mb-4">
               De clubs zorgen voor de bekendmaking van dit charter bij alle personen die deelnemen aan het voetbalgebeuren.
             </p>
-            <p className="text-blue-800 font-medium">
+            <p className="text-primary font-medium">
               De clubs verbinden zich tot zichtbare en leesbare plaatsing en/of aanplakking van dit charter 
               aan de toegangen tot de terreinen, in de kleedkamers, kantines en tribunes.
             </p>
@@ -152,15 +152,15 @@ export default function CharterAntiRacismePage() {
             initial={{ opacity: 0, y: 28 }} 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="mt-8 bg-indigo-50 rounded-2xl p-8 border border-indigo-100"
+            className="mt-8 bg-primary/5 rounded-2xl p-8 border border-zand-200/70"
           >
-            <h2 className="text-2xl font-bold text-indigo-900 mb-4">Ons Statement</h2>
-            <p className="text-indigo-800 mb-4">
+            <h2 className="text-2xl font-bold text-primary mb-4">Ons Statement</h2>
+            <p className="text-primary mb-4">
               Bij KWS Linkhout geloven we dat voetbal een verbindende kracht is. 
               Onze club is een plek waar iedereen zich welkom en gewaardeerd moet voelen, 
               ongeacht huidskleur, afkomst, nationaliteit of religie.
             </p>
-            <p className="text-indigo-800 font-medium">
+            <p className="text-primary font-medium">
               Racisme, discriminatie en intolerantie zijn strikt verboden binnen onze club. 
               Dit charter is onze publieke belofte om actief tegen deze verschijnselen te strijden.
             </p>
@@ -186,8 +186,8 @@ export default function CharterAntiRacismePage() {
                     transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                     className="kaart p-6 border border-gray-100 text-center"
                   >
-                    <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-6 h-6 text-indigo-600" />
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Icon className="w-6 h-6 text-primary" />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">{engagement.title}</h3>
                     <p className="text-gray-600 text-sm">{engagement.description}</p>

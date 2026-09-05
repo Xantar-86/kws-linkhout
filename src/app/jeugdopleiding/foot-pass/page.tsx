@@ -25,9 +25,9 @@ export default function FootPassPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-teal-50 rounded-2xl p-8 border border-teal-100 mb-8"
+            className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-8"
           >
-            <p className="text-teal-800 text-lg leading-relaxed">
+            <p className="text-primary text-lg leading-relaxed">
               Als club scoor je altijd met Foot PASS! Je zet niet alleen jouw club op de kaart, 
               maar werkt ook verder aan de kwalitatieve uitbouw van jouw jeugdopleiding. 
               <span className="font-bold"> Toekomst verzekerd!</span>
@@ -81,7 +81,7 @@ export default function FootPassPage() {
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
-            <div className="bg-amber-500 text-white px-6 py-4">
+            <div className="border-b border-zand-200/70 px-6 py-5">
               <div className="flex items-center gap-3">
                 <Award className="w-6 h-6" />
                 <h2 className="text-xl font-bold">2. Onderscheid je met een kwaliteitslabel</h2>
@@ -126,22 +126,22 @@ export default function FootPassPage() {
             <h2 className="heading-3 mb-6 text-center">Voordelen van Foot Pass</h2>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="kaart p-6 border border-gray-100 text-center">
-                <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Kwaliteitsaudit</h3>
                 <p className="text-gray-600 text-sm">Objectieve meting van je jeugdopleiding</p>
               </div>
               <div className="kaart p-6 border border-gray-100 text-center">
-                <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Trophy className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Trophy className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Subsidies</h3>
                 <p className="text-gray-600 text-sm">Financiële ondersteuning voor jeugdwerking</p>
               </div>
               <div className="kaart p-6 border border-gray-100 text-center">
-                <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Award className="w-6 h-6 text-teal-600" />
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Award className="w-6 h-6 text-primary" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">Kwaliteitslabel</h3>
                 <p className="text-gray-600 text-sm">Toon aan dat je voor kwaliteit staat</p>

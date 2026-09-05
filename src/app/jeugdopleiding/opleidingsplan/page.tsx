@@ -404,11 +404,11 @@ export default function OpleidingsplanPage() {
                             {/* Balbezit */}
                             {groep.tactiek?.balbezit && (
                               <div className="ml-7 mb-4">
-                                <h4 className="font-semibold text-green-700 mb-2">Balbezit</h4>
+                                <h4 className="font-semibold text-primary mb-2">Balbezit</h4>
                                 <ul className="space-y-2 ml-4">
                                   {groep.tactiek.balbezit.map((item, i) => (
                                     <li key={i} className="flex items-start gap-3">
-                                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                                      <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0" />
                                       <span className="text-gray-700">{item}</span>
                                     </li>
                                   ))}

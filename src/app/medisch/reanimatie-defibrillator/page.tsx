@@ -74,22 +74,22 @@ export default function ReanimatieDefibrillatorPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-pink-50 rounded-2xl p-8 border border-pink-100 mb-6"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white">
                   <MapPin className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-pink-900">AED Locaties</h2>
+                <h2 className="text-2xl font-bold text-primary">AED Locaties</h2>
               </div>
               <div className="space-y-4">
                 {aedLocaties.map((aed, index) => (
                   <div key={index} className="bg-white rounded-xl p-6 flex flex-col md:flex-row md:items-center gap-4">
-                    <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center text-pink-600 flex-shrink-0">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary flex-shrink-0">
                       <MapPin className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-pink-600">{aed.naam}</p>
+                      <p className="text-sm font-semibold text-primary">{aed.naam}</p>
                       <h3 className="font-bold text-gray-900 text-lg">{aed.locatie}</h3>
                       <p className="text-gray-600">{aed.beschrijving}</p>
                       {aed.fotos.length > 0 && (
@@ -111,7 +111,7 @@ export default function ReanimatieDefibrillatorPage() {
                         </div>
                       )}
                     </div>
-                    <div className="text-sm text-pink-700 bg-pink-50 px-4 py-2 rounded-full md:flex-shrink-0">
+                    <div className="text-sm text-primary bg-primary/5 px-4 py-2 rounded-full md:flex-shrink-0">
                       {aed.beschikbaar}
                     </div>
                   </div>
@@ -152,15 +152,15 @@ export default function ReanimatieDefibrillatorPage() {
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-6"
+              className="bg-primary/5 rounded-2xl p-8 border border-zand-200/70 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center text-white">
                   <Play className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-bold text-blue-900">Instructievideo: AED Gebruik</h2>
+                <h2 className="text-2xl font-bold text-primary">Instructievideo: AED Gebruik</h2>
               </div>
-              <p className="text-blue-800 mb-4">
+              <p className="text-primary mb-4">
                 Bekijk deze instructievideo om te leren hoe je een AED correct gebruikt bij een hartstilstand.
               </p>
               <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
@@ -176,7 +176,7 @@ export default function ReanimatieDefibrillatorPage() {
                 href="https://www.youtube.com/watch?v=dCNOIwbzUb4"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-4 text-blue-700 hover:text-blue-900 font-medium"
+                className="inline-flex items-center gap-2 mt-4 text-primary hover:text-primary font-medium"
               >
                 <Play className="w-4 h-4" />
                 Bekijk op YouTube

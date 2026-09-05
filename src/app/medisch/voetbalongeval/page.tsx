@@ -84,7 +84,7 @@ export default function VoetbalongevalPage() {
             className="kaart mb-8 p-8"
           >
             <div className="flex items-center gap-3 mb-4">
-              <Clock className="w-6 h-6 text-blue-600" />
+              <Clock className="w-6 h-6 text-primary" />
               <h2 className="text-xl font-bold text-gray-700">Wanneer kan u een ongevalsaangifte laten invullen?</h2>
             </div>
             <p className="text-gray-700">
@@ -271,7 +271,7 @@ export default function VoetbalongevalPage() {
             className="kaart mb-8 p-8"
           >
             <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-6 h-6 text-blue-600" />
+              <Shield className="w-6 h-6 text-primary" />
               <h3 className="text-xl font-bold text-gray-700">Federaal Solidariteitsfonds (F.S.F.)</h3>
             </div>
             <p className="text-gray-700 leading-relaxed mb-4">

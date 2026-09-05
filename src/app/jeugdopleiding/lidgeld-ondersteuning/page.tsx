@@ -114,18 +114,18 @@ export default function LidgeldOndersteuningPagina() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "0px 0px -12% 0px" }}
                   transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex h-full flex-col rounded-2xl border border-blue-100 bg-blue-50 p-6"
+                  className="flex h-full flex-col rounded-2xl border border-zand-200/70 bg-primary/5 p-6"
                 >
-                  <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white mb-4">
+                  <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white mb-4">
                     <Icoon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-xl font-bold text-blue-900 mb-2">{punt.titel}</h3>
-                  <p className="flex-1 text-blue-800">{punt.tekst}</p>
+                  <h3 className="text-xl font-bold text-primary mb-2">{punt.titel}</h3>
+                  <p className="flex-1 text-primary">{punt.tekst}</p>
                   <a
                     href={punt.link.adres}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-blue-700 hover:underline"
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
                   >
                     <ExternalLink className="w-4 h-4" />
                     {punt.link.naam}

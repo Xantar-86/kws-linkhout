@@ -284,7 +284,7 @@ export default function EhboPage() {
             <div className="grid sm:grid-cols-2 gap-3">
               {ehboKoffer.map((item, index) => (
                 <div key={index} className="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3">
-                  <CheckCircle className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
                   <span className="text-gray-700 text-sm">{item}</span>
                 </div>
               ))}
@@ -299,17 +299,17 @@ export default function EhboPage() {
           >
             <Link
               href="/medisch/reanimatie-defibrillator"
-              className="group block bg-primary/5 rounded-2xl p-8 border border-pink-100 hover:shadow-lg transition-all"
+              className="group block bg-primary/5 rounded-2xl p-8 border border-zand-200/70 hover:shadow-lg transition-all"
             >
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 bg-primary/50 rounded-xl flex items-center justify-center text-white group-hover:scale-110 transition-transform flex-shrink-0">
                   <Heart className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-pink-900 mb-1">
+                  <h3 className="text-xl font-bold text-primary mb-1">
                     Hartstilstand? Ontdek onze AED & reanimatie-info
                   </h3>
-                  <p className="text-pink-800 text-sm">
+                  <p className="text-primary text-sm">
                     Bij een hartstilstand telt elke seconde. Onze club beschikt over een AED-toestel.
                     Bekijk het stappenplan voor reanimatie en de locatie van de AED.
                   </p>
@@ -347,7 +347,7 @@ export default function EhboPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-teal-600 text-white rounded-2xl p-8"
+            className="bg-primary text-white rounded-2xl p-8"
           >
             <div className="flex items-center gap-3 mb-4">
               <AlertCircle className="w-6 h-6" />
