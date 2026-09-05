@@ -395,7 +395,7 @@ function TeamContent() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="text-white px-6 py-4 flex items-center justify-between" style={{ backgroundColor: '#8c1d1c' }}>
+              <div className="text-white px-6 py-4 flex items-center justify-between bg-primary">
                 <div className="flex items-center gap-3">
                   <Trophy className="w-6 h-6" />
                   <h2 className="text-xl font-bold">Klassement - {team.name}</h2>
@@ -423,7 +423,7 @@ function TeamContent() {
               {/* Modal Footer */}
               <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
                 <p className="text-sm text-gray-600">
-                  Data via <a href="https://www.voetbalinbelgie.be" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: '#8c1d1c' }}>Voetbal in België</a>
+                  Data via <a href="https://www.voetbalinbelgie.be" target="_blank" rel="noopener noreferrer" className="hover:underline text-primary">Voetbal in België</a>
                 </p>
                 <button
                   onClick={() => setShowStandingsModal(false)}

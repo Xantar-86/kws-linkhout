@@ -35,11 +35,10 @@ export default function DigitaalBetalenPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-2xl p-8 mb-8"
-            style={{ backgroundColor: '#8c1d1c20', border: '1px solid #8c1d1c40' }}
+            className="mb-10"
           >
-            <p className="text-lg leading-relaxed" style={{ color: '#8c1d1c' }}>
-              Hieronder geven we een korte beschrijving van de mogelijkheden.
+            <p className="text-body max-w-2xl">
+              Hieronder staat wat elke manier van betalen inhoudt.
             </p>
           </motion.div>
 
@@ -48,10 +47,10 @@ export default function DigitaalBetalenPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="kaart border border-gray-100 overflow-hidden mb-8"
+            className="kaart mb-8 overflow-hidden"
           >
-            <div className="text-white px-6 py-4" style={{ backgroundColor: '#8c1d1c' }}>
-              <h2 className="text-xl font-bold">Betalen kan met:</h2>
+            <div className="border-b border-zand-200/70 px-6 py-5">
+              <h2 className="heading-3">Betalen kan met</h2>
             </div>
             <div className="p-6 space-y-6">
               <div className="flex gap-4">
@@ -113,7 +112,7 @@ export default function DigitaalBetalenPage() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="kaart border border-gray-100 overflow-hidden mb-8"
+            className="kaart mb-8 overflow-hidden"
           >
             <div className="bg-amber-500 text-white px-6 py-4">
               <h2 className="text-xl font-bold">Hoe kan ik mijn clubkaart opladen?</h2>

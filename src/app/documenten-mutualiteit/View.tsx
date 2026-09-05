@@ -50,7 +50,7 @@ export function DocumentenMutualiteitView({ secties }: { secties: MutualiteitSec
             ) : (
               secties.map((sectie, sectieIndex) => (
                 <div key={sectie.titel}>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2" style={{ borderColor: '#8c1d1c' }}>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2">
                     {sectie.titel}
                   </h2>
                   <div className="space-y-4">
@@ -64,8 +64,8 @@ export function DocumentenMutualiteitView({ secties }: { secties: MutualiteitSec
                       >
                         <div className="p-6 md:p-8">
                           <div className="flex flex-col md:flex-row md:items-center gap-6">
-                            <div className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#8c1d1c20' }}>
-                              <FileText className="w-8 h-8" style={{ color: '#8c1d1c' }} />
+                            <div className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 bg-primary/10">
+                              <FileText className="w-8 h-8 text-primary" />
                             </div>
                             <div className="flex-1">
                               <h3 className="heading-3 mb-2">
@@ -79,8 +79,7 @@ export function DocumentenMutualiteitView({ secties }: { secties: MutualiteitSec
                               href={bestandHref(doc.bestand)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-colors whitespace-nowrap"
-                              style={{ backgroundColor: '#8c1d1c' }}
+                              className="inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-colors whitespace-nowrap bg-primary"
                             >
                               <Download className="w-5 h-5" />
                               Download
@@ -100,10 +99,9 @@ export function DocumentenMutualiteitView({ secties }: { secties: MutualiteitSec
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="rounded-2xl p-6 border mt-8"
-              style={{ backgroundColor: '#8c1d1c10', borderColor: '#8c1d1c30' }}
             >
-              <h3 className="font-bold mb-2" style={{ color: '#8c1d1c' }}>Belangrijke informatie</h3>
-              <ul className="space-y-2" style={{ color: '#8c1d1c' }}>
+              <h3 className="font-bold mb-2 text-primary">Belangrijke informatie</h3>
+              <ul className="space-y-2 text-primary">
                 <li className="flex items-start gap-2">
                   <span className="mt-1">•</span>
                   <span>Kies het formulier van jouw mutualiteit.</span>
