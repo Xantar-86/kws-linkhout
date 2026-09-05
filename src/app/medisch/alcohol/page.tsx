@@ -21,16 +21,16 @@ export default function AlcoholPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-5xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-8"
           >
             {/* Main Content */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="bg-purple-50 rounded-2xl p-8 border border-purple-100"
             >
               <div className="space-y-6 text-purple-800">
@@ -72,9 +72,9 @@ export default function AlcoholPage() {
 
             {/* Link Section */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="bg-blue-50 rounded-2xl p-8 border border-blue-100"
             >
               <div className="flex items-center gap-3 mb-4">

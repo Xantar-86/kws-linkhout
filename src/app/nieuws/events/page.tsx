@@ -160,7 +160,7 @@ export default async function EventsPage() {
 
           {/* Contact CTA */}
           <div
-            className="mt-12 bg-gradient-to-r from-primary to-primary-700 rounded-2xl p-8 text-white text-center"
+            className="korrel lichtrand relative mt-12 overflow-hidden rounded-2xl bg-inkt-950 p-8 text-center text-white"
           >
             <h2 className="text-2xl font-bold mb-4">
               Vragen over een evenement?

@@ -75,9 +75,9 @@ export default function ContactPage() {
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 -mt-16 relative z-10">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart p-6"
             >
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
@@ -91,10 +91,10 @@ export default function ContactPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+              transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
               className="kaart p-6"
             >
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
@@ -106,10 +106,10 @@ export default function ContactPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+              transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="kaart p-6"
             >
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
@@ -124,9 +124,9 @@ export default function ContactPage() {
           {/* Contact Persons Grid */}
           <div className="mt-16">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="text-center mb-10"
             >
               <h2 className="heading-2 mb-4">
@@ -141,10 +141,10 @@ export default function ContactPage() {
               {contactPersons.map((person, index) => (
                 <motion.div
                   key={person.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   className="kaart kaart-tilt p-6"
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -191,9 +191,9 @@ export default function ContactPage() {
           {/* Location & Map */}
           <div className="mt-16">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="text-center mb-10"
             >
               <h2 className="heading-2 mb-4">
@@ -208,9 +208,9 @@ export default function ContactPage() {
               {facilities.map((facility) => (
                 <motion.div
                   key={facility.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
                   className="kaart p-8 flex flex-col"
                 >
                   <div className="flex items-center gap-4 mb-6">
@@ -248,10 +248,10 @@ export default function ContactPage() {
 
               {/* Google Maps Embed */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
+                viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                 className="bg-white rounded-2xl overflow-hidden shadow-lg h-[400px]"
               >
                 <iframe
@@ -268,10 +268,10 @@ export default function ContactPage() {
 
               {/* Google Maps Embed - Zelem */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
+                viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                 className="bg-white rounded-2xl overflow-hidden shadow-lg h-[400px]"
               >
                 <iframe
@@ -291,9 +291,9 @@ export default function ContactPage() {
           {/* FAQ Section */}
           <div className="mt-16">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="text-center mb-10"
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-medium mb-4">
@@ -312,10 +312,10 @@ export default function ContactPage() {
               {faqItems.map((faq, index) => (
                 <motion.div
                   key={faq.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
                   className="kaart overflow-hidden"
                 >
                   <button
@@ -342,9 +342,9 @@ export default function ContactPage() {
           {/* Contact Form */}
           <div className="mt-16">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart p-8 md:p-12"
             >
               <div className="max-w-2xl mx-auto text-center mb-10">

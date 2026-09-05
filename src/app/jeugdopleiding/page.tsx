@@ -114,9 +114,9 @@ export default function JeugdopleidingPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="text-center mb-12"
           >
             <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -129,9 +129,9 @@ export default function JeugdopleidingPage() {
 
           {/* VISIE */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mb-12"
           >
             <h3 className="text-2xl font-bold text-primary mb-6">Visie</h3>
@@ -172,9 +172,9 @@ export default function JeugdopleidingPage() {
 
           {/* MISSIE - SPORTIEF */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mb-12"
           >
             <h3 className="text-2xl font-bold text-primary mb-6">Missie - Sportief</h3>
@@ -213,9 +213,9 @@ export default function JeugdopleidingPage() {
 
           {/* MISSIE - ZAKELIJK */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           >
             <h3 className="text-2xl font-bold text-primary mb-6">Missie - Zakelijk</h3>
             <div className="space-y-4 text-gray-700 leading-relaxed">
@@ -244,9 +244,9 @@ export default function JeugdopleidingPage() {
       <section className="section-padding bg-gray-50">
         <div className="container-custom max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="text-center mb-12"
           >
             <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -266,10 +266,10 @@ export default function JeugdopleidingPage() {
               return (
                 <motion.div
                   key={file.filename}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <a
                     href={`/Docs/jeugdopleiding/${file.filename}`}
@@ -304,9 +304,9 @@ export default function JeugdopleidingPage() {
       <section className="section-padding bg-white">
         <div className="container-custom">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4">
@@ -323,10 +323,10 @@ export default function JeugdopleidingPage() {
               return (
                 <motion.div
                   key={module.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Link
                     href={`/jeugdopleiding/${module.id}`}

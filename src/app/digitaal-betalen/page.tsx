@@ -32,9 +32,9 @@ export default function DigitaalBetalenPage() {
         <div className="container-custom max-w-4xl">
           {/* Intro */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-2xl p-8 mb-8"
             style={{ backgroundColor: '#8c1d1c20', border: '1px solid #8c1d1c40' }}
           >
@@ -45,9 +45,9 @@ export default function DigitaalBetalenPage() {
 
           {/* Betaalmogelijkheden */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="text-white px-6 py-4" style={{ backgroundColor: '#8c1d1c' }}>
@@ -110,9 +110,9 @@ export default function DigitaalBetalenPage() {
 
           {/* Opladen */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-amber-500 text-white px-6 py-4">
@@ -201,9 +201,9 @@ export default function DigitaalBetalenPage() {
 
           {/* Vragen */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -220,9 +220,9 @@ export default function DigitaalBetalenPage() {
 
           {/* Download Knip App */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            transition={{ duration: 0.55, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="kaart border border-gray-100 overflow-hidden"
           >
             <div className="bg-gray-900 text-white px-6 py-4">

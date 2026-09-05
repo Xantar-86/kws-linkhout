@@ -227,7 +227,7 @@ export default async function NewsPage() {
 
           {/* Newsletter CTA */}
           <div
-            className="bg-gradient-to-r from-primary to-primary-700 rounded-3xl p-8 md:p-12 text-white text-center mb-16"
+            className="korrel lichtrand relative mb-16 overflow-hidden rounded-3xl bg-inkt-950 p-8 text-center text-white md:p-12"
           >
             <Mail className="w-12 h-12 mx-auto mb-4" />
             <h2 className="text-3xl font-bold mb-4">

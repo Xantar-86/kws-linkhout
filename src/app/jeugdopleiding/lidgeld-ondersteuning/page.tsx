@@ -92,9 +92,9 @@ export default function LidgeldOndersteuningPagina() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-5xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mb-8"
           >
             <h2 className="heading-2 mb-3">Via de gemeente Lummen</h2>
@@ -110,10 +110,10 @@ export default function LidgeldOndersteuningPagina() {
               return (
                 <motion.article
                   key={punt.titel}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   className="flex h-full flex-col rounded-2xl border border-blue-100 bg-blue-50 p-6"
                 >
                   <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center text-white mb-4">
@@ -141,9 +141,9 @@ export default function LidgeldOndersteuningPagina() {
       <section className="section-padding bg-gray-50">
         <div className="container-custom max-w-5xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mb-8"
           >
             <h2 className="heading-2 mb-3">Via KWS Linkhout</h2>
@@ -159,10 +159,10 @@ export default function LidgeldOndersteuningPagina() {
               return (
                 <motion.article
                   key={punt.titel}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   className="rounded-2xl border border-red-100 bg-red-50 p-6"
                 >
                   <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white mb-4">
@@ -177,9 +177,9 @@ export default function LidgeldOndersteuningPagina() {
 
           {/* Contact */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mt-8 rounded-2xl border border-gray-200 bg-white p-8"
           >
             <div className="flex items-center gap-3 mb-4">

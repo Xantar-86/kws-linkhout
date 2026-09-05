@@ -62,9 +62,9 @@ export default function CharterAntiRacismePage() {
         <div className="container-custom max-w-4xl">
           {/* Inleiding */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-red-50 rounded-2xl p-8 border border-red-100 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -84,9 +84,9 @@ export default function CharterAntiRacismePage() {
 
           {/* Actiepunten */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-primary text-white px-6 py-4">
@@ -100,10 +100,10 @@ export default function CharterAntiRacismePage() {
                 {actiepunten.map((punt, index) => (
                   <motion.li
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.05 }}
+                    initial={{ opacity: 0, y: 28 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                    transition={{ duration: 0.55, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
                     className="flex items-start gap-3"
                   >
                     <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
@@ -116,9 +116,9 @@ export default function CharterAntiRacismePage() {
 
           {/* Bekendmaking */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
           >
             <h2 className="text-xl font-bold text-blue-900 mb-4">Bekendmaking</h2>
@@ -133,9 +133,9 @@ export default function CharterAntiRacismePage() {
 
           {/* Melden bij KWS */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-amber-50 rounded-2xl p-8 border border-amber-100"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -149,9 +149,9 @@ export default function CharterAntiRacismePage() {
 
           {/* Ons Statement (behouden) */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mt-8 bg-indigo-50 rounded-2xl p-8 border border-indigo-100"
           >
             <h2 className="text-2xl font-bold text-indigo-900 mb-4">Ons Statement</h2>
@@ -168,9 +168,9 @@ export default function CharterAntiRacismePage() {
 
           {/* Engagementen (behouden) */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="mt-8"
           >
             <h2 className="heading-3 mb-6">Onze Engagementen</h2>
@@ -180,10 +180,10 @@ export default function CharterAntiRacismePage() {
                 return (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 28 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                    transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                     className="kaart p-6 border border-gray-100 text-center"
                   >
                     <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mx-auto mb-4">

@@ -124,13 +124,13 @@ function ClubInfoContent() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* PDF Download Banner - ALTIJD bovenaan als er een PDF is */}
             {section.pdfUrl && (
-              <div className="mb-10 p-6 bg-gradient-to-r from-primary to-primary-700 rounded-2xl text-white">
+              <div className="korrel lichtrand relative mb-10 overflow-hidden rounded-2xl bg-inkt-950 p-6 text-white">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
                     <FileDown className="w-7 h-7" />

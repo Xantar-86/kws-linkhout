@@ -199,9 +199,9 @@ export default function EhboPage() {
         <div className="container-custom max-w-5xl space-y-6">
           {/* Wat is EHBO */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-teal-50 rounded-2xl p-8 border border-teal-100"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -221,9 +221,9 @@ export default function EhboPage() {
 
           {/* Gouden stappen */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-gray-50 rounded-2xl p-8 border border-gray-100"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -249,9 +249,9 @@ export default function EhboPage() {
 
           {/* Blessures grid */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white">
@@ -294,9 +294,9 @@ export default function EhboPage() {
 
           {/* EHBO-koffer */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-white rounded-2xl p-8 border border-gray-100 shadow-lg"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -322,9 +322,9 @@ export default function EhboPage() {
 
           {/* Cross-link naar reanimatie/AED */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           >
             <Link
               href="/medisch/reanimatie-defibrillator"
@@ -349,9 +349,9 @@ export default function EhboPage() {
 
           {/* Noodnummers */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-red-50 rounded-2xl p-8 border border-red-100"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -373,9 +373,9 @@ export default function EhboPage() {
 
           {/* EHBO op de club */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-teal-600 text-white rounded-2xl p-8"
           >
             <div className="flex items-center gap-3 mb-4">

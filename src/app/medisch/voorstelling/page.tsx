@@ -51,9 +51,9 @@ export default function VoorstellingPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-5xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Beleid Cards */}
             <div className="grid md:grid-cols-3 gap-6 mb-12">
@@ -62,9 +62,9 @@ export default function VoorstellingPage() {
                 return (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 28 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                    transition={{ duration: 0.55, delay: 0.2 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                     className="bg-gray-50 rounded-2xl p-6 border border-gray-100"
                   >
                     <div className={`w-12 h-12 ${punt.kleur} rounded-xl flex items-center justify-center text-white mb-4`}>
@@ -79,9 +79,9 @@ export default function VoorstellingPage() {
 
             {/* Verantwoordelijkheden */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -102,9 +102,9 @@ export default function VoorstellingPage() {
 
             {/* Samenwerking */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              transition={{ duration: 0.55, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="bg-blue-50 rounded-2xl p-8 border border-blue-100"
             >
               <h2 className="text-2xl font-bold text-blue-900 mb-4">Samenwerking</h2>
@@ -130,9 +130,9 @@ export default function VoorstellingPage() {
 
             {/* Quote */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.7 }}
+              transition={{ duration: 0.55, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="mt-8 text-center bg-gray-50 rounded-xl p-8 border border-gray-200"
             >
               <blockquote className="text-xl italic text-gray-700 mb-4">

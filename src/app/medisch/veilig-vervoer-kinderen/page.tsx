@@ -52,15 +52,15 @@ export default function VeiligVervoerKinderenPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-5xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Introductie */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="bg-green-50 rounded-2xl p-8 border border-green-100 mb-8"
             >
               <p className="text-green-800 leading-relaxed mb-4">
@@ -76,9 +76,9 @@ export default function VeiligVervoerKinderenPage() {
 
             {/* Download PDF */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.25 }}
+              transition={{ duration: 0.55, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
               className="mb-8"
             >
               <a
@@ -100,9 +100,9 @@ export default function VeiligVervoerKinderenPage() {
 
             {/* Basic Rules */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="bg-orange-50 rounded-2xl p-8 border border-orange-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -123,9 +123,9 @@ export default function VeiligVervoerKinderenPage() {
 
             {/* Organization Rules */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -146,9 +146,9 @@ export default function VeiligVervoerKinderenPage() {
 
             {/* Responsibilities */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="grid md:grid-cols-3 gap-4"
             >
               {verantwoordelijkheden.map((resp, index) => (
@@ -168,9 +168,9 @@ export default function VeiligVervoerKinderenPage() {
 
             {/* Warning */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              transition={{ duration: 0.55, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="mt-8 bg-red-50 rounded-2xl p-8 border border-red-100"
             >
               <div className="flex items-center gap-3 mb-4">

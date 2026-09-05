@@ -29,9 +29,9 @@ export default function ClubInfoPage() {
           {/* Info Cards Grid */}
           <div className="mb-16">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="text-center mb-10"
             >
               <h2 className="heading-2 mb-4">
@@ -56,9 +56,9 @@ export default function ClubInfoPage() {
 
           {/* Documenten Download Sectie */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart p-8 md:p-12 border border-gray-100"
           >
             <div className="flex items-center gap-4 mb-8">

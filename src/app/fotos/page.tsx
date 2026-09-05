@@ -156,7 +156,7 @@ export default async function FotosPage() {
       {/* CTA Section */}
       <section className="section-padding bg-white">
         <div className="container-custom">
-          <div className="bg-gradient-to-r from-primary-900 to-primary-800 rounded-3xl p-8 md:p-12 text-center text-white">
+          <div className="korrel lichtrand relative overflow-hidden rounded-3xl bg-inkt-950 p-8 text-center text-white md:p-12">
             <Camera className="w-12 h-12 mx-auto mb-4 opacity-80" />
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
               Heb je zelf foto&apos;s gemaakt?

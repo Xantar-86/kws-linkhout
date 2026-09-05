@@ -59,9 +59,9 @@ export default function VoedingPage() {
       <section className="section-padding bg-white border-b">
         <div className="container-custom max-w-5xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="bg-emerald-50 rounded-2xl p-8 border border-emerald-100"
           >
             <h2 className="text-2xl font-bold text-emerald-900 mb-6">Voedingsdriehoek</h2>
@@ -135,15 +135,15 @@ export default function VoedingPage() {
       <section className="section-padding bg-gray-50">
         <div className="container-custom max-w-5xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.3 }}
+            transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* General Guidelines */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="bg-emerald-50 rounded-2xl p-8 border border-emerald-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -164,9 +164,9 @@ export default function VoedingPage() {
 
             {/* Training Schedule */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="grid md:grid-cols-3 gap-4 mb-6"
             >
               {/* Voor Training */}
@@ -220,9 +220,9 @@ export default function VoedingPage() {
 
             {/* Tips */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="bg-yellow-50 rounded-2xl p-8 border border-yellow-100"
             >
               <div className="flex items-center gap-3 mb-6">

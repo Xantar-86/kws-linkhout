@@ -34,9 +34,9 @@ export function FeaturedArticle({ article }: FeaturedArticleProps) {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="mb-12"
     >
       <Link 

@@ -7,9 +7,9 @@ import Link from "next/link";
 export function RegistrationForm() {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, margin: "0px 0px -12% 0px" }}
       className="bg-gradient-to-br from-primary to-primary-700 rounded-3xl p-8 md:p-12 text-white"
     >
       <div className="grid md:grid-cols-2 gap-8 items-center">

@@ -52,15 +52,15 @@ export default function FairPlayPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-5xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Spelers */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="bg-red-50 rounded-2xl p-8 border border-red-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -81,9 +81,9 @@ export default function FairPlayPage() {
 
             {/* Ouders */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -104,9 +104,9 @@ export default function FairPlayPage() {
 
             {/* Trainers */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="bg-green-50 rounded-2xl p-8 border border-green-100"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -127,9 +127,9 @@ export default function FairPlayPage() {
 
             {/* Quote */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="mt-8 text-center bg-gray-50 rounded-xl p-8 border border-gray-200"
             >
               <blockquote className="text-xl italic text-gray-700 mb-4">

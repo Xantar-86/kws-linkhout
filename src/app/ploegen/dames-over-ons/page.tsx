@@ -20,10 +20,10 @@ export default function DamesOverOnsPage() {
         <div className="container-custom max-w-4xl">
           {/* Geschiedenis */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="kaart p-8 md:p-10 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -52,10 +52,10 @@ export default function DamesOverOnsPage() {
 
           {/* Heden */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            transition={{ duration: 0.55, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="kaart p-8 md:p-10 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -88,10 +88,10 @@ export default function DamesOverOnsPage() {
 
           {/* Werking */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="kaart p-8 md:p-10 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -134,10 +134,10 @@ export default function DamesOverOnsPage() {
 
           {/* Contact */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-8 md:p-10"
           >
             <h2 className="heading-3 mb-6 text-center">
@@ -192,8 +192,8 @@ export default function DamesOverOnsPage() {
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="text-center mt-10"
           >
             <Link 

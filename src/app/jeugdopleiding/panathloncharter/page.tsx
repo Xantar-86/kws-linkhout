@@ -94,9 +94,9 @@ export default function PanathloncharterPage() {
         <div className="container-custom max-w-4xl">
           {/* Rechten van het Kind */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-orange-50 rounded-2xl p-8 border border-orange-100 mb-8"
           >
             <h2 className="text-2xl font-bold text-orange-900 mb-6">
@@ -106,10 +106,10 @@ export default function PanathloncharterPage() {
               {rechtenVanHetKind.map((recht, index) => (
                 <motion.li
                   key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
                   className="flex items-start gap-3"
                 >
                   <CheckCircle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
@@ -121,9 +121,9 @@ export default function PanathloncharterPage() {
 
           {/* Namens KWS Linkhout */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-primary text-white rounded-xl p-6 mb-8 text-center"
           >
             <p className="font-semibold text-lg">Namens KWS Linkhout</p>
@@ -134,9 +134,9 @@ export default function PanathloncharterPage() {
 
           {/* De Tien Geboden van Fair Play */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-green-600 text-white px-6 py-4">
@@ -161,9 +161,9 @@ export default function PanathloncharterPage() {
 
           {/* Gedragscode Ouders */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-blue-600 text-white px-6 py-4">
@@ -211,9 +211,9 @@ export default function PanathloncharterPage() {
 
           {/* Gedragscode Supporters */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-purple-600 text-white px-6 py-4">
@@ -239,9 +239,9 @@ export default function PanathloncharterPage() {
 
           {/* Downloadbare Documenten */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           >
             <h2 className="heading-3 mb-6 text-center">
               Documenten
@@ -252,10 +252,10 @@ export default function PanathloncharterPage() {
                 return (
                   <motion.div
                     key={file.filename}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
+                    initial={{ opacity: 0, y: 28 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                    transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <a
                       href={`/Docs/jeugdopleiding/${file.filename}`}

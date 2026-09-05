@@ -22,9 +22,9 @@ export default function FootPassPage() {
         <div className="container-custom max-w-4xl">
           {/* Intro */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-teal-50 rounded-2xl p-8 border border-teal-100 mb-8"
           >
             <p className="text-teal-800 text-lg leading-relaxed">
@@ -36,9 +36,9 @@ export default function FootPassPage() {
 
           {/* Sectie 1: Subsidies */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-primary text-white px-6 py-4">
@@ -76,9 +76,9 @@ export default function FootPassPage() {
 
           {/* Sectie 2: Kwaliteitslabel */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-amber-500 text-white px-6 py-4">
@@ -101,9 +101,9 @@ export default function FootPassPage() {
 
           {/* Foot Pass Logo groot */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 p-8 text-center mb-8"
           >
             <div className="w-32 h-32 mx-auto mb-4 relative">
@@ -119,9 +119,9 @@ export default function FootPassPage() {
 
           {/* Voordelen (behouden) */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           >
             <h2 className="heading-3 mb-6 text-center">Voordelen van Foot Pass</h2>
             <div className="grid md:grid-cols-3 gap-6">

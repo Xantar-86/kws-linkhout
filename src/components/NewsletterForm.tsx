@@ -52,10 +52,10 @@ export function NewsletterForm() {
         {newsletterBenefits.map((benefit, index) => (
           <motion.div
             key={benefit.title}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="kaart p-6 text-center"
           >
             <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mx-auto mb-4">
@@ -70,9 +70,9 @@ export function NewsletterForm() {
       <div className="max-w-2xl mx-auto">
         {!isSubmitted ? (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="kaart p-8 md:p-12"
           >
             <h2 className="heading-2 mb-2 text-center">Schrijf je in</h2>

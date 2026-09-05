@@ -65,15 +65,15 @@ export default function ReanimatieDefibrillatorPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-5xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* AED Locatie */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="bg-pink-50 rounded-2xl p-8 border border-pink-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -121,9 +121,9 @@ export default function ReanimatieDefibrillatorPage() {
 
             {/* Reanimation Steps */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="bg-gray-50 rounded-2xl p-8 border border-gray-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -149,9 +149,9 @@ export default function ReanimatieDefibrillatorPage() {
 
             {/* Video: AED Gebruik */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.55, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-6"
             >
               <div className="flex items-center gap-3 mb-6">
@@ -185,9 +185,9 @@ export default function ReanimatieDefibrillatorPage() {
 
             {/* Important Info */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+              transition={{ duration: 0.55, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="bg-red-50 rounded-2xl p-8 border border-red-100"
             >
               <div className="flex items-center gap-3 mb-4">

@@ -102,9 +102,9 @@ export default function MedischPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-red-50 rounded-2xl p-8 border border-red-100 mb-12"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -120,9 +120,9 @@ export default function MedischPage() {
           <div className="space-y-8 mb-12">
             {/* Acties 2021-2023 */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart border border-gray-100 overflow-hidden"
             >
               <div className="bg-primary text-white px-6 py-4">
@@ -145,9 +145,9 @@ export default function MedischPage() {
 
             {/* Acties 2019-2020 */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart border border-gray-100 overflow-hidden"
             >
               <div className="bg-blue-600 text-white px-6 py-4">
@@ -170,9 +170,9 @@ export default function MedischPage() {
 
             {/* Acties 2016-2017 */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart border border-gray-100 overflow-hidden"
             >
               <div className="bg-emerald-600 text-white px-6 py-4">
@@ -196,9 +196,9 @@ export default function MedischPage() {
 
           {/* Partners */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-gray-50 rounded-2xl p-8 border border-gray-200 mb-12"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -216,9 +216,9 @@ export default function MedischPage() {
 
           {/* Contact */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-primary text-white rounded-2xl p-8 text-center"
           >
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -239,9 +239,9 @@ export default function MedischPage() {
       <section className="section-padding bg-gray-50">
         <div className="container-custom">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="text-center mb-12"
           >
             <h2 className="heading-2 mb-4">
@@ -258,10 +258,10 @@ export default function MedischPage() {
               return (
                 <motion.div
                   key={module.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Link
                     href={`/medisch/${module.id}`}
@@ -288,9 +288,9 @@ export default function MedischPage() {
       <section className="bg-red-50 py-12 border-t border-red-100">
         <div className="container-custom">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart p-8 border border-red-100"
           >
             <div className="flex items-center gap-4 mb-4">

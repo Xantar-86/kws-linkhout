@@ -43,9 +43,9 @@ export default function OpleidingsvisiePage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-4xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 28 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="prose prose-lg max-w-none"
           >
             {/* FTS Visie */}
@@ -67,9 +67,9 @@ export default function OpleidingsvisiePage() {
 
             {/* Download PDF */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.55, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="mb-8"
             >
               <a
@@ -110,9 +110,9 @@ export default function OpleidingsvisiePage() {
                 return (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 28 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                    transition={{ duration: 0.55, delay: 0.3 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                     className="kaart p-6 border border-gray-100"
                   >
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-4">

@@ -325,10 +325,10 @@ export default function OpleidingsplanPage() {
             {leeftijdsgroepen.map((groep, index) => (
               <motion.div
                 key={groep.code}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
+                viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                transition={{ duration: 0.55, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
                 className="kaart border border-gray-100 overflow-hidden"
               >
                 {/* Header */}

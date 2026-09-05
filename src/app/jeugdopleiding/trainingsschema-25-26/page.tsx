@@ -98,10 +98,10 @@ function TrainingRij({ ploeg, index }: { ploeg: Team; index: number }) {
 
   return (
     <motion.tr
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.05 }}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+      transition={{ duration: 0.55, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
       className="border-b border-gray-100 hover:bg-red-50/50 transition-colors"
     >
       <td className="px-4 py-3 font-semibold text-gray-900 whitespace-nowrap">{ploeg.name}</td>
@@ -137,9 +137,9 @@ function Campus({
     <section className={`section-padding ${achtergrond}`}>
       <div className="container-custom max-w-6xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-2">
@@ -150,9 +150,9 @@ function Campus({
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "0px 0px -12% 0px" }}
           className="kaart border border-gray-200 overflow-hidden"
         >
           <div className="overflow-x-auto">
@@ -205,9 +205,9 @@ export default function TrainingsschemaPage() {
       <section className="section-padding bg-white">
         <div className="container-custom max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="grid md:grid-cols-3 gap-6"
           >
             <div className="bg-red-50 rounded-xl p-6 border border-red-100">

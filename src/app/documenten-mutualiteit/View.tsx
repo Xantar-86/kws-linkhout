@@ -38,9 +38,9 @@ export function DocumentenMutualiteitView({ secties }: { secties: MutualiteitSec
       <section className="section-padding bg-white">
         <div className="container-custom max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="space-y-10"
           >
             {secties.length === 0 ? (
@@ -57,9 +57,9 @@ export function DocumentenMutualiteitView({ secties }: { secties: MutualiteitSec
                     {sectie.documenten.map((doc, index) => (
                       <motion.div
                         key={`${sectie.titel}-${doc.naam}-${doc.bestand}`}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 + sectieIndex * 0.3 + index * 0.1 }}
+                        initial={{ opacity: 0, y: 28 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.55, delay: 0.2 + sectieIndex * 0.3 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                         className="kaart border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow"
                       >
                         <div className="p-6 md:p-8">
@@ -96,9 +96,9 @@ export function DocumentenMutualiteitView({ secties }: { secties: MutualiteitSec
 
             {/* Info box */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              transition={{ duration: 0.55, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="rounded-2xl p-6 border mt-8"
               style={{ backgroundColor: '#8c1d1c10', borderColor: '#8c1d1c30' }}
             >

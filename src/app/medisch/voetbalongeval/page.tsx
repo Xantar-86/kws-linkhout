@@ -21,9 +21,9 @@ export default function VoetbalongevalPage() {
         <div className="container-custom max-w-4xl">
           {/* Introductie */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-amber-50 rounded-2xl p-8 border border-amber-100 mb-8"
           >
             <p className="text-amber-800 leading-relaxed">
@@ -36,9 +36,9 @@ export default function VoetbalongevalPage() {
 
           {/* Formulier verkrijgen */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-primary text-white px-6 py-4">
@@ -78,9 +78,9 @@ export default function VoetbalongevalPage() {
 
           {/* Wanneer ongevalsaangifte */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -94,9 +94,9 @@ export default function VoetbalongevalPage() {
 
           {/* Terugbetaling procedure */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="kaart border border-gray-100 overflow-hidden mb-8"
           >
             <div className="bg-green-600 text-white px-6 py-4">
@@ -217,9 +217,9 @@ export default function VoetbalongevalPage() {
 
           {/* Waarschuwing */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-red-600 text-white rounded-2xl p-8 text-center mb-8"
           >
             <AlertTriangle className="w-12 h-12 mx-auto mb-4" />
@@ -229,9 +229,9 @@ export default function VoetbalongevalPage() {
 
           {/* Belangrijke opmerkingen */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-amber-50 rounded-2xl p-8 border border-amber-100 mb-8"
           >
             <h3 className="text-xl font-bold text-amber-900 mb-4">Belangrijke opmerkingen</h3>
@@ -265,9 +265,9 @@ export default function VoetbalongevalPage() {
 
           {/* Federaal Solidariteitsfonds */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-blue-50 rounded-2xl p-8 border border-blue-100 mb-8"
           >
             <div className="flex items-center gap-3 mb-4">
@@ -295,9 +295,9 @@ export default function VoetbalongevalPage() {
 
           {/* Contact GC */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
             className="bg-primary text-white rounded-2xl p-8"
           >
             <div className="flex items-center gap-3 mb-4">
