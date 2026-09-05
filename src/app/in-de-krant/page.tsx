@@ -3,6 +3,7 @@ import { Newspaper, Calendar, Download, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllPressArticles, PressArticle } from "@/lib/press";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
   title: "In de Krant - KWS Linkhout",
@@ -37,23 +38,12 @@ export default async function PressPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-20">
-        <div className="container-custom text-center text-white">
-          <div>
-            <Newspaper className="w-16 h-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              In de Krant
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              KWS Linkhout in de media. Bekijk hier alle krantenartikelen over onze club.
-            </p>
-            <p className="text-white/70 mt-4">
-              {pressArticles.length} artikelen beschikbaar
-            </p>
-          </div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift={`${pressArticles.length} artikelen`}
+        titel="KWS Linkhout in de krant"
+        accent="in de krant"
+        onder="Wat de pers over ons schreef, verzameld op één plek."
+      />
 
       {/* Press Articles */}
       <section className="section-padding">

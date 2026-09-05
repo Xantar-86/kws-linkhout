@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Shield, ArrowLeft, XCircle, HandHeart, Users, Megaphone, CheckCircle, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const verbodenGedragingen = [
   "Racistische opmerkingen of beledigingen",
@@ -47,34 +48,14 @@ const actiepunten = [
 export default function CharterAntiRacismePage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/jeugdopleiding" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar jeugdopleiding
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16">
-        <div className="container-custom text-center text-white">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6 }}
-          >
-            <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-6">
-              <Shield className="w-8 h-8" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Charter Anti-Racisme</h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Rode kaart tegen racisme en discriminatie
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/jeugdopleiding", label: "Terug naar jeugdopleiding" }}
+        icoon={Shield}
+        titel="Charter Anti-Racisme"
+        accent="Anti-Racisme"
+        onder="Rode kaart tegen racisme en discriminatie"
+      />
 
       {/* Content Section */}
       <section className="section-padding">

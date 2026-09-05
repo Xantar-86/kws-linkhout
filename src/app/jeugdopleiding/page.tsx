@@ -17,6 +17,7 @@ import {
   HandCoins
 } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const jeugdModules = [
   {
@@ -101,25 +102,13 @@ const downloadFiles = [
 export default function JeugdopleidingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-20">
-        <div className="container-custom text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <GraduationCap className="w-16 h-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Jeugdopleiding
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Ontdek onze jeugdwerking, trainingen en opleidingsvisie. 
-              Bij KWS Linkhout investeren we in de toekomst.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="Jeugdwerking"
+        icoon={GraduationCap}
+        titel="Onze jeugdopleiding"
+        accent="jeugdopleiding"
+        onder="Van de eerste training in de voetbaltuin tot de stap naar de eerste ploeg. Hier staat hoe we dat aanpakken, en wie er bij ons voor klaarstaat."
+      />
 
       {/* Missie & Visie Sectie */}
       <section className="section-padding bg-white">

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Stethoscope, AlertTriangle, Shield, Heart, Car, Apple, Wine, Target, Calendar, Users, Mail, HeartPulse } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const medischModules = [
   {
@@ -89,25 +90,13 @@ const partners = [
 export default function MedischPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-red-900 via-red-800 to-red-700 py-20">
-        <div className="container-custom text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Stethoscope className="w-16 h-16 mx-auto mb-6" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Medisch
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              De gezondheid en veiligheid van onze spelers staat voorop. 
-              Ontdek ons medisch beleid en voorzieningen.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="Medische cel"
+        icoon={HeartPulse}
+        titel="Medisch en veiligheid"
+        accent="veiligheid"
+        onder="Wat te doen bij een blessure of een ongeval, wie je daarvoor moet hebben, en hoe we op het terrein voorbereid zijn."
+      />
 
       {/* Voorstelling Sectie */}
       <section className="section-padding bg-white">

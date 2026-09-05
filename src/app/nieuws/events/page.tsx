@@ -3,6 +3,7 @@ import { Calendar, MapPin, ArrowLeft, Download, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { getAllEvents, getRecentlyAddedEvents } from "@/lib/events";
 import { EventImage } from "./EventImage";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
   title: "Evenementen - KWS Linkhout",
@@ -18,33 +19,14 @@ export default async function EventsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/nieuws" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar nieuws
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16">
-        <div className="container-custom text-center text-white">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6"
-          >
-            <Calendar className="w-4 h-4" />
-            Save the Date
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Evenementen 2025-2026
-          </h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Noteer deze data alvast in je agenda! Een overzicht van alle activiteiten bij KWS Linkhout.
-          </p>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/nieuws", label: "Terug naar het nieuws" }}
+        opschrift="Op de kalender"
+        titel="Evenementen dit seizoen"
+        accent="Evenementen"
+        onder="Eetfestijnen, tornooien en clubfeesten. Noteer ze alvast in je agenda."
+      />
 
       {/* Events Grid */}
       <section className="section-padding">

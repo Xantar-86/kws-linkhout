@@ -16,15 +16,6 @@ const QR2 = "/images/digitaal-betalen/qr2.png";
 export default function DigitaalBetalenPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar home
-          </Link>
-        </div>
-      </div>
 
       {/* Hero */}
       <section className="py-16" style={{ background: 'linear-gradient(to bottom right, #8c1d1c, #a82424, #8c1d1c)' }}>

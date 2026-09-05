@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Shield, ArrowLeft, Heart, AlertTriangle, Users, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const beleidsPunten = [
   {
@@ -37,32 +38,15 @@ const verantwoordelijkheden = [
 export default function VoorstellingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/medisch" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar medisch
-          </Link>
-        </div>
-      </div>
 
-      <section className="bg-white py-12">
-        <div className="container-custom">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white">
-                <Shield className="w-6 h-6" />
-              </div>
-              <span className="text-sm font-medium text-gray-500">Ons beleid</span>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Voorstelling Medisch Beleid</h1>
-            <p className="text-xl text-gray-600 max-w-3xl">
-              Bij KWS Linkhout staat de veiligheid en gezondheid van onze spelers centraal. 
-              Ontdek hoe wij dit waarborgen.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/medisch", label: "Terug naar medisch" }}
+        opschrift="Ons beleid"
+        icoon={Shield}
+        titel="Voorstelling Medisch Beleid"
+        accent="Beleid"
+        onder="Bij KWS Linkhout staat de veiligheid en gezondheid van onze spelers centraal. Ontdek hoe wij dit waarborgen."
+      />
 
       <section className="section-padding bg-white">
         <div className="container-custom max-w-5xl">

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getAllArticles } from "@/lib/news";
 import { pressArticles } from "@/lib/press";
 import { PressCard } from "@/components/news/PressCard";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
   title: "Nieuws & Updates - KWS Linkhout",
@@ -28,23 +29,12 @@ export default async function NewsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-20">
-        <div className="container-custom text-center text-white">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6"
-          >
-            <Newspaper className="w-4 h-4" />
-            Laatste updates
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Nieuws & Updates
-          </h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Blijf op de hoogte van alles wat er gebeurt bij KWS Linkhout.
-          </p>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="Nieuws en updates"
+        titel="Wat er speelt bij de club"
+        accent="speelt"
+        onder="Uitslagen, aankondigingen en alles waarvan je op de hoogte wil blijven."
+      />
 
       {/* Main Content */}
       <section className="section-padding">

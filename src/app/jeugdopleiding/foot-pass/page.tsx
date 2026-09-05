@@ -4,44 +4,18 @@ import { motion } from "framer-motion";
 import { Globe, ArrowLeft, Trophy, Award, CheckCircle, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export default function FootPassPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/jeugdopleiding" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar jeugdopleiding
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16">
-        <div className="container-custom text-center text-white">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6 }}
-          >
-            <div className="w-24 h-24 bg-white rounded-xl flex items-center justify-center mx-auto mb-6 p-2">
-              <Image
-                src="/images/foot_pass.png"
-                alt="Foot Pass"
-                width={80}
-                height={80}
-                className="object-contain"
-              />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Foot Pass</h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Scoor met Foot PASS!
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/jeugdopleiding", label: "Terug naar jeugdopleiding" }}
+        titel="Foot Pass"
+        accent="Pass"
+        onder="Scoor met Foot PASS!"
+      />
 
       {/* Content Section */}
       <section className="section-padding">

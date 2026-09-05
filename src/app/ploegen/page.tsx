@@ -1,11 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect } from "react";
 import { teams, getTeamsByCategory } from "@/lib/teams";
-import { Trophy, Clock, User, ChevronRight } from "lucide-react";
+import { Trophy, Clock, User, ChevronRight, Users } from "lucide-react";
+import { PaginaKop } from "@/components/PaginaKop";
+import { SectieKop } from "@/components/SectieKop";
+import { Onthul } from "@/components/beweging/Onthul";
+import { trap } from "@/lib/beweging";
 
 // Interfaces
 interface TeamCardProps {
@@ -18,35 +21,26 @@ interface TeamCardProps {
 // TeamCard Component
 function TeamCard({ team, index }: TeamCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.3, delay: (index % 6) * 0.05 }}
-    >
+    <Onthul vertraging={(index % 6) * trap.kaart} className="h-full">
       <Link href={`/ploegen/team?slug=${team.slug}`} className="group block h-full">
-        <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col">
-          <div className="relative h-48 overflow-hidden bg-gray-200">
+        <div className="kaart kaart-tilt flex h-full flex-col overflow-hidden">
+          <div className="relative h-48 overflow-hidden bg-zand-100">
             <Image
               src={team.image}
               alt={team.name}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute top-3 left-3">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
-                team.category === "senioren" ? "bg-blue-600" :
-                team.category === "dames" ? "bg-pink-600" :
-                "bg-green-600"
-              }`}>
+            <div className="absolute left-3 top-3">
+              <span className="rounded-full bg-inkt-950/70 px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-sm">
                 {team.category === "senioren" ? "Senioren" :
                  team.category === "dames" ? "Dames" : "Jeugd"}
               </span>
             </div>
           </div>
 
-          <div className="p-5 flex-grow flex flex-col">
-            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+          <div className="flex flex-grow flex-col p-6">
+            <h3 className="heading-3 mb-3 transition-colors group-hover:text-primary">
               {team.name}
             </h3>
             
@@ -71,14 +65,14 @@ function TeamCard({ team, index }: TeamCardProps) {
               </div>
             </div>
 
-            <div className="flex items-center text-primary font-medium text-sm mt-auto pt-4 border-t border-gray-100">
-              Bekijk details
-              <ChevronRight className="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <div className="mt-auto flex items-center border-t border-zand-200/70 pt-4 text-sm font-semibold text-primary">
+              Bekijk de ploeg
+              <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </div>
           </div>
         </div>
       </Link>
-    </motion.div>
+    </Onthul>
   );
 }
 
@@ -95,21 +89,12 @@ function TeamSection({ title, teamsList, startIndex, id }: TeamSectionProps) {
 
   return (
     <section id={id} className="mb-16 scroll-mt-24">
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className="mb-8"
-      >
-        <h2 className="text-3xl font-bold text-gray-900 flex items-center">
-          <span className="w-2 h-8 bg-primary rounded-full mr-4" />
-          {title}
-          <span className="ml-4 text-lg font-normal text-gray-500">
-            ({teamsList.length} ploegen)
-          </span>
-        </h2>
-      </motion.div>
+      <SectieKop
+        uitlijning="links"
+        opschrift={`${teamsList.length} ploegen`}
+        titel={title}
+        className="mb-10"
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {teamsList.map((team, idx) => (
@@ -151,48 +136,38 @@ export default function TeamsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-20">
-        <div className="container-custom text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">
-              25 Ploegen • 300+ Leden
-            </span>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Onze Ploegen
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Van U6 tot senioren, bij KWS Linkhout is er voor ieder wat wils.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="25 ploegen, ruim 300 leden"
+        icoon={Users}
+        titel="Onze ploegen"
+        accent="ploegen"
+        onder="Van de voetbaltuin tot de veteranen, en van de eerste ploeg tot de dames. Kies je ploeg en je ziet meteen wie er traint, wanneer en waar."
+      />
 
       <section className="section-padding">
         <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="grid grid-cols-3 gap-4 mb-12"
-          >
-            <div className="bg-white rounded-xl p-6 text-center shadow-sm">
-              <div className="text-3xl font-bold text-primary mb-1">{senioren.length}</div>
-              <div className="text-gray-600 text-sm">Senioren</div>
+          {/* Drie snelkoppelingen naar de rubrieken eronder. Ze tellen niet
+              alleen, ze brengen je er ook meteen naartoe. */}
+          <Onthul className="mb-14">
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { naar: "#senioren", aantal: senioren.length, label: "Senioren" },
+                { naar: "#dames", aantal: dames.length, label: "Dames en meisjes" },
+                { naar: "#jeugd", aantal: jeugd.length, label: "Jeugd" },
+              ].map((r) => (
+                <a
+                  key={r.label}
+                  href={r.naar}
+                  className="kaart kaart-tilt block px-4 py-6 text-center"
+                >
+                  <div className="font-display text-4xl font-extrabold leading-none text-gray-900">
+                    {r.aantal}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-500">{r.label}</div>
+                </a>
+              ))}
             </div>
-            <div className="bg-white rounded-xl p-6 text-center shadow-sm">
-              <div className="text-3xl font-bold text-pink-600 mb-1">{dames.length}</div>
-              <div className="text-gray-600 text-sm">Dames/Meisjes</div>
-            </div>
-            <div className="bg-white rounded-xl p-6 text-center shadow-sm">
-              <div className="text-3xl font-bold text-green-600 mb-1">{jeugd.length}</div>
-              <div className="text-gray-600 text-sm">Jeugd</div>
-            </div>
-          </motion.div>
+          </Onthul>
 
           <TeamSection id="senioren" title="Senioren" teamsList={senioren} startIndex={0} />
           <TeamSection id="dames" title="Dames & Meisjes" teamsList={dames} startIndex={senioren.length} />

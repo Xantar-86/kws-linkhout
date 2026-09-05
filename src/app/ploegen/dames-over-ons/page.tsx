@@ -3,28 +3,17 @@
 import { motion } from "framer-motion";
 import { Phone, Mail, Users, History, Calendar, Heart } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export default function DamesOverOnsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16 md:py-24">
-        <div className="container-custom text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">
-              <Users className="w-4 h-4 inline mr-2" />
-              Damesvoetbal
-            </span>
-            <h1 className="text-3xl md:text-5xl font-bold mb-6">
-              KWS Linkhout: Pionier van het Damesvoetbal
-            </h1>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="Damesvoetbal"
+        icoon={Users}
+        titel="KWS Linkhout: Pionier van het Damesvoetbal"
+        accent="Damesvoetbal"
+      />
 
       {/* Content */}
       <section className="section-padding">

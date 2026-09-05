@@ -3,6 +3,7 @@ import { Camera, Calendar, ExternalLink, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllFotoAlbums, FotoAlbum, DEFAULT_THUMBNAIL } from "@/lib/fotos";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
   title: "Foto's - KWS Linkhout",
@@ -105,26 +106,12 @@ export default async function FotosPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16 md:py-20">
-        <div className="container-custom text-center text-white">
-          <div>
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-6">
-              <Camera className="w-8 h-8" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Foto&apos;s
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Herbeleef de mooiste momenten van KWS Linkhout. 
-              Van wedstrijden tot evenementen - alle foto&apos;s op één plaats.
-            </p>
-            <p className="text-white/70 mt-4">
-              {albums.length} albums beschikbaar
-            </p>
-          </div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift={`${albums.length} albums`}
+        titel="Foto's van de club"
+        accent="Foto's"
+        onder="Herbeleef de mooiste momenten, van een gewone zaterdag tot het tornooi en het clubfeest."
+      />
 
       {/* Info Banner */}
       <section className="bg-white border-b">

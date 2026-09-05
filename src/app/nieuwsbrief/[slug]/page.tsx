@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Mail } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getAllNieuwsbrieven, getNieuwsbriefBySlug } from "@/lib/nieuwsbrieven";
 import { parseMarkdown } from "@/lib/markdown";
+import { PaginaKop } from "@/components/PaginaKop";
 
 type Params = { slug: string };
 
@@ -44,35 +45,13 @@ export default async function NieuwsbriefDetailPage({ params }: { params: Promis
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/nieuwsbrief" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar nieuwsbrieven
-          </Link>
-        </div>
-      </div>
 
-      {/* Header */}
-      <section className="bg-white">
-        <div className="container-custom py-12 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-            <Mail className="w-4 h-4" />
-            Nieuwsbrief
-          </div>
-          {n.date && (
-            <div className="inline-flex items-center gap-1.5 text-gray-500 mb-4 ml-3">
-              <Calendar className="w-4 h-4" />
-              <span>{formatDate(n.date)}</span>
-            </div>
-          )}
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{n.title}</h1>
-          {n.preview && (
-            <p className="text-xl text-gray-600 leading-relaxed">{n.preview}</p>
-          )}
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/nieuwsbrief", label: "Terug naar de nieuwsbrieven" }}
+        opschrift={n.date ? formatDate(n.date) : "Nieuwsbrief"}
+        titel={n.title}
+        onder={n.preview}
+      />
 
       {/* Body */}
       {n.body && (

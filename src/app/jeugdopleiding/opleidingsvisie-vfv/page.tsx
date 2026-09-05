@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { GraduationCap, ArrowLeft, Download, BookOpen, Target, Users, Lightbulb, Trophy } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const visiePunten = [
   {
@@ -30,34 +31,13 @@ const visiePunten = [
 export default function OpleidingsvisiePage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/jeugdopleiding" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar jeugdopleiding
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16">
-        <div className="container-custom text-center text-white">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.6 }}
-          >
-            <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-6">
-              <GraduationCap className="w-8 h-8" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Opleidingsvisie VFV</h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Onze jeugdopleiding volgt de richtlijnen van de Vlaamse Voetbalfederatie (VFV)
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/jeugdopleiding", label: "Terug naar jeugdopleiding" }}
+        icoon={GraduationCap}
+        titel="Opleidingsvisie VFV"
+        onder="Onze jeugdopleiding volgt de richtlijnen van de Vlaamse Voetbalfederatie (VFV)"
+      />
 
       {/* Content Section */}
       <section className="section-padding bg-white">

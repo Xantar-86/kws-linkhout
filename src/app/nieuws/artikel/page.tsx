@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import type { NewsArticle } from "@/lib/news";
 import { newsArticles } from "@/lib/news";
 import React from "react";
+import { PaginaKop } from "@/components/PaginaKop";
 
 // Simple markdown to HTML parser
 const parseContent = (content: string) => {
@@ -118,57 +119,13 @@ function ArticleContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link
-            href="/nieuws"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar overzicht
-          </Link>
-        </div>
-      </div>
 
-      {/* Article Header */}
-      <section className="bg-white">
-        <div className="container-custom py-12">
-          <div>
-            {/* Meta */}
-            <div className="flex flex-wrap items-center gap-4 mb-6">
-              <span className={`${categoryColors[article.category] || "bg-gray-600"} text-white px-4 py-1 rounded-full text-sm font-semibold`}>
-                {categoryLabels[article.category] || article.category}
-              </span>
-              <span className="flex items-center gap-1 text-gray-500">
-                <Calendar className="w-4 h-4" />
-                {formatDate(article.date)}
-              </span>
-              <span className="flex items-center gap-1 text-gray-500">
-                <Clock className="w-4 h-4" />
-                {article.readTime} min leestijd
-              </span>
-            </div>
-
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              {article.title}
-            </h1>
-
-            {/* Author */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className="flex items-center gap-2 text-gray-600">
-                <User className="w-5 h-5" />
-                <span className="font-medium">{article.author}</span>
-              </div>
-              <button className="flex items-center gap-2 text-gray-500 hover:text-primary transition-colors">
-                <Share2 className="w-4 h-4" />
-                Delen
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/nieuws", label: "Terug naar het nieuws" }}
+        opschrift={`${categoryLabels[article.category] || article.category} · ${formatDate(article.date)} · ${article.readTime} min leestijd`}
+        titel={article.title}
+        onder={article.excerpt}
+      />
 
       {/* Featured Image - Klikbaar */}
       {article.image && (

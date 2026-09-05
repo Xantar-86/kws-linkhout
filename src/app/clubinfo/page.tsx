@@ -6,32 +6,17 @@ import { clubInfoSections } from "@/lib/clubinfo";
 import { ClubInfoCard } from "@/components/clubinfo/ClubInfoCard";
 import { RegistrationForm } from "@/components/clubinfo/RegistrationForm";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export default function ClubInfoPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-20">
-        <div className="container-custom text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">
-              <Info className="w-4 h-4" />
-              Over onze club
-            </span>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Clubinfo
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Alles wat je moet weten over KWS Linkhout: onze missie, reglementen, 
-              structuur en hoe je lid kan worden.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="Over onze club"
+        titel="Alles over KWS Linkhout"
+        accent="KWS Linkhout"
+        onder="De missie, de reglementen, de structuur en de weg naar een aansluiting. Wat je zoekt over de club, staat hier."
+      />
 
       {/* Main Content */}
       <section className="section-padding">

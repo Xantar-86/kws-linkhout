@@ -174,7 +174,6 @@ body {
   line-height: 1.02;
   letter-spacing: -0.035em;
   text-wrap: balance;
-  @apply text-gray-900;
 }
 
 .heading-2 {
@@ -184,7 +183,6 @@ body {
   line-height: 1.08;
   letter-spacing: -0.03em;
   text-wrap: balance;
-  @apply text-gray-900;
 }
 
 .heading-3 {
@@ -193,19 +191,35 @@ body {
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  @apply text-gray-900;
 }
 
 .text-body {
   font-size: clamp(1rem, 1.1vw, 1.125rem);
   line-height: 1.7;
-  @apply text-gray-600;
 }
 
 /* Het opschrift boven een sectiekop: klein, gespatieerd, in clubrood. Het
    kost niets en het geeft elke sectie meteen een hiërarchie. */
 .opschrift {
   @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary;
+}
+
+/* De standaardkleur van de koppen staat bewust apart, en niet in .heading-1
+   zelf, en bovendien in @layer base. Twee redenen, en de tweede is de
+   belangrijkste: een regel buiten elke laag wint in de cascade altijd van een
+   regel in een laag, hoe specifiek die laatste ook is. De utilities van
+   Tailwind zitten in @layer utilities, dus een kleur die hier los stond, sloeg
+   `text-white` dood. Zo stond "Women U20" in het donkerblauw op een zwarte
+   kop. In @layer base staat deze regel vóór de utilities en wint text-white
+   wel; :where() zet de specificiteit daarbovenop op nul. */
+@layer base {
+  :where(.heading-1, .heading-2, .heading-3) {
+    color: var(--color-gray-900);
+  }
+
+  :where(.text-body) {
+    color: var(--color-gray-600);
+  }
 }
 
 .section-padding {

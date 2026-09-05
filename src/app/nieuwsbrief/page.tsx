@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Mail, Calendar, ArrowRight, FileText } from "lucide-react";
 import { getAllNieuwsbrieven } from "@/lib/nieuwsbrieven";
 import { NewsletterForm } from "@/components/NewsletterForm";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
   title: "Nieuwsbrief - KWS Linkhout",
@@ -24,17 +25,12 @@ export default async function NewsletterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-20">
-        <div className="container-custom text-center text-white">
-          <Mail className="w-16 h-16 mx-auto mb-6" />
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Nieuwsbrief</h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Lees onze laatste nieuwsbrieven en blijf op de hoogte van alles wat er gebeurt bij
-            KWS Linkhout.
-          </p>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="Elke maand in je bus"
+        titel="De nieuwsbrief"
+        accent="nieuwsbrief"
+        onder="Lees de vorige edities na, of schrijf je in zodat je er geen meer mist."
+      />
 
       {/* Lijst met nieuwsbrieven */}
       <section className="section-padding pb-0">

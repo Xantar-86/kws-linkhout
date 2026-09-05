@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar, Images, Newspaper } from "lucide-react";
 import { getAllBerichten } from "@/lib/berichten";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
   title: "Berichten - KWS Linkhout",
@@ -23,28 +24,13 @@ export default async function BerichtenPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar home
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16 md:py-20">
-        <div className="container-custom text-center text-white">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-6">
-            <Newspaper className="w-8 h-8" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Berichten</h1>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Sfeerverslagen en nieuws van achter de schermen bij KWS Linkhout.
-          </p>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="Van achter de schermen"
+        titel="Berichten van de club"
+        accent="Berichten"
+        onder="Sfeerverslagen, verhalen en beelden van wat er op en naast het veld gebeurt."
+      />
 
       {/* Lijst */}
       <section className="section-padding">

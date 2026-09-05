@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { contactPersons, faqItems, facilities } from "@/lib/contact";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -61,27 +62,13 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-20">
-        <div className="container-custom text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">
-              <MessageSquare className="w-4 h-4" />
-              We staan voor je klaar
-            </span>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Contact & Praktisch
-            </h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Heb je vragen? Neem contact op met ons team of vind hier alle praktische informatie.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift="We staan voor je klaar"
+        icoon={MessageSquare}
+        titel="Contact en praktisch"
+        accent="Contact"
+        onder="Een vraag over aansluiten, een ongeval, de kantine of de sponsoring? Hier vind je de juiste persoon, het adres en de weg."
+      />
 
       {/* Quick Contact Cards */}
       <section className="section-padding">

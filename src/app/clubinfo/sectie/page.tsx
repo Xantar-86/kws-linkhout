@@ -20,13 +20,15 @@ import {
 import { clubInfoSections, getClubInfoBySlug } from "@/lib/clubinfo";
 import { Organigram } from "@/components/clubinfo/Organigram";
 import React from "react";
+import type { LucideIcon } from "lucide-react";
+import { PaginaKop } from "@/components/PaginaKop";
 
 function ClubInfoContent() {
   const searchParams = useSearchParams();
   const slug = searchParams.get("slug");
   const section = slug ? getClubInfoBySlug(slug) : null;
 
-  const iconMap: { [key: string]: React.ElementType } = {
+  const iconMap: { [key: string]: LucideIcon } = {
     target: Target,
     "file-text": FileText,
     shield: Shield,
@@ -109,43 +111,14 @@ function ClubInfoContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link
-            href="/clubinfo"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar overzicht
-          </Link>
-        </div>
-      </div>
 
-      {/* Header */}
-      <section className="bg-white">
-        <div className="container-custom py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                <Icon className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold text-gray-900">
-                  {section.title}
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  {section.description}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/clubinfo", label: "Terug naar clubinfo" }}
+        opschrift="Clubinfo"
+        icoon={Icon}
+        titel={section.title}
+        onder={section.description}
+      />
 
       {/* Content */}
       <section className="section-padding bg-white">

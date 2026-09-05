@@ -120,7 +120,15 @@ const navItems = [
 type NavItem = (typeof navItems)[number];
 
 /** De pagina's waarboven de balk doorzichtig mag beginnen: die met een donkere hero. */
-const DONKERE_KOP = ["/"];
+/**
+ * Waar de balk NIET doorzichtig over een donkere kop ligt.
+ *
+ * Sinds elke pagina met <PaginaKop> in de inkt opent, is doorzichtig de regel
+ * en wit de uitzondering. Deze paden hebben een eigen kop of zijn helemaal
+ * geen gewone pagina: het tornooi draait zonder deze balk, en de
+ * beheerschermen zijn geen bezoekerspagina's.
+ */
+const WITTE_KOP = ["/admin", "/matchday", "/kws-cup-2026"];
 
 function NavDropdown({
   item,
@@ -244,7 +252,7 @@ export function Header() {
 
   // Boven een donkere hero begint de balk doorzichtig; op alle andere
   // pagina's staat hij meteen wit, want daar zou witte tekst op wit vallen.
-  const overDonkereKop = DONKERE_KOP.includes(pad);
+  const overDonkereKop = !WITTE_KOP.some((p) => pad === p || pad.startsWith(`${p}/`));
   const licht = overDonkereKop && !gescrold;
 
   useMotionValueEvent(scrollY, "change", (huidig) => {

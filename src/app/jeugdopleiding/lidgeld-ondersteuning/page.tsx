@@ -20,6 +20,7 @@ import {
   Ticket,
 } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const viaDeGemeente = [
   {
@@ -77,41 +78,15 @@ const viaDeClub = [
 export default function LidgeldOndersteuningPagina() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Terug */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link
-            href="/jeugdopleiding"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar jeugdopleiding
-          </Link>
-        </div>
-      </div>
 
-      {/* Kop */}
-      <section className="bg-white py-12">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white">
-                <HandCoins className="w-6 h-6" />
-              </div>
-              <span className="text-sm font-medium text-gray-500">Lidgeld en sportparticipatie</span>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Ondersteuning bij het lidgeld</h1>
-            <p className="text-xl text-gray-600 max-w-3xl">
-              Voetballen bij KWS Linkhout mag niet stranden op het lidgeld. Valt het bedrag zwaar,
-              dan zijn er twee wegen: steun via de gemeente Lummen, en een regeling met de club zelf.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/jeugdopleiding", label: "Terug naar jeugdopleiding" }}
+        opschrift="Lidgeld en sportparticipatie"
+        icoon={HandCoins}
+        titel="Ondersteuning bij het lidgeld"
+        accent="lidgeld"
+        onder="Voetballen bij KWS Linkhout mag niet stranden op het lidgeld. Valt het bedrag zwaar, dan zijn er twee wegen: steun via de gemeente Lummen, en een regeling met de club zelf."
+      />
 
       {/* Via de gemeente */}
       <section className="section-padding bg-white">

@@ -7,6 +7,7 @@ import { getAllBerichten, getBerichtBySlug } from "@/lib/berichten";
 import { parseMarkdown } from "@/lib/markdown";
 import { resolveVideo } from "@/lib/video";
 import { PhotoGallery } from "@/components/PhotoGallery";
+import { PaginaKop } from "@/components/PaginaKop";
 
 type Params = { slug: string };
 
@@ -47,33 +48,13 @@ export default async function BerichtPage({ params }: { params: Promise<Params> 
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/#berichten" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar home
-          </Link>
-        </div>
-      </div>
 
-      {/* Header */}
-      <section className="bg-white">
-        <div className="container-custom py-12 max-w-3xl">
-          {bericht.date && (
-            <div className="inline-flex items-center gap-1.5 text-gray-500 mb-4">
-              <Calendar className="w-4 h-4" />
-              <span>{formatDate(bericht.date)}</span>
-            </div>
-          )}
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            {bericht.title}
-          </h1>
-          {bericht.intro && (
-            <p className="text-xl text-gray-600 leading-relaxed">{bericht.intro}</p>
-          )}
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/berichten", label: "Terug naar de berichten" }}
+        opschrift="Bericht van de club"
+        titel={bericht.title}
+        onder={bericht.intro}
+      />
 
       {/* Cover */}
       {bericht.cover && (

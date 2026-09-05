@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { Clock, ArrowLeft, Calendar, MapPin, Users } from "lucide-react";
 import Link from "next/link";
 import { teams, type Team } from "@/lib/teams";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const SEIZOEN = "2026-2027";
 
@@ -186,41 +187,15 @@ function Campus({
 export default function TrainingsschemaPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Breadcrumb */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link
-            href="/jeugdopleiding"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar jeugdopleiding
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16">
-        <div className="container-custom">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center text-white"
-          >
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                <Clock className="w-7 h-7" />
-              </div>
-              <span className="text-sm font-medium text-white/80">Seizoen {SEIZOEN}</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Schema Trainingen</h1>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Bekijk hieronder alle trainingstijden voor het seizoen {SEIZOEN}. Kom steeds op tijd!
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/jeugdopleiding", label: "Terug naar jeugdopleiding" }}
+        opschrift={`Seizoen ${SEIZOEN}`}
+        icoon={Clock}
+        titel="Het trainingsschema"
+        accent="trainingsschema"
+        onder="Alle trainingsuren van dit seizoen, per campus. Kom een tiental minuten op voorhand, dan kan je rustig opwarmen."
+      />
 
       {campussen.map((campus) => (
         <Campus key={campus.naam} {...campus} />

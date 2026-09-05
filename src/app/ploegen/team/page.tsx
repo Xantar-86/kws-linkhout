@@ -11,6 +11,7 @@ import { spelersVan } from "@/lib/kernen";
 import { TrainerAvatar } from "@/components/SpelersGalerij";
 import { SpelersCarrousel } from "@/components/SpelersCarrousel";
 import { motion, AnimatePresence } from "framer-motion";
+import { PaginaKop } from "@/components/PaginaKop";
 import { 
   Trophy, 
   Clock, 
@@ -41,38 +42,19 @@ function TeamContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Navigation */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link 
-            href="/ploegen" 
-            className="inline-flex items-center text-gray-600 hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Terug naar overzicht
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16">
-        <div className="container-custom text-white">
-          <div>
-            <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium mb-4 ${
-              team.category === "senioren" ? "bg-blue-500/30" :
-              team.category === "dames" ? "bg-pink-500/30" :
-              "bg-green-500/30"
-            }`}>
-              {team.category === "senioren" ? "Senioren" :
-               team.category === "dames" ? "Dames" : "Jeugd"}
-            </span>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{team.name}</h1>
-            <p className="text-xl text-white/90 max-w-2xl">
-              {team.description}
-            </p>
-          </div>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift={
+          team.category === "senioren"
+            ? "Senioren"
+            : team.category === "dames"
+              ? "Dames en meisjes"
+              : "Jeugd"
+        }
+        titel={team.name}
+        onder={team.description}
+        terug={{ naar: "/ploegen", label: "Terug naar alle ploegen" }}
+      />
 
       {/* Content */}
       <section className="section-padding">

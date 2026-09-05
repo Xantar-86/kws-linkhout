@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Apple, ArrowLeft, Clock, Droplets, Lightbulb } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const algemeneRichtlijnen = [
   "Eet gevarieerd en evenwichtig met voldoende groenten en fruit",
@@ -45,34 +46,14 @@ const tips = [
 export default function VoedingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/medisch" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar medisch
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-white py-12">
-        <div className="container-custom">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white">
-                <Apple className="w-6 h-6" />
-              </div>
-              <span className="text-sm font-medium text-gray-500">Gezonde Leefstijl</span>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Voeding</h1>
-            <p className="text-xl text-gray-600 max-w-3xl">
-              Goede voeding is essentieel voor jonge sporters. Ontdek onze voedingsrichtlijnen 
-              voor optimale prestaties en een gezonde ontwikkeling.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/medisch", label: "Terug naar medisch" }}
+        opschrift="Gezonde Leefstijl"
+        icoon={Apple}
+        titel="Voeding"
+        onder="Goede voeding is essentieel voor jonge sporters. Ontdek onze voedingsrichtlijnen voor optimale prestaties en een gezonde ontwikkeling."
+      />
 
       {/* Voedingsdriehoek Section */}
       <section className="section-padding bg-white border-b">

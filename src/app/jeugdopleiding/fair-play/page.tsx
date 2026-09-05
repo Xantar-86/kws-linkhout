@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Heart, ArrowLeft, User, Users, UserCog } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const spelersRegels = [
   "Respecteer de tegenstander en de scheidsrechter",
@@ -37,34 +38,15 @@ const trainersRegels = [
 export default function FairPlayPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/jeugdopleiding" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar jeugdopleiding
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-white py-12">
-        <div className="container-custom">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center text-white">
-                <Heart className="w-6 h-6" />
-              </div>
-              <span className="text-sm font-medium text-gray-500">Gedragsregels</span>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Fair Play Regels</h1>
-            <p className="text-xl text-gray-600 max-w-3xl">
-              Fair play is de basis van onze clubcultuur. Deze regels gelden voor spelers, 
-              ouders en trainers. Samen zorgen we voor een positieve sportomgeving.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/jeugdopleiding", label: "Terug naar jeugdopleiding" }}
+        opschrift="Gedragsregels"
+        icoon={Heart}
+        titel="Fair Play Regels"
+        accent="Regels"
+        onder="Fair play is de basis van onze clubcultuur. Deze regels gelden voor spelers, ouders en trainers. Samen zorgen we voor een positieve sportomgeving."
+      />
 
       {/* Content Section */}
       <section className="section-padding bg-white">

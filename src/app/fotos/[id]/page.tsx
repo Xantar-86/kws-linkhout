@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getAllFotoAlbums, getFotoAlbumById } from "@/lib/fotos";
 import { AlbumGallery } from "./Gallery";
+import { PaginaKop } from "@/components/PaginaKop";
 
 type Params = { id: string };
 
@@ -31,32 +32,15 @@ export default async function FotoAlbumPage({ params }: { params: Promise<Params
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link href="/fotos" className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar albums
-          </Link>
-        </div>
-      </div>
 
-      {/* Header */}
-      <section className="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-12 md:py-16">
-        <div className="container-custom text-white">
-          {album.date && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 rounded-full text-white text-xs font-medium mb-4">
-              <Calendar className="w-3 h-3" />
-              {album.date}
-            </div>
-          )}
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">{album.title}</h1>
-          {album.description && (
-            <p className="text-white/90 max-w-3xl">{album.description}</p>
-          )}
-          <p className="text-white/70 mt-4 text-sm">{album.images.length} foto&apos;s</p>
-        </div>
-      </section>
+      <PaginaKop
+        opschrift={album.date ?? undefined}
+        titel={album.title}
+        onder={album.description}
+        terug={{ naar: "/fotos", label: "Terug naar de albums" }}
+      >
+        <p className="text-sm text-white/50">{album.images.length} foto&apos;s</p>
+      </PaginaKop>
 
       {/* Gallery */}
       <section className="section-padding">

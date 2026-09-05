@@ -19,6 +19,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
 
 const goudenStappen = [
   {
@@ -184,40 +185,14 @@ const noodnummers = [
 export default function EhboPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
-      <div className="bg-white border-b">
-        <div className="container-custom py-4">
-          <Link
-            href="/medisch"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar medisch
-          </Link>
-        </div>
-      </div>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-teal-700 via-teal-800 to-teal-900 py-16">
-        <div className="container-custom text-white">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center">
-                <HeartPulse className="w-9 h-9" />
-              </div>
-              <span className="text-sm font-medium text-white/80 uppercase tracking-wide">
-                Eerste Hulp Bij Ongevallen
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">EHBO</h1>
-            <p className="text-xl text-white/90 max-w-3xl">
-              Snel en correct handelen bij een ongeval maakt vaak het verschil. Op deze pagina
-              vind je een praktisch stappenplan, eerste hulp bij veelvoorkomende voetbalblessures
-              en de inhoud van onze EHBO-koffer.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PaginaKop
+        terug={{ naar: "/medisch", label: "Terug naar medisch" }}
+        opschrift="Eerste Hulp Bij Ongevallen"
+        icoon={HeartPulse}
+        titel="EHBO"
+        onder="Snel en correct handelen bij een ongeval maakt vaak het verschil. Op deze pagina vind je een praktisch stappenplan, eerste hulp bij veelvoorkomende voetbalblessures en de inhoud van onze EHBO-koffer."
+      />
 
       {/* Content */}
       <section className="section-padding bg-white">
