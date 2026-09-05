@@ -105,14 +105,15 @@ export default function MedischPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-red-50 rounded-2xl p-8 border border-red-100 mb-12"
+            className="mb-14 border-l-2 border-primary/40 pl-6"
           >
-            <div className="flex items-center gap-3 mb-6">
-              <Target className="w-8 h-8 text-red-600" />
-              <h2 className="text-2xl font-bold text-red-900">Doelstelling</h2>
-            </div>
-            <p className="text-red-800 text-lg leading-relaxed">
-              Ervoor zorgen dat elk clublid zijn favoriete hobby kan uitoefenen in een "gezonde" omgeving.
+            <p className="opschrift mb-3">
+              <Target className="h-4 w-4" />
+              Doelstelling
+            </p>
+            <p className="max-w-2xl text-xl leading-relaxed text-gray-800">
+              Ervoor zorgen dat elk clublid zijn favoriete hobby kan uitoefenen in een gezonde
+              omgeving.
             </p>
           </motion.div>
 
@@ -125,17 +126,15 @@ export default function MedischPage() {
               viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart border border-gray-100 overflow-hidden"
             >
-              <div className="bg-primary text-white px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-6 h-6" />
-                  <h2 className="text-xl font-bold">Acties 2021-2023</h2>
-                </div>
+              <div className="flex items-center gap-3 border-b border-zand-200/70 px-6 py-5">
+                <Calendar className="h-5 w-5 text-primary" />
+                <h2 className="heading-3">Acties 2021-2023</h2>
               </div>
               <div className="p-6">
                 <ul className="space-y-3">
                   {acties2021_2023.map((actie, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                       <span className="text-gray-700">{actie}</span>
                     </li>
                   ))}
@@ -150,17 +149,15 @@ export default function MedischPage() {
               viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart border border-gray-100 overflow-hidden"
             >
-              <div className="bg-blue-600 text-white px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-6 h-6" />
-                  <h2 className="text-xl font-bold">Acties 2019-2020</h2>
-                </div>
+              <div className="flex items-center gap-3 border-b border-zand-200/70 px-6 py-5">
+                  <Calendar className="h-5 w-5 text-primary" />
+                <h2 className="heading-3">Acties 2019-2020</h2>
               </div>
               <div className="p-6">
                 <ul className="space-y-3">
                   {acties2019_2020.map((actie, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0" />
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                       <span className="text-gray-700">{actie}</span>
                     </li>
                   ))}
@@ -175,17 +172,15 @@ export default function MedischPage() {
               viewport={{ once: true, margin: "0px 0px -12% 0px" }}
               className="kaart border border-gray-100 overflow-hidden"
             >
-              <div className="bg-emerald-600 text-white px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-6 h-6" />
-                  <h2 className="text-xl font-bold">Acties 2016-2017</h2>
-                </div>
+              <div className="flex items-center gap-3 border-b border-zand-200/70 px-6 py-5">
+                  <Calendar className="h-5 w-5 text-primary" />
+                <h2 className="heading-3">Acties 2016-2017</h2>
               </div>
               <div className="p-6">
                 <ul className="space-y-3">
                   {acties2016_2017.map((actie, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <span className="w-2 h-2 bg-emerald-600 rounded-full mt-2 flex-shrink-0" />
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/60" />
                       <span className="text-gray-700">{actie}</span>
                     </li>
                   ))}
@@ -219,7 +214,7 @@ export default function MedischPage() {
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="bg-primary text-white rounded-2xl p-8 text-center"
+            className="korrel lichtrand relative overflow-hidden rounded-2xl bg-inkt-950 p-8 text-center text-white"
           >
             <div className="flex items-center justify-center gap-3 mb-4">
               <Mail className="w-6 h-6" />
@@ -285,13 +280,13 @@ export default function MedischPage() {
       </section>
 
       {/* Emergency Contact */}
-      <section className="bg-red-50 py-12 border-t border-red-100">
+      <section className="border-t border-zand-200/70 bg-zand-50 py-16">
         <div className="container-custom">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -12% 0px" }}
-            className="kaart p-8 border border-red-100"
+            className="kaart border-primary/20 p-8"
           >
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center text-white">
