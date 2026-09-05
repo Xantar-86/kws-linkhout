@@ -41,7 +41,11 @@ export function AnimatedNumber({
   className,
 }: AnimatedNumberProps) {
   const anker = useRef<HTMLSpanElement>(null);
-  const inBeeld = useInView(anker, { once: true, margin: "-80px" });
+  // Alleen onderaan een marge, niet rondom. Met "-80px" krimpt het kijkvenster
+  // ook links en rechts, en dan valt een kort getal in de linkerkolom van het
+  // raster op een telefoon buiten dat venster: "25" bleef daardoor op nul
+  // staan terwijl "1938" ernaast, dat breder is, wel meetelde.
+  const inBeeld = useInView(anker, { once: true, margin: "0px 0px -80px 0px" });
   const minderBeweging = useReducedMotion();
   const [getoond, setGetoond] = useState(vanaf);
 
