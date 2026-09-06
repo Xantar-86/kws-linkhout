@@ -229,7 +229,7 @@ C. Studies primeren. Trainingen overslaan omwille van studies, tijdens de examen
 
 **10. Sportongevallen**
 
-Laat steeds een formulier 'Aangifte ongeval' invullen door de dokter of in het ziekenhuis. Deze formulieren zijn steeds ter beschikking in de kantine, bij een ongeval tijdens een training. Bij een wedstrijd heeft iedere ploegafgevaardigde dit formulier bij. Dit correct ingevulde formulier zo snel mogelijk bezorgen aan Gert Peremans of Maarten Cleren. Voor ieder (aangegeven) voetbalongeval is het raadzaam om steeds in contact te blijven met bovengenoemde personen.
+Laat steeds een formulier 'Aangifte ongeval' invullen door de dokter of in het ziekenhuis. Deze formulieren zijn steeds ter beschikking in de kantine, bij een ongeval tijdens een training. Bij een wedstrijd heeft iedere ploegafgevaardigde dit formulier bij. Dit correct ingevulde formulier zo snel mogelijk bezorgen aan Gert Peremans of Maarten Cleeren. Voor ieder (aangegeven) voetbalongeval is het raadzaam om steeds in contact te blijven met bovengenoemde personen.
 
 ---
 

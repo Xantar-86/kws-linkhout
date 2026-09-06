@@ -34,7 +34,7 @@ export const contactPersons: ContactPerson[] = [
   },
   {
     id: "2",
-    name: "Maarten Cleren",
+    name: "Maarten Cleeren",
     role: "AVJO (Algemeen Verantwoordelijke JeugdOpleiding)",
     email: "info@kwslinkhout.be",
     phone: "0494 84 36 93",

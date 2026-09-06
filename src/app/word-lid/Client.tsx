@@ -53,7 +53,7 @@ const LIDGELD = [
 const CONTACTEN = [
   {
     voor: "Jeugd",
-    naam: "Maarten Cleren",
+    naam: "Maarten Cleeren",
     rol: "AVJO, algemeen verantwoordelijke jeugdopleiding",
     mail: "info@kwslinkhout.be",
     tel: "0494 84 36 93",

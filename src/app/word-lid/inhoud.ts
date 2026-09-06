@@ -25,7 +25,7 @@ export const VRAGEN = [
   {
     vraag: "Mag mijn kind eerst een training komen proberen?",
     antwoord:
-      "Ja. Een proeftraining is gratis en verplicht tot niets. Neem contact op met Maarten Cleren, " +
+      "Ja. Een proeftraining is gratis en verplicht tot niets. Neem contact op met Maarten Cleeren, " +
       "onze AVJO, via info@kwslinkhout.be of 0494 84 36 93, en zeg erbij hoe oud je kind is.",
   },
   {
