@@ -1,0 +1,353 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { 
+  GraduationCap, 
+  Clock, 
+  FileText, 
+  Shield, 
+  Heart, 
+  Award, 
+  Globe, 
+  Download,
+  Target,
+  Users,
+  BookOpen,
+  Lightbulb,
+  HandCoins
+} from "lucide-react";
+import Link from "next/link";
+import { PaginaKop } from "@/components/PaginaKop";
+
+const jeugdModules = [
+  {
+    id: "trainingsschema-25-26",
+    title: "Trainingsschema 2025-26",
+    description: "Bekijk alle trainingstijden per leeftijdsgroep",
+    icon: Clock,
+    color: "bg-blue-500"
+  },
+  {
+    id: "opleidingsvisie-vfv",
+    title: "VFV Opleidingsvisie",
+    description: "Onze visie op jeugdopleiding volgens VFV richtlijnen",
+    icon: GraduationCap,
+    color: "bg-green-500"
+  },
+  {
+    id: "opleidingsplan",
+    title: "Opleidingsplan",
+    description: "Het volledige opleidingsplan van KWS Linkhout",
+    icon: FileText,
+    color: "bg-purple-500"
+  },
+  {
+    id: "panathloncharter",
+    title: "Panathlon Charter",
+    description: "De principes van Panathlon voor eerlijke sport",
+    icon: Award,
+    color: "bg-orange-500"
+  },
+  {
+    id: "fair-play",
+    title: "Fair Play Regels",
+    description: "Gedragsregels voor spelers, ouders en trainers",
+    icon: Heart,
+    color: "bg-red-500"
+  },
+  {
+    id: "charter-anti-racisme",
+    title: "Anti-Racisme Charter",
+    description: "Ons engagement tegen discriminatie en racisme",
+    icon: Shield,
+    color: "bg-indigo-500"
+  },
+  {
+    id: "foot-pass",
+    title: "Foot Pass",
+    description: "Informatie over het Foot Pass systeem",
+    icon: Globe,
+    color: "bg-teal-500"
+  },
+  {
+    id: "lidgeld-ondersteuning",
+    title: "Ondersteuning bij het lidgeld",
+    description: "Hulp via de gemeente Lummen of via de club zelf",
+    icon: HandCoins,
+    color: "bg-amber-500"
+  }
+];
+
+const downloadFiles = [
+  {
+    title: "Pedagogische Principes KBVB",
+    description: "De 8 pedagogische principes van de KBVB voor jeugdvoetbal",
+    filename: "Pedagogische-principes-KBVB.pdf",
+    icon: BookOpen
+  },
+  {
+    title: "Ontwikkeling van het kind als jeugdvoetballer",
+    description: "Uitgebreide handleiding over de ontwikkeling per leeftijdscategorie (U6-U21)",
+    filename: "Ontwikkeling-van-het-kind-als-jeugdvoetballer.pdf",
+    icon: Users
+  },
+  {
+    title: "Opleidingsplan WS Linkhout",
+    description: "Het complete opleidingsplan voor alle jeugdcategorieën U6-U21",
+    filename: "Opleidingsplan-WS-Linkhout.pdf",
+    icon: Target
+  }
+];
+
+export default function JeugdopleidingClient() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <PaginaKop
+        opschrift="Jeugdwerking"
+        icoon={GraduationCap}
+        titel="Onze jeugdopleiding"
+        accent="jeugdopleiding"
+        onder="Van de eerste training in de voetbaltuin tot de stap naar de eerste ploeg. Hier staat hoe we dat aanpakken, en wie er bij ons voor klaarstaat."
+      />
+
+      {/* Missie & Visie Sectie */}
+      <section className="section-padding bg-white">
+        <div className="container-custom max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            className="text-center mb-12"
+          >
+            <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <Lightbulb className="w-7 h-7 text-primary" />
+            </div>
+            <h2 className="heading-2 mb-4">
+              Missie & Visie
+            </h2>
+          </motion.div>
+
+          {/* VISIE */}
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            className="mb-12"
+          >
+            <h3 className="heading-3 mb-6 text-primary">Visie</h3>
+            <div className="lopende-tekst">
+              <p>
+                Het aanbieden van voetbal(plezier) aan al zijn spelers waardoor elke speler 
+                zijn/haar persoonlijke droom kan waarmaken en zijn/haar favoriete sport kan 
+                beoefenen op zijn/haar eigen niveau.
+              </p>
+              <p>
+                Het aanbieden van de beste jeugdopleiding in de regio, die zo veel mogelijk 
+                leidt naar eigen opgeleide spelers in de 1ste ploeg.
+              </p>
+              <p>
+                Het aanbieden van een algemene opvoeding die garandeert dat jeugdspelers 
+                kunnen functioneren in de hedendaagse maatschappij met zijn geldende normen en waarden.
+              </p>
+              <p>
+                Het samenstellen van een opleidingsteam dat de voorgaande doelstellingen in 
+                een (h)echt teamverband kan dragen en uitdragen. Teamwork is een onmisbare factor 
+                in een succesvolle opleiding.
+              </p>
+              <p>
+                De individuele ontwikkeling van de speler staat centraal en beoogt een ontwikkeling 
+                om te kunnen functioneren als individu in een teamsport. Elke speler moet de kans 
+                krijgen zichzelf te ontwikkelen. Hierdoor zal hij reeds heel vroeg een lifestyle 
+                moeten aanmeten waarin zelfverantwoordelijkheid een sleutelrol speelt.
+              </p>
+              <ul>
+                <li>Absolute prioriteit voor studie geven</li>
+                <li>Elke speler moet kunnen spelen en trainen in een team waarin hij ingegeven door zijn kwaliteiten thuishoort</li>
+                <li>Iedere speler, ook hij die de A-kern niet haalt, moet een warm en positief gevoel overhouden aan zijn verblijf in onze rangen</li>
+                <li>Winnen als basisattitude hanteren, maar het leerproces, plezier en kameraadschap moet primeren</li>
+                <li>Een succesvolle opleiding aanbieden via continuïteit en teamwork</li>
+              </ul>
+            </div>
+          </motion.div>
+
+          {/* MISSIE - SPORTIEF */}
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            className="mb-12"
+          >
+            <h3 className="heading-3 mb-6 text-primary">Missie - Sportief</h3>
+            <div className="lopende-tekst">
+              <ul>
+                <li>
+                  Kinderen uit de regio een gezond en plezant alternatief aanbieden voor hun 
+                  vrijetijdsbesteding, waarin bovendien de sociale vaardigheden optimaal worden ontwikkeld.
+                </li>
+                <li>
+                  Kinderen opleiden tot volwassen voetballers m.a.w. hen geduldig klaarstomen 
+                  (op technisch, tactisch, fysiek en mentaal vlak) voor het volwassen voetbal.
+                </li>
+                <li>
+                  De talentrijke spelers laten doorstromen naar ons eigen 1ste elftal of naar 
+                  het hoogst mogelijke nationale niveau.
+                </li>
+                <li>
+                  Werken volgens een duidelijk omschreven visie, waarin verzorgd, opbouwend en 
+                  aanvallend voetbal wordt nagestreefd.
+                </li>
+                <li>
+                  Uitgroeien tot een club met een kwalitatief sterke jeugdopleiding, met gediplomeerde 
+                  jeugdopleiders, die in ideale omstandigheden kunnen werken.
+                </li>
+                <li>
+                  De ouders ondersteunen in de opvoeding van hun kinderen door deze op een sociaal 
+                  en pedagogisch verantwoorde manier te begeleiden.
+                </li>
+                <li>
+                  Waarden als "fair play", gelijkheid, doorzettingsvermogen, …
+                </li>
+              </ul>
+            </div>
+          </motion.div>
+
+          {/* MISSIE - ZAKELIJK */}
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+          >
+            <h3 className="heading-3 mb-6 text-primary">Missie - Zakelijk</h3>
+            <div className="lopende-tekst">
+              <ul>
+                <li>Financieel gezond zijn en blijven.</li>
+                <li>
+                  Een sterke organisatiestructuur, gebaseerd op verantwoordelijkheid, vrijwilligheid, 
+                  transparantie in taken, … naar voorbeeld van professionele clubs.
+                </li>
+                <li>
+                  Een reputatie ontwikkelen van "familiale club" door het aantrekken van mensen 
+                  en spelers uit de regio.
+                </li>
+                <li>
+                  Uitbouwen van een accommodatie, die aan alle betrokkenen een optimale leef-, 
+                  werk- en leeromgeving biedt.
+                </li>
+                <li>Een eerste elftal creëren met eigen jeugdspelers.</li>
+              </ul>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Downloadbare Documenten */}
+      <section className="section-padding bg-gray-50">
+        <div className="container-custom max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            className="text-center mb-12"
+          >
+            <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <Download className="w-7 h-7 text-primary" />
+            </div>
+            <h2 className="heading-2 mb-4">
+              Documenten
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Download hier belangrijke documenten over onze jeugdopleiding.
+            </p>
+          </motion.div>
+
+          <div className="space-y-4">
+            {downloadFiles.map((file, index) => {
+              const Icon = file.icon;
+              return (
+                <motion.div
+                  key={file.filename}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <a
+                    href={`/Docs/jeugdopleiding/${file.filename}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-start gap-4 kaart kaart-tilt p-6 border border-gray-100 hover:border-primary/30"
+                  >
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:text-white transition-colors text-primary">
+                      <Icon className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors mb-1">
+                        {file.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-2">
+                        {file.description}
+                      </p>
+                      <span className="inline-flex items-center gap-2 text-sm text-primary font-medium">
+                        <Download className="w-4 h-4" />
+                        Download PDF
+                      </span>
+                    </div>
+                  </a>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Modules Grid */}
+      <section className="section-padding bg-white">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+            className="text-center mb-12"
+          >
+            <h2 className="heading-2 mb-4">
+              Alle informatie over onze jeugd
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Klik op een onderwerp voor meer details over onze jeugdopleiding.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {jeugdModules.map((module, index) => {
+              const Icon = module.icon;
+              return (
+                <motion.div
+                  key={module.id}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -12% 0px" }}
+                  transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Link
+                    href={`/jeugdopleiding/${module.id}`}
+                    className="group block kaart kaart-tilt p-6 hover:-translate-y-1 h-full border border-gray-100"
+                  >
+                    <div className={`w-14 h-14 ${module.color} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform`}>
+                      <Icon className="w-7 h-7" />
+                    </div>
+                    <h3 className="heading-3 mb-2 group-hover:text-primary transition-colors">
+                      {module.title}
+                    </h3>
+                    <p className="text-gray-600">
+                      {module.description}
+                    </p>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

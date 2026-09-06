@@ -26,6 +26,21 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async headers() {
+    return [
+      // Het CMS en de interne matchday-schermen horen niet in een
+      // zoekresultaat. robots.txt vraagt het al vriendelijk; deze kop is de
+      // afspraak die ook geldt als iemand er toch naartoe linkt.
+      {
+        source: '/admin/:pad*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
+        source: '/matchday/:pad*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

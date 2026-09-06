@@ -9,6 +9,7 @@ import { Opening } from "@/components/beweging/Opening";
 import { Cursor } from "@/components/beweging/Cursor";
 import { Voortgang } from "@/components/beweging/Voortgang";
 import { Analytics } from "@vercel/analytics/next";
+import { Clubgegevens } from "@/components/Clubgegevens";
 
 // Inter voor de lopende tekst: rustig, en op kleine maten beter leesbaar dan
 // om het even welk lettertype met karakter.
@@ -33,9 +34,26 @@ const archivo = Archivo({
 const baseUrl = "https://www.kwslinkhout.be";
 
 export const metadata: Metadata = {
-  title: "KWS Linkhout - Voetbalclub",
-  description: "KWS Linkhout - Een club met een hart. 25 ploegen, 300+ leden. Van U6 tot senioren.",
+  /**
+   * De titel van de startpagina, en het sjabloon voor de rest.
+   *
+   * Voorheen droeg elke pagina dezelfde titel, "KWS Linkhout - Voetbalclub",
+   * omdat de meeste pagina's een clientonderdeel zijn en dus geen eigen
+   * metadata konden meegeven. Met %s vult elke pagina die dat wel doet haar
+   * eigen titel in en komt de clubnaam er vanzelf achter.
+   *
+   * En de plaatsnaam staat er nu in. Wie een club zoekt, typt "voetbalclub
+   * Lummen", niet "voetbalclub".
+   */
+  title: {
+    default: "Voetbalclub in Lummen sinds 1938 | KWS Linkhout",
+    template: "%s | KWS Linkhout",
+  },
+  description:
+    "Voetballen in Lummen bij KWS Linkhout: 25 ploegen van U6 tot veteranen, zes " +
+    "meisjes- en damesploegen. Kom vrijblijvend een training proberen.",
   metadataBase: new URL(baseUrl),
+  alternates: { canonical: "/" },
   icons: {
     icon: [
       { url: "/images/favicon-kws-32.png", sizes: "32x32", type: "image/png" },
@@ -48,17 +66,29 @@ export const metadata: Metadata = {
     'view-transition': 'same-origin',
   },
   openGraph: {
-    title: "KWS Linkhout - Voetbalclub",
-    description: "KWS Linkhout - Een club met een hart. 25 ploegen, 300+ leden. Van U6 tot senioren.",
-    images: [{ url: "https://www.kwslinkhout.be/images/logo-kws.jpg" }],
-    locale: "nl_BE",
     type: "website",
+    locale: "nl_BE",
+    url: baseUrl,
+    siteName: "KWS Linkhout",
+    title: "Voetbalclub in Lummen sinds 1938 | KWS Linkhout",
+    description:
+      "25 ploegen van U6 tot veteranen, zes meisjes- en damesploegen. Een club met een hart.",
+    // Een ploegfoto en geen logo: wie een link deelt op Facebook krijgt nu een
+    // beeld van de club te zien in plaats van een klein schild.
+    images: [
+      {
+        url: "https://www.kwslinkhout.be/images/teams/1ste-ploeg-2025.jpg",
+        width: 1620,
+        height: 1080,
+        alt: "De spelers van KWS Linkhout op het terrein in de Kapelstraat",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
-    title: "KWS Linkhout - Voetbalclub",
-    description: "KWS Linkhout - Een club met een hart. 25 ploegen, 300+ leden.",
-    images: ["https://www.kwslinkhout.be/images/logo-kws.jpg"],
+    card: "summary_large_image",
+    title: "Voetbalclub in Lummen sinds 1938 | KWS Linkhout",
+    description: "25 ploegen van U6 tot veteranen, zes meisjes- en damesploegen.",
+    images: ["https://www.kwslinkhout.be/images/teams/1ste-ploeg-2025.jpg"],
   },
 };
 
@@ -114,6 +144,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: openingsScript }} />
         <Opening />
 
+        <Clubgegevens />
         <CacheBuster />
         <ScrollToTop />
 

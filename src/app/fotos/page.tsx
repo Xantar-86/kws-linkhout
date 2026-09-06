@@ -6,7 +6,8 @@ import { getAllFotoAlbums, FotoAlbum, DEFAULT_THUMBNAIL } from "@/lib/fotos";
 import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
-  title: "Foto's - KWS Linkhout",
+  title: "Fotoalbums van de club",
+  alternates: { canonical: "/fotos" },
   description: "Herbeleef de mooiste momenten van KWS Linkhout. Van wedstrijden tot evenementen - alle foto's op één plaats.",
 };
 

@@ -8,7 +8,8 @@ import { PressCard } from "@/components/news/PressCard";
 import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
-  title: "Nieuws & Updates - KWS Linkhout",
+  title: "Clubnieuws en verslagen",
+  alternates: { canonical: "/nieuws" },
   description: "Blijf op de hoogte van alles wat er gebeurt bij KWS Linkhout. Laatste nieuws, evenementen en updates.",
 };
 
