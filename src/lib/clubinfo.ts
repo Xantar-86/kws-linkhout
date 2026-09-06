@@ -397,45 +397,16 @@ Functieomschrijving:
     icon: "user-plus",
     content: `**Welkom bij KWS Linkhout!**
 
-Wil jouw zoon of dochter bij KWS Linkhout komen voetballen? Super! Wij zijn altijd op zoek naar nieuwe talenten en enthousiaste spelers die willen meedoen met onze club.
+Wil jij of je zoon of dochter bij ons komen voetballen? Alles wat je daarvoor nodig hebt, staat op één pagina: de drie stappen, het lidgeld per leeftijdsgroep, wat erin zit, bij wie je terecht komt en de vragen die ouders het vaakst stellen.
 
-**Hoe schrijf je in?**
+Ga naar **Kom voetballen bij KWS Linkhout** via de knop hieronder of via "Word lid" bovenaan elke pagina.
 
-Vul het Inschrijvingsformulier in via onderstaande knop. Wij nemen dan zo snel mogelijk contact met je op om de inschrijving te vervolledigen.
+**Kort samengevat**
 
-**Contact per categorie:**
-
-**Jeugd:**
-- AVJO
-- E-mail: info@kwslinkhout.be
-- WhatsApp: 0494 84 36 93
-
-**Dames:**
-- Ben Jouck
-- E-mail: info@kwslinkhout.be
-- Tel: 0479 07 35 55
-
-**Senioren:**
-- Ramon Fernandez
-- E-mail: info@kwslinkhout.be
-- Tel: 0475 61 02 86
-
-**Wat heb je nodig?**
-
-- Geldige identiteitskaart
-- Pasfoto
-
-**Lidgeld seizoen 2026-2027:**
-
-- Voor U5 bedraagt het inschrijvingsgeld € 130 ( of € 160 bij inschrijving Bond)
-- Voor U6 tem U9 en WU9 bedraagt het inschrijvingsgeld € 295
-- Voor U10 tem U13 en WU13 bedraagt het inschrijvingsgeld € 320
-- Voor U15 tem U17 en WU16 tem WU20 bedraagt het inschrijvingsgeld € 350
-- Voor senioren mannen (Pr.2 - Pr.4) en dames (Pr.1) bedraagt het inschrijvingsgeld € 400
-
-Het lidgeld omvat: verzekering, clubkledij (shirt, short, kousen), en deelname aan clubactiviteiten.
-
-We kijken er naar uit om je te verwelkomen bij KWS Linkhout!`,
+- Een proeftraining kan altijd en verplicht tot niets
+- Inschrijven gebeurt via het online formulier
+- Je hebt een geldige identiteitskaart en een pasfoto nodig
+- Het lidgeld gaat van 130 euro voor de Voetbaltuin tot 400 euro voor de senioren`,
     highlights: [
       "Eenvoudig online Inschrijvingsformulier",
       "Snelle opvolging via Spond/WhatsApp",

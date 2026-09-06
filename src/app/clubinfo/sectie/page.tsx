@@ -245,21 +245,20 @@ function ClubInfoContent() {
 
             {/* Special CTA for Registration */}
             {section.slug === "nieuwe-aansluiting" && (
-              <div className="mt-12 p-8 bg-gradient-to-br from-primary to-primary-700 rounded-2xl text-white text-center">
-                <h3 className="text-2xl font-bold mb-4">
+              <div className="korrel lichtrand relative mt-12 overflow-hidden rounded-2xl bg-inkt-950 p-8 text-center text-white">
+                <h3 className="heading-3 mb-4 text-white">
                   Klaar om lid te worden?
                 </h3>
-                <p className="text-white/90 mb-6">
-                  Vul het Inschrijvingsformulier in en start je voetbalavontuur bij KWS Linkhout!
+                <p className="mb-6 text-white/70">
+                  Op één pagina staat alles: de stappen, het lidgeld per leeftijd en bij wie je
+                  terecht komt.
                 </p>
                 <a
-                  href="https://forms.gle/f6hM5fsBFkGarKJn9"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/word-lid"
                   className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition-colors"
                 >
                   <UserPlus className="w-5 h-5" />
-                  Inschrijvingsformulier invullen
+                  Naar Kom voetballen bij KWS Linkhout
                 </a>
               </div>
             )}

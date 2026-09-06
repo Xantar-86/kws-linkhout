@@ -41,7 +41,7 @@ export function RegistrationForm() {
           </div>
 
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSdSw7GBB_yFZ3DDGCkTLJPwLjKzmTFX_8FlL0aOnxmqc43v9g/viewform"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdU9K2xcf4JZp1rLe59JqVFvVnuWGZ5vVy1UMwD2a30jbmiPA/viewform"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-xl font-bold hover:bg-gray-100 transition-colors"

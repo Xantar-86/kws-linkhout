@@ -377,7 +377,7 @@ export function Header() {
             {/* De enige knop in de balk, en meteen het doel van de hele site.
                 Vanaf de grote schermen, want daaronder is de ruimte op. */}
             <Link
-              href="/clubinfo/sectie?slug=nieuwe-aansluiting"
+              href="/word-lid"
               className={`hidden rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 lg:inline-flex ${
                 licht
                   ? "bg-white/10 text-white ring-1 ring-white/25 backdrop-blur-sm hover:bg-white/20"
@@ -464,7 +464,7 @@ export function Header() {
               ))}
 
               <Link
-                href="/clubinfo/sectie?slug=nieuwe-aansluiting"
+                href="/word-lid"
                 className="btn-primary mt-6 w-full"
               >
                 Word lid
