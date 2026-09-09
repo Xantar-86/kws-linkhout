@@ -129,6 +129,44 @@ export const KERNEN: Record<string, Kernspeler[]> = {
     { naam: "Lennert Sneyers", positie: "A" },
     { naam: "Niels Gabriels", positie: "A" },
   ],
+
+  // U11, de spelers waarvan er een portret gemaakt is. Posities en rugnummers
+  // zijn nog niet doorgegeven; die mogen er per speler bij zodra ze bekend
+  // zijn.
+  U11: [
+    { naam: "Castor Ulenaers" },
+    { naam: "Emiel Cypers" },
+    { naam: "Emiel Neyens" },
+    { naam: "Ibe Thoelen" },
+    { naam: "Juul Volders" },
+    { naam: "Mathieu Huls" },
+    { naam: "Mats Van Der Leun" },
+    { naam: "Senn Deferme" },
+    { naam: "Ties Van de Vijver" },
+    { naam: "Viktor Vanden Berghe" },
+    { naam: "Vin Dullers" },
+  ],
+
+  // U9, de spelers waarvan er een portret gemaakt is. A en B delen deze
+  // lijst zolang de verdeling niet vastligt. Posities en rugnummers zijn nog
+  // niet doorgegeven; die mogen er per speler bij zodra ze bekend zijn.
+  //
+  // Fin Rogiers is nog niet aangesloten en staat daarom nog niet in de lijst.
+  U9: [
+    { naam: "Arthur Hoogstijns" },
+    { naam: "Cas Horions" },
+    { naam: "Cisse Simons" },
+    { naam: "Jake Michiels" },
+    { naam: "Leon Vanneroem" },
+    { naam: "Louis Vanschoonbeek" },
+    { naam: "Mathilde Ramaekers" },
+    { naam: "Maxim Coemans" },
+    { naam: "Noah Stockmans" },
+    { naam: "Oscar Cleeren" },
+    { naam: "Stan Clemens" },
+    { naam: "Victor Darville" },
+    { naam: "Vik Tielens" },
+  ],
 };
 
 /** Een speler zoals de pagina hem toont: gegevens plus, als die er is, een foto. */

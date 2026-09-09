@@ -73,5 +73,9 @@ public/Docs/Overzicht spelers*.xlsx
 # er los naast onder hun eigen naam, deze map zou ze alleen verdubbelen.
 public/Docs/documenten-mutualiteit/2026-2027/
 
+# Originele portretten van de jeugdploegen, per ploeg een map; enkel de
+# webversies in public/images/spelers/ gaan mee
+public/images/Fotos spelers/
+
 # Uitgeknipte spelers; afgeleid, wordt lokaal opnieuw gemaakt
 public/images/uitgeknipt/

@@ -319,6 +319,7 @@ export const teams: Team[] = [
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
     coach: "Jorne Bynens",
+    spelersGroep: "U11",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U11-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -354,6 +355,8 @@ export const teams: Team[] = [
     trainingLocation: "KWS",
     coach: "Gunther Vanneroem",
     trainersTitel: "Trainer",
+    // A en B delen voorlopig een kern; iedereen staat op allebei de pagina's.
+    spelersGroep: "U9",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -372,6 +375,7 @@ export const teams: Team[] = [
     trainingLocation: "KWS",
     coach: "Gunther Vanneroem",
     trainersTitel: "Trainer",
+    spelersGroep: "U9",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",

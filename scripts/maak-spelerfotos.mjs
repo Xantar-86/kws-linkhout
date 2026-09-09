@@ -1,12 +1,14 @@
 /**
  * Maakt webversies van de spelersfoto's en schrijft de ploeglijst weg.
  *
- * De originelen in `public/images/kws spelers/` en `public/images/Trainers/`
- * zijn te groot om rechtstreeks te tonen. Per persoon komt er een klein beeld
- * voor het raster en een groter voor als je erop klikt.
+ * De originelen in `public/images/kws spelers/`, `public/images/Trainers/` en
+ * `public/images/Fotos spelers/<ploeg>/` zijn te groot om rechtstreeks te
+ * tonen. Per persoon komt er een klein beeld voor het raster en een groter
+ * voor als je erop klikt.
  *
  * De ploeg leiden we af uit de bestandsnaam: "Mike Geybels P2.JPG" hoort bij
- * P2, en dat achtervoegsel hoort niet in de naam op de pagina.
+ * P2, en dat achtervoegsel hoort niet in de naam op de pagina. Bij de jeugd
+ * staat de ploeg in de mapnaam en bevat het bestand enkel de naam.
  *
  * Alle foto's zijn in dezelfde opstelling genomen, maar niet iedereen stond
  * even ver van het toestel. Daarom knippen we niet blind een vierkant uit het
@@ -21,10 +23,13 @@ import { createHash } from "node:crypto";
 import { join } from "node:path";
 import sharp from "sharp";
 
+/** De jeugdploegen: elke ploeg een eigen map, met de ploeg als mapnaam. */
+const JEUGDMAP = "public/images/Fotos spelers";
+
 /**
- * Twee bronmappen. In de spelersmap staat de ploeg in de bestandsnaam en
- * herken je een trainer aan de ploeg vooraan; alles in de trainersmap is per
- * definitie een trainer, daar volstaat de naam.
+ * Waar de foto's vandaan komen. In de spelersmap staat de ploeg in de
+ * bestandsnaam en herken je een trainer aan de ploeg vooraan; alles in de
+ * trainersmap is per definitie een trainer, daar volstaat de naam.
  */
 const BRONNEN = [
   { map: "public/images/kws spelers", altijdTrainer: false },
@@ -32,6 +37,13 @@ const BRONNEN = [
   // De damesploegen hebben hun eigen map, met de ploeg vooraan in de naam en
   // een T1 achteraan bij een trainer.
   { map: "public/images/spelers p1 p2 kws ladies 2026-2027", dames: true },
+  // En elke jeugdploeg een eigen map: "Fotos spelers/U11/Ibe Thoelen.jpeg".
+  // Zo hoeft er hier niets bij als er een ploeg gefotografeerd wordt.
+  ...(existsSync(JEUGDMAP)
+    ? readdirSync(JEUGDMAP, { withFileTypes: true })
+        .filter((m) => m.isDirectory())
+        .map((m) => ({ map: join(JEUGDMAP, m.name), ploegUitMap: m.name, opfrissen: true }))
+    : []),
 ];
 
 /** Groepsfoto's horen bij de ploeg, niet bij een speelster. */
@@ -88,11 +100,19 @@ const SNIJ_VERSIE = 12;
  * naast liggen. `kruin` is de hoogte van de kruin als deel van de foto,
  * `midden` de horizontale plaats, `hoogte` hoeveel van de foto de uitsnede
  * beslaat. Allemaal tussen 0 en 1.
+ *
+ * `draai` is iets anders: het aantal graden waarmee de speler rechtgezet
+ * wordt, met de klok mee. Alleen invullen als iemand duidelijk scheef op de
+ * foto staat; een beetje scheef is gewoon hoe mensen staan.
  */
 const CORRECTIES = {
   "Brent Gilissen": { kruin: 0.215, midden: 0.51 },
   // Staat al als portret in beeld en vult de foto; vrijwel niets bijsnijden.
   "Luc Brants": { kruin: 0.02, midden: 0.44, hoogte: 1 },
+  // Leunt op de foto naar zijn linkerkant. In het wijde beeld valt dat mee,
+  // maar zonder de horizon en het doel eromheen springt het eruit. Vijf graden
+  // terug zet hem recht zonder dat het gedraaid oogt.
+  "Noah Stockmans": { draai: -5 },
 };
 
 /** Maakt van "Lorenzo Silvente Fernandez" een bestandsnaam zonder rare tekens. */
@@ -191,13 +211,359 @@ mkdirSync(DOEL, { recursive: true });
 const spelers = [];
 const trainers = [];
 
+/**
+ * Haalt losse stukjes uit een uitsnede.
+ *
+ * Het uitknipmodel laat af en toe een snipper achtergrond staan die nergens
+ * aan vastzit: een stukje doelnet, een reclamebord, een tak. Op de foto valt
+ * dat niet op, maar op de donkere clubwand zweeft het ineens los naast de
+ * speler.
+ *
+ * We houden daarom alleen wat aan de speler vastzit. Alles wat kleiner is dan
+ * een twintigste van het grootste stuk gaat weg; dat is klein genoeg om een
+ * uitgestoken arm of een bal in de hand te sparen, en groot genoeg om
+ * snippers te vangen.
+ *
+ * De ondergrens ligt bewust laag. Een snipper is vaak halfdoorzichtig: op de
+ * foto amper te zien, maar op de donkere wand een duidelijke veeg. Met een
+ * hoge drempel telt zo'n veeg niet als eigen stuk en blijft hij staan.
+ */
+const SNIPPER_DEEL = 0.05;
+const SNIPPER_ONDERGRENS = 24;
+
+async function schoneUitsnede(pad) {
+  const { data, info } = await sharp(pad)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const B = info.width;
+  const H = info.height;
+  const groep = new Int32Array(B * H).fill(-1);
+  const groottes = [];
+  const stapel = new Int32Array(B * H);
+
+  for (let start = 0; start < B * H; start++) {
+    if (groep[start] !== -1 || data[start * 4 + 3] < SNIPPER_ONDERGRENS) continue;
+    const nummer = groottes.length;
+    let top = 0;
+    let aantal = 0;
+    stapel[top++] = start;
+    groep[start] = nummer;
+    while (top > 0) {
+      const punt = stapel[--top];
+      aantal++;
+      const x = punt % B;
+      const y = (punt - x) / B;
+      // Vier buren volstaat; diagonaal verbinden plakt losse snippers juist
+      // weer aan de speler vast.
+      if (x > 0) {
+        const b = punt - 1;
+        if (groep[b] === -1 && data[b * 4 + 3] >= SNIPPER_ONDERGRENS) { groep[b] = nummer; stapel[top++] = b; }
+      }
+      if (x < B - 1) {
+        const b = punt + 1;
+        if (groep[b] === -1 && data[b * 4 + 3] >= SNIPPER_ONDERGRENS) { groep[b] = nummer; stapel[top++] = b; }
+      }
+      if (y > 0) {
+        const b = punt - B;
+        if (groep[b] === -1 && data[b * 4 + 3] >= SNIPPER_ONDERGRENS) { groep[b] = nummer; stapel[top++] = b; }
+      }
+      if (y < H - 1) {
+        const b = punt + B;
+        if (groep[b] === -1 && data[b * 4 + 3] >= SNIPPER_ONDERGRENS) { groep[b] = nummer; stapel[top++] = b; }
+      }
+    }
+    groottes.push(aantal);
+  }
+
+  if (groottes.length <= 1) return { buffer: await sharp(pad).png().toBuffer(), weg: 0 };
+
+  const grootste = Math.max(...groottes);
+  const grens = grootste * SNIPPER_DEEL;
+  let weg = 0;
+  for (let p = 0; p < B * H; p++) {
+    if (data[p * 4 + 3] === 0) continue;
+    const g = groep[p];
+    // Wat nergens bij hoort is te flauw om iets te zijn, en wat bij een te
+    // klein stuk hoort is een snipper. Allebei weg.
+    if (g === -1 || groottes[g] < grens) {
+      data[p * 4 + 3] = 0;
+      weg++;
+    }
+  }
+
+  return {
+    buffer: await sharp(data, { raw: { width: B, height: H, channels: 4 } }).png().toBuffer(),
+    weg,
+  };
+}
+
+/**
+ * Snijdt de wig onderaan weg die door het draaien ontstaat.
+ *
+ * Een foto eindigt onderaan recht, maar na een paar graden draaien loopt die
+ * rand schuin en blijft er aan een kant een driehoek leeg. Op de wand zie je
+ * dan achtergrond onder de speler in plaats van de speler zelf. We zoeken van
+ * onderen af de eerste rij waar hij over vrijwel de volle breedte staat en
+ * snijden alles daaronder weg.
+ */
+const ONDERKANT_DEEL = 0.92;
+
+async function rechteOnderkant(png) {
+  const { data, info } = await sharp(png)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const B = info.width;
+  const H = info.height;
+
+  const perRij = new Uint32Array(H);
+  for (let y = 0; y < H; y++) {
+    let n = 0;
+    for (let x = 0; x < B; x++) if (data[(y * B + x) * 4 + 3] >= 128) n++;
+    perRij[y] = n;
+  }
+
+  // De breedste rij in het onderste derde is de maat; daaronder mag het niet
+  // veel smaller worden.
+  let breedst = 0;
+  for (let y = Math.floor(H * 0.66); y < H; y++) breedst = Math.max(breedst, perRij[y]);
+  let onder = H - 1;
+  while (onder > 0 && perRij[onder] < breedst * ONDERKANT_DEEL) onder--;
+
+  if (onder >= H - 1) return png;
+  return sharp(png)
+    .extract({ left: 0, top: 0, width: B, height: onder + 1 })
+    .png()
+    .toBuffer();
+}
+
+/**
+ * De opfrisbeurt voor een fotosessie die is bijgewerkt moet worden.
+ *
+ * HIER hoort elke nieuwe bewerking aan een portret thuis, en nergens anders.
+ *
+ * De reden is dit script zelf: het maakt bij elke run alle honderd portretten
+ * opnieuw. Zet je een bewerking in de gewone gang, dan verandert daarmee ook
+ * elk portret dat er al jaren staat en dat zo goedgekeurd is. Dat is twee keer
+ * gebeurd voor deze functie er was.
+ *
+ * Staat `aan` uit, dan komt de uitsnede er onveranderd weer uit en blijft het
+ * bestand tot op de byte hetzelfde als wat er nu online staat.
+ */
+async function opfrisbeurt(knipPad, { aan, draai }) {
+  if (!aan) {
+    return {
+      buffer: await sharp(knipPad).png().toBuffer(),
+      toon: {
+        versterking: TOON_MIN,
+        verschuiving: -6,
+        wit: [1, 1, 1],
+        verzadiging: 1.2,
+        plaatselijk: false,
+      },
+      snippers: 0,
+    };
+  }
+
+  // 1. Losse snippers achtergrond eruit, voor er iets gemeten wordt.
+  const schoon = await schoneUitsnede(knipPad);
+
+  // 2. Rechtzetten wie scheef staat. De achtergrond is al weg, dus dit laat
+  //    geen lege hoeken na.
+  const buffer = draai
+    ? await rechteOnderkant(
+        await sharp(schoon.buffer)
+          .rotate(draai, { background: { r: 0, g: 0, b: 0, alpha: 0 } })
+          .trim({ threshold: 1 })
+          .png()
+          .toBuffer()
+      )
+    : schoon.buffer;
+
+  // 3. Meten hoe bleek de speler is; het toepassen gebeurt verderop, samen
+  //    met het verkleinen.
+  const toon = await tooncorrectie(buffer);
+
+  return { buffer, toon, snippers: schoon.weg };
+}
+
+/**
+ * Hoe een uitsnede opgehaald moet worden.
+ *
+ * Veel portretten zijn tegen een wit doek genomen. De camera meet dan op dat
+ * doek en niet op het kind, waardoor de speler bleek en vlak op de foto komt.
+ * Dat doek hangt bovendien in koel licht, dus het kind vangt een blauwe zweem.
+ *
+ * Omdat de achtergrond er op dit punt al uit geknipt is, kunnen we de speler
+ * apart opmeten. Er gebeuren twee dingen, in deze volgorde:
+ *
+ * 1. Witbalans. Het KWS-shirt is wit, dus de lichtste plek op de speler hoort
+ *    kleurloos te zijn. Wijkt die af, dan is dat de zweem van het licht en
+ *    duwen we de kanalen terug naar elkaar.
+ * 2. Contrast. Pas daarna zetten we zijn eigen zwart- en witpunt terug.
+ *
+ * Andersom werkt niet: contrast op een gekleurde zweem maakt de zweem alleen
+ * maar sterker, en dan worden witte shirts blauw en rode strepen roze.
+ *
+ * Een foto die al goed zit verandert nauwelijks: de zweem is dan al weg en de
+ * punten staan al waar ze horen.
+ */
+const TOON_DONKER = 12;
+const TOON_LICHT = 238;
+const TOON_MIN = 1.06;
+const TOON_MAX = 2.3;
+/**
+ * Vanaf welk zwartpunt we ingrijpen.
+ *
+ * Dit is het kenmerk van een foto tegen een wit doek: er zit geen echt zwart
+ * meer in, alles begint pas ergens in het grijs. Een portret met een gewoon
+ * zwartpunt laten we met rust, ook als het donker of rustig van toon is. Dat
+ * is een keuze van de fotograaf en geen fout.
+ */
+const TOON_DREMPEL = 28;
+
+/** Ophogen bij elke wijziging aan de opfrisbeurt; zie de vingerafdruk. */
+const OPFRIS_VERSIE = 3;
+
+/**
+ * Het plaatselijke contrast: hoe groot de stukjes zijn waar apart naar
+ * gekeken wordt, en hoe ver het mag gaan. Klein en zacht gehouden: te sterk
+ * en een gezicht wordt korrelig en krijgt randen om de neus.
+ */
+const PLAATSELIJK_VAK = 90;
+const PLAATSELIJK_KRACHT = 2;
+
+/**
+ * Alleen mappen met `opfrissen: true` gaan door de opfrisbeurt hierboven.
+ *
+ * De portretten van de eerste ploegen staan al jaren op de site en zijn zo
+ * goedgekeurd. Ook al zou de meting bij een enkele ook aanslaan, we gaan ze
+ * niet ongevraagd veranderen: dan verandert er van de ene dag op de andere
+ * van alles aan de site zonder dat iemand erom gevraagd heeft.
+ */
+/**
+ * Zover mag een kanaal hoogstens bijgedraaid worden voor de witbalans, en hoe
+ * veel van de gemeten afwijking we werkelijk wegnemen.
+ *
+ * Niet alles: de lichtste plek op een speler is meestal het witte shirt, maar
+ * er zit ook blond haar en een voorhoofd tussen, en die horen niet kleurloos
+ * te zijn. Corrigeer je de meting volledig, dan draai je die warme tinten mee
+ * de andere kant op en wordt de huid bruin.
+ */
+const WIT_MAX = 1.1;
+const WIT_KRACHT = 0.75;
+
+async function tooncorrectie(knipPad) {
+  const { data, info } = await sharp(knipPad)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const punten = info.width * info.height;
+  const telling = new Uint32Array(256);
+  let aantal = 0;
+  for (let p = 0; p < punten; p++) {
+    // Alleen de speler zelf telt mee; de doorzichtige rand eromheen niet.
+    if (data[p * 4 + 3] < 200) continue;
+    const l = Math.round(
+      0.299 * data[p * 4] + 0.587 * data[p * 4 + 1] + 0.114 * data[p * 4 + 2]
+    );
+    telling[l]++;
+    aantal++;
+  }
+
+  const rustig = {
+    versterking: TOON_MIN,
+    verschuiving: -6,
+    wit: [1, 1, 1],
+    verzadiging: 1.2,
+    // Ook een foto die goed zit mag wat diepte in het gezicht krijgen, zolang
+    // hij door de opfrisbeurt gaat. Buiten die beurt staat dit uit.
+    plaatselijk: true,
+  };
+  // Te weinig speler om iets zinnigs op te meten: dan liever niets forceren.
+  if (aantal < 5000) return rustig;
+
+  const percentiel = (deel) => {
+    const grens = aantal * deel;
+    let som = 0;
+    for (let l = 0; l < 256; l++) {
+      som += telling[l];
+      if (som >= grens) return l;
+    }
+    return 255;
+  };
+
+  // Niet de allerdonkerste en allerlichtste pixel, want een enkele schaduw of
+  // lichtvlek zou de hele meting bepalen.
+  const donker = percentiel(0.02);
+  const licht = percentiel(0.98);
+
+  // De lichtste tiende van de speler: dat is in de praktijk het witte shirt.
+  const shirt = percentiel(0.9);
+  let som = [0, 0, 0];
+  let shirtPunten = 0;
+  for (let p = 0; p < punten; p++) {
+    if (data[p * 4 + 3] < 200) continue;
+    const l = 0.299 * data[p * 4] + 0.587 * data[p * 4 + 1] + 0.114 * data[p * 4 + 2];
+    if (l < shirt) continue;
+    som[0] += data[p * 4];
+    som[1] += data[p * 4 + 1];
+    som[2] += data[p * 4 + 2];
+    shirtPunten++;
+  }
+
+  let wit = [1, 1, 1];
+  if (shirtPunten > 500) {
+    const gemiddeld = som.map((c) => c / shirtPunten);
+    const grijs = (gemiddeld[0] + gemiddeld[1] + gemiddeld[2]) / 3;
+    // Ver uit elkaar liggende kanalen betekenen een echt gekleurd shirt, geen
+    // zweem. Dat laten we met rust, anders verkleuren we een keeperstrui.
+    const scheef = Math.max(...gemiddeld) / Math.max(1, Math.min(...gemiddeld));
+    if (grijs > 120 && scheef < 1.4) {
+      wit = gemiddeld.map((c) => {
+        const volledig = grijs / Math.max(1, c);
+        const deels = 1 + (volledig - 1) * WIT_KRACHT;
+        return Math.min(WIT_MAX, Math.max(1 / WIT_MAX, deels));
+      });
+    }
+  }
+
+  // Zit het zwart nog waar het hoort, dan is er niets mis en blijven we eraf.
+  // Ook de witbalans niet: die foto's staan al goed en zijn al goedgekeurd,
+  // en dan hoort er niets aan te veranderen.
+  if (donker <= TOON_DREMPEL) return rustig;
+
+  const versterking = Math.min(
+    TOON_MAX,
+    Math.max(TOON_MIN, (TOON_LICHT - TOON_DONKER) / Math.max(1, licht - donker))
+  );
+  // De verschuiving hoort bij de versterking en mag dus niet apart begrensd
+  // worden: samen leggen ze het donkerste en het lichtste punt op hun plaats.
+  // Knijp je de verschuiving af, dan schuift het hele beeld omhoog en brandt
+  // het shirt wit uit.
+  const verschuiving = TOON_DONKER - versterking * donker;
+
+  // Wie bleek op de foto staat is ook wat kleur kwijt, maar met mate: de
+  // witbalans en het contrast hebben het meeste werk al gedaan, en te veel
+  // verzadiging maakt de huid rood.
+  const verzadiging = Math.min(1.3, 1.18 + (versterking - 1) * 0.12);
+
+  // Een gezicht dat vlak belicht is, blijft ook na het rekken vlak: de
+  // uitersten zitten dan in het shirt en de schoenen, niet in de kop. Een
+  // milde plaatselijke contrastverhoging geeft juist daar de diepte terug.
+  return { versterking, verschuiving, wit, verzadiging, plaatselijk: true };
+}
+
 const teDoen = BRONNEN.filter((b) => existsSync(b.map)).flatMap((bron) =>
   readdirSync(bron.map)
     .filter((f) => /\.(jpe?g|png)$/i.test(f))
     .map((bestand) => ({ ...bron, bestand }))
 );
 
-for (const { map, bestand, altijdTrainer, dames } of teDoen) {
+for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teDoen) {
   if (GEEN_PORTRET.test(bestand)) continue;
   const zonderExtensie = bestand.replace(/\.[^.]+$/, "").trim();
 
@@ -213,7 +579,16 @@ for (const { map, bestand, altijdTrainer, dames } of teDoen) {
 
   const damesRij = zonderExtensie.match(/^(P1|P2)\s+(.*)$/i);
 
-  if (dames && damesRij) {
+  if (ploegUitMap) {
+    // Bij de jeugd zegt de map de ploeg en het bestand de naam. Staat er een
+    // T1 achter, dan is het de trainer van die ploeg: die wordt op dezelfde
+    // dag en tegen hetzelfde doek gefotografeerd als zijn spelers, dus hij
+    // hoort in dezelfde map te kunnen staan.
+    const jeugdTrainer = zonderExtensie.match(/^(.*?)\s+T\d$/i);
+    naam = jeugdTrainer ? jeugdTrainer[1].trim() : zonderExtensie;
+    ploeg = ploegUitMap;
+    isTrainer = jeugdTrainer !== null;
+  } else if (dames && damesRij) {
     // "P1 Frank Schroyen T1" is de trainer van de eerste damesploeg.
     ploeg = `Dames ${damesRij[1].toUpperCase()}`;
     naam = damesRij[2].replace(/\s+T\d$/i, "").trim();
@@ -240,6 +615,7 @@ for (const { map, bestand, altijdTrainer, dames } of teDoen) {
   const kruinFractie = correctie.kruin ?? gemeten.kruinFractie;
   const middenFractie = correctie.midden ?? gemeten.middenFractie;
   const hoogteFractie = correctie.hoogte ?? UITSNEDE_HOOGTE;
+  const draai = correctie.draai ?? 0;
 
   // Een vingerafdruk van de foto en de uitsnede in de bestandsnaam. Verandert
   // er iets, dan verandert het webadres mee en tonen browsers en de
@@ -258,6 +634,12 @@ for (const { map, bestand, altijdTrainer, dames } of teDoen) {
         isTrainer,
         KLEIN,
         GROOT,
+        // Achteraan en alleen als ze afwijken: zo blijft de naam van elk
+        // portret dat hier niets mee te maken heeft precies wat hij was.
+        // Verandert de opfrisbeurt, dan verandert het webadres van wie erdoor
+        // gaat wel mee, anders blijft de browser de oude versie tonen.
+        ...(draai ? [`draai${draai}`] : []),
+        ...(opfrissen === true ? [`opfris${OPFRIS_VERSIE}`] : []),
       ].join("|")
     )
     .digest("hex")
@@ -355,26 +737,50 @@ for (const { map, bestand, altijdTrainer, dames } of teDoen) {
   const knipMaat = existsSync(knipPad) ? await sharp(knipPad).metadata() : null;
   const bruikbareKnip = knipMaat !== null && Math.max(knipMaat.width, knipMaat.height) >= 400;
 
+  // Buiten de tak, zodat de gemeten waarden verderop nog te melden zijn.
+  let toon = null;
+  let snippers = 0;
+
   if (bruikbareKnip) {
     // Verkleinen maakt een beeld altijd wat weker, en op een donkere wand
     // ogen de shirts al snel flets. Daarom na het verkleinen verscherpen en
     // de kleur en het contrast wat aanzetten; dat haalt het rood terug.
-    const persoon = await sharp(knipPad)
+    // EEN hek om alles wat nieuw is. Zie de uitleg bij opfrisbeurt().
+    const opgefrist = await opfrisbeurt(knipPad, { aan: opfrissen === true, draai });
+    snippers = opgefrist.snippers;
+    toon = opgefrist.toon;
+    const persoon = await sharp(opgefrist.buffer)
       .resize({
         height: Math.round(GROOT * 0.9),
         width: Math.round(portretBreed * 0.94),
         fit: "inside",
       })
-      .modulate({ saturation: 1.2 })
-      .linear(1.06, -6)
+      // Witbalans en contrast in een keer: per kanaal een eigen versterking.
+      // Eerst dit en pas daarna de verzadiging, anders wordt de zweem mee
+      // opgeblazen in plaats van weggewerkt.
+      .linear(
+        toon.wit.map((w) => toon.versterking * w),
+        [toon.verschuiving, toon.verschuiving, toon.verschuiving]
+      )
+      .modulate({ saturation: toon.verzadiging })
       .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
       .toBuffer();
-    const maat = await sharp(persoon).metadata();
+
+    // Plaatselijk contrast, alleen voor wie door de opfrisbeurt ging. Het
+    // rekken hierboven werkt over het hele beeld; bij een vlak belicht gezicht
+    // zitten de uitersten in het shirt en verandert er in de kop weinig. Dit
+    // kijkt per stukje beeld en geeft daar juist wel diepte.
+    const gerekt = toon.plaatselijk
+      ? await sharp(persoon)
+          .clahe({ width: PLAATSELIJK_VAK, height: PLAATSELIJK_VAK, maxSlope: PLAATSELIJK_KRACHT })
+          .toBuffer()
+      : persoon;
+    const maat = await sharp(gerekt).metadata();
     const persoonLinks = Math.round((portretBreed - maat.width) / 2);
     const persoonTop = GROOT - maat.height;
 
     await sharp(await clubwand(portretBreed, GROOT))
-      .composite([{ input: persoon, left: persoonLinks, top: persoonTop }])
+      .composite([{ input: gerekt, left: persoonLinks, top: persoonTop }])
       .webp({ quality: 86 })
       .toFile(grootPad);
 
@@ -417,7 +823,12 @@ for (const { map, bestand, altijdTrainer, dames } of teDoen) {
 
   console.log(
     `${naam.padEnd(28)} ${ploeg}${isTrainer ? " trainer" : "       "}` +
-      `  kruin ${kruinFractie.toFixed(3)}  midden ${middenFractie.toFixed(3)}`
+      `  kruin ${kruinFractie.toFixed(3)}  midden ${middenFractie.toFixed(3)}` +
+      (toon
+        ? `  toon x${toon.versterking.toFixed(2)}${toon.versterking > 1.15 ? " opgehaald" : ""}`
+        : "") +
+      (snippers > 0 ? `  ${snippers} snipperpunten weg` : "") +
+      (draai ? `  ${draai} graden rechtgezet` : "")
   );
 
   const item = {
@@ -435,7 +846,8 @@ trainers.sort(opNaam);
 
 const regels = [
   "// Gemaakt door scripts/maak-spelerfotos.mjs. Niet met de hand aanpassen:",
-  "// zet een foto in public/images/kws spelers/ en draai het script opnieuw.",
+  "// zet een foto in public/images/kws spelers/ of in public/images/Fotos",
+  "// spelers/<ploeg>/ en draai het script opnieuw.",
   "",
   "export interface Speler {",
   "  naam: string;",
@@ -451,9 +863,16 @@ const regels = [
   "",
   `export const trainers: Speler[] = ${JSON.stringify(trainers, null, 2)};`,
   "",
-  "/** De foto van een trainer, als die er is. */",
+  "/**",
+  " * De foto van een trainer, als die er is.",
+  " *",
+  " * Een jeugdtrainer speelt soms zelf nog bij een van de ploegen. Zijn foto",
+  " * staat dan bij de spelers en niet bij de trainers, en die willen we hier",
+  " * evengoed tonen.",
+  " */",
   "export function trainerFoto(naam: string): Speler | undefined {",
-  "  return trainers.find((t) => t.naam.toLowerCase() === naam.toLowerCase());",
+  "  const zelfde = (s: Speler) => s.naam.toLowerCase() === naam.toLowerCase();",
+  "  return trainers.find(zelfde) ?? spelers.find(zelfde);",
   "}",
   "",
 ];
