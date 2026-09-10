@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ogVoor } from "@/lib/seo";
 import PloegenClient from "./Client";
 
 export const metadata: Metadata = {
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
   description:
     "Alle ploegen van KWS Linkhout in Lummen: jeugd van U6 tot U17, zes dames- en meisjesploegen en de senioren. Bekijk trainingsuren, trainer en kalender per ploeg.",
   alternates: { canonical: "/ploegen" },
+  openGraph: ogVoor("/ploegen"),
 };
 
 export default function Pagina() {

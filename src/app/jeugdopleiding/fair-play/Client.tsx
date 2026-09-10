@@ -133,7 +133,7 @@ export default function FairPlayClient() {
               className="mt-8 text-center bg-gray-50 rounded-xl p-8 border border-gray-200"
             >
               <blockquote className="text-xl italic text-gray-700 mb-4">
-                "Het gaat niet om winnen of verliezen, maar om hoe je het spel speelt."
+                &quot;Het gaat niet om winnen of verliezen, maar om hoe je het spel speelt.&quot;
               </blockquote>
               <cite className="text-gray-500">Pierre de Coubertin</cite>
             </motion.div>

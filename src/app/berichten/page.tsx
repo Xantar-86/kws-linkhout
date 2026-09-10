@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ogVoor } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Calendar, Images, Newspaper } from "lucide-react";
@@ -6,7 +7,9 @@ import { getAllBerichten } from "@/lib/berichten";
 import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
-  title: "Berichten - KWS Linkhout",
+  title: "Berichten en sfeerverslagen",
+  alternates: { canonical: "/berichten" },
+  openGraph: ogVoor("/berichten"),
   description: "Alle nieuwsberichten en sfeerverslagen van KWS Linkhout.",
 };
 

@@ -205,7 +205,7 @@ export default function JeugdopleidingClient() {
                   en pedagogisch verantwoorde manier te begeleiden.
                 </li>
                 <li>
-                  Waarden als "fair play", gelijkheid, doorzettingsvermogen, …
+                  Waarden als &quot;fair play&quot;, gelijkheid, doorzettingsvermogen, …
                 </li>
               </ul>
             </div>
@@ -226,7 +226,7 @@ export default function JeugdopleidingClient() {
                   transparantie in taken, … naar voorbeeld van professionele clubs.
                 </li>
                 <li>
-                  Een reputatie ontwikkelen van "familiale club" door het aantrekken van mensen 
+                  Een reputatie ontwikkelen van &quot;familiale club&quot; door het aantrekken van mensen 
                   en spelers uit de regio.
                 </li>
                 <li>

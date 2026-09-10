@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ogVoor } from "@/lib/seo";
 import { Camera, Calendar, ExternalLink, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,6 +9,7 @@ import { PaginaKop } from "@/components/PaginaKop";
 export const metadata: Metadata = {
   title: "Fotoalbums van de club",
   alternates: { canonical: "/fotos" },
+  openGraph: ogVoor("/fotos"),
   description: "Herbeleef de mooiste momenten van KWS Linkhout. Van wedstrijden tot evenementen - alle foto's op één plaats.",
 };
 

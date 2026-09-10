@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ogVoor } from "@/lib/seo";
 import { Calendar, MapPin, ArrowLeft, Download, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { getAllEvents, getRecentlyAddedEvents } from "@/lib/events";
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
   title: "Evenementen en eetfestijnen in Linkhout",
   description: "Mosselfeest, tornooien en clubfeesten van KWS Linkhout in Lummen. Alle data van dit seizoen op een rij.",
   alternates: { canonical: "/nieuws/events" },
+  openGraph: ogVoor("/nieuws/events"),
 };
 
 export default async function EventsPage() {

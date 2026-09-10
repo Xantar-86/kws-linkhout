@@ -16,7 +16,7 @@ import { PaginaKop } from "@/components/PaginaKop";
 import { SectieKop } from "@/components/SectieKop";
 import { Onthul } from "@/components/beweging/Onthul";
 import { trap } from "@/lib/beweging";
-import { FORMULIER, VRAGEN } from "./inhoud";
+import { FORMULIER, VRAGEN, LIDGELD, CONTACTEN } from "./inhoud";
 
 const STAPPEN = [
   {
@@ -42,40 +42,6 @@ const STAPPEN = [
   },
 ];
 
-const LIDGELD = [
-  { groep: "U5, de Voetbaltuin", bedrag: "€ 130", nota: "€ 160 bij aansluiting bij de Bond" },
-  { groep: "U6 tot en met U9, en WU9", bedrag: "€ 295", nota: "" },
-  { groep: "U10 tot en met U13, en WU13", bedrag: "€ 320", nota: "" },
-  { groep: "U15 tot en met U17, en WU16 tot WU20", bedrag: "€ 350", nota: "" },
-  { groep: "Senioren heren (P2 en P4) en dames (P1)", bedrag: "€ 400", nota: "" },
-];
-
-const CONTACTEN = [
-  {
-    voor: "Jeugd",
-    naam: "Maarten Cleeren",
-    rol: "AVJO, algemeen verantwoordelijke jeugdopleiding",
-    mail: "info@kwslinkhout.be",
-    tel: "0494 84 36 93",
-    telLink: "+32494843693",
-  },
-  {
-    voor: "Dames en meisjes",
-    naam: "Ben Jouck",
-    rol: "Futbalista",
-    mail: "info@kwslinkhout.be",
-    tel: "0479 07 35 55",
-    telLink: "+32479073555",
-  },
-  {
-    voor: "Senioren",
-    naam: "Ramon Fernandez",
-    rol: "Sportief verantwoordelijke senioren",
-    mail: "info@kwslinkhout.be",
-    tel: "0475 61 02 86",
-    telLink: "+32475610286",
-  },
-];
 
 export default function WordLidClient() {
   return (

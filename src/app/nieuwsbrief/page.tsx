@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ogVoor } from "@/lib/seo";
 import Link from "next/link";
 import { Mail, Calendar, ArrowRight, FileText } from "lucide-react";
 import { getAllNieuwsbrieven } from "@/lib/nieuwsbrieven";
@@ -6,7 +7,9 @@ import { NewsletterForm } from "@/components/NewsletterForm";
 import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
-  title: "Nieuwsbrief - KWS Linkhout",
+  title: "Nieuwsbrief van de club",
+  alternates: { canonical: "/nieuwsbrief" },
+  openGraph: ogVoor("/nieuwsbrief"),
   description:
     "Lees onze laatste nieuwsbrieven en schrijf je in om op de hoogte te blijven van alles wat er gebeurt bij KWS Linkhout.",
 };

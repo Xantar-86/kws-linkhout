@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ogVoor } from "@/lib/seo";
 import { Newspaper, Calendar, Download, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,7 +7,9 @@ import { getAllPressArticles, PressArticle } from "@/lib/press";
 import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
-  title: "In de Krant - KWS Linkhout",
+  title: "KWS Linkhout in de krant",
+  alternates: { canonical: "/in-de-krant" },
+  openGraph: ogVoor("/in-de-krant"),
   description: "KWS Linkhout in de media. Bekijk hier alle krantenartikelen over onze club.",
 };
 

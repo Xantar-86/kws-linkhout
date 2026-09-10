@@ -25,6 +25,9 @@ const VASTE_PAGINAS: { pad: string; prioriteit: number; freq: MetadataRoute.Site
   { pad: "", prioriteit: 1.0, freq: "weekly" },
   // De belangrijkste pagina na de startpagina: hier sluit iemand aan.
   { pad: "/word-lid", prioriteit: 0.9, freq: "monthly" },
+  { pad: "/lidgeld", prioriteit: 0.8, freq: "yearly" },
+  { pad: "/proeftraining", prioriteit: 0.8, freq: "monthly" },
+  { pad: "/meisjesvoetbal", prioriteit: 0.8, freq: "monthly" },
   { pad: "/ploegen", prioriteit: 0.9, freq: "weekly" },
   { pad: "/jeugdopleiding", prioriteit: 0.8, freq: "monthly" },
   { pad: "/jeugdopleiding/trainingsschema-25-26", prioriteit: 0.8, freq: "monthly" },

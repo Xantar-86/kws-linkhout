@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ogVoor } from "@/lib/seo";
 import { Newspaper, Mail, ExternalLink, FileText, Download, CreditCard, Shield } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,6 +11,7 @@ import { PaginaKop } from "@/components/PaginaKop";
 export const metadata: Metadata = {
   title: "Clubnieuws en verslagen",
   alternates: { canonical: "/nieuws" },
+  openGraph: ogVoor("/nieuws"),
   description: "Blijf op de hoogte van alles wat er gebeurt bij KWS Linkhout. Laatste nieuws, evenementen en updates.",
 };
 
