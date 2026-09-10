@@ -123,8 +123,9 @@ export function HeroSection() {
 
             <Onthul meteen vertraging={wacht + 0.5} duurtijd={duur.lang}>
               <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-white/65 lg:mx-0">
-                Vijfentwintig ploegen, ruim driehonderd leden, van de U6 tot de
-                veteranen. Wie hier wil voetballen, vindt zijn plek.
+                KWS Linkhout is de voetbalclub in Lummen met vijfentwintig
+                ploegen en ruim driehonderd leden, van de U6 tot de veteranen.
+                Wie hier wil voetballen, vindt zijn plek.
               </p>
             </Onthul>
 
@@ -138,7 +139,7 @@ export function HeroSection() {
                 </Magnetisch>
                 <Magnetisch>
                   <Link
-                    href="/clubinfo/sectie?slug=nieuwe-aansluiting"
+                    href="/word-lid"
                     className="btn-secondary w-full border-white/25 text-white hover:border-white/50 hover:bg-white/10 sm:w-auto"
                   >
                     Word lid

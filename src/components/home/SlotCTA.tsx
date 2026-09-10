@@ -80,7 +80,7 @@ export function SlotCTA() {
             <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
               <Magnetisch kracht={8}>
                 <Link
-                  href="/clubinfo/sectie?slug=nieuwe-aansluiting"
+                  href="/word-lid"
                   className="btn-primary group w-full text-base sm:w-auto"
                 >
                   Sluit je aan

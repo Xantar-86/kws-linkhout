@@ -6,8 +6,9 @@ import { EventImage } from "./EventImage";
 import { PaginaKop } from "@/components/PaginaKop";
 
 export const metadata: Metadata = {
-  title: "Evenementen - KWS Linkhout",
-  description: "Alle evenementen en activiteiten bij KWS Linkhout. Noteer deze data in je agenda!",
+  title: "Evenementen en eetfestijnen in Linkhout",
+  description: "Mosselfeest, tornooien en clubfeesten van KWS Linkhout in Lummen. Alle data van dit seizoen op een rij.",
+  alternates: { canonical: "/nieuws/events" },
 };
 
 export default async function EventsPage() {
@@ -17,8 +18,35 @@ export default async function EventsPage() {
     getRecentlyAddedEvents(3),
   ]);
 
+  // De evenementen ook machineleesbaar: zo kan Google een mosselfeest of
+  // tornooi als evenement tonen, met datum en plaats. Alleen wat een datum
+  // heeft; zonder datum is het voor Google geen evenement.
+  const dag = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+  const opmaak = events
+    .filter((e) => typeof e.sortDate === "number")
+    .map((e) => ({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      name: e.title,
+      description: e.description,
+      startDate: dag(e.sortDate as number),
+      ...(e.eindDate && e.eindDate !== e.sortDate ? { endDate: dag(e.eindDate) } : {}),
+      eventStatus: "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+      location: {
+        "@type": "Place",
+        name: e.location || "KWS Linkhout",
+        address: { "@type": "PostalAddress", streetAddress: "Kapelstraat 72", postalCode: "3560", addressLocality: "Lummen", addressCountry: "BE" },
+      },
+      organizer: { "@id": "https://www.kwslinkhout.be/#club" },
+      ...(e.image ? { image: [`https://www.kwslinkhout.be${e.image}`] } : {}),
+    }));
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {opmaak.length > 0 && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(opmaak) }} />
+      )}
 
       <PaginaKop
         terug={{ naar: "/nieuws", label: "Terug naar het nieuws" }}

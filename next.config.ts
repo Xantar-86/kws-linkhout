@@ -20,6 +20,22 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       { source: '/ploegen/team', destination: '/ploegen', permanent: true },
+      // Zelfde verhaal voor de clubinfo-secties.
+      {
+        source: '/clubinfo/sectie',
+        has: [{ type: 'query', key: 'slug', value: '(?<slug>[a-z0-9-]+)' }],
+        destination: '/clubinfo/:slug',
+        permanent: true,
+      },
+      { source: '/clubinfo/sectie', destination: '/clubinfo', permanent: true },
+      // En voor de nieuwsartikels.
+      {
+        source: '/nieuws/artikel',
+        has: [{ type: 'query', key: 'slug', value: '(?<slug>[a-z0-9-]+)' }],
+        destination: '/nieuws/:slug',
+        permanent: true,
+      },
+      { source: '/nieuws/artikel', destination: '/nieuws', permanent: true },
       // Een kortere verwijzing om door te geven of op een affiche te zetten.
       // Hoofdletters staan erbij omdat iemand die de link overtypt van een
       // blad niet met kleine letters bezig is; webadressen zijn hoofdletter-

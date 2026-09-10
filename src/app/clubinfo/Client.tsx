@@ -93,7 +93,7 @@ export default function ClubinfoClient() {
                       </p>
                       <div className="flex gap-3">
                         <Link
-                          href="/clubinfo/sectie?slug=huishoudelijk-reglement"
+                          href="/clubinfo/huishoudelijk-reglement"
                           className="flex-1 text-center py-2 px-4 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
                         >
                           Bekijken
@@ -131,7 +131,7 @@ export default function ClubinfoClient() {
                       </p>
                       <div className="flex gap-3">
                         <Link
-                          href="/clubinfo/sectie?slug=privacyverklaring"
+                          href="/clubinfo/privacyverklaring"
                           className="flex-1 text-center py-2 px-4 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
                         >
                           Bekijken

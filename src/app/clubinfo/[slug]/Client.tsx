@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
@@ -23,10 +22,12 @@ import React from "react";
 import type { LucideIcon } from "lucide-react";
 import { PaginaKop } from "@/components/PaginaKop";
 
-function ClubInfoContent() {
-  const searchParams = useSearchParams();
-  const slug = searchParams.get("slug");
-  const section = slug ? getClubInfoBySlug(slug) : null;
+/**
+ * Een clubinfo-sectie. Het adres is /clubinfo/<slug>; de server (page.tsx)
+ * geeft de slug door en zorgt voor titel, beschrijving en canonical.
+ */
+export default function ClubInfoClient({ slug }: { slug: string }) {
+  const section = getClubInfoBySlug(slug) ?? null;
 
   const iconMap: { [key: string]: LucideIcon } = {
     target: Target,
@@ -292,7 +293,7 @@ function ClubInfoContent() {
                       Jouw vertrouwenspersoon binnen KWS Linkhout
                     </p>
                     <p className="text-gray-600 mb-6 leading-relaxed">
-                      Lincy is mama van Axl & Loekas, speelde zelf voetbal bij de 'Tony Babes' en is nu als Club-API klaar om te luisteren naar jouw verhaal.
+                      Lincy is mama van Axl & Loekas, speelde zelf voetbal bij de &apos;Tony Babes&apos; en is nu als Club-API klaar om te luisteren naar jouw verhaal.
                     </p>
                     
                     {/* Quick Contact */}
@@ -387,7 +388,7 @@ function ClubInfoContent() {
                 return (
                   <Link
                     key={otherSection.id}
-                    href={`/clubinfo/sectie?slug=${otherSection.slug}`}
+                    href={`/clubinfo/${otherSection.slug}`}
                     className="flex items-center gap-4 p-4 kaart hover:shadow-md transition-shadow"
                   >
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
@@ -409,15 +410,3 @@ function ClubInfoContent() {
   );
 }
 
-// Main component wrapped in Suspense for useSearchParams
-export default function ClubInfoDetailPage() {
-  return (
-    <React.Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    }>
-      <ClubInfoContent />
-    </React.Suspense>
-  );
-}

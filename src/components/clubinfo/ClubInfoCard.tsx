@@ -38,7 +38,7 @@ export function ClubInfoCard({ section, index = 0 }: ClubInfoCardProps) {
       transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link
-        href={`/clubinfo/sectie?slug=${section.slug}`}
+        href={`/clubinfo/${section.slug}`}
         className="group block kaart kaart-tilt p-6 hover:-translate-y-1 h-full border border-gray-100"
       >
         <div className="flex items-start gap-4">

@@ -4,9 +4,9 @@ import { Facebook, Mail, MapPin, Phone } from "lucide-react";
 const footerLinks = {
   club: [
     { name: "Clubinfo", href: "/clubinfo" },
-    { name: "Nieuwe Aansluiting", href: "/clubinfo/sectie?slug=nieuwe-aansluiting" },
-    { name: "API (Integriteit)", href: "/clubinfo/sectie?slug=api" },
-    { name: "Organigram", href: "/clubinfo/sectie?slug=organigram" },
+    { name: "Word lid", href: "/word-lid" },
+    { name: "API (Integriteit)", href: "/clubinfo/api" },
+    { name: "Organigram", href: "/clubinfo/organigram" },
   ],
   jeugd: [
     { name: "Jeugdopleiding", href: "/jeugdopleiding" },

@@ -318,6 +318,25 @@ export default function TeamClient({ slug }: { slug: string }) {
               </div>
             </div>
           )}
+
+          {/* Doorverwijzing naar Word lid. Elke ploegpagina liep hier dood;
+              wie een ploeg bekijkt, overweegt vaak om zelf aan te sluiten. */}
+          <div className="mt-12 flex flex-col items-start justify-between gap-6 rounded-2xl bg-inkt-900 p-8 text-white md:flex-row md:items-center">
+            <div>
+              <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-white/60">Zelf meespelen?</p>
+              <h2 className="mt-2 text-2xl font-bold">
+                {team.category === "jeugd"
+                  ? `Kom een training van de ${team.name} proberen`
+                  : `Sluit aan bij de ${team.name}`}
+              </h2>
+              <p className="mt-2 max-w-xl text-white/70">
+                Een proeftraining is gratis en verplicht tot niets. Daarna schrijf je in met het formulier.
+              </p>
+            </div>
+            <Link href="/word-lid" className="btn-primary shrink-0">
+              Word lid
+            </Link>
+          </div>
         </div>
       </section>
 

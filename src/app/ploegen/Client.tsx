@@ -141,7 +141,7 @@ export default function PloegenClient() {
         icoon={Users}
         titel="Onze ploegen"
         accent="ploegen"
-        onder="Van de voetbaltuin tot de veteranen, en van de eerste ploeg tot de dames. Kies je ploeg en je ziet meteen wie er traint, wanneer en waar."
+        onder="Alle ploegen van KWS Linkhout in Lummen: van de Voetbaltuin voor vierjarigen over vijftien jeugdploegen tot de eerste ploeg, met zes dames- en meisjesploegen. Bij elke ploeg vind je de trainingsuren, de trainer, de kalender en de stand."
       />
 
       <section className="section-padding">

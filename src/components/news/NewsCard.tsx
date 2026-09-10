@@ -41,7 +41,7 @@ export function NewsCard({ article, index = 0 }: NewsCardProps) {
       transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
     >
       <Link 
-        href={`/nieuws/artikel?slug=${article.slug}`}
+        href={`/nieuws/${article.slug}`}
         className="group block bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
       >
         <div className="relative h-48 overflow-hidden">

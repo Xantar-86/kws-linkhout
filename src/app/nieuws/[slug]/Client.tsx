@@ -1,13 +1,10 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Calendar, Clock, User, Share2, FileText, X, ZoomIn } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Calendar, Clock, User, Share2, FileText, X, ZoomIn } from "lucide-react";
+import { useState } from "react";
 import type { NewsArticle } from "@/lib/news";
-import { newsArticles } from "@/lib/news";
-import React from "react";
 import { PaginaKop } from "@/components/PaginaKop";
 
 // Simple markdown to HTML parser
@@ -37,46 +34,14 @@ const categoryLabels: Record<string, string> = {
   evenementen: "Evenementen"
 };
 
-function ArticleContent() {
-  const searchParams = useSearchParams();
-  const slug = searchParams.get("slug");
-  const [article, setArticle] = useState<NewsArticle | null>(null);
-  const [loading, setLoading] = useState(true);
+/**
+ * Een nieuwsartikel. Het adres is /nieuws/<slug>; de server (page.tsx) zoekt
+ * het artikel op en geeft het door, en zorgt voor titel, beschrijving en
+ * canonical. Vroeger laadde deze pagina het artikel zelf via de API achter
+ * ?slug=, en dan zag Google alleen een draaiend wieltje.
+ */
+export default function ArticleClient({ article }: { article: NewsArticle }) {
   const [imageModalOpen, setImageModalOpen] = useState(false);
-
-  useEffect(() => {
-    async function loadArticle() {
-      if (!slug) {
-        setLoading(false);
-        return;
-      }
-
-      // Eerst zoeken in hardcoded artikelen
-      const hardcoded = newsArticles.find(a => a.slug === slug);
-      if (hardcoded) {
-        setArticle(hardcoded);
-        setLoading(false);
-        return;
-      }
-
-      // Anders zoeken in CMS artikelen via API
-      try {
-        const response = await fetch('/api/cms-articles');
-        if (response.ok) {
-          const cmsArticles: NewsArticle[] = await response.json();
-          const cmsArticle = cmsArticles.find(a => a.slug === slug);
-          if (cmsArticle) {
-            setArticle(cmsArticle);
-          }
-        }
-      } catch (error) {
-        console.error("Error loading CMS article:", error);
-      }
-      setLoading(false);
-    }
-
-    loadArticle();
-  }, [slug]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -86,36 +51,6 @@ function ArticleContent() {
       year: "numeric"
     });
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-
-  if (!article) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="heading-3 mb-4">
-            Artikel niet gevonden
-          </h1>
-          <p className="text-gray-600 mb-6">
-            Het artikel dat je zoekt bestaat niet.
-          </p>
-          <Link
-            href="/nieuws"
-            className="inline-flex items-center gap-2 text-primary font-medium"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Terug naar nieuws
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -223,18 +158,5 @@ function ArticleContent() {
         </div>
       </section>
     </div>
-  );
-}
-
-// Main component wrapped in Suspense for useSearchParams
-export default function ArticlePage() {
-  return (
-    <React.Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    }>
-      <ArticleContent />
-    </React.Suspense>
   );
 }

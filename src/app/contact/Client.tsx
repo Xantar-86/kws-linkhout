@@ -460,7 +460,7 @@ export default function ContactClient() {
 
                   <p className="text-sm text-gray-500 text-center">
                     Door te versturen ga je akkoord met onze{" "}
-                    <Link href="/clubinfo/sectie?slug=privacyverklaring" className="text-primary hover:underline">
+                    <Link href="/clubinfo/privacyverklaring" className="text-primary hover:underline">
                       privacyverklaring
                     </Link>
                     .

@@ -3,6 +3,8 @@ import { getAllBerichten } from "@/lib/berichten";
 import { getAllNieuwsbrieven } from "@/lib/nieuwsbrieven";
 import { getCmsFotoAlbums } from "@/lib/fotos";
 import { teams } from "@/lib/teams";
+import { clubInfoSections } from "@/lib/clubinfo";
+import { getAllArticles } from "@/lib/news";
 
 /**
  * De sitemap, gemaakt bij de build.
@@ -12,10 +14,9 @@ import { teams } from "@/lib/teams";
  * laatst wijzigden. Voor een site waar berichten en albums via het CMS
  * bijkomen, scheelt dat weken.
  *
- * Wat hier bewust NIET in staat: de clubinfo-secties en de nieuwsartikels.
- * Die leven vandaag achter een vraagteken (/clubinfo/sectie?slug=...) en zijn
- * dus geen eigen adres. Zodra ze een echt pad hebben, horen ze hier bij. De
- * ploegen hebben dat sinds september 2026 wel (/ploegen/u9-a).
+ * Sinds september 2026 hebben ook de ploegen, de clubinfo-secties en de
+ * nieuwsartikels een echt pad (/ploegen/u9-a, /clubinfo/api, /nieuws/<slug>)
+ * en staan ze hier dus bij.
  */
 
 const BASIS = "https://www.kwslinkhout.be";
@@ -68,10 +69,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Faalt een van deze drie, dan hoort de sitemap er nog te zijn met de rest
   // erin; een lege sitemap is erger dan een onvolledige.
-  const [berichten, nieuwsbrieven, albums] = await Promise.all([
+  const [berichten, nieuwsbrieven, albums, artikels] = await Promise.all([
     getAllBerichten().catch(() => []),
     getAllNieuwsbrieven().catch(() => []),
     getCmsFotoAlbums().catch(() => []),
+    getAllArticles().catch(() => []),
   ]);
 
   return [
@@ -86,6 +88,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: nu,
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...clubInfoSections.map((s) => ({
+      url: `${BASIS}/clubinfo/${s.slug}`,
+      lastModified: nu,
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    })),
+    ...artikels.map((a) => ({
+      url: `${BASIS}/nieuws/${a.slug}`,
+      lastModified: datum(a.date),
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
     })),
     ...berichten.map((b) => ({
       url: `${BASIS}/berichten/${b.slug}`,

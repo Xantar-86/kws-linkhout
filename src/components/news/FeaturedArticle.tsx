@@ -40,7 +40,7 @@ export function FeaturedArticle({ article }: FeaturedArticleProps) {
       className="mb-12"
     >
       <Link 
-        href={`/nieuws/artikel?slug=${article.slug}`}
+        href={`/nieuws/${article.slug}`}
         className="group block bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500"
       >
         <div className="grid md:grid-cols-2 gap-0">

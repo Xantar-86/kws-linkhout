@@ -44,7 +44,7 @@ export default async function NewsPage() {
           {featuredArticle && (
             <div className="mb-12">
               <Link 
-                href={`/nieuws/artikel?slug=${featuredArticle.slug}`}
+                href={`/nieuws/${featuredArticle.slug}`}
                 className="group block bg-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500"
               >
                 <div className="grid md:grid-cols-2 gap-0">
@@ -105,7 +105,7 @@ export default async function NewsPage() {
                 {otherArticles.map((article) => (
                   <Link
                     key={article.id}
-                    href={`/nieuws/artikel?slug=${article.slug}`}
+                    href={`/nieuws/${article.slug}`}
                     className="kaart kaart-tilt block overflow-hidden"
                   >
                     {/* Afbeelding */}
