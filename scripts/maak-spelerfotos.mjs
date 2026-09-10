@@ -103,7 +103,8 @@ const SNIJ_VERSIE = 12;
  *
  * `draai` is iets anders: het aantal graden waarmee de speler rechtgezet
  * wordt, met de klok mee. Alleen invullen als iemand duidelijk scheef op de
- * foto staat; een beetje scheef is gewoon hoe mensen staan.
+ * foto staat; een beetje scheef is gewoon hoe mensen staan. `schaal` maakt
+ * iemand kleiner (0.9) of groter (1.1) dan de vaste maat op de wand.
  */
 const CORRECTIES = {
   "Brent Gilissen": { kruin: 0.215, midden: 0.51 },
@@ -112,7 +113,10 @@ const CORRECTIES = {
   // Leunt op de foto naar zijn linkerkant. In het wijde beeld valt dat mee,
   // maar zonder de horizon en het doel eromheen springt het eruit. Vijf graden
   // terug zet hem recht zonder dat het gedraaid oogt.
-  "Noah Stockmans": { draai: -5 },
+  // Na het rechtzetten valt de schuine onderrand weg en wordt hij korter;
+  // zonder dit wordt hij dan groter geschaald dan de rest en staat hij te
+  // dicht op de kijker.
+  "Noah Stockmans": { draai: -5, schaal: 0.95 },
 };
 
 /** Maakt van "Lorenzo Silvente Fernandez" een bestandsnaam zonder rare tekens. */
@@ -361,7 +365,6 @@ async function opfrisbeurt(knipPad, { aan, draai }) {
         verschuiving: -6,
         wit: [1, 1, 1],
         verzadiging: 1.2,
-        plaatselijk: false,
       },
       snippers: 0,
     };
@@ -382,180 +385,23 @@ async function opfrisbeurt(knipPad, { aan, draai }) {
       )
     : schoon.buffer;
 
-  // 3. Meten hoe bleek de speler is; het toepassen gebeurt verderop, samen
-  //    met het verkleinen.
-  const toon = await tooncorrectie(buffer);
+  // Kleur en belichting doen we hier niet; zie TOON_MIN.
+  const toon = { versterking: TOON_MIN, verschuiving: -6, wit: [1, 1, 1], verzadiging: 1.2 };
 
   return { buffer, toon, snippers: schoon.weg };
 }
 
 /**
- * Hoe een uitsnede opgehaald moet worden.
- *
- * Veel portretten zijn tegen een wit doek genomen. De camera meet dan op dat
- * doek en niet op het kind, waardoor de speler bleek en vlak op de foto komt.
- * Dat doek hangt bovendien in koel licht, dus het kind vangt een blauwe zweem.
- *
- * Omdat de achtergrond er op dit punt al uit geknipt is, kunnen we de speler
- * apart opmeten. Er gebeuren twee dingen, in deze volgorde:
- *
- * 1. Witbalans. Het KWS-shirt is wit, dus de lichtste plek op de speler hoort
- *    kleurloos te zijn. Wijkt die af, dan is dat de zweem van het licht en
- *    duwen we de kanalen terug naar elkaar.
- * 2. Contrast. Pas daarna zetten we zijn eigen zwart- en witpunt terug.
- *
- * Andersom werkt niet: contrast op een gekleurde zweem maakt de zweem alleen
- * maar sterker, en dan worden witte shirts blauw en rode strepen roze.
- *
- * Een foto die al goed zit verandert nauwelijks: de zweem is dan al weg en de
- * punten staan al waar ze horen.
+ * De vaste, milde aanzet die elk portret op de wand krijgt: iets meer kleur
+ * en contrast, omdat verkleinen een beeld weker maakt en shirts op een
+ * donkere wand snel flets ogen. Meer dan dit doen we hier NIET: kleur en
+ * belichting van een bleke foto zijn werk voor ComfyUI (Qwen-Image-Edit,
+ * _verlevendig.mjs in C:\Personal\KWS-Affiches), vooraf op de foto zelf.
  */
-const TOON_DONKER = 12;
-const TOON_LICHT = 238;
 const TOON_MIN = 1.06;
-const TOON_MAX = 2.3;
-/**
- * Vanaf welk zwartpunt we ingrijpen.
- *
- * Dit is het kenmerk van een foto tegen een wit doek: er zit geen echt zwart
- * meer in, alles begint pas ergens in het grijs. Een portret met een gewoon
- * zwartpunt laten we met rust, ook als het donker of rustig van toon is. Dat
- * is een keuze van de fotograaf en geen fout.
- */
-const TOON_DREMPEL = 28;
 
 /** Ophogen bij elke wijziging aan de opfrisbeurt; zie de vingerafdruk. */
-const OPFRIS_VERSIE = 3;
-
-/**
- * Het plaatselijke contrast: hoe groot de stukjes zijn waar apart naar
- * gekeken wordt, en hoe ver het mag gaan. Klein en zacht gehouden: te sterk
- * en een gezicht wordt korrelig en krijgt randen om de neus.
- */
-const PLAATSELIJK_VAK = 90;
-const PLAATSELIJK_KRACHT = 2;
-
-/**
- * Alleen mappen met `opfrissen: true` gaan door de opfrisbeurt hierboven.
- *
- * De portretten van de eerste ploegen staan al jaren op de site en zijn zo
- * goedgekeurd. Ook al zou de meting bij een enkele ook aanslaan, we gaan ze
- * niet ongevraagd veranderen: dan verandert er van de ene dag op de andere
- * van alles aan de site zonder dat iemand erom gevraagd heeft.
- */
-/**
- * Zover mag een kanaal hoogstens bijgedraaid worden voor de witbalans, en hoe
- * veel van de gemeten afwijking we werkelijk wegnemen.
- *
- * Niet alles: de lichtste plek op een speler is meestal het witte shirt, maar
- * er zit ook blond haar en een voorhoofd tussen, en die horen niet kleurloos
- * te zijn. Corrigeer je de meting volledig, dan draai je die warme tinten mee
- * de andere kant op en wordt de huid bruin.
- */
-const WIT_MAX = 1.1;
-const WIT_KRACHT = 0.75;
-
-async function tooncorrectie(knipPad) {
-  const { data, info } = await sharp(knipPad)
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-
-  const punten = info.width * info.height;
-  const telling = new Uint32Array(256);
-  let aantal = 0;
-  for (let p = 0; p < punten; p++) {
-    // Alleen de speler zelf telt mee; de doorzichtige rand eromheen niet.
-    if (data[p * 4 + 3] < 200) continue;
-    const l = Math.round(
-      0.299 * data[p * 4] + 0.587 * data[p * 4 + 1] + 0.114 * data[p * 4 + 2]
-    );
-    telling[l]++;
-    aantal++;
-  }
-
-  const rustig = {
-    versterking: TOON_MIN,
-    verschuiving: -6,
-    wit: [1, 1, 1],
-    verzadiging: 1.2,
-    // Ook een foto die goed zit mag wat diepte in het gezicht krijgen, zolang
-    // hij door de opfrisbeurt gaat. Buiten die beurt staat dit uit.
-    plaatselijk: true,
-  };
-  // Te weinig speler om iets zinnigs op te meten: dan liever niets forceren.
-  if (aantal < 5000) return rustig;
-
-  const percentiel = (deel) => {
-    const grens = aantal * deel;
-    let som = 0;
-    for (let l = 0; l < 256; l++) {
-      som += telling[l];
-      if (som >= grens) return l;
-    }
-    return 255;
-  };
-
-  // Niet de allerdonkerste en allerlichtste pixel, want een enkele schaduw of
-  // lichtvlek zou de hele meting bepalen.
-  const donker = percentiel(0.02);
-  const licht = percentiel(0.98);
-
-  // De lichtste tiende van de speler: dat is in de praktijk het witte shirt.
-  const shirt = percentiel(0.9);
-  let som = [0, 0, 0];
-  let shirtPunten = 0;
-  for (let p = 0; p < punten; p++) {
-    if (data[p * 4 + 3] < 200) continue;
-    const l = 0.299 * data[p * 4] + 0.587 * data[p * 4 + 1] + 0.114 * data[p * 4 + 2];
-    if (l < shirt) continue;
-    som[0] += data[p * 4];
-    som[1] += data[p * 4 + 1];
-    som[2] += data[p * 4 + 2];
-    shirtPunten++;
-  }
-
-  let wit = [1, 1, 1];
-  if (shirtPunten > 500) {
-    const gemiddeld = som.map((c) => c / shirtPunten);
-    const grijs = (gemiddeld[0] + gemiddeld[1] + gemiddeld[2]) / 3;
-    // Ver uit elkaar liggende kanalen betekenen een echt gekleurd shirt, geen
-    // zweem. Dat laten we met rust, anders verkleuren we een keeperstrui.
-    const scheef = Math.max(...gemiddeld) / Math.max(1, Math.min(...gemiddeld));
-    if (grijs > 120 && scheef < 1.4) {
-      wit = gemiddeld.map((c) => {
-        const volledig = grijs / Math.max(1, c);
-        const deels = 1 + (volledig - 1) * WIT_KRACHT;
-        return Math.min(WIT_MAX, Math.max(1 / WIT_MAX, deels));
-      });
-    }
-  }
-
-  // Zit het zwart nog waar het hoort, dan is er niets mis en blijven we eraf.
-  // Ook de witbalans niet: die foto's staan al goed en zijn al goedgekeurd,
-  // en dan hoort er niets aan te veranderen.
-  if (donker <= TOON_DREMPEL) return rustig;
-
-  const versterking = Math.min(
-    TOON_MAX,
-    Math.max(TOON_MIN, (TOON_LICHT - TOON_DONKER) / Math.max(1, licht - donker))
-  );
-  // De verschuiving hoort bij de versterking en mag dus niet apart begrensd
-  // worden: samen leggen ze het donkerste en het lichtste punt op hun plaats.
-  // Knijp je de verschuiving af, dan schuift het hele beeld omhoog en brandt
-  // het shirt wit uit.
-  const verschuiving = TOON_DONKER - versterking * donker;
-
-  // Wie bleek op de foto staat is ook wat kleur kwijt, maar met mate: de
-  // witbalans en het contrast hebben het meeste werk al gedaan, en te veel
-  // verzadiging maakt de huid rood.
-  const verzadiging = Math.min(1.3, 1.18 + (versterking - 1) * 0.12);
-
-  // Een gezicht dat vlak belicht is, blijft ook na het rekken vlak: de
-  // uitersten zitten dan in het shirt en de schoenen, niet in de kop. Een
-  // milde plaatselijke contrastverhoging geeft juist daar de diepte terug.
-  return { versterking, verschuiving, wit, verzadiging, plaatselijk: true };
-}
+const OPFRIS_VERSIE = 5;
 
 const teDoen = BRONNEN.filter((b) => existsSync(b.map)).flatMap((bron) =>
   readdirSync(bron.map)
@@ -616,6 +462,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
   const middenFractie = correctie.midden ?? gemeten.middenFractie;
   const hoogteFractie = correctie.hoogte ?? UITSNEDE_HOOGTE;
   const draai = correctie.draai ?? 0;
+  const schaal = correctie.schaal ?? 1;
 
   // Een vingerafdruk van de foto en de uitsnede in de bestandsnaam. Verandert
   // er iets, dan verandert het webadres mee en tonen browsers en de
@@ -639,6 +486,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
         // Verandert de opfrisbeurt, dan verandert het webadres van wie erdoor
         // gaat wel mee, anders blijft de browser de oude versie tonen.
         ...(draai ? [`draai${draai}`] : []),
+        ...(schaal !== 1 ? [`schaal${schaal}`] : []),
         ...(opfrissen === true ? [`opfris${OPFRIS_VERSIE}`] : []),
       ].join("|")
     )
@@ -751,8 +599,8 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
     toon = opgefrist.toon;
     const persoon = await sharp(opgefrist.buffer)
       .resize({
-        height: Math.round(GROOT * 0.9),
-        width: Math.round(portretBreed * 0.94),
+        height: Math.round(GROOT * 0.9 * schaal),
+        width: Math.round(portretBreed * 0.94 * schaal),
         fit: "inside",
       })
       // Witbalans en contrast in een keer: per kanaal een eigen versterking.
@@ -766,15 +614,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
       .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
       .toBuffer();
 
-    // Plaatselijk contrast, alleen voor wie door de opfrisbeurt ging. Het
-    // rekken hierboven werkt over het hele beeld; bij een vlak belicht gezicht
-    // zitten de uitersten in het shirt en verandert er in de kop weinig. Dit
-    // kijkt per stukje beeld en geeft daar juist wel diepte.
-    const gerekt = toon.plaatselijk
-      ? await sharp(persoon)
-          .clahe({ width: PLAATSELIJK_VAK, height: PLAATSELIJK_VAK, maxSlope: PLAATSELIJK_KRACHT })
-          .toBuffer()
-      : persoon;
+    const gerekt = persoon;
     const maat = await sharp(gerekt).metadata();
     const persoonLinks = Math.round((portretBreed - maat.width) / 2);
     const persoonTop = GROOT - maat.height;
