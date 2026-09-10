@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
         destination: 'https://www.kwslinkhout.be/:path*',
         permanent: true,
       },
+      // De ploegen hadden een adres met een vraagteken (/ploegen/team?slug=u9-a).
+      // Nu heeft elke ploeg een eigen pad; wie de oude link nog heeft, komt
+      // blijvend op het nieuwe uit. Zonder slug: naar het overzicht.
+      {
+        source: '/ploegen/team',
+        has: [{ type: 'query', key: 'slug', value: '(?<slug>[a-z0-9-]+)' }],
+        destination: '/ploegen/:slug',
+        permanent: true,
+      },
+      { source: '/ploegen/team', destination: '/ploegen', permanent: true },
       // Een kortere verwijzing om door te geven of op een affiche te zetten.
       // Hoofdletters staan erbij omdat iemand die de link overtypt van een
       // blad niet met kleine letters bezig is; webadressen zijn hoofdletter-

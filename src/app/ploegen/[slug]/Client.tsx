@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useSyncExternalStore } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,23 +17,28 @@ import {
   Calendar, 
   User, 
   Users,
-  ArrowLeft,
   ExternalLink,
   MapPin,
   X
 } from "lucide-react";
 
-function TeamContent() {
-  const searchParams = useSearchParams();
-  const slug = searchParams.get("slug");
+/**
+ * De ploegpagina zelf. Het adres is /ploegen/<slug>; de server (page.tsx)
+ * geeft de slug door en zorgt voor titel, beschrijving en canonical.
+ */
+export default function TeamClient({ slug }: { slug: string }) {
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showStandingsModal, setShowStandingsModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   
-  const [site, setSite] = useState("");
-  useEffect(() => setSite(window.location.host), []);
+  // De host voor het agenda-adres: op de server leeg, in de browser echt.
+  const site = useSyncExternalStore(
+    () => () => {},
+    () => window.location.host,
+    () => ""
+  );
 
-  const team = slug ? getTeamBySlug(slug) : null;
+  const team = getTeamBySlug(slug);
 
   if (!team) {
     notFound();
@@ -482,18 +486,5 @@ function TeamContent() {
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-// Main component wrapped in Suspense for useSearchParams
-export default function TeamPage() {
-  return (
-    <React.Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    }>
-      <TeamContent />
-    </React.Suspense>
   );
 }

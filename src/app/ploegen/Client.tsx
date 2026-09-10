@@ -22,7 +22,7 @@ interface TeamCardProps {
 function TeamCard({ team, index }: TeamCardProps) {
   return (
     <Onthul vertraging={(index % 6) * trap.kaart} className="h-full">
-      <Link href={`/ploegen/team?slug=${team.slug}`} className="group block h-full">
+      <Link href={`/ploegen/${team.slug}`} className="group block h-full">
         <div className="kaart kaart-tilt flex h-full flex-col overflow-hidden">
           <div className="relative h-48 overflow-hidden bg-zand-100">
             <Image

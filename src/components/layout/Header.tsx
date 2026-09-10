@@ -39,7 +39,7 @@ const navItems = [
     href: "/ploegen#senioren",
     dropdown: getTeamsByCategory("senioren").map((team) => ({
       name: team.name,
-      href: `/ploegen/team?slug=${team.slug}`,
+      href: `/ploegen/${team.slug}`,
     })),
   },
   {
@@ -49,7 +49,7 @@ const navItems = [
       { name: "Over ons", href: "/ploegen/dames-over-ons" },
       ...getTeamsByCategory("dames").map((team) => ({
         name: team.name,
-        href: `/ploegen/team?slug=${team.slug}`,
+        href: `/ploegen/${team.slug}`,
       })),
     ],
   },
@@ -58,7 +58,7 @@ const navItems = [
     href: "/ploegen#jeugd",
     dropdown: getTeamsByCategory("jeugd").map((team) => ({
       name: team.name,
-      href: `/ploegen/team?slug=${team.slug}`,
+      href: `/ploegen/${team.slug}`,
     })),
   },
   {

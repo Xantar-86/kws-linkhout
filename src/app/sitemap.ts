@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllBerichten } from "@/lib/berichten";
 import { getAllNieuwsbrieven } from "@/lib/nieuwsbrieven";
 import { getCmsFotoAlbums } from "@/lib/fotos";
+import { teams } from "@/lib/teams";
 
 /**
  * De sitemap, gemaakt bij de build.
@@ -11,10 +12,10 @@ import { getCmsFotoAlbums } from "@/lib/fotos";
  * laatst wijzigden. Voor een site waar berichten en albums via het CMS
  * bijkomen, scheelt dat weken.
  *
- * Wat hier bewust NIET in staat: de ploegen, de clubinfo-secties en de
- * nieuwsartikels. Die leven vandaag achter een vraagteken
- * (/ploegen/team?slug=u11) en zijn dus geen eigen adres. Zodra ze een echt
- * pad hebben, horen ze hier bij.
+ * Wat hier bewust NIET in staat: de clubinfo-secties en de nieuwsartikels.
+ * Die leven vandaag achter een vraagteken (/clubinfo/sectie?slug=...) en zijn
+ * dus geen eigen adres. Zodra ze een echt pad hebben, horen ze hier bij. De
+ * ploegen hebben dat sinds september 2026 wel (/ploegen/u9-a).
  */
 
 const BASIS = "https://www.kwslinkhout.be";
@@ -79,6 +80,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: nu,
       changeFrequency: p.freq,
       priority: p.prioriteit,
+    })),
+    ...teams.map((t) => ({
+      url: `${BASIS}/ploegen/${t.slug}`,
+      lastModified: nu,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
     ...berichten.map((b) => ({
       url: `${BASIS}/berichten/${b.slug}`,
