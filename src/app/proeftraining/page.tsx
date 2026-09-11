@@ -13,7 +13,7 @@ import { CONTACTEN } from "@/app/word-lid/inhoud";
  * bron als de ploegpagina's en het trainingsschema, dus ze lopen nooit achter.
  */
 export const metadata: Metadata = {
-  title: "Kom een training proberen bij KWS Linkhout",
+  title: "Kom een training proberen, gratis en zonder verplichting",
   description:
     "Een proeftraining is gratis en verplicht tot niets. Wanneer welke leeftijd traint in Linkhout en Zelem, " +
     "wat je meebrengt en bij wie je je aanmeldt.",

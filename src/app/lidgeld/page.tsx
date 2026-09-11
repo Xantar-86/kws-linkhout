@@ -12,7 +12,7 @@ import { LIDGELD, CONTACTEN, FORMULIER } from "@/app/word-lid/inhoud";
  * Word lid, dus ze kunnen niet uit elkaar lopen.
  */
 export const metadata: Metadata = {
-  title: "Wat kost voetballen bij KWS Linkhout?",
+  title: "Wat kost voetballen bij ons? Het lidgeld per leeftijd",
   description:
     "Het lidgeld per leeftijd voor 2026-2027, van 130 euro voor de Voetbaltuin tot 400 euro voor de senioren. " +
     "Wat erin zit, wat je zelf koopt, de terugbetaling van de mutualiteit en hulp als het krap zit.",
