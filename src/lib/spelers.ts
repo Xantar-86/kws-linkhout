@@ -70,8 +70,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Castor Ulenaers",
     "ploeg": "U11",
-    "klein": "/images/spelers/castor-ulenaers-d19f61a3-klein.webp",
-    "groot": "/images/spelers/castor-ulenaers-d19f61a3.webp"
+    "klein": "/images/spelers/castor-ulenaers-b5392f46-klein.webp",
+    "groot": "/images/spelers/castor-ulenaers-b5392f46.webp"
   },
   {
     "naam": "Cisse Simons",
@@ -104,16 +104,22 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/elias-chaufoureau-391abca0.webp"
   },
   {
+    "naam": "Elliot Michiels",
+    "ploeg": "U11",
+    "klein": "/images/spelers/elliot-michiels-575dd222-klein.webp",
+    "groot": "/images/spelers/elliot-michiels-575dd222.webp"
+  },
+  {
     "naam": "Emiel Cypers",
     "ploeg": "U11",
-    "klein": "/images/spelers/emiel-cypers-10469f99-klein.webp",
-    "groot": "/images/spelers/emiel-cypers-10469f99.webp"
+    "klein": "/images/spelers/emiel-cypers-258e5c8f-klein.webp",
+    "groot": "/images/spelers/emiel-cypers-258e5c8f.webp"
   },
   {
     "naam": "Emiel Neyens",
     "ploeg": "U11",
-    "klein": "/images/spelers/emiel-neyens-dedaac53-klein.webp",
-    "groot": "/images/spelers/emiel-neyens-dedaac53.webp"
+    "klein": "/images/spelers/emiel-neyens-f763c84b-klein.webp",
+    "groot": "/images/spelers/emiel-neyens-f763c84b.webp"
   },
   {
     "naam": "Emilie Konings",
@@ -142,8 +148,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Ibe Thoelen",
     "ploeg": "U11",
-    "klein": "/images/spelers/ibe-thoelen-cf177da6-klein.webp",
-    "groot": "/images/spelers/ibe-thoelen-cf177da6.webp"
+    "klein": "/images/spelers/ibe-thoelen-871a2fa9-klein.webp",
+    "groot": "/images/spelers/ibe-thoelen-871a2fa9.webp"
   },
   {
     "naam": "Jacey Vanweddingen",
@@ -244,8 +250,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Juul Volders",
     "ploeg": "U11",
-    "klein": "/images/spelers/juul-volders-fd906c8c-klein.webp",
-    "groot": "/images/spelers/juul-volders-fd906c8c.webp"
+    "klein": "/images/spelers/juul-volders-48f2a0cf-klein.webp",
+    "groot": "/images/spelers/juul-volders-48f2a0cf.webp"
   },
   {
     "naam": "Kaat Smeulders",
@@ -352,8 +358,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Mathieu Huls",
     "ploeg": "U11",
-    "klein": "/images/spelers/mathieu-huls-176b768f-klein.webp",
-    "groot": "/images/spelers/mathieu-huls-176b768f.webp"
+    "klein": "/images/spelers/mathieu-huls-0ca48b01-klein.webp",
+    "groot": "/images/spelers/mathieu-huls-0ca48b01.webp"
   },
   {
     "naam": "Mathilde Ramaekers",
@@ -364,8 +370,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Mats Van Der Leun",
     "ploeg": "U11",
-    "klein": "/images/spelers/mats-van-der-leun-25351915-klein.webp",
-    "groot": "/images/spelers/mats-van-der-leun-25351915.webp"
+    "klein": "/images/spelers/mats-van-der-leun-d807a0f8-klein.webp",
+    "groot": "/images/spelers/mats-van-der-leun-d807a0f8.webp"
   },
   {
     "naam": "Matthias Corten",
@@ -470,6 +476,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/oscar-cleeren-da03b480.webp"
   },
   {
+    "naam": "Otis Kitenge",
+    "ploeg": "U11",
+    "klein": "/images/spelers/otis-kitenge-01578d9d-klein.webp",
+    "groot": "/images/spelers/otis-kitenge-01578d9d.webp"
+  },
+  {
     "naam": "Pieter Peremans",
     "ploeg": "P2",
     "klein": "/images/spelers/pieter-peremans-3e232d9b-klein.webp",
@@ -484,8 +496,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Senn Deferme",
     "ploeg": "U11",
-    "klein": "/images/spelers/senn-deferme-f409b780-klein.webp",
-    "groot": "/images/spelers/senn-deferme-f409b780.webp"
+    "klein": "/images/spelers/senn-deferme-fa60e8f7-klein.webp",
+    "groot": "/images/spelers/senn-deferme-fa60e8f7.webp"
   },
   {
     "naam": "Seppe Verdonck",
@@ -538,8 +550,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Ties Van de Vijver",
     "ploeg": "U11",
-    "klein": "/images/spelers/ties-van-de-vijver-d947f74c-klein.webp",
-    "groot": "/images/spelers/ties-van-de-vijver-d947f74c.webp"
+    "klein": "/images/spelers/ties-van-de-vijver-17614a98-klein.webp",
+    "groot": "/images/spelers/ties-van-de-vijver-17614a98.webp"
   },
   {
     "naam": "Victor Darville",
@@ -556,14 +568,14 @@ export const spelers: Speler[] = [
   {
     "naam": "Viktor Vanden Berghe",
     "ploeg": "U11",
-    "klein": "/images/spelers/viktor-vanden-berghe-af14699f-klein.webp",
-    "groot": "/images/spelers/viktor-vanden-berghe-af14699f.webp"
+    "klein": "/images/spelers/viktor-vanden-berghe-8f595d07-klein.webp",
+    "groot": "/images/spelers/viktor-vanden-berghe-8f595d07.webp"
   },
   {
     "naam": "Vin Dullers",
     "ploeg": "U11",
-    "klein": "/images/spelers/vin-dullers-60e8f21f-klein.webp",
-    "groot": "/images/spelers/vin-dullers-60e8f21f.webp"
+    "klein": "/images/spelers/vin-dullers-be98e535-klein.webp",
+    "groot": "/images/spelers/vin-dullers-be98e535.webp"
   },
   {
     "naam": "Vince Godfroid",

@@ -135,12 +135,14 @@ export const KERNEN: Record<string, Kernspeler[]> = {
   // zijn.
   U11: [
     { naam: "Castor Ulenaers" },
+    { naam: "Elliot Michiels" },
     { naam: "Emiel Cypers" },
     { naam: "Emiel Neyens" },
     { naam: "Ibe Thoelen" },
     { naam: "Juul Volders" },
     { naam: "Mathieu Huls" },
     { naam: "Mats Van Der Leun" },
+    { naam: "Otis Kitenge" },
     { naam: "Senn Deferme" },
     { naam: "Ties Van de Vijver" },
     { naam: "Viktor Vanden Berghe" },

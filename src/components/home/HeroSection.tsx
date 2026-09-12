@@ -169,7 +169,7 @@ export function HeroSection() {
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
               >
                 <Image
-                  src="/images/kwslinkhout-logo.png"
+                  src="/images/logo-kws-gloed-transparant.png"
                   alt="KWS Linkhout"
                   fill
                   priority
