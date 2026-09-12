@@ -54,7 +54,7 @@ export function HeroSection() {
   return (
     <section
       ref={anker}
-      className="korrel relative flex min-h-[82svh] items-center overflow-hidden bg-inkt-950 py-24 md:py-0"
+      className="korrel relative flex min-h-[82svh] items-center overflow-hidden bg-inkt-950 py-24 md:pb-0 md:pt-12"
     >
       {/* Laag 1: de club zelf, ver naar achteren geduwd. */}
       <motion.div
