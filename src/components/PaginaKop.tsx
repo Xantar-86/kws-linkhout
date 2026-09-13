@@ -16,11 +16,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { Onthul } from "@/components/beweging/Onthul";
 import { TekstOnthul } from "@/components/beweging/TekstOnthul";
 import { duur, verzet } from "@/lib/beweging";
+import { Kruimelpad, kruimelsUitPad } from "@/components/Kruimelpad";
 import type { ReactNode } from "react";
 
 interface PaginaKopProps {
@@ -42,6 +44,12 @@ interface PaginaKopProps {
   beeld?: string;
   /** Losse elementen onder de tekst: knoppen, cijfers, een zoekveld. */
   children?: ReactNode;
+  /**
+   * Het kruimelpad boven de titel. Staat standaard aan en wordt afgeleid uit
+   * het adres; op een pagina die maar één niveau diep zit, verschijnt er
+   * vanzelf niets. Zet uit waar de kop al iets anders bovenaan heeft staan.
+   */
+  kruimelpad?: boolean;
 }
 
 export function PaginaKop({
@@ -53,7 +61,14 @@ export function PaginaKop({
   terug,
   beeld,
   children,
+  kruimelpad = true,
 }: PaginaKopProps) {
+  // Zelf uitrekenen of er een pad te tonen valt, want daarvan hangt af of de
+  // terugknop nog nodig is. Onder de drie kruimels toont Kruimelpad niets.
+  const pad = usePathname();
+  const kruimels = kruimelpad ? kruimelsUitPad(pad ?? "/", titel) : [];
+  const toontPad = kruimels.length >= 3;
+
   return (
     <header className="korrel lichtrand relative overflow-hidden bg-inkt-950 pb-16 pt-32 md:pb-20 md:pt-40">
       {beeld && (
@@ -82,7 +97,15 @@ export function PaginaKop({
       />
 
       <div className="container-custom relative">
-        {terug && (
+        {/* Het kruimelpad vervangt de terugknop waar het er een toont: het zegt
+            hetzelfde en meer. Waar het niets toont, blijft de terugknop staan. */}
+        {toontPad && (
+          <Onthul meteen afstand={verzet.klein} duurtijd={duur.kort}>
+            <Kruimelpad kruimels={kruimels} />
+          </Onthul>
+        )}
+
+        {terug && !toontPad && (
           <Onthul meteen afstand={verzet.klein} duurtijd={duur.kort}>
             <Link
               href={terug.naar}
@@ -94,7 +117,7 @@ export function PaginaKop({
           </Onthul>
         )}
 
-        <div className={`max-w-3xl ${terug ? "mt-8" : ""}`}>
+        <div className={`max-w-3xl ${terug || toontPad ? "mt-8" : ""}`}>
           {opschrift && (
             <Onthul meteen afstand={10} duurtijd={duur.kort}>
               <p className="opschrift text-primary-400">
