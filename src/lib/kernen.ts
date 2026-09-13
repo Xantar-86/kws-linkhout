@@ -154,6 +154,23 @@ export const KERNEN: Record<string, Kernspeler[]> = {
   // niet doorgegeven; die mogen er per speler bij zodra ze bekend zijn.
   //
   // Fin Rogiers is nog niet aangesloten en staat daarom nog niet in de lijst.
+  // U17 A, de spelers waarvan er een portret gemaakt is. Posities en
+  // rugnummers volgen zodra ze bekend zijn.
+  U17A: [
+    { naam: "Aliano Baeten" },
+    { naam: "Berre Hombroek" },
+    { naam: "Daan Moermans" },
+    { naam: "Ignas Vangenechten" },
+    { naam: "Jure Neven" },
+    { naam: "Juul Vanheukelom" },
+    { naam: "Juul Verpoorten" },
+    { naam: "Matisse Peeters" },
+    { naam: "Mats-Alexander Tutenel" },
+    { naam: "Mon Hoebrekx" },
+    { naam: "Sam Das" },
+    { naam: "Tygo de Grave" },
+  ],
+
   U9: [
     { naam: "Arthur Hoogstijns" },
     { naam: "Cas Horions" },

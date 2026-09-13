@@ -90,7 +90,7 @@ const PORTRET_FACTOR = 1.7;
  * Het getal gaat mee in de vingerafdruk in de bestandsnaam. Zonder dat houdt
  * een browser de oude uitsnede vast, want het webadres blijft dan gelijk.
  */
-const SNIJ_VERSIE = 12;
+const SNIJ_VERSIE = 13;
 
 /**
  * Correcties voor foto's waar het zoeken naast zit.
@@ -597,11 +597,20 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
     const opgefrist = await opfrisbeurt(knipPad, { aan: opfrissen === true, draai });
     snippers = opgefrist.snippers;
     toon = opgefrist.toon;
-    const persoon = await sharp(opgefrist.buffer)
-      .resize({
-        height: Math.round(GROOT * 0.9 * schaal),
-        width: Math.round(portretBreed * 0.94 * schaal),
-        fit: "inside",
+    // Op HOOGTE schalen, niet op breedte. Zo staat elke kruin op dezelfde
+    // hoogte op de wand, ook bij wie breed uitgesneden is (armen wijd, een
+    // vierkante uitsnede). Wie daardoor breder wordt dan de wand, verliest
+    // een reepje aan de zijkanten; dat is een stukje elleboog, en dat valt
+    // minder op dan een hoofd dat een kop lager hangt dan de buren.
+    const persoonHoogte = Math.round(GROOT * 0.9 * schaal);
+    const ruw = await sharp(opgefrist.buffer).resize({ height: persoonHoogte }).png().toBuffer();
+    const ruwMaat = await sharp(ruw).metadata();
+    const persoon = await sharp(ruw)
+      .extract({
+        left: Math.max(0, Math.round((ruwMaat.width - portretBreed) / 2)),
+        top: 0,
+        width: Math.min(ruwMaat.width, portretBreed),
+        height: ruwMaat.height,
       })
       // Witbalans en contrast in een keer: per kanaal een eigen versterking.
       // Eerst dit en pas daarna de verzadiging, anders wordt de zweem mee
