@@ -36,11 +36,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     // De naam van de club komt er via de titelsjabloon in layout.tsx al achter.
     title: `${team.name}, ${soort} in Lummen`,
-    description: `${team.description ?? `De ${team.name} van KWS Linkhout in Lummen.`} Trainer: ${team.coach}.${training}`,
+    // Bewust opgebouwd uit feiten en niet uit team.description: dat is de
+    // lopende tekst op de pagina zelf, en die is te lang voor een
+    // zoekresultaat. Google knipt af rond 160 tekens.
+    description: `De ${team.name} van KWS Linkhout in Lummen, ${team.division}. Trainer: ${team.coach}.${training}`,
     alternates: { canonical: `/ploegen/${team.slug}` },
     openGraph: {
       title: `${team.name} | KWS Linkhout`,
-      description: team.description,
+      description: `De ${team.name} van KWS Linkhout, ${team.division}.`,
       url: `https://www.kwslinkhout.be/ploegen/${team.slug}`,
       ...(team.image && !team.image.includes("under-construction") ? { images: [team.image] } : {}),
     },

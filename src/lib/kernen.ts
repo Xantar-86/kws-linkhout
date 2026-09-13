@@ -28,6 +28,125 @@ export interface Kernspeler {
 }
 
 export const KERNEN: Record<string, Kernspeler[]> = {
+  // U17A, zoals de club de lijst doorgaf.
+  U17A: [
+    { naam: "Aliano Baeten" },
+    { naam: "Berre Hombroek" },
+    { naam: "Braien Suha" },
+    { naam: "Daan Moermans" },
+    { naam: "Daan Tombeur" },
+    { naam: "Felix Fabre" },
+    { naam: "Ignas Van Genechten" },
+    { naam: "Jure Neven" },
+    { naam: "Juul Vanheukelom" },
+    { naam: "Juul Verpoorten" },
+    { naam: "Matisse Peeters" },
+    { naam: "Mats-Alexander Tutenel" },
+    { naam: "Mon Hoebrekx" },
+    { naam: "Rik Adriaens" },
+    { naam: "Sam Das" },
+    { naam: "Stan Verpoorten" },
+    { naam: "Tygo de Grave" },
+  ],
+
+  // U17B, zoals de club de lijst doorgaf.
+  U17B: [
+    { naam: "Axl Reynders" },
+    { naam: "Daan Tombeur" },
+    { naam: "Elliot Avoux" },
+    { naam: "Gerard Vanleuven" },
+    { naam: "Jorne Ghijs" },
+    { naam: "Levi Lopez Hernandez" },
+    { naam: "Mathias Vandebroek" },
+    { naam: "Maxime Mathieu" },
+    { naam: "Rune Vanbrabant" },
+    { naam: "Sander Van Mieghem" },
+    { naam: "Senn Jacobs" },
+    { naam: "Sietse Darcis" },
+    { naam: "Stan Tielens" },
+    { naam: "Tygo de Grave" },
+    { naam: "Warre Reynders" },
+    { naam: "Wout Buekenberghs" },
+    { naam: "Wout Forier" },
+  ],
+
+  // U15, zoals de club de lijst doorgaf.
+  U15: [
+    { naam: "Alexander Thomas" },
+    { naam: "Arthur Fabré" },
+    { naam: "Axel Coomans" },
+    { naam: "Charly Politic" },
+    { naam: "Emile Huls" },
+    { naam: "Ferre Luts" },
+    { naam: "Fynn Deferme" },
+    { naam: "Lander Rymen" },
+    { naam: "Lars Dirckx" },
+    { naam: "Mauro Deprez" },
+    { naam: "Niccolò Liaci" },
+    { naam: "Nio Thoelen" },
+    { naam: "Robbe Reynders" },
+    { naam: "Seppe Breugelmans" },
+    { naam: "Simon De Bruycker" },
+    { naam: "Thomas Buyck" },
+    { naam: "Vic Janssen" },
+  ],
+
+  // U13, zoals de club de lijst doorgaf.
+  U13: [
+    { naam: "Alexander Manshoven" },
+    { naam: "Dante Pleune" },
+    { naam: "Franck Kuebia" },
+    { naam: "Karel De Spiegeleer" },
+    { naam: "Loekas Reynders" },
+    { naam: "Mugwagwa Shaine" },
+    { naam: "Oliver Michiels" },
+    { naam: "Quin Luts" },
+    { naam: "Staff Cypers" },
+    { naam: "Tiebe Vlaeyen" },
+    { naam: "Toon Dupont" },
+    { naam: "Vince Goris" },
+  ],
+
+  // U12, zoals de club de lijst doorgaf.
+  U12: [
+    { naam: "Cas Jacobs" },
+    { naam: "Eben Gillaer" },
+    { naam: "Georges Thomas" },
+    { naam: "Jaan Jennekens" },
+    { naam: "Jad Bou Ziab" },
+    { naam: "Liyan Coemans" },
+    { naam: "Louis Verbeemen" },
+    { naam: "Mathieu Bammens" },
+    { naam: "Mats Corten" },
+    { naam: "Matteo Dekerf" },
+    { naam: "Prabhjot Singh" },
+    { naam: "Vince Cleeren" },
+  ],
+
+  // U10, zoals de club de lijst doorgaf.
+  U10: [
+    { naam: "Alexander Delattre" },
+    { naam: "Cyriel Verbeemen" },
+    { naam: "Matteo Willems" },
+    { naam: "Sem Hoeyberghs" },
+    { naam: "Simmi Dassen Singh" },
+    { naam: "Vinz Vanwetswinkel" },
+  ],
+
+  // U8, zoals de club de lijst doorgaf.
+  U8: [
+    { naam: "Aaron Sumbul" },
+    { naam: "Ewoud Marteau" },
+    { naam: "Gus Vanluydt" },
+    { naam: "Jules Van De Vijver" },
+    { naam: "Louis Wynants" },
+    { naam: "Milan Geebelen Canitez" },
+    { naam: "Nand Fabré" },
+    { naam: "Oliver Vanderstappen" },
+    { naam: "Tristan Gaethofs" },
+    { naam: "Tristan Van Meerbeeck" },
+  ],
+
   // 2de provinciale, 17 spelers. De posities komen uit de kernlijst van de
   // club; de rugnummers zijn nog niet vastgelegd.
   P2: [
@@ -134,12 +253,14 @@ export const KERNEN: Record<string, Kernspeler[]> = {
   // zijn nog niet doorgegeven; die mogen er per speler bij zodra ze bekend
   // zijn.
   U11: [
+    { naam: "Cas Rogiers" },
     { naam: "Castor Ulenaers" },
     { naam: "Elliot Michiels" },
     { naam: "Emiel Cypers" },
     { naam: "Emiel Neyens" },
     { naam: "Ibe Thoelen" },
     { naam: "Juul Volders" },
+    { naam: "Loïc Thomas" },
     { naam: "Mathieu Huls" },
     { naam: "Mats Van Der Leun" },
     { naam: "Otis Kitenge" },
@@ -154,21 +275,39 @@ export const KERNEN: Record<string, Kernspeler[]> = {
   // niet doorgegeven; die mogen er per speler bij zodra ze bekend zijn.
   //
   // Fin Rogiers is nog niet aangesloten en staat daarom nog niet in de lijst.
-  // U17 A, de spelers waarvan er een portret gemaakt is. Posities en
-  // rugnummers volgen zodra ze bekend zijn.
-  U17A: [
-    { naam: "Aliano Baeten" },
-    { naam: "Berre Hombroek" },
-    { naam: "Daan Moermans" },
-    { naam: "Ignas Vangenechten" },
-    { naam: "Jure Neven" },
-    { naam: "Juul Vanheukelom" },
-    { naam: "Juul Verpoorten" },
-    { naam: "Matisse Peeters" },
-    { naam: "Mats-Alexander Tutenel" },
-    { naam: "Mon Hoebrekx" },
-    { naam: "Sam Das" },
-    { naam: "Tygo de Grave" },
+  // U6, de spelers zoals de club ze doorgaf. Er zijn nog geen portretten;
+  // die krijgen een leeg kader tot er een foto is.
+  U6: [
+    { naam: "Aariz Singh" },
+    { naam: "Ferre Swinnen" },
+    { naam: "Freijo Verboven" },
+    { naam: "Jules Vandevenne" },
+    { naam: "Lex Pira" },
+    { naam: "Marlie Bossens" },
+    { naam: "Mason Cans" },
+    { naam: "Max-Emile Tutenel" },
+    { naam: "Symon Nuyts" },
+    { naam: "Tars Verboven" },
+    { naam: "Tuur Neyens" },
+  ],
+
+  // U7, de veertien spelers zoals de club ze doorgaf. A en B delen deze lijst
+  // zolang we niet weten wie bij welke ploeg hoort. Nog geen portretten.
+  U7: [
+    { naam: "Arlo Guillaume" },
+    { naam: "Bas Van de Schoot" },
+    { naam: "Ferre Bosman" },
+    { naam: "Ilan Smet" },
+    { naam: "Jules Lekens" },
+    { naam: "Kobe Driessens" },
+    { naam: "Lewis Goris" },
+    { naam: "Lou Van Stee" },
+    { naam: "Louwïc Vanhoudt" },
+    { naam: "Luhan Chang" },
+    { naam: "Lyano Ballet" },
+    { naam: "Margot Vanden berghe" },
+    { naam: "Nilo Stockmans" },
+    { naam: "Tuur Wijns" },
   ],
 
   U9: [

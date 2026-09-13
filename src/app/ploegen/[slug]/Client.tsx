@@ -56,7 +56,6 @@ export default function TeamClient({ slug }: { slug: string }) {
               : "Jeugd"
         }
         titel={team.name}
-        onder={team.description}
         terug={{ naar: "/ploegen", label: "Terug naar alle ploegen" }}
       />
 

@@ -170,10 +170,10 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/ibe-thoelen-1c0e0db6.webp"
   },
   {
-    "naam": "Ignas Vangenechten",
+    "naam": "Ignas Van Genechten",
     "ploeg": "U17A",
-    "klein": "/images/spelers/ignas-vangenechten-41af307b-klein.webp",
-    "groot": "/images/spelers/ignas-vangenechten-41af307b.webp"
+    "klein": "/images/spelers/ignas-van-genechten-41af307b-klein.webp",
+    "groot": "/images/spelers/ignas-van-genechten-41af307b.webp"
   },
   {
     "naam": "Jacey Vanweddingen",
