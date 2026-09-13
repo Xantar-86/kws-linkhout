@@ -224,14 +224,15 @@ export const teams: Team[] = [
 
   {
     id: "j-2",
-    name: "U17",
-    slug: "u17",
+    name: "U17 A",
+    slug: "u17-a",
     category: "jeugd",
     division: "2-Gewestelijk",
     trainingDays: ["Dinsdag", "Donderdag"],
     trainingTime: "17:55 - 19:20",
     trainingLocation: "Zelem",
     coach: "Steven Bosmans",
+    spelersGroep: "U17A",
     image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U17-2025.jpg
     calendarUrl: "#",
     standingsUrl: "#",
@@ -241,8 +242,8 @@ export const teams: Team[] = [
   },
   {
     id: "j-16",
-    name: "U16",
-    slug: "u16",
+    name: "U17 B",
+    slug: "u17-b",
     category: "jeugd",
     division: "2-Gewestelijk",
     trainingDays: ["Dinsdag", "Donderdag"],
@@ -250,11 +251,11 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Kevin Thoelen",
     image: "/images/under-construction.png",
-    description: "Onze U16 in de belangrijke ontwikkelingsfase.",
-    // Deze ploeg speelt dit seizoen mee als U17 B, omdat er te weinig ploegen
-    // waren voor een U16-reeks. In de club heet ze wel gewoon U16, dus de naam
-    // hierboven blijft. De kalender komt van U17 B (386057); de ploeg die bij
-    // de RBFA U16 heet (385192) staat leeg en is dus niet de juiste.
+    description: "Onze tweede U17 in de belangrijke ontwikkelingsfase.",
+    // Vroeger de U16. Er waren te weinig ploegen voor een U16-reeks, dus de
+    // ploeg speelt als U17 B en heet sinds september 2026 ook zo in de club.
+    // De kalender komt van U17 B (386057); de ploeg die bij de RBFA U16 heet
+    // (385192) staat leeg en is dus niet de juiste.
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/386057/kalender",
     standingsIframe: "https://www.rbfa.be/nl/club/1595/ploeg/386057/overzicht"
   },

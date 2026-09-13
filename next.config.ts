@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       { source: '/ploegen/team', destination: '/ploegen', permanent: true },
+      // De U16 heet sinds september 2026 U17 B, en de U17 werd U17 A.
+      { source: '/ploegen/u16', destination: '/ploegen/u17-b', permanent: true },
+      { source: '/ploegen/u17', destination: '/ploegen/u17-a', permanent: true },
       // Zelfde verhaal voor de clubinfo-secties.
       {
         source: '/clubinfo/sectie',
