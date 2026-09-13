@@ -6,7 +6,7 @@ backend:
 media_folder: public/uploads
 public_folder: /uploads
 
-locale: nl
+# Sveltia CMS kiest de taal van de browser; een vaste locale wordt genegeerd.
 
 collections:
   - name: events
@@ -59,7 +59,7 @@ collections:
         name: sourceKey
         widget: select
         options: [hbvl, hln, nieuwsblad, overig]
-      - { label: Datum, name: date, widget: date, format: YYYY-MM-DD }
+      - { label: Datum, name: date, widget: datetime, format: YYYY-MM-DD, date_format: YYYY-MM-DD, time_format: false }
       - { label: PDF, name: pdf, widget: file, required: false }
       - { label: Samenvatting, name: summary, widget: text }
 

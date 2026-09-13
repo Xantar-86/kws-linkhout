@@ -13,7 +13,7 @@ import { haalAffiche } from "@/lib/social/opslag";
  *
  * Draait ieder uur na een speeldag. De meeste runs vinden niets nieuws en dat
  * is de normale uitkomst. Elke wedstrijd wordt maar één keer gemeld, dankzij
- * het meldingenlogboek in Supabase.
+ * het meldingenlogboek.
  *
  * Deze route post nooit iets. Met ?droog=1 krijg je de JSON terug zonder mail.
  */
