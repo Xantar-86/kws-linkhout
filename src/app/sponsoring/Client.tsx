@@ -12,7 +12,7 @@
 // het clubschild bovenaan brengt je wel naar de clubsite.
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, Eye, Handshake, Link2, Mail, CircleDot, AlertCircle, X } from "lucide-react";
+import { ArrowRight, Check, Eye, Handshake, Link2, Mail, CircleDot, AlertCircle, Heart, X } from "lucide-react";
 import { PaginaKop } from "@/components/PaginaKop";
 import { SectieKop } from "@/components/SectieKop";
 import { Onthul } from "@/components/beweging/Onthul";
@@ -540,6 +540,10 @@ export default function SponsoringClient() {
             <a href={CLUBSITE} className="mt-2 text-xs text-gray-400 underline-offset-2 hover:underline">
               Naar de clubsite, kwslinkhout.be
             </a>
+            <p className="mt-1 inline-flex items-center gap-1 text-[0.6875rem] text-gray-400">
+              designed by Joël B.
+              <Heart className="h-3 w-3 fill-primary text-primary" aria-label="met liefde" />
+            </p>
           </div>
         </div>
       </section>
