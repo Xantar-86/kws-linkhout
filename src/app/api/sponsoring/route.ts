@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   const naam = veld("name");
   const email = veld("email");
 
-  if (!naam || !/^[^s@]+@[^s@]+.[^s@]{2,}$/.test(email)) {
+  if (!naam || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return NextResponse.json({ error: "Naam en een geldig e-mailadres zijn verplicht." }, { status: 400 });
   }
 
