@@ -11,6 +11,9 @@ import { TrainerAvatar } from "@/components/SpelersGalerij";
 import { SpelersCarrousel } from "@/components/SpelersCarrousel";
 import { motion, AnimatePresence } from "framer-motion";
 import { PaginaKop } from "@/components/PaginaKop";
+import { KlassementBlok } from "@/components/ploeg/KlassementBlok";
+import { KalenderBlok } from "@/components/ploeg/KalenderBlok";
+import type { Klassement, SeizoenWedstrijd } from "@/lib/rbfa";
 import { 
   Trophy, 
   Clock, 
@@ -26,7 +29,16 @@ import {
  * De ploegpagina zelf. Het adres is /ploegen/<slug>; de server (page.tsx)
  * geeft de slug door en zorgt voor titel, beschrijving en canonical.
  */
-export default function TeamClient({ slug }: { slug: string }) {
+export default function TeamClient({
+  slug,
+  klassement,
+  kalender,
+}: {
+  slug: string;
+  klassement: Klassement | null;
+  /** Een eigen kalender in plaats van de RBFA-site, als de bond wedstrijden teruggeeft. */
+  kalender: { seizoen: SeizoenWedstrijd[]; link: string } | null;
+}) {
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showStandingsModal, setShowStandingsModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
@@ -298,8 +310,24 @@ export default function TeamClient({ slug }: { slug: string }) {
             </div>
           )}
 
-          {/* Wedstrijdkalender */}
-          {team.calendarIframe && (
+          {/* Het klassement, onder de spelers en boven de kalender: bovenaan de
+              pagina blijft het rustig, en hier hoort het bij het sportieve deel.
+              Enkel waar de bond een stand publiceert, dus vanaf de U15. Ploegen
+              zonder spelerskern krijgen het op dezelfde plaats. */}
+          {klassement && (
+            <div className="mt-12">
+              <KlassementBlok
+                klassement={klassement}
+              />
+            </div>
+          )}
+
+          {/* Wedstrijdkalender: een eigen blok waar dat er is, anders de RBFA-site */}
+          {kalender ? (
+            <div className="mt-12">
+              <KalenderBlok seizoen={kalender.seizoen} link={kalender.link} />
+            </div>
+          ) : team.calendarIframe && (
             <div className="mt-12 overflow-hidden rounded-2xl bg-white shadow-lg">
               <div className="flex items-center gap-3 bg-primary px-6 py-4 text-white">
                 <Calendar className="h-6 w-6" />

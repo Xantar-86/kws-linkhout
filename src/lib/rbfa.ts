@@ -278,3 +278,279 @@ export async function getRbfaWedstrijden(teamId: string): Promise<WedstrijdEvent
       };
     });
 }
+
+/* -------------------------------------------------------------------------
+   Het seizoen en het klassement van een ploeg.
+
+   Twee vragen die de RBFA-site zelf ook stelt: teamCalendar voor alle
+   wedstrijden met hun uitslag, en teamSeriesAndRankings voor de stand.
+
+   Een ploeg speelt vaak in meer dan een reeks tegelijk: de competitie, en
+   daarnaast een beker (Beker van Limburg, Croky Cup) met een eigen kleine
+   rangschikking. Voor "het klassement" nemen we de reeks waarin de ploeg de
+   meeste wedstrijden speelt; dat is altijd de competitie. Een bekergroep
+   wordt nooit als klassement getoond.
+
+   De bond zet per reeks ook zelf een vlag of het klassement getoond mag
+   worden. Voor de jongste jeugd (tot en met U13) staat die uit. Die vlag
+   volgen we.
+   ------------------------------------------------------------------------- */
+
+const RBFA_SITE = "https://www.rbfa.be/nl";
+
+/** Het RBFA-nummer van een ploeg, uit de kalender- of klassementlink. */
+export function rbfaTeamId(links: (string | undefined)[]): string | null {
+  for (const link of links) {
+    const m = link?.match(/\/ploeg\/(\d+)\//);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+/** Een beker herken je aan de naam; die tonen we nooit als klassement. */
+function isBeker(naam: string): boolean {
+  return /\b(bvl|bek|beker|cup)\b/i.test(naam);
+}
+
+const SEIZOEN_QUERY = `query GetSeizoen($teamId: ID!, $language: Language!) {
+  teamCalendar(teamId: $teamId, language: $language, sortByDate: asc) {
+    id startTime state
+    homeTeam { name clubId logo }
+    awayTeam { name clubId logo }
+    series { id name }
+    location { name address city postalCode }
+    outcome { status homeTeamGoals awayTeamGoals }
+  }
+}`;
+
+export interface SeizoenWedstrijd {
+  id: string;
+  /** Als ISO-tekst, zodat het gewoon van de server naar de pagina kan. */
+  start: string;
+  thuisNaam: string;
+  uitNaam: string;
+  thuisLogo: string | null;
+  uitLogo: string | null;
+  /** Speelt onze ploeg thuis? */
+  eigenThuis: boolean;
+  reeks: string;
+  reeksId: string;
+  /** Hoort deze wedstrijd bij een beker? */
+  beker: boolean;
+  toestand: "gespeeld" | "gepland" | "uitgesteld" | "anders";
+  thuisScore: number | null;
+  uitScore: number | null;
+  /** Vanuit onze ploeg bekeken: gewonnen, gelijk of verloren. */
+  resultaat: "W" | "G" | "V" | null;
+  veld: Speelveld | undefined;
+}
+
+/** Alle wedstrijden van een ploeg dit seizoen, met uitslag waar gespeeld. */
+export async function getSeizoen(teamId: string): Promise<SeizoenWedstrijd[] | null> {
+  try {
+    const response = await fetch(RBFA_GRAPHQL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: SEIZOEN_QUERY, variables: { teamId, language: "nl" } }),
+      next: { revalidate: 3600 },
+    });
+    if (!response.ok) return null;
+    const json = await response.json();
+    const lijst: {
+      id: string;
+      startTime: string | null;
+      state: string;
+      homeTeam: RbfaTeam | null;
+      awayTeam: RbfaTeam | null;
+      series: { id: string; name: string } | null;
+      location: RbfaLocation | null;
+      outcome: { status: string; homeTeamGoals: number | null; awayTeamGoals: number | null } | null;
+    }[] = json?.data?.teamCalendar ?? [];
+
+    return lijst
+      .filter((m) => m.startTime && m.homeTeam?.name && m.awayTeam?.name)
+      .map((m) => {
+        const eigenThuis = m.homeTeam!.clubId === LINKHOUT_CLUB_ID;
+        const gespeeld =
+          m.state === "finished" && m.outcome?.homeTeamGoals != null && m.outcome?.awayTeamGoals != null;
+        const thuisScore = gespeeld ? m.outcome!.homeTeamGoals : null;
+        const uitScore = gespeeld ? m.outcome!.awayTeamGoals : null;
+        let resultaat: SeizoenWedstrijd["resultaat"] = null;
+        if (thuisScore != null && uitScore != null) {
+          const wij = eigenThuis ? thuisScore : uitScore;
+          const zij = eigenThuis ? uitScore : thuisScore;
+          resultaat = wij > zij ? "W" : wij === zij ? "G" : "V";
+        }
+        const reeks = m.series?.name ?? "";
+        const toestand: SeizoenWedstrijd["toestand"] = gespeeld
+          ? "gespeeld"
+          : m.state === "planned"
+            ? "gepland"
+            : m.state === "postponed"
+              ? "uitgesteld"
+              : "anders";
+        return {
+          id: m.id,
+          start: brusselsNaarDate(m.startTime!).toISOString(),
+          thuisNaam: m.homeTeam!.name,
+          uitNaam: m.awayTeam!.name,
+          thuisLogo: m.homeTeam!.logo,
+          uitLogo: m.awayTeam!.logo,
+          eigenThuis,
+          reeks,
+          reeksId: m.series?.id ?? "",
+          beker: isBeker(reeks),
+          toestand,
+          thuisScore,
+          uitScore,
+          resultaat,
+          veld: naarSpeelveld(m.location),
+        };
+      });
+  } catch {
+    return null;
+  }
+}
+
+const KLASSEMENT_QUERY = `query GetKlassement($teamId: ID!, $language: Language!) {
+  teamSeriesAndRankings(teamId: $teamId, language: $language) {
+    rankings {
+      id
+      name
+      visibility { showRanking }
+      rankings {
+        type
+        teams {
+          teamId name position clubId logo points
+          matchesPlayed matchesWon matchesLost matchesDrawn
+          goalsFor goalsAgainst goalDifference
+        }
+      }
+    }
+  }
+}`;
+
+export interface KlassementRij {
+  teamId: string;
+  naam: string;
+  plaats: number;
+  logo: string | null;
+  punten: number;
+  gespeeld: number;
+  gewonnen: number;
+  gelijk: number;
+  verloren: number;
+  doelsaldo: number;
+  /** Is dit de ploeg van wiens pagina het klassement is? */
+  wij: boolean;
+}
+
+export interface Klassement {
+  reeks: string;
+  /** Aantal ploegen in de reeks. */
+  aantal: number;
+  wij: KlassementRij;
+  /** Deelt onze ploeg haar plaats met een of meer andere? */
+  gedeeld: boolean;
+  /** Vijf rijen rond onze ploeg: twee erboven en twee eronder, waar mogelijk. */
+  venster: KlassementRij[];
+  /** De rangschikking van deze reeks op de RBFA-site. */
+  link: string;
+}
+
+type Rangschikking = {
+  id: string;
+  name: string;
+  visibility: { showRanking: boolean } | null;
+  rankings: {
+    type: string;
+    teams: {
+      teamId: string;
+      name: string;
+      position: number;
+      logo: string | null;
+      points: number;
+      matchesPlayed: number;
+      matchesWon: number;
+      matchesLost: number;
+      matchesDrawn: number;
+      goalDifference: number;
+    }[];
+  }[];
+};
+
+/**
+ * Het klassement van de competitie van een ploeg, of null als er geen is of
+ * het niet getoond mag worden. Faalt de RBFA, dan ook null: de pagina bouwt
+ * dan gewoon zonder.
+ *
+ * Geef het seizoen mee als je het al hebt; dan wordt het niet twee keer
+ * opgehaald.
+ */
+export async function getKlassement(
+  teamId: string,
+  seizoen?: SeizoenWedstrijd[] | null,
+  venster = 5
+): Promise<Klassement | null> {
+  try {
+    const [response, wedstrijden] = await Promise.all([
+      fetch(RBFA_GRAPHQL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: KLASSEMENT_QUERY, variables: { teamId, language: "nl" } }),
+        // Een stand verandert na een speeldag; een uur is ruim vers genoeg.
+        next: { revalidate: 3600 },
+      }),
+      seizoen !== undefined ? Promise.resolve(seizoen) : getSeizoen(teamId),
+    ]);
+    if (!response.ok) return null;
+
+    const json = await response.json();
+    const rangschikkingen: Rangschikking[] = json?.data?.teamSeriesAndRankings?.rankings ?? [];
+
+    // Hetzelfde klassement als de overzichtspagina van de ploeg op de
+    // RBFA-site: de eerste reeks die de bond teruggeeft en mag tonen.
+    void wedstrijden;
+    const gekozen = rangschikkingen.find((r) => r.visibility?.showRanking);
+
+    if (!gekozen?.visibility?.showRanking) return null;
+
+    const algemeen = gekozen.rankings?.find((r) => r.type === "generalRanking");
+    const ploegen = algemeen?.teams ?? [];
+    if (ploegen.length === 0) return null;
+
+    const rijen: KlassementRij[] = ploegen
+      .map((p) => ({
+        teamId: p.teamId,
+        naam: p.name,
+        plaats: p.position,
+        logo: p.logo,
+        punten: p.points,
+        gespeeld: p.matchesPlayed,
+        gewonnen: p.matchesWon,
+        gelijk: p.matchesDrawn,
+        verloren: p.matchesLost,
+        doelsaldo: p.goalDifference,
+        wij: p.teamId === teamId,
+      }))
+      .sort((a, b) => a.plaats - b.plaats);
+
+    const i = rijen.findIndex((r) => r.wij);
+    if (i < 0) return null;
+
+    // Twee boven en twee onder; aan de rand van het klassement schuift het
+    // venster mee, zodat er toch vijf rijen staan.
+    const start = Math.max(0, Math.min(i - Math.floor(venster / 2), rijen.length - venster));
+
+    return {
+      reeks: gekozen.name.replace(/^Voetbal : Voetbal Vlaanderen - /, ""),
+      aantal: rijen.length,
+      wij: rijen[i],
+      gedeeld: rijen.filter((r) => r.plaats === rijen[i].plaats).length > 1,
+      venster: rijen.slice(start, start + venster),
+      link: `${RBFA_SITE}/competitie/${gekozen.id}/rangschikking`,
+    };
+  } catch {
+    return null;
+  }
+}

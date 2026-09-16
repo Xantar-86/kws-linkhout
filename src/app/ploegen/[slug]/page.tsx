@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { teams, getTeamBySlug } from "@/lib/teams";
+import { getKlassement, getSeizoen, rbfaTeamId } from "@/lib/rbfa";
 import TeamClient from "./Client";
 
 /**
@@ -20,6 +21,10 @@ export function generateStaticParams() {
 }
 
 export const dynamicParams = false;
+
+// Het klassement verandert na een speeldag. Elk uur opnieuw opbouwen houdt het
+// vers zonder de bond bij elke bezoeker lastig te vallen.
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -55,6 +60,18 @@ export default async function Pagina({ params }: Props) {
   const team = getTeamBySlug(slug);
   if (!team) notFound();
 
+  const rbfaId = rbfaTeamId([team.standingsIframe, team.calendarIframe]);
+  // Het seizoen een keer ophalen: het klassement heeft het nodig om de
+  // competitie te herkennen, en de kalender wordt er zelf mee opgebouwd.
+  const seizoen = rbfaId ? await getSeizoen(rbfaId) : null;
+  const klassement = rbfaId ? await getKlassement(rbfaId, seizoen) : null;
+  // Zonder wedstrijden (of als de bond niet antwoordt) blijft de RBFA-site in
+  // een venster staan. De links naar de bond zijn die uit teams.ts.
+  const kalender =
+    seizoen?.length && team.calendarIframe ? { seizoen, link: team.calendarIframe } : null;
+  const klassementMetLink =
+    klassement && team.standingsIframe ? { ...klassement, link: team.standingsIframe } : klassement;
+
   // De ploeg ook machineleesbaar, gekoppeld aan de club uit layout.tsx.
   const opmaak = {
     "@context": "https://schema.org",
@@ -70,7 +87,7 @@ export default async function Pagina({ params }: Props) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(opmaak) }} />
-      <TeamClient slug={slug} />
+      <TeamClient slug={slug} klassement={klassementMetLink} kalender={kalender} />
     </>
   );
 }
