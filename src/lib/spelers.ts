@@ -130,8 +130,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Elliot Michiels",
     "ploeg": "U11",
-    "klein": "/images/spelers/elliot-michiels-902771dc-klein.webp",
-    "groot": "/images/spelers/elliot-michiels-902771dc.webp"
+    "klein": "/images/spelers/elliot-michiels-1fcf91b2-klein.webp",
+    "groot": "/images/spelers/elliot-michiels-1fcf91b2.webp"
   },
   {
     "naam": "Emiel Cypers",
