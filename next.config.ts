@@ -55,6 +55,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return {
+      // sponsoring.kwslinkhout.be is de sponsorpagina, met dat adres in de
+      // adresbalk. De rest (beelden, /api/sponsoring) komt gewoon van
+      // dezelfde site. De canonical van de pagina blijft www.kwslinkhout.be.
+      beforeFiles: [
+        {
+          source: '/',
+          has: [{ type: 'host', value: 'sponsoring.kwslinkhout.be' }],
+          destination: '/sponsoring',
+        },
+      ],
+    };
+  },
   async headers() {
     return [
       // Het CMS en de interne matchday-schermen horen niet in een

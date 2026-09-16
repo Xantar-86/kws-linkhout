@@ -12,8 +12,8 @@ import SponsoringClient from "./Client";
  *
  * De formules en bedragen staan in inhoud.ts.
  *
- * sponsoring.kwslinkhout.be verwijst sinds september 2026 met een 301 hierheen
- * (ingesteld in Cloudflare door de maker van de oude site).
+ * Ook bereikbaar als sponsoring.kwslinkhout.be, met dat adres in de adresbalk
+ * (rewrite in next.config.ts; het domein hangt aan het Vercel-project).
  */
 export const metadata: Metadata = {
   title: "Sponsor worden: formules en Project Linkwood Park",

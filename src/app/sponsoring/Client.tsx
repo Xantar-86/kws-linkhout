@@ -4,17 +4,15 @@
 //
 // De sponsorpagina. Een ondernemer komt hier met één vraag: wat krijg ik, en
 // wat kost het? Dus de formules staan hoog, met de bedragen erbij, en elke
-// knop brengt je naar hetzelfde formulier met het juiste onderwerp al ingevuld.
-// Geen losse pop-ups: een formulier op de pagina zelf werkt op elke telefoon
-// en verdwijnt niet als je per ongeluk naast het venster tikt.
+// knop opent zijn eigen formulier in een venster, met het onderwerp al
+// ingevuld, zoals op de oorspronkelijke sponsorsite.
 //
 // De pagina is ook bereikbaar als sponsoring.kwslinkhout.be en staat daar als
 // losse site. Daarom zonder het menu van de clubsite (zie SiteOmlijsting);
 // het clubschild bovenaan brengt je wel naar de clubsite.
 
-import { useRef, useState } from "react";
-import Link from "next/link";
-import { ArrowRight, Check, Eye, Handshake, Link2, Mail, CircleDot, AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, Check, Eye, Handshake, Link2, Mail, CircleDot, AlertCircle, X } from "lucide-react";
 import { PaginaKop } from "@/components/PaginaKop";
 import { SectieKop } from "@/components/SectieKop";
 import { Onthul } from "@/components/beweging/Onthul";
@@ -28,6 +26,12 @@ const CIJFERS: Cijfer[] = [
   { waarde: 5, vanaf: 0, achtervoegsel: "", label: "Terreinen", onder: "Op twee sites, Linkhout en Zelem" },
   { waarde: 25, vanaf: 0, achtervoegsel: "+", label: "Ploegen", onder: "Jeugd, dames en senioren" },
 ];
+
+/**
+ * Altijd het volledige adres: op sponsoring.kwslinkhout.be zou "/" gewoon
+ * deze pagina zelf zijn.
+ */
+const CLUBSITE = "https://www.kwslinkhout.be";
 
 const WAAROM_ICONEN = [Eye, Handshake, Link2];
 
@@ -99,7 +103,7 @@ function oordeel(v: VeldDef, waarde: string): string | null {
 }
 
 export default function SponsoringClient() {
-  const formulier = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("contact");
   const [waarden, setWaarden] = useState<Record<string, string>>({ subject: "" });
   const [bezocht, setBezocht] = useState<Record<string, boolean>>({});
@@ -107,18 +111,31 @@ export default function SponsoringClient() {
 
   const velden = tab === "contact" ? CONTACT_VELDEN : BAL_VELDEN;
 
-  function wissel(doel: Tab) {
+  /**
+   * Elke knop op de pagina opent zijn eigen formulier in een venster, met het
+   * onderwerp al ingevuld. Wat iemand al typte (naam, e-mail) blijft staan
+   * als hij het venster sluit en een andere knop kiest.
+   */
+  function openFormulier(doel: Tab, metOnderwerp?: string) {
     setTab(doel);
     setBezocht({});
     setStatus({ soort: "rust" });
+    if (metOnderwerp) setWaarden((w) => ({ ...w, subject: metOnderwerp }));
+    setOpen(true);
   }
 
-  /** Een knop op de pagina opent het formulier met het juiste onderwerp. */
-  function naarFormulier(doel: Tab, metOnderwerp?: string) {
-    wissel(doel);
-    if (metOnderwerp) setWaarden((w) => ({ ...w, subject: metOnderwerp }));
-    formulier.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  // Sluiten met Escape, en de pagina erachter niet laten scrollen.
+  useEffect(() => {
+    if (!open) return;
+    const toets = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", toets);
+    const vroeger = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", toets);
+      document.body.style.overflow = vroeger;
+    };
+  }, [open]);
 
   async function verstuur(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -159,14 +176,14 @@ export default function SponsoringClient() {
     <main className="min-h-screen bg-zand-50">
       <div className="relative">
         {/* Een losse site heeft geen menu, maar wel een weg naar de club. */}
-        <Link
-          href="/"
+        <a
+          href={CLUBSITE}
           className="absolute left-0 right-0 top-0 z-20 mx-auto flex max-w-7xl items-center gap-3 px-4 py-5 text-white sm:px-6 lg:px-8"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/kwslinkhout-logo.png" alt="" className="h-12 w-12 object-contain" />
           <span className="font-display text-lg font-bold tracking-tight">KWS Linkhout</span>
-        </Link>
+        </a>
 
         <PaginaKop
           opschrift="Sponsoring"
@@ -182,7 +199,7 @@ export default function SponsoringClient() {
             </a>
             <button
               type="button"
-              onClick={() => naarFormulier("wedstrijdbal")}
+              onClick={() => openFormulier("wedstrijdbal")}
               className="btn-secondary border-white/25 text-white hover:border-white/50 hover:bg-white/10"
             >
               Bestel een wedstrijdbal
@@ -356,7 +373,7 @@ export default function SponsoringClient() {
 
                     <button
                       type="button"
-                      onClick={() => naarFormulier("contact", f.opschrift === "Pakket" ? `Pakket ${f.naam}` : f.naam)}
+                      onClick={() => openFormulier("contact", f.opschrift === "Pakket" ? `Pakket ${f.naam}` : f.naam)}
                       className={
                         donker
                           ? "btn-primary mt-7 w-full"
@@ -389,7 +406,7 @@ export default function SponsoringClient() {
                   <p className="mt-2 max-w-2xl leading-relaxed text-gray-600">{WEDSTRIJDBAL.uitleg}</p>
                 </div>
               </div>
-              <button type="button" onClick={() => naarFormulier("wedstrijdbal")} className="btn-primary shrink-0">
+              <button type="button" onClick={() => openFormulier("wedstrijdbal")} className="btn-primary shrink-0">
                 Bestel een wedstrijdbal
               </button>
             </div>
@@ -415,37 +432,87 @@ export default function SponsoringClient() {
         </div>
       </section>
 
-      {/* Het formulier */}
-      <section ref={formulier} id="formulier" className="section-padding scroll-mt-8">
-        <div className="container-custom max-w-3xl">
+      {/* Afsluiter: twee wegen, elk met een eigen formulier. */}
+      <section id="contact" className="section-padding">
+        <div className="container-custom max-w-4xl">
           <SectieKop
             opschrift="Vrijblijvend contact"
             titel="Zin om mee te bouwen aan KWS Linkhout?"
             accent="mee te bouwen"
             onder="Geen verplichtingen, gewoon een goed gesprek. We nemen persoonlijk contact met u op."
           />
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => openFormulier("contact", "Vrijblijvend gesprek over sponsoring")}
+              className="group flex items-center justify-between gap-4 rounded-3xl border border-zand-200/70 bg-white p-7 text-left shadow-blad transition hover:border-primary"
+            >
+              <span>
+                <span className="block text-lg font-bold text-gray-900">Neem contact op</span>
+                <span className="mt-1 block text-sm text-gray-500">Een vraag, of een formule op maat</span>
+              </span>
+              <Mail className="h-6 w-6 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+            </button>
+            <button
+              type="button"
+              onClick={() => openFormulier("wedstrijdbal")}
+              className="group flex items-center justify-between gap-4 rounded-3xl border border-zand-200/70 bg-white p-7 text-left shadow-blad transition hover:border-primary"
+            >
+              <span>
+                <span className="block text-lg font-bold text-gray-900">Bestel een wedstrijdbal</span>
+                <span className="mt-1 block text-sm text-gray-500">{WEDSTRIJDBAL.prijs}, een vol jaar zichtbaar</span>
+              </span>
+              <CircleDot className="h-6 w-6 shrink-0 text-primary transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
 
-          <div className="mt-10 rounded-3xl border border-zand-200/70 bg-white p-6 shadow-blad md:p-10">
-            <div className="flex rounded-2xl bg-zand-100 p-1" role="tablist">
-              {(
-                [
-                  ["contact", "Vrijblijvend contact"],
-                  ["wedstrijdbal", `Wedstrijdbal, ${WEDSTRIJDBAL.prijs}`],
-                ] as const
-              ).map(([waarde, label]) => (
-                <button
-                  key={waarde}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === waarde}
-                  onClick={() => wissel(waarde)}
-                  className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
-                    tab === waarde ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+          <div className="mt-10 flex flex-col items-center gap-1 text-center text-sm text-gray-500">
+            <p>
+              Liever rechtstreeks? Mail {SPONSOR_CONTACT.naam} op{" "}
+              <a href={`mailto:${SPONSOR_CONTACT.mail}`} className="inline-flex items-center gap-1 font-semibold text-primary">
+                <Mail className="h-3.5 w-3.5" />
+                {SPONSOR_CONTACT.mail}
+              </a>
+            </p>
+            <p className="mt-3 text-xs text-gray-400">
+              KWS Linkhout vzw · Kapelstraat 72, 3560 Linkhout · KBVB 3531 · btw BE 0459.873.832
+            </p>
+            <a href={CLUBSITE} className="mt-2 text-xs text-gray-400 underline-offset-2 hover:underline">
+              Naar de clubsite, kwslinkhout.be
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Het formuliervenster */}
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-inkt-950/70 backdrop-blur-sm sm:items-center sm:p-4"
+          onMouseDown={(e) => e.target === e.currentTarget && setOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="venster-titel"
+            className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl sm:rounded-3xl md:p-9"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-primary">
+                  {tab === "wedstrijdbal" ? `Wedstrijdbal, ${WEDSTRIJDBAL.prijs}` : "Vrijblijvend contact"}
+                </p>
+                <h2 id="venster-titel" className="mt-2 font-display text-2xl font-extrabold tracking-tight text-gray-900">
+                  {tab === "wedstrijdbal" ? "Bestel een wedstrijdbal" : "Neem contact op"}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Sluiten"
+                className="-mr-2 -mt-1 rounded-full p-2 text-gray-400 transition-colors hover:bg-zand-100 hover:text-gray-900"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
 
             {status.soort === "ok" ? (
@@ -466,12 +533,8 @@ export default function SponsoringClient() {
                     Lokale proef: er is niets verstuurd. Online gaat dit naar {SPONSOR_CONTACT.naam}.
                   </p>
                 )}
-                <button
-                  type="button"
-                  onClick={() => setStatus({ soort: "rust" })}
-                  className="mt-6 text-sm font-semibold text-primary"
-                >
-                  Nog een bericht sturen
+                <button type="button" onClick={() => setOpen(false)} className="btn-primary mt-6">
+                  Sluiten
                 </button>
               </div>
             ) : (
@@ -480,7 +543,7 @@ export default function SponsoringClient() {
                 id={tab === "contact" ? "form-contact" : "form-ball"}
                 onSubmit={verstuur}
                 noValidate
-                className="mt-8 grid gap-x-5 gap-y-4 sm:grid-cols-2"
+                className="mt-6 grid gap-x-5 gap-y-4 sm:grid-cols-2"
               >
                 {/* Onzichtbaar voor mensen; wie dit invult is een robot. */}
                 <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
@@ -512,24 +575,8 @@ export default function SponsoringClient() {
               </form>
             )}
           </div>
-
-          <div className="mt-8 flex flex-col items-center gap-1 text-center text-sm text-gray-500">
-            <p>
-              Liever rechtstreeks? Mail {SPONSOR_CONTACT.naam} op{" "}
-              <a href={`mailto:${SPONSOR_CONTACT.mail}`} className="inline-flex items-center gap-1 font-semibold text-primary">
-                <Mail className="h-3.5 w-3.5" />
-                {SPONSOR_CONTACT.mail}
-              </a>
-            </p>
-            <p className="mt-3 text-xs text-gray-400">
-              KWS Linkhout vzw · Kapelstraat 72, 3560 Linkhout · KBVB 3531 · btw BE 0459.873.832
-            </p>
-            <Link href="/" className="mt-2 text-xs text-gray-400 underline-offset-2 hover:underline">
-              Naar de clubsite, kwslinkhout.be
-            </Link>
-          </div>
         </div>
-      </section>
+      )}
     </main>
   );
 }
