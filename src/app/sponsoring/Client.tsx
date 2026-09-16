@@ -96,6 +96,40 @@ const BAL_VELDEN: VeldDef[] = [
   { name: "match", label: "Voorkeur wedstrijd", placeholder: "bv. eerste thuiswedstrijd van het seizoen" },
 ];
 
+/**
+ * De formulieren gaan via Web3Forms, met de sleutel van de maker van de
+ * oorspronkelijke sponsorsite. Bij Web3Forms is bepaald naar wie de mail gaat.
+ * De sleutel is bedoeld om in de pagina te staan; het gratis plan aanvaardt
+ * enkel inzendingen vanuit de browser, niet vanaf een server.
+ */
+const WEB3FORMS_SLEUTEL = "4a359a84-fa74-4483-b0da-841394499c56";
+
+/** Wat er in de mail staat, zoals de maker het opgaf. */
+function mailVoor(tab: Tab, data: Record<string, string>) {
+  if (tab === "wedstrijdbal") {
+    return {
+      subject: `Wedstrijdbal bestelling - ${data.name}`,
+      from_name: data.name,
+      name: data.name,
+      email: data.email,
+      bedrijfsnaam: data.company || "-",
+      adres: `${data.street}, ${data.zip} ${data.city}`,
+      btw_nummer: data.vat || "-",
+      telefoon: data.phone,
+      voorkeur_wedstrijd: data.match || "-",
+    };
+  }
+  return {
+    subject: `Sponsoring KWS Linkhout - ${data.subject}`,
+    from_name: data.name,
+    name: data.name,
+    email: data.email,
+    telefoon: data.phone || "-",
+    onderwerp: data.subject,
+    bericht: data.message,
+  };
+}
+
 function oordeel(v: VeldDef, waarde: string): string | null {
   const w = waarde.trim();
   if (!w) return v.verplicht ? `Vul ${v.label.toLowerCase()} in.` : null;
@@ -149,22 +183,33 @@ export default function SponsoringClient() {
       return;
     }
 
-    const gegevens = Object.fromEntries(velden.map((v) => [v.name, (waarden[v.name] ?? "").trim()]));
+    const data = Object.fromEntries(velden.map((v) => [v.name, (waarden[v.name] ?? "").trim()]));
     const honing = (vorm.elements.namedItem("website") as HTMLInputElement | null)?.value ?? "";
+
+    // Een robot vult het onzichtbare veld in: doen alsof het gelukt is.
+    if (honing) {
+      setStatus({ soort: "ok" });
+      return;
+    }
+    // Wie de site op zijn eigen computer uitprobeert, stuurt geen echte mail.
+    if (/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
+      setStatus({ soort: "ok", lokaal: true });
+      return;
+    }
 
     setStatus({ soort: "bezig" });
     try {
-      const r = await fetch("/api/sponsoring", {
+      const r = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...gegevens, website: honing, soort: tab }),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: WEB3FORMS_SLEUTEL, ...mailVoor(tab, data) }),
       });
-      const d = await r.json();
-      if (!r.ok) {
-        setStatus({ soort: "fout", tekst: d.error ?? "Het bericht kon niet verstuurd worden." });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.success) {
+        setStatus({ soort: "fout", tekst: "Het bericht kon niet verstuurd worden. Mail ons gerust rechtstreeks." });
         return;
       }
-      setStatus({ soort: "ok", lokaal: d.lokaal });
+      setStatus({ soort: "ok" });
       setWaarden({ subject: "" });
       setBezocht({});
     } catch {
@@ -530,7 +575,7 @@ export default function SponsoringClient() {
                 </p>
                 {status.lokaal && (
                   <p className="mx-auto mt-4 max-w-sm rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                    Lokale proef: er is niets verstuurd. Online gaat dit naar {SPONSOR_CONTACT.naam}.
+                    Lokale proef: er is niets verstuurd. Online gaat dit via Web3Forms.
                   </p>
                 )}
                 <button type="button" onClick={() => setOpen(false)} className="btn-primary mt-6">
