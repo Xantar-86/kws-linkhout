@@ -11,6 +11,9 @@ import SponsoringClient from "./Client";
  * pagina meetelt voor kwslinkhout.be in plaats van voor een subdomein.
  *
  * De formules en bedragen staan in inhoud.ts.
+ *
+ * sponsoring.kwslinkhout.be verwijst sinds september 2026 met een 301 hierheen
+ * (ingesteld in Cloudflare door de maker van de oude site).
  */
 export const metadata: Metadata = {
   title: "Sponsor worden: formules en Project Linkwood Park",
@@ -19,12 +22,6 @@ export const metadata: Metadata = {
     "en VIP-event, het Project Linkwood Park voor nieuwe kleedkamers, of een wedstrijdbal vanaf 150 euro.",
   alternates: { canonical: "/sponsoring" },
   openGraph: ogVoor("/sponsoring"),
-  // VOORLOPIG VERBORGEN, september 2026. De pagina staat online zodat het
-  // bestuur ze kan bekijken via de link, maar ze hoort nog niet vindbaar te
-  // zijn: niet in Google, niet in de sitemap, en nergens naar gelinkt vanop
-  // de site. Bij goedkeuring: deze regel weg, /sponsoring terug in de sitemap,
-  // en de knop onder de sponsors op de startpagina naar /sponsoring.
-  robots: { index: false, follow: false },
 };
 
 export default function Pagina() {

@@ -5,6 +5,7 @@ const footerLinks = {
   club: [
     { name: "Clubinfo", href: "/clubinfo" },
     { name: "Word lid", href: "/word-lid" },
+    { name: "Sponsor worden", href: "/sponsoring" },
     { name: "API (Integriteit)", href: "/clubinfo/api" },
     { name: "Organigram", href: "/clubinfo/organigram" },
   ],
