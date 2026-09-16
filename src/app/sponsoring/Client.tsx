@@ -4,36 +4,23 @@
 //
 // De sponsorpagina. Een ondernemer komt hier met één vraag: wat krijg ik, en
 // wat kost het? Dus de formules staan hoog, met de bedragen erbij, en elke
-// knop brengt je naar hetzelfde formulier met het juiste onderwerp al gekozen.
+// knop brengt je naar hetzelfde formulier met het juiste onderwerp al ingevuld.
 // Geen losse pop-ups: een formulier op de pagina zelf werkt op elke telefoon
 // en verdwijnt niet als je per ongeluk naast het venster tikt.
+//
+// De pagina is ook bereikbaar als sponsoring.kwslinkhout.be en staat daar als
+// losse site. Daarom zonder het menu van de clubsite (zie SiteOmlijsting);
+// het clubschild bovenaan brengt je wel naar de clubsite.
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Check,
-  Eye,
-  Handshake,
-  Link2,
-  Mail,
-  CircleDot,
-  Building2,
-} from "lucide-react";
+import { ArrowRight, Check, Eye, Handshake, Link2, Mail, CircleDot, AlertCircle } from "lucide-react";
 import { PaginaKop } from "@/components/PaginaKop";
 import { SectieKop } from "@/components/SectieKop";
 import { Onthul } from "@/components/beweging/Onthul";
 import { SPONSORS } from "@/components/home/SponsorsSection";
 import { StatsSection, type Cijfer } from "@/components/home/StatsSection";
-import {
-  FORMULES,
-  LINKWOOD_PARK,
-  ONDERWERPEN,
-  SPONSOR_CONTACT,
-  WAAROM,
-  WEDSTRIJDBAL,
-  ZELEM,
-} from "./inhoud";
+import { FORMULES, SPONSOR_CONTACT, WAAROM, WEDSTRIJDBAL, ZELEM } from "./inhoud";
 
 const CIJFERS: Cijfer[] = [
   { waarde: 1938, vanaf: 1900, achtervoegsel: "", label: "Opgericht", onder: "Stamnummer 03531" },
@@ -47,29 +34,113 @@ const WAAROM_ICONEN = [Eye, Handshake, Link2];
 type Tab = "contact" | "wedstrijdbal";
 type Status = { soort: "rust" } | { soort: "bezig" } | { soort: "ok"; lokaal?: boolean } | { soort: "fout"; tekst: string };
 
+/* -------------------------------------------------------------------------
+   De velden van beide formulieren, met hun controle.
+
+   Een controle geeft een foutmelding terug, of null als het veld goed is.
+   Een veld wordt pas beoordeeld zodra iemand het verlaat (of op versturen
+   drukt), zodat niemand een rode rand krijgt terwijl hij nog aan het typen
+   is. Daarna volgt het oordeel elke toets, zodat je meteen ziet dat het goed
+   is.
+   ------------------------------------------------------------------------- */
+
+type VeldDef = {
+  name: string;
+  label: string;
+  type?: string;
+  autoComplete?: string;
+  placeholder?: string;
+  verplicht?: boolean;
+  breed?: boolean;
+  meerRegels?: boolean;
+  controle?: (waarde: string) => string | null;
+};
+
+const isMail = (w: string) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(w) ? null : "Dit e-mailadres klopt niet.");
+const isTelefoon = (w: string) =>
+  w.replace(/\D/g, "").length >= 9 ? null : "Dit telefoonnummer is te kort.";
+const isPostcode = (w: string) => (/^\d{4}(\s?[a-z]{2})?$/i.test(w) ? null : "Een postcode heeft 4 cijfers.");
+const isBtw = (w: string) =>
+  /^(BE)?\s*[01]?\d{3}[.\s]?\d{3}[.\s]?\d{3}$/i.test(w.replace(/\s+/g, " ").trim())
+    ? null
+    : "Een Belgisch btw-nummer ziet eruit als BE 0123.456.789.";
+
+const CONTACT_VELDEN: VeldDef[] = [
+  { name: "name", label: "Naam", autoComplete: "name", verplicht: true },
+  { name: "email", label: "E-mail", type: "email", autoComplete: "email", verplicht: true, controle: isMail },
+  { name: "phone", label: "Telefoonnummer", type: "tel", autoComplete: "tel", controle: isTelefoon },
+  { name: "subject", label: "Onderwerp", verplicht: true },
+  {
+    name: "message",
+    label: "Bericht",
+    verplicht: true,
+    breed: true,
+    meerRegels: true,
+    placeholder: "Vertel kort wie u bent en waar u aan denkt.",
+  },
+];
+
+const BAL_VELDEN: VeldDef[] = [
+  { name: "name", label: "Naam", autoComplete: "name", verplicht: true },
+  { name: "company", label: "Bedrijfsnaam", autoComplete: "organization" },
+  { name: "street", label: "Straat en nummer", autoComplete: "street-address", verplicht: true, breed: true },
+  { name: "zip", label: "Postcode", autoComplete: "postal-code", verplicht: true, controle: isPostcode },
+  { name: "city", label: "Gemeente", autoComplete: "address-level2", verplicht: true },
+  { name: "vat", label: "Btw-nummer", placeholder: "BE 0123.456.789", controle: isBtw },
+  { name: "email", label: "E-mailadres", type: "email", autoComplete: "email", verplicht: true, controle: isMail },
+  { name: "phone", label: "Telefoonnummer", type: "tel", autoComplete: "tel", verplicht: true, controle: isTelefoon },
+  { name: "match", label: "Voorkeur wedstrijd", placeholder: "bv. eerste thuiswedstrijd van het seizoen" },
+];
+
+function oordeel(v: VeldDef, waarde: string): string | null {
+  const w = waarde.trim();
+  if (!w) return v.verplicht ? `Vul ${v.label.toLowerCase()} in.` : null;
+  return v.controle ? v.controle(w) : null;
+}
+
 export default function SponsoringClient() {
   const formulier = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useState<Tab>("contact");
-  const [onderwerp, setOnderwerp] = useState(ONDERWERPEN[0]);
+  const [waarden, setWaarden] = useState<Record<string, string>>({ subject: "" });
+  const [bezocht, setBezocht] = useState<Record<string, boolean>>({});
   const [status, setStatus] = useState<Status>({ soort: "rust" });
+
+  const velden = tab === "contact" ? CONTACT_VELDEN : BAL_VELDEN;
+
+  function wissel(doel: Tab) {
+    setTab(doel);
+    setBezocht({});
+    setStatus({ soort: "rust" });
+  }
 
   /** Een knop op de pagina opent het formulier met het juiste onderwerp. */
   function naarFormulier(doel: Tab, metOnderwerp?: string) {
-    setTab(doel);
-    if (metOnderwerp) setOnderwerp(metOnderwerp);
-    setStatus({ soort: "rust" });
+    wissel(doel);
+    if (metOnderwerp) setWaarden((w) => ({ ...w, subject: metOnderwerp }));
     formulier.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async function verstuur(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const velden = Object.fromEntries(new FormData(e.currentTarget).entries());
+    const vorm = e.currentTarget;
+
+    // Alles beoordelen, en naar het eerste veld dat nog niet goed is.
+    setBezocht(Object.fromEntries(velden.map((v) => [v.name, true])));
+    const fout = velden.find((v) => oordeel(v, waarden[v.name] ?? ""));
+    if (fout) {
+      vorm.querySelector<HTMLElement>(`[name="${fout.name}"]`)?.focus();
+      return;
+    }
+
+    const gegevens = Object.fromEntries(velden.map((v) => [v.name, (waarden[v.name] ?? "").trim()]));
+    const honing = (vorm.elements.namedItem("website") as HTMLInputElement | null)?.value ?? "";
+
     setStatus({ soort: "bezig" });
     try {
       const r = await fetch("/api/sponsoring", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...velden, soort: tab }),
+        body: JSON.stringify({ ...gegevens, website: honing, soort: tab }),
       });
       const d = await r.json();
       if (!r.ok) {
@@ -77,38 +148,80 @@ export default function SponsoringClient() {
         return;
       }
       setStatus({ soort: "ok", lokaal: d.lokaal });
-      e.currentTarget.reset();
+      setWaarden({ subject: "" });
+      setBezocht({});
     } catch {
       setStatus({ soort: "fout", tekst: "Geen verbinding. Probeer het zo meteen opnieuw." });
     }
   }
 
   return (
-    <div className="min-h-screen bg-zand-50">
-      <PaginaKop
-        opschrift="Sponsoring"
-        titel="Word sponsor van KWS Linkhout"
-        accent="sponsor"
-        onder="Meer dan tachtig jaar voetbal, ruim 350 leden en een van de sterkste jeugd- en meisjeswerkingen van Limburg. Als sponsor investeert u in mensen, niet enkel in reclame."
-        beeld="/images/teams/1ste-ploeg-2025.jpg"
-      >
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <a href="#formules" className="btn-primary group">
-            Bekijk de formules
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
-          <button
-            type="button"
-            onClick={() => naarFormulier("wedstrijdbal")}
-            className="btn-secondary border-white/25 text-white hover:border-white/50 hover:bg-white/10"
-          >
-            Bestel een wedstrijdbal
-          </button>
+    <main className="min-h-screen bg-zand-50">
+      <div className="relative">
+        {/* Een losse site heeft geen menu, maar wel een weg naar de club. */}
+        <Link
+          href="/"
+          className="absolute left-0 right-0 top-0 z-20 mx-auto flex max-w-7xl items-center gap-3 px-4 py-5 text-white sm:px-6 lg:px-8"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/kwslinkhout-logo.png" alt="" className="h-12 w-12 object-contain" />
+          <span className="font-display text-lg font-bold tracking-tight">KWS Linkhout</span>
+        </Link>
+
+        <PaginaKop
+          opschrift="Sponsoring"
+          titel="Word sponsor van KWS Linkhout"
+          accent="sponsor"
+          onder="Meer dan tachtig jaar voetbal, ruim 350 leden en een van de sterkste jeugd- en meisjeswerkingen van Limburg. Als sponsor investeert u in mensen, niet enkel in reclame."
+          beeld="/images/teams/1ste-ploeg-2025.jpg"
+        >
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a href="#formules" className="btn-primary group">
+              Bekijk de formules
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </a>
+            <button
+              type="button"
+              onClick={() => naarFormulier("wedstrijdbal")}
+              className="btn-secondary border-white/25 text-white hover:border-white/50 hover:bg-white/10"
+            >
+              Bestel een wedstrijdbal
+            </button>
+          </div>
+        </PaginaKop>
+      </div>
+
+      {/* De samenwerking met KFCE Zelem, bovenaan zoals op de clubsite. */}
+      <section className="section-padding bg-white">
+        <div className="container-custom grid items-center gap-12 lg:grid-cols-[1fr_1.2fr]">
+          <Onthul>
+            <div className="rounded-3xl border border-zand-200/70 bg-zand-50 p-8 shadow-blad md:p-12">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/samenwerking.png"
+                alt="Het clubschild van KWS Linkhout en dat van Eendracht Zelem, met een handdruk ertussen: in samenwerking met"
+                className="mx-auto w-full max-w-md"
+              />
+            </div>
+          </Onthul>
+          <Onthul vertraging={0.1}>
+            <SectieKop
+              opschrift="Samenwerking"
+              titel="Samen sterker met KFCE Zelem"
+              accent="Samen sterker"
+              uitlijning="links"
+            />
+            <div className="lopende-tekst mt-6">
+              {ZELEM.map((alinea) => (
+                <p key={alinea.slice(0, 24)}>{alinea}</p>
+              ))}
+            </div>
+          </Onthul>
         </div>
-      </PaginaKop>
+      </section>
 
       {/* Meer dan voetbal */}
-      <section className="section-padding bg-white">
+      <section className="section-padding">
         <div className="container-custom grid items-center gap-12 lg:grid-cols-2">
           <Onthul>
             <SectieKop
@@ -162,11 +275,7 @@ export default function SponsoringClient() {
       {/* Waarom sponsoren */}
       <section className="section-padding">
         <div className="container-custom">
-          <SectieKop
-            opschrift="Waarom sponsoren"
-            titel="Wat u ervoor terugkrijgt"
-            accent="terugkrijgt"
-          />
+          <SectieKop opschrift="Waarom sponsoren" titel="Wat u ervoor terugkrijgt" accent="terugkrijgt" />
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {WAAROM.map((w, i) => {
               const Icoon = WAAROM_ICONEN[i];
@@ -186,133 +295,86 @@ export default function SponsoringClient() {
         </div>
       </section>
 
-      {/* De formules */}
-      <section id="formules" className="section-padding scroll-mt-24 bg-white">
-        <div className="container-custom">
+      {/* De formules, vier naast elkaar. Gold is het donkere blok met het lint. */}
+      <section id="formules" className="section-padding scroll-mt-8 bg-white">
+        <div className="mx-auto max-w-[88rem] px-4 sm:px-6 lg:px-8">
           <SectieKop
             opschrift="Sponsorformules 2026"
             titel="Kies de formule die bij u past"
             accent="formule"
             onder="Alle bedragen zijn exclusief btw. Er is altijd een formule op maat mogelijk."
           />
-          <div className="mt-14 grid gap-5 lg:grid-cols-3">
-            {FORMULES.map((f, i) => (
-              <Onthul key={f.id} vertraging={i * 0.08} className="h-full">
-                <article
-                  className={`flex h-full flex-col rounded-3xl border p-8 ${
-                    f.id === "platinum"
-                      ? "border-inkt-800 bg-inkt-950 text-white"
-                      : "border-zand-200/70 bg-zand-50"
-                  }`}
-                >
-                  <p
-                    className={`text-[0.6875rem] font-semibold uppercase tracking-[0.2em] ${
-                      f.id === "platinum" ? "text-primary-400" : "text-primary"
+          <div className="mt-16 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {FORMULES.map((f, i) => {
+              const donker = Boolean(f.uitgelicht);
+              return (
+                <Onthul key={f.id} vertraging={i * 0.06} className="h-full">
+                  <article
+                    className={`relative flex h-full flex-col rounded-3xl border p-7 ${
+                      donker
+                        ? "border-primary bg-inkt-950 text-white shadow-2xl ring-1 ring-primary"
+                        : "border-zand-200/70 bg-zand-50"
                     }`}
                   >
-                    Pakket
-                  </p>
-                  <h3 className="mt-2 font-display text-3xl font-extrabold tracking-tight">{f.naam}</h3>
-                  <p className={`mt-2 ${f.id === "platinum" ? "text-white/65" : "text-gray-600"}`}>{f.kern}</p>
+                    {f.uitgelicht && (
+                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-4 py-1.5 text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-white shadow-lg">
+                        {f.uitgelicht}
+                      </span>
+                    )}
+                    <p
+                      className={`text-[0.6875rem] font-semibold uppercase tracking-[0.2em] ${
+                        donker ? "text-primary-400" : "text-primary"
+                      }`}
+                    >
+                      {f.opschrift}
+                    </p>
+                    <h3 className="mt-2 font-display text-2xl font-extrabold tracking-tight md:text-3xl">{f.naam}</h3>
+                    <p className={`mt-2 text-sm ${donker ? "text-white/65" : "text-gray-600"}`}>{f.kern}</p>
 
-                  <ul className="mt-6 flex-1 space-y-3">
-                    {f.inbegrepen.map((punt) => (
-                      <li key={punt} className="flex gap-3 text-sm leading-relaxed">
-                        <Check
-                          className={`mt-0.5 h-4 w-4 shrink-0 ${f.id === "platinum" ? "text-primary-400" : "text-primary"}`}
-                        />
-                        <span className={f.id === "platinum" ? "text-white/80" : "text-gray-700"}>{punt}</span>
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="mt-6 flex-1 space-y-3">
+                      {f.inbegrepen.map((punt) => (
+                        <li key={punt} className="flex gap-3 text-sm leading-relaxed">
+                          <Check className={`mt-0.5 h-4 w-4 shrink-0 ${donker ? "text-primary-400" : "text-primary"}`} />
+                          <span className={donker ? "text-white/80" : "text-gray-700"}>{punt}</span>
+                        </li>
+                      ))}
+                    </ul>
 
-                  <dl
-                    className={`mt-7 grid grid-cols-2 gap-4 border-t pt-6 ${
-                      f.id === "platinum" ? "border-white/10" : "border-zand-200"
-                    }`}
-                  >
-                    {f.prijzen.map((p) => (
-                      <div key={p.label}>
-                        <dt className={`text-xs ${f.id === "platinum" ? "text-white/50" : "text-gray-500"}`}>
-                          {p.label}
-                        </dt>
-                        <dd className="mt-1 text-lg font-bold tabular-nums">{p.bedrag}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <p className={`mt-3 text-xs ${f.id === "platinum" ? "text-white/45" : "text-gray-500"}`}>
-                    {f.voetnoot}
-                  </p>
+                    <dl
+                      className={`mt-7 grid grid-cols-2 gap-4 border-t pt-6 ${
+                        donker ? "border-white/10" : "border-zand-200"
+                      }`}
+                    >
+                      {f.prijzen.map((p) => (
+                        <div key={p.label}>
+                          <dt className={`text-xs ${donker ? "text-white/50" : "text-gray-500"}`}>{p.label}</dt>
+                          <dd className="mt-1 font-bold tabular-nums">{p.bedrag}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                    <p className={`mt-3 text-xs ${donker ? "text-white/45" : "text-gray-500"}`}>{f.voetnoot}</p>
 
-                  <button
-                    type="button"
-                    onClick={() => naarFormulier("contact", `Pakket ${f.naam}`)}
-                    className={
-                      f.id === "platinum"
-                        ? "btn-primary mt-7 w-full"
-                        : "btn-secondary mt-7 w-full border-gray-300 text-gray-900 hover:border-gray-900"
-                    }
-                  >
-                    Bespreek pakket {f.naam}
-                  </button>
-                </article>
-              </Onthul>
-            ))}
+                    <button
+                      type="button"
+                      onClick={() => naarFormulier("contact", f.opschrift === "Pakket" ? `Pakket ${f.naam}` : f.naam)}
+                      className={
+                        donker
+                          ? "btn-primary mt-7 w-full"
+                          : "btn-secondary mt-7 w-full border-gray-300 text-gray-900 hover:border-gray-900"
+                      }
+                    >
+                      Bespreek {f.opschrift === "Pakket" ? `pakket ${f.naam}` : "het project"}
+                    </button>
+                  </article>
+                </Onthul>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Project Linkwood Park */}
-      <section className="korrel relative overflow-hidden bg-inkt-950 py-20 text-white md:py-28">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(70%_60%_at_20%_100%,rgba(220,38,38,0.22),transparent_65%)]"
-        />
-        <div className="container-custom relative grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <Onthul>
-            <p className="opschrift text-primary-400">
-              <Building2 className="h-4 w-4" />
-              Infrastructuurproject
-            </p>
-            <h2 className="heading-2 mt-4 text-white">{LINKWOOD_PARK.titel}</h2>
-            <p className="mt-4 text-xl text-white/80">{LINKWOOD_PARK.actie}</p>
-            <p className="mt-4 max-w-xl leading-relaxed text-white/60">{LINKWOOD_PARK.uitleg}</p>
-            <dl className="mt-8 flex gap-10">
-              <div>
-                <dt className="text-sm text-white/50">Bijdrage</dt>
-                <dd className="mt-1 font-display text-4xl font-extrabold tabular-nums">{LINKWOOD_PARK.bijdrage}</dd>
-              </div>
-              <div>
-                <dt className="text-sm text-white/50">Zichtbaarheid</dt>
-                <dd className="mt-1 font-display text-4xl font-extrabold tabular-nums">{LINKWOOD_PARK.zichtbaarheid}</dd>
-              </div>
-            </dl>
-          </Onthul>
-          <Onthul vertraging={0.1}>
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-              <p className="text-sm font-semibold text-white">Inbegrepen</p>
-              <ul className="mt-5 space-y-3">
-                {LINKWOOD_PARK.inbegrepen.map((punt) => (
-                  <li key={punt} className="flex gap-3 text-sm leading-relaxed text-white/75">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary-400" />
-                    {punt}
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={() => naarFormulier("contact", "Project Linkwood Park")}
-                className="btn-primary mt-8 w-full"
-              >
-                Bespreek Project Linkwood Park
-              </button>
-            </div>
-          </Onthul>
-        </div>
-      </section>
-
       {/* De wedstrijdbal, de laagdrempelige instapper. */}
-      <section className="section-padding pb-0">
+      <section className="section-padding">
         <div className="container-custom">
           <Onthul>
             <div className="flex flex-col items-start gap-6 rounded-3xl border border-zand-200/70 bg-white p-8 shadow-blad md:flex-row md:items-center md:justify-between">
@@ -330,38 +392,6 @@ export default function SponsoringClient() {
               <button type="button" onClick={() => naarFormulier("wedstrijdbal")} className="btn-primary shrink-0">
                 Bestel een wedstrijdbal
               </button>
-            </div>
-          </Onthul>
-        </div>
-      </section>
-
-      {/* De samenwerking met KFCE Zelem, met het volledige verhaal. Minder
-          ruimte bovenaan: de wedstrijdbal erboven staat op dezelfde grond, en
-          dan leest een volle sectie-afstand als een gat in plaats van een pauze. */}
-      <section className="pb-20 pt-14 md:pb-28 md:pt-20">
-        <div className="container-custom grid items-center gap-12 lg:grid-cols-[1fr_1.2fr]">
-          <Onthul>
-            <div className="rounded-3xl border border-zand-200/70 bg-white p-8 shadow-blad md:p-12">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/samenwerking.png"
-                alt="Het clubschild van KWS Linkhout en dat van Eendracht Zelem, met een handdruk ertussen: in samenwerking met"
-                className="mx-auto w-full max-w-md"
-                loading="lazy"
-              />
-            </div>
-          </Onthul>
-          <Onthul vertraging={0.1}>
-            <SectieKop
-              opschrift="Samenwerking"
-              titel="Samen sterker met KFCE Zelem"
-              accent="Samen sterker"
-              uitlijning="links"
-            />
-            <div className="lopende-tekst mt-6">
-              {ZELEM.map((alinea) => (
-                <p key={alinea.slice(0, 24)}>{alinea}</p>
-              ))}
             </div>
           </Onthul>
         </div>
@@ -386,7 +416,7 @@ export default function SponsoringClient() {
       </section>
 
       {/* Het formulier */}
-      <section ref={formulier} id="formulier" className="section-padding scroll-mt-24">
+      <section ref={formulier} id="formulier" className="section-padding scroll-mt-8">
         <div className="container-custom max-w-3xl">
           <SectieKop
             opschrift="Vrijblijvend contact"
@@ -408,10 +438,7 @@ export default function SponsoringClient() {
                   type="button"
                   role="tab"
                   aria-selected={tab === waarde}
-                  onClick={() => {
-                    setTab(waarde);
-                    setStatus({ soort: "rust" });
-                  }}
+                  onClick={() => wissel(waarde)}
                   className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                     tab === waarde ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
                   }`}
@@ -448,65 +475,33 @@ export default function SponsoringClient() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={verstuur} className="mt-8 grid gap-5 sm:grid-cols-2">
+              <form
+                key={tab}
+                id={tab === "contact" ? "form-contact" : "form-ball"}
+                onSubmit={verstuur}
+                noValidate
+                className="mt-8 grid gap-x-5 gap-y-4 sm:grid-cols-2"
+              >
                 {/* Onzichtbaar voor mensen; wie dit invult is een robot. */}
                 <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
-                <Veld label="Naam" name="naam" verplicht autoComplete="name" />
-                {tab === "wedstrijdbal" ? (
-                  <Veld label="Bedrijfsnaam" name="bedrijf" autoComplete="organization" />
-                ) : (
-                  <Veld label="Telefoon" name="telefoon" type="tel" autoComplete="tel" />
-                )}
-                <Veld label="E-mailadres" name="email" type="email" verplicht autoComplete="email" breed={tab === "contact"} />
-
-                {tab === "wedstrijdbal" ? (
-                  <>
-                    <Veld label="Telefoon" name="telefoon" type="tel" verplicht autoComplete="tel" />
-                    <Veld label="Straat en nummer" name="straat" verplicht autoComplete="street-address" breed />
-                    <Veld label="Postcode" name="postcode" verplicht autoComplete="postal-code" />
-                    <Veld label="Gemeente" name="gemeente" verplicht autoComplete="address-level2" />
-                    <Veld label="Btw-nummer" name="btw" />
-                    <Veld label="Voorkeur wedstrijd" name="wedstrijd" />
-                  </>
-                ) : (
-                  <>
-                    <label className="sm:col-span-2">
-                      <span className="mb-1.5 block text-sm font-medium text-gray-700">
-                        Onderwerp <span className="text-primary">*</span>
-                      </span>
-                      <select
-                        name="onderwerp"
-                        required
-                        value={onderwerp}
-                        onChange={(e) => setOnderwerp(e.target.value)}
-                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                      >
-                        {ONDERWERPEN.map((o) => (
-                          <option key={o}>{o}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="sm:col-span-2">
-                      <span className="mb-1.5 block text-sm font-medium text-gray-700">
-                        Bericht <span className="text-primary">*</span>
-                      </span>
-                      <textarea
-                        name="bericht"
-                        required
-                        rows={5}
-                        placeholder="Vertel kort wie u bent en waar u aan denkt."
-                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-                      />
-                    </label>
-                  </>
-                )}
+                {velden.map((v) => (
+                  <Veld
+                    key={v.name}
+                    veld={v}
+                    waarde={waarden[v.name] ?? ""}
+                    fout={bezocht[v.name] ? oordeel(v, waarden[v.name] ?? "") : null}
+                    beoordeeld={Boolean(bezocht[v.name])}
+                    opWijzig={(w) => setWaarden((oud) => ({ ...oud, [v.name]: w }))}
+                    opVerlaat={() => setBezocht((oud) => ({ ...oud, [v.name]: true }))}
+                  />
+                ))}
 
                 <div className="sm:col-span-2">
                   {status.soort === "fout" && (
                     <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{status.tekst}</p>
                   )}
-                  <button type="submit" disabled={status.soort === "bezig"} className="btn-primary w-full disabled:opacity-60">
+                  <button type="submit" disabled={status.soort === "bezig"} className="btn-primary mt-2 w-full disabled:opacity-60">
                     {status.soort === "bezig"
                       ? "Bezig met versturen..."
                       : tab === "wedstrijdbal"
@@ -529,43 +524,77 @@ export default function SponsoringClient() {
             <p className="mt-3 text-xs text-gray-400">
               KWS Linkhout vzw · Kapelstraat 72, 3560 Linkhout · KBVB 3531 · btw BE 0459.873.832
             </p>
-            <Link href="/contact" className="mt-2 text-xs text-gray-400 underline-offset-2 hover:underline">
-              Andere vragen? Naar de contactpagina
+            <Link href="/" className="mt-2 text-xs text-gray-400 underline-offset-2 hover:underline">
+              Naar de clubsite, kwslinkhout.be
             </Link>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
 
 function Veld({
-  label,
-  name,
-  type = "text",
-  verplicht = false,
-  autoComplete,
-  breed = false,
+  veld,
+  waarde,
+  fout,
+  beoordeeld,
+  opWijzig,
+  opVerlaat,
 }: {
-  label: string;
-  name: string;
-  type?: string;
-  verplicht?: boolean;
-  autoComplete?: string;
-  breed?: boolean;
+  veld: VeldDef;
+  waarde: string;
+  fout: string | null;
+  beoordeeld: boolean;
+  opWijzig: (waarde: string) => void;
+  opVerlaat: () => void;
 }) {
+  const id = `veld-${veld.name}`;
+  // Groen alleen voor wat echt ingevuld is: een leeg optioneel veld is niet
+  // fout, maar ook niets om af te vinken.
+  const goed = beoordeeld && !fout && waarde.trim() !== "";
+  const rand = fout
+    ? "border-red-400 focus:border-red-500 focus:ring-red-500/15"
+    : goed
+      ? "border-green-500 focus:border-green-600 focus:ring-green-600/15"
+      : "border-gray-200 focus:border-primary focus:ring-primary/20";
+  const klasse = `w-full rounded-xl border bg-white px-4 py-3 pr-11 text-gray-900 outline-none transition focus:ring-2 ${rand}`;
+  const gemeen = {
+    id,
+    name: veld.name,
+    value: waarde,
+    placeholder: veld.placeholder,
+    autoComplete: veld.autoComplete,
+    required: veld.verplicht,
+    "aria-invalid": Boolean(fout),
+    "aria-describedby": fout ? `${id}-fout` : undefined,
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => opWijzig(e.target.value),
+    onBlur: opVerlaat,
+  };
+
   return (
-    <label className={breed ? "sm:col-span-2" : undefined}>
-      <span className="mb-1.5 block text-sm font-medium text-gray-700">
-        {label} {verplicht && <span className="text-primary">*</span>}
-      </span>
-      <input
-        type={type}
-        name={name}
-        required={verplicht}
-        autoComplete={autoComplete}
-        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-      />
-    </label>
+    <div className={veld.breed || veld.meerRegels ? "sm:col-span-2" : undefined}>
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-gray-700">
+        {veld.label}{" "}
+        {veld.verplicht ? <span className="text-primary">*</span> : <span className="font-normal text-gray-400">(optioneel)</span>}
+      </label>
+      <div className="relative">
+        {veld.meerRegels ? (
+          <textarea {...gemeen} rows={5} className={klasse} />
+        ) : (
+          <input {...gemeen} type={veld.type ?? "text"} className={klasse} />
+        )}
+        {(goed || fout) && (
+          <span className={`pointer-events-none absolute right-4 top-3.5 ${goed ? "text-green-600" : "text-red-500"}`}>
+            {goed ? <Check className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
+          </span>
+        )}
+      </div>
+      {fout && (
+        <p id={`${id}-fout`} className="mt-1.5 text-sm text-red-600">
+          {fout}
+        </p>
+      )}
+    </div>
   );
 }

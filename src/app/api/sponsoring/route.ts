@@ -39,11 +39,14 @@ export async function POST(request: NextRequest) {
   // Een onzichtbaar veld dat enkel robots invullen.
   if (gegevens.website) return NextResponse.json({ success: true });
 
+  // De veldnamen en de inhoud van de mail zijn die van de oorspronkelijke
+  // sponsorsite (form-contact en form-ball), zodat de mail er hetzelfde uitziet.
   const soort = gegevens.soort === "wedstrijdbal" ? "wedstrijdbal" : "contact";
-  const naam = String(gegevens.naam ?? "").trim();
-  const email = String(gegevens.email ?? "").trim();
+  const veld = (naam: string) => String(gegevens[naam] ?? "").trim();
+  const naam = veld("name");
+  const email = veld("email");
 
-  if (!naam || !email || !email.includes("@")) {
+  if (!naam || !/^[^s@]+@[^s@]+.[^s@]{2,}$/.test(email)) {
     return NextResponse.json({ error: "Naam en een geldig e-mailadres zijn verplicht." }, { status: 400 });
   }
 
@@ -51,31 +54,29 @@ export async function POST(request: NextRequest) {
   let tabel: string;
 
   if (soort === "wedstrijdbal") {
-    for (const veld of ["straat", "postcode", "gemeente", "telefoon"]) {
-      if (!String(gegevens[veld] ?? "").trim()) {
-        return NextResponse.json({ error: "Vul alle verplichte velden in." }, { status: 400 });
-      }
+    if (["street", "zip", "city", "phone"].some((v) => !veld(v))) {
+      return NextResponse.json({ error: "Vul alle verplichte velden in." }, { status: 400 });
     }
-    onderwerp = `Bestelling wedstrijdbal door ${naam}`;
+    onderwerp = `Wedstrijdbal bestelling - ${naam}`;
     tabel =
       rij("Naam", naam) +
-      rij("Bedrijf", gegevens.bedrijf) +
-      rij("Adres", `${gegevens.straat}, ${gegevens.postcode} ${gegevens.gemeente}`) +
-      rij("Btw-nummer", gegevens.btw) +
       rij("E-mail", email) +
-      rij("Telefoon", gegevens.telefoon) +
-      rij("Voorkeur wedstrijd", gegevens.wedstrijd);
+      rij("Bedrijfsnaam", veld("company") || "-") +
+      rij("Adres", `${veld("street")}, ${veld("zip")} ${veld("city")}`) +
+      rij("BTW-nummer", veld("vat") || "-") +
+      rij("Telefoon", veld("phone")) +
+      rij("Voorkeur wedstrijd", veld("match") || "-");
   } else {
-    if (!String(gegevens.onderwerp ?? "").trim() || !String(gegevens.bericht ?? "").trim()) {
-      return NextResponse.json({ error: "Kies een onderwerp en schrijf een bericht." }, { status: 400 });
+    if (!veld("subject") || !veld("message")) {
+      return NextResponse.json({ error: "Vul een onderwerp en een bericht in." }, { status: 400 });
     }
-    onderwerp = `Sponsoring: ${String(gegevens.onderwerp)} (${naam})`;
+    onderwerp = `Sponsoring KWS Linkhout - ${veld("subject")}`;
     tabel =
       rij("Naam", naam) +
       rij("E-mail", email) +
-      rij("Telefoon", gegevens.telefoon) +
-      rij("Onderwerp", gegevens.onderwerp) +
-      `<tr><td style="padding:4px 12px 4px 0;color:#666;vertical-align:top">Bericht</td><td style="white-space:pre-wrap">${veilig(gegevens.bericht)}</td></tr>`;
+      rij("Telefoon", veld("phone") || "-") +
+      rij("Onderwerp", veld("subject")) +
+      `<tr><td style="padding:4px 12px 4px 0;color:#666;vertical-align:top">Bericht</td><td style="white-space:pre-wrap">${veilig(veld("message"))}</td></tr>`;
   }
 
   const html = `<h2 style="font-family:sans-serif">${veilig(onderwerp)}</h2>
@@ -99,7 +100,8 @@ export async function POST(request: NextRequest) {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
     body: JSON.stringify({
-      from: "KWS Linkhout sponsoring <noreply@kwslinkhout.be>",
+      // Zoals from_name bij Web3Forms: de naam van wie het formulier invulde.
+      from: `${naam.replace(/[<>"\r\n]/g, "")} via KWS Linkhout <noreply@kwslinkhout.be>`,
       to: SPONSOR_CONTACT.mail,
       cc: "info@kwslinkhout.be",
       reply_to: email,

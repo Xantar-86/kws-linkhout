@@ -36,7 +36,11 @@ export const WAAROM = [
 
 export type Formule = {
   id: string;
+  /** Het kleine woord boven de naam. */
+  opschrift: string;
   naam: string;
+  /** In de verf gezet, met een lint erboven. */
+  uitgelicht?: string;
   kern: string;
   inbegrepen: string[];
   /** Twee regels met een bedrag. Bij Platinum gaat het in overleg. */
@@ -47,6 +51,7 @@ export type Formule = {
 export const FORMULES: Formule[] = [
   {
     id: "silver",
+    opschrift: "Pakket",
     naam: "Silver",
     kern: "Een bord langs het veld, met het volledige clubgevoel erbij.",
     inbegrepen: [
@@ -64,7 +69,9 @@ export const FORMULES: Formule[] = [
   },
   {
     id: "gold",
+    opschrift: "Pakket",
     naam: "Gold",
+    uitgelicht: "Meest gekozen",
     kern: "Het volledige pakket, voor wie voorop wil lopen.",
     inbegrepen: [
       "Reclamepaneel van 4 m², of 2 keer 2 m² in Linkhout en Zelem, looptijd 3 jaar",
@@ -82,6 +89,7 @@ export const FORMULES: Formule[] = [
   },
   {
     id: "platinum",
+    opschrift: "Pakket",
     naam: "Platinum",
     kern: "Uw logo op het shirt, met het volledige clubgevoel erbij.",
     inbegrepen: [
@@ -98,24 +106,26 @@ export const FORMULES: Formule[] = [
     ],
     voetnoot: "De prijs hangt af van de ploeg en het shirtonderdeel. We bekijken graag samen wat past.",
   },
+  {
+    id: "linkwood-park",
+    opschrift: "Infrastructuurproject",
+    naam: "Project Linkwood Park",
+    kern: "Actie 8 × € 5.000 voor twee nieuwe kleedkamers en een tribune.",
+    inbegrepen: [
+      "Uw naam of logo 8 jaar op een sponsorbord in de kantine, of op een andere opvallende plaats in overleg",
+      "Reclamepaneel van 2 m² langs het veld, looptijd 3 jaar",
+      "1 abonnement KWS Linkhout",
+      "1 keer gratis de kantine huren",
+      "Vermelding op de website",
+      "Toegang voor 2 personen tot ons jaarlijks VIP-sponsorevent",
+    ],
+    prijzen: [
+      { label: "Bijdrage", bedrag: "€ 5.000" },
+      { label: "Zichtbaarheid", bedrag: "8 jaar" },
+    ],
+    voetnoot: "Een eenmalige bijdrage aan de nieuwe kleedkamers en tribune.",
+  },
 ];
-
-export const LINKWOOD_PARK = {
-  titel: "Project Linkwood Park",
-  actie: "Actie 8 × € 5.000 voor twee nieuwe kleedkamers en een tribune",
-  inbegrepen: [
-    "Reclamepaneel van 2 m² langs het veld, looptijd 3 jaar",
-    "1 abonnement KWS Linkhout",
-    "1 keer gratis de kantine huren",
-    "Vermelding op de website",
-    "Toegang voor 2 personen tot ons jaarlijks VIP-sponsorevent",
-  ],
-  bijdrage: "€ 5.000",
-  zichtbaarheid: "8 jaar",
-  uitleg:
-    "Uw naam of logo acht jaar lang op een sponsorbord in de kantine, of op een andere " +
-    "opvallende plaats in overleg.",
-};
 
 export const WEDSTRIJDBAL = {
   prijs: "€ 150",
@@ -140,12 +150,4 @@ export const ZELEM = [
   "Of het nu gaat om jongens- of meisjesvoetbal, de gezamenlijke aanpak zorgt voor meer " +
     "mogelijkheden, meer kwaliteit en een bredere sportieve basis. Zo versterken beide clubs niet " +
     "alleen elkaar, maar ook het voetbal in de regio.",
-];
-
-export const ONDERWERPEN = [
-  "Pakket Silver",
-  "Pakket Gold",
-  "Pakket Platinum",
-  "Project Linkwood Park",
-  "Iets anders",
 ];

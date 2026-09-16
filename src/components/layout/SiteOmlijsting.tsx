@@ -14,7 +14,11 @@ import { PaginaOvergang } from "@/components/beweging/PaginaOvergang";
  * omlijsting van de site er alleen maar bovenop staan, dus die laten we weg.
  * Zo'n pagina zorgt zelf voor zijn `main`.
  */
-const ZONDER_OMLIJSTING = ["/kws-cup-2026"];
+const ZONDER_OMLIJSTING = [
+  "/kws-cup-2026",
+  // Staat ook als losse site op sponsoring.kwslinkhout.be.
+  "/sponsoring",
+];
 
 export function SiteOmlijsting({ children }: { children: React.ReactNode }) {
   const pad = usePathname();
