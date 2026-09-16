@@ -259,7 +259,6 @@ export const KERNEN: Record<string, Kernspeler[]> = {
     { naam: "Emiel Cypers" },
     { naam: "Emiel Neyens" },
     { naam: "Ibe Thoelen" },
-    { naam: "Juul Volders" },
     { naam: "Loïc Thomas" },
     { naam: "Mathieu Huls" },
     { naam: "Mats Van Der Leun" },

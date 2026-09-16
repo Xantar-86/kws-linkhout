@@ -20,6 +20,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/alexander-cypers-055791cb.webp"
   },
   {
+    "naam": "Alexander Manshoven",
+    "ploeg": "U13",
+    "klein": "/images/spelers/alexander-manshoven-f9053700-klein.webp",
+    "groot": "/images/spelers/alexander-manshoven-f9053700.webp"
+  },
+  {
     "naam": "Aliano Baeten",
     "ploeg": "U17A",
     "klein": "/images/spelers/aliano-baeten-81403dbf-klein.webp",
@@ -288,12 +294,6 @@ export const spelers: Speler[] = [
     "ploeg": "U17A",
     "klein": "/images/spelers/juul-verpoorten-13844532-klein.webp",
     "groot": "/images/spelers/juul-verpoorten-13844532.webp"
-  },
-  {
-    "naam": "Juul Volders",
-    "ploeg": "U11",
-    "klein": "/images/spelers/juul-volders-72632636-klein.webp",
-    "groot": "/images/spelers/juul-volders-72632636.webp"
   },
   {
     "naam": "Kaat Smeulders",
@@ -654,6 +654,12 @@ export const spelers: Speler[] = [
     "ploeg": "P2",
     "klein": "/images/spelers/vince-godfroid-b05bcc46-klein.webp",
     "groot": "/images/spelers/vince-godfroid-b05bcc46.webp"
+  },
+  {
+    "naam": "Vince Goris",
+    "ploeg": "U13",
+    "klein": "/images/spelers/vince-goris-8ee25d57-klein.webp",
+    "groot": "/images/spelers/vince-goris-8ee25d57.webp"
   },
   {
     "naam": "Xander Beutling",

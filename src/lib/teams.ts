@@ -372,7 +372,7 @@ export const teams: Team[] = [
     calendarUrl: "#",
     standingsUrl: "#",
     description:
-      "De U11 speelt 8 tegen 8 in 2-Gewestelijk en telt vijftien spelers. Op deze leeftijd " +
+      "De U11 speelt 8 tegen 8 in 2-Gewestelijk en telt veertien spelers. Op deze leeftijd " +
       "verschuift de nadruk van dribbelen naar samenspelen: passen, controle onder druk en de " +
       "eerste tactische keuzes. Komen proberen kan altijd, ervaring is niet nodig.",
     calendarIframe: "https://www.rbfa.be/nl/club/1595/ploeg/385196/kalender",
