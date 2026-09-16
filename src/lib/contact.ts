@@ -42,10 +42,9 @@ export const contactPersons: ContactPerson[] = [
   },
   {
     id: "3",
-    name: "TVJO",
-    role: "(Technisch Verantwoordelijke JeugdOpleiding)",
+    name: "Steven Bosmans",
+    role: "TVJO (Technisch Verantwoordelijke JeugdOpleiding)",
     email: "info@kwslinkhout.be",
-    phone: "",
     category: "jeugd"
   },
   {
@@ -66,9 +65,10 @@ export const contactPersons: ContactPerson[] = [
   },
   {
     id: "6",
-    name: "Patrick Beutels",
-    role: "Trainer 1ste Ploeg P2",
+    name: "Ramon Fernandez",
+    role: "Sportief verantwoordelijke senioren en doorstroming",
     email: "info@kwslinkhout.be",
+    phone: "0475 61 02 86",
     category: "senioren"
   },
   {

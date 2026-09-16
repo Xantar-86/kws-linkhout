@@ -19,7 +19,16 @@ import { kijk, varianten } from "@/lib/beweging";
  * op een donkere achtergrond is het cijfer zelf de vorm.
  */
 
-const CIJFERS = [
+export type Cijfer = {
+  waarde: number;
+  /** Waar de telling begint. Een jaartal telt niet vanaf nul. */
+  vanaf: number;
+  achtervoegsel: string;
+  label: string;
+  onder: string;
+};
+
+const CIJFERS: Cijfer[] = [
   {
     waarde: 1938,
     // Een jaartal telt niet vanaf nul. Zie AnimatedNumber.
@@ -51,7 +60,23 @@ const CIJFERS = [
   },
 ];
 
-export function StatsSection() {
+/**
+ * Standaard de cijfers van de startpagina. Andere pagina's, zoals sponsoring,
+ * geven hun eigen cijfers en kop mee, zodat de band er overal hetzelfde uitziet.
+ */
+export function StatsSection({
+  cijfers = CIJFERS,
+  opschrift = "In cijfers",
+  titel = "Bijna negentig jaar Linkhout",
+  accent = "negentig",
+  onder = "Een dorpsclub die groot genoeg werd om iedereen een ploeg te geven, en klein genoeg bleef om iedereen te kennen.",
+}: {
+  cijfers?: Cijfer[];
+  opschrift?: string;
+  titel?: string;
+  accent?: string;
+  onder?: string;
+} = {}) {
   return (
     <section className="korrel lichtrand section-padding relative overflow-hidden bg-inkt-950">
       {/* Een warme gloed onderin, zodat het zwart niet als een gat in de
@@ -62,13 +87,7 @@ export function StatsSection() {
       />
 
       <div className="container-custom relative">
-        <SectieKop
-          donker
-          opschrift="In cijfers"
-          titel="Bijna negentig jaar Linkhout"
-          accent="negentig"
-          onder="Een dorpsclub die groot genoeg werd om iedereen een ploeg te geven, en klein genoeg bleef om iedereen te kennen."
-        />
+        <SectieKop donker opschrift={opschrift} titel={titel} accent={accent} onder={onder} />
 
         <motion.dl
           initial="verborgen"
@@ -77,7 +96,7 @@ export function StatsSection() {
           variants={varianten.groep(0.15, 0.1)}
           className="mt-16 grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4"
         >
-          {CIJFERS.map((cijfer) => (
+          {cijfers.map((cijfer) => (
             <motion.div
               key={cijfer.label}
               variants={varianten.lid}

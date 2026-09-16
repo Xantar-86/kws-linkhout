@@ -26,7 +26,7 @@ import { kijk, varianten } from "@/lib/beweging";
  * er staat, en dan wacht de bezoeker op een raster.
  */
 
-const SPONSORS = [
+export const SPONSORS = [
   { naam: "Roof Projects", beeld: "/images/sponsors/ROOF-PROJECTS-LOGO-RGB.jpg" },
   { naam: "Salesforce", beeld: "/images/sponsors/Salesforce.png" },
   { naam: "De Backer", beeld: "/images/sponsors/de-backer.jpeg" },
