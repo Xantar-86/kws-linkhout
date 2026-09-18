@@ -23,6 +23,8 @@ export default function robots(): MetadataRoute.Robots {
           "/nieuws-test/",
           // Het toestemmingsformulier voor beeldmateriaal van de jeugd.
           "/toestemming",
+          // Inschrijven voor het mosselfeest, en het overzicht erachter.
+          "/mosselfeest",
           // Antwoorden van de server, geen pagina's.
           "/api/",
         ],

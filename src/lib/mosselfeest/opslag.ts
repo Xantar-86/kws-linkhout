@@ -1,0 +1,214 @@
+import { del, list, put } from "@vercel/blob";
+import { ontsleutelJson, sleutelUit, versleutelJson } from "@/lib/kluis";
+import { EVENEMENT, GERECHTEN, aantalPorties, bedragVan } from "./kaart";
+
+/**
+ * De inschrijvingen van het mosselfeest.
+ *
+ * Elke inschrijving is één versleuteld blokje in Vercel Blob, onder
+ * mosselfeest/<jaar>/. Ze blijven staan tot na het feest: dit is geen wachtrij
+ * zoals bij de toestemmingen, maar de ledenlijst van de avond.
+ *
+ * Het vinkje "betaald" verandert ná de inschrijving, dus dat wordt hier
+ * bijgewerkt en het blokje wordt overschreven. Dat is ook de reden dat het
+ * Excel-logboek elke keer volledig opnieuw gemaakt wordt uit deze gegevens:
+ * dan is er één plek waar de waarheid staat en kan er niets uit elkaar lopen.
+ */
+
+const MAP = `mosselfeest/${EVENEMENT.jaar}`;
+
+function sleutel(): Buffer | null {
+  const geheim = process.env.MOSSELFEEST_SLEUTEL;
+  return geheim ? sleutelUit(geheim, "kws-mosselfeest") : null;
+}
+
+export function opslagBeschikbaar(): boolean {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN) && Boolean(sleutel());
+}
+
+export interface Inschrijving {
+  kenmerk: string;
+  /** Wanneer de inschrijving binnenkwam (ISO). */
+  aangemeld: string;
+  naam: string;
+  email: string;
+  telefoon?: string;
+  /** Id van de zitting uit kaart.ts. */
+  zitting: string;
+  /** Per gerecht-id het aantal porties. */
+  aantallen: Record<string, number>;
+  opmerking?: string;
+  /** Het bedrag op het moment van inschrijven, in euro. */
+  bedrag: number;
+  betaald: boolean;
+  /** Wanneer er afgevinkt is dat het geld binnen is (ISO). */
+  betaaldOp?: string;
+}
+
+export interface BewaarResultaat {
+  ok: boolean;
+  fout?: string;
+}
+
+function pad(kenmerk: string): string {
+  return `${MAP}/${kenmerk}.bin`;
+}
+
+async function zetWeg(inschrijving: Inschrijving): Promise<BewaarResultaat> {
+  const key = sleutel();
+  if (!key) return { ok: false, fout: "MOSSELFEEST_SLEUTEL ontbreekt." };
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return { ok: false, fout: "BLOB_READ_WRITE_TOKEN ontbreekt." };
+  }
+  try {
+    await put(pad(inschrijving.kenmerk), versleutelJson(inschrijving, key), {
+      access: "public",
+      contentType: "application/octet-stream",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: 0,
+    });
+    return { ok: true };
+  } catch (fout) {
+    return { ok: false, fout: fout instanceof Error ? fout.message : "Onbekende fout" };
+  }
+}
+
+export async function bewaarInschrijving(inschrijving: Inschrijving): Promise<BewaarResultaat> {
+  return zetWeg(inschrijving);
+}
+
+/**
+ * Alle inschrijvingen, oudste eerst.
+ *
+ * De blokjes worden per handvol tegelijk opgehaald: alles in één keer opvragen
+ * legt bij honderden inschrijvingen te veel verbindingen open, en één per één
+ * duurt te lang.
+ */
+export async function alleInschrijvingen(): Promise<Inschrijving[]> {
+  const key = sleutel();
+  if (!key || !process.env.BLOB_READ_WRITE_TOKEN) return [];
+
+  const { blobs } = await list({ prefix: `${MAP}/` });
+  const adressen = blobs.filter((b) => b.pathname.endsWith(".bin")).map((b) => b.url);
+
+  const gevonden: Inschrijving[] = [];
+  const TEGELIJK = 12;
+  for (let i = 0; i < adressen.length; i += TEGELIJK) {
+    const groep = adressen.slice(i, i + TEGELIJK);
+    const stukken = await Promise.all(
+      groep.map(async (adres) => {
+        try {
+          const antwoord = await fetch(adres, { cache: "no-store" });
+          if (!antwoord.ok) return null;
+          const blok = Buffer.from(await antwoord.arrayBuffer());
+          return ontsleutelJson<Inschrijving>(blok, key);
+        } catch {
+          return null;
+        }
+      }),
+    );
+    for (const stuk of stukken) if (stuk) gevonden.push(stuk);
+  }
+
+  return gevonden.sort((a, b) => a.aangemeld.localeCompare(b.aangemeld));
+}
+
+export async function haalInschrijving(kenmerk: string): Promise<Inschrijving | null> {
+  const key = sleutel();
+  if (!key || !process.env.BLOB_READ_WRITE_TOKEN) return null;
+  const { blobs } = await list({ prefix: pad(kenmerk) });
+  const blob = blobs.find((b) => b.pathname === pad(kenmerk));
+  if (!blob) return null;
+  const antwoord = await fetch(blob.url, { cache: "no-store" });
+  if (!antwoord.ok) return null;
+  return ontsleutelJson<Inschrijving>(Buffer.from(await antwoord.arrayBuffer()), key);
+}
+
+/** Het vinkje "betaald" zetten of weghalen. */
+export async function zetBetaald(
+  kenmerk: string,
+  betaald: boolean,
+): Promise<{ ok: boolean; inschrijving?: Inschrijving; fout?: string }> {
+  const bestaande = await haalInschrijving(kenmerk);
+  if (!bestaande) return { ok: false, fout: "Inschrijving niet gevonden." };
+
+  const bijgewerkt: Inschrijving = {
+    ...bestaande,
+    betaald,
+    betaaldOp: betaald ? new Date().toISOString() : undefined,
+  };
+  const resultaat = await zetWeg(bijgewerkt);
+  return resultaat.ok
+    ? { ok: true, inschrijving: bijgewerkt }
+    : { ok: false, fout: resultaat.fout };
+}
+
+/**
+ * Een inschrijving schrappen. Gebeurt bij een afmelding of een dubbele
+ * inzending; de aantallen moeten kloppen met wat er in de keuken nodig is.
+ */
+export async function schrapInschrijving(kenmerk: string): Promise<boolean> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
+  const { blobs } = await list({ prefix: pad(kenmerk) });
+  const blob = blobs.find((b) => b.pathname === pad(kenmerk));
+  if (!blob) return false;
+  await del(blob.url);
+  return true;
+}
+
+export interface Totalen {
+  inschrijvingen: number;
+  porties: number;
+  bedrag: number;
+  bedragBetaald: number;
+  bedragOpen: number;
+  /** Per gerecht-id het totale aantal porties. */
+  perGerecht: Record<string, number>;
+  /** Per zitting-id het aantal inschrijvingen en porties. */
+  perZitting: Record<string, { inschrijvingen: number; porties: number }>;
+}
+
+/** De optelsom waar het hele logboek om draait. */
+export function telOp(inschrijvingen: Inschrijving[]): Totalen {
+  const totalen: Totalen = {
+    inschrijvingen: inschrijvingen.length,
+    porties: 0,
+    bedrag: 0,
+    bedragBetaald: 0,
+    bedragOpen: 0,
+    perGerecht: Object.fromEntries(GERECHTEN.map((g) => [g.id, 0])),
+    perZitting: Object.fromEntries(
+      EVENEMENT.zittingen.map((z) => [z.id, { inschrijvingen: 0, porties: 0 }]),
+    ),
+  };
+
+  for (const inschrijving of inschrijvingen) {
+    // Het bedrag opnieuw rekenen uit de aantallen: wijzigt er een prijs op de
+    // kaart, dan klopt het totaal nog steeds met de kaart van vandaag. Het
+    // bewaarde bedrag blijft wel staan als wat er gevraagd is.
+    const bedrag = inschrijving.bedrag || bedragVan(inschrijving.aantallen);
+    const porties = aantalPorties(inschrijving.aantallen);
+
+    totalen.porties += porties;
+    totalen.bedrag += bedrag;
+    if (inschrijving.betaald) totalen.bedragBetaald += bedrag;
+    else totalen.bedragOpen += bedrag;
+
+    for (const [id, aantal] of Object.entries(inschrijving.aantallen)) {
+      if (!(id in totalen.perGerecht) || !(aantal > 0)) continue;
+      totalen.perGerecht[id] += aantal;
+    }
+
+    const zitting = totalen.perZitting[inschrijving.zitting];
+    if (zitting) {
+      zitting.inschrijvingen += 1;
+      zitting.porties += porties;
+    }
+  }
+
+  totalen.bedrag = Math.round(totalen.bedrag * 100) / 100;
+  totalen.bedragBetaald = Math.round(totalen.bedragBetaald * 100) / 100;
+  totalen.bedragOpen = Math.round(totalen.bedragOpen * 100) / 100;
+  return totalen;
+}

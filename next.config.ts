@@ -95,6 +95,12 @@ const nextConfig: NextConfig = {
         source: '/toestemming',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
+      // Het mosselfeest: het inschrijvingsformulier en het overzicht met de
+      // namen en bedragen erachter.
+      {
+        source: '/mosselfeest/:pad*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
     ];
   },
 };

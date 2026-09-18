@@ -26,6 +26,8 @@ const ZONDER_OMLIJSTING = [
   // gaat via de afgevaardigden naar de ouders; een formulier om af te werken,
   // geen pagina om van weg te klikken.
   "toestemming",
+  // Inschrijven voor het mosselfeest, en het overzicht met de totalen.
+  "mosselfeest",
 ];
 
 export function SiteOmlijsting({ children }: { children: React.ReactNode }) {
