@@ -46,6 +46,7 @@ Zet `VOORLOPIG` op `false` zodra de kaart klopt.
 MOSSELFEEST_SLEUTEL=      # node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 MOSSELFEEST_WACHTWOORD=   # wat de organisatoren intypen op het overzicht
 MOSSELFEEST_MAIL_TO=      # leeg = SOCIAL_MAIL_TO
+MOSSELFEEST_MAIL_FROM=    # leeg = "KWS Mosselfeest" op het adres uit SOCIAL_MAIL_FROM
 ```
 
 `MOSSELFEEST_SLEUTEL` versleutelt de inschrijvingen in de opslag en geeft het

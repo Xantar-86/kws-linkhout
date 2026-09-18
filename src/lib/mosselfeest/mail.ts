@@ -16,8 +16,23 @@ import type { Inschrijving } from "./opslag";
  * logboek is de waarheid.
  */
 
+/**
+ * Afzender van de mosselfeest-mails.
+ *
+ * Het e-mailadres nemen we over uit SOCIAL_MAIL_FROM, want dat is het adres
+ * dat Resend aanvaardt. De naam ervoor zetten we zelf: anders komt een
+ * inschrijving binnen als "KWS Matchday", en dat is een andere functie van de
+ * site. Wordt kwslinkhout.be later in Resend geverifieerd, dan verhuist deze
+ * naam automatisch mee naar het nieuwe adres.
+ *
+ * Met MOSSELFEEST_MAIL_FROM zet je desnoods de hele afzender zelf.
+ */
 function afzender(): string {
-  return process.env.SOCIAL_MAIL_FROM ?? "KWS Linkhout <onboarding@resend.dev>";
+  const eigen = process.env.MOSSELFEEST_MAIL_FROM;
+  if (eigen) return eigen;
+  const basis = process.env.SOCIAL_MAIL_FROM ?? "onboarding@resend.dev";
+  const adres = /<([^>]+)>/.exec(basis)?.[1] ?? basis.trim();
+  return `KWS Mosselfeest <${adres}>`;
 }
 
 function ontvangers(): string[] {
