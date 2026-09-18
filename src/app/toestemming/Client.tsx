@@ -289,7 +289,7 @@ export default function ToestemmingClient() {
                 value={speler}
                 onChange={(e) => setSpeler(e.target.value)}
                 autoComplete="off"
-                placeholder="Bijvoorbeeld Coomans Axel"
+                placeholder="Familienaam en dan voornaam"
               />
             </Veld>
             <Veld

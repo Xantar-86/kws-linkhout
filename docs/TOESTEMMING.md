@@ -35,8 +35,8 @@ naar de ouders van een ploeg. Er staat nergens een link naartoe.
 4. Het document wordt gemaild en tegelijk versleuteld in een wachtrij gezet.
 5. De mappenwachter op de pc haalt het uit die wachtrij en zet het in
    `OneDrive\Documenten\KWS\GDPR\Goedkeuring Spelers\<ploeg>\`, als
-   `Toestemming <naam speler> <ploeg>.pdf`, bijvoorbeeld
-   `Toestemming Coomans Axel U15.pdf`.
+   `Toestemming <naam speler> <ploeg>.pdf`, dus in de vorm
+   `Toestemming Familienaam Voornaam U15.pdf`.
 
 Mail en wachtrij zijn twee onafhankelijke afleveringen. Lukt er één, dan is het
 formulier binnen; dat staat ook zo in het antwoord aan de ouder.
