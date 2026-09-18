@@ -22,6 +22,10 @@ const ZONDER_OMLIJSTING = [
   "kws-cup-2026",
   // Staat ook als losse site op sponsoring.kwslinkhout.be.
   "sponsoring",
+  // Het toestemmingsformulier voor beeldmateriaal. Staat niet in het menu en
+  // gaat via de afgevaardigden naar de ouders; een formulier om af te werken,
+  // geen pagina om van weg te klikken.
+  "toestemming",
 ];
 
 export function SiteOmlijsting({ children }: { children: React.ReactNode }) {

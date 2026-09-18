@@ -21,6 +21,8 @@ export default function robots(): MetadataRoute.Robots {
           "/matchday/",
           // Een oude proefopstelling die nooit is opgeruimd.
           "/nieuws-test/",
+          // Het toestemmingsformulier voor beeldmateriaal van de jeugd.
+          "/toestemming",
           // Antwoorden van de server, geen pagina's.
           "/api/",
         ],

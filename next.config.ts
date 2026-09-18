@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: false,
+  // Het toestemmingsformulier vult op de server het echte clubdocument in en
+  // leest dat met fs uit public/. Zonder deze regel kan de bundelaar niet zien
+  // dat die pdf nodig is en ontbreekt hij in de serverfunctie op Vercel.
+  outputFileTracingIncludes: {
+    '/api/toestemming': ['./public/Docs/gdpr/*.pdf'],
+  },
   async redirects() {
     return [
       {
@@ -80,6 +86,13 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/matchday/:pad*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      // Het toestemmingsformulier voor beeldmateriaal gaat via de
+      // afgevaardigden naar de ouders van één ploeg en hoort niet in een
+      // zoekresultaat.
+      {
+        source: '/toestemming',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
     ];
