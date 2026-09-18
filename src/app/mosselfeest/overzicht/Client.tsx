@@ -123,6 +123,7 @@ export default function OverzichtClient() {
     if (!ingevoerd) return;
     if (actie === "schrappen" && !confirm("Deze inschrijving definitief schrappen?")) return;
 
+    setFout("");
     const antwoord = await fetch("/api/mosselfeest/beheer", {
       method: "POST",
       headers: { authorization: `Bearer ${ingevoerd}`, "content-type": "application/json" },
@@ -132,6 +133,33 @@ export default function OverzichtClient() {
       setFout("Die wijziging is niet gelukt.");
       return;
     }
+
+    // Meteen tonen wat er gewijzigd is, zonder te wachten op de opslag. Die
+    // heeft na een schrijfactie soms enkele seconden nodig voor ze het nieuwe
+    // blokje teruggeeft, en zolang zou de regel onveranderd lijken.
+    setGegevens((vorig) => {
+      if (!vorig) return vorig;
+      if (actie === "schrappen") {
+        return {
+          ...vorig,
+          inschrijvingen: vorig.inschrijvingen.filter((i) => i.kenmerk !== kenmerk),
+        };
+      }
+      return {
+        ...vorig,
+        inschrijvingen: vorig.inschrijvingen.map((i) =>
+          i.kenmerk === kenmerk
+            ? {
+                ...i,
+                betaald: betaald !== false,
+                betaaldOp: betaald !== false ? new Date().toISOString() : undefined,
+              }
+            : i,
+        ),
+      };
+    });
+
+    // En daarna de echte cijfers ophalen, zodat de totalen kloppen.
     await haal(ingevoerd);
   }
 

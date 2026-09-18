@@ -70,6 +70,20 @@ function pad(kenmerk: string): string {
   return `${MAP}/${kenmerk}.bin`;
 }
 
+/**
+ * Een adres dat gegarandeerd langs de cache gaat.
+ *
+ * Een blokje houdt bij een wijziging zijn adres (we overschrijven het), en het
+ * netwerk van de opslag mag dat adres cachen. In productie gaf een uitlezing
+ * daardoor tot acht seconden lang nog de oude inhoud terug: je vinkte betaald
+ * aan, de lijst werd ververst en het stond er nog steeds als openstaand. Met
+ * een unieke parameter erachter is elk verzoek een nieuw adres voor die cache,
+ * en krijgen we altijd wat er net geschreven is.
+ */
+function vers(url: string): string {
+  return `${url}${url.includes("?") ? "&" : "?"}vers=${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 async function zetWeg(inschrijving: Inschrijving): Promise<BewaarResultaat> {
   const key = sleutel();
   if (!key) return { ok: false, fout: "MOSSELFEEST_SLEUTEL ontbreekt." };
@@ -115,7 +129,7 @@ export async function alleInschrijvingen(): Promise<Inschrijving[]> {
     const stukken = await Promise.all(
       groep.map(async (adres) => {
         try {
-          const antwoord = await fetch(adres, { cache: "no-store" });
+          const antwoord = await fetch(vers(adres), { cache: "no-store" });
           if (!antwoord.ok) return null;
           const blok = Buffer.from(await antwoord.arrayBuffer());
           return ontsleutelJson<Inschrijving>(blok, key);
@@ -136,7 +150,7 @@ export async function haalInschrijving(kenmerk: string): Promise<Inschrijving | 
   const { blobs } = await list({ prefix: pad(kenmerk) });
   const blob = blobs.find((b) => b.pathname === pad(kenmerk));
   if (!blob) return null;
-  const antwoord = await fetch(blob.url, { cache: "no-store" });
+  const antwoord = await fetch(vers(blob.url), { cache: "no-store" });
   if (!antwoord.ok) return null;
   return ontsleutelJson<Inschrijving>(Buffer.from(await antwoord.arrayBuffer()), key);
 }
