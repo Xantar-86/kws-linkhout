@@ -19,6 +19,7 @@ import {
   gerechtenVan,
 } from "@/lib/mosselfeest/kaart";
 import type { Inschrijving, Totalen } from "@/lib/mosselfeest/opslag";
+import { KaartToevoegen } from "./KaartToevoegen";
 
 /**
  * Het overzicht van de inschrijvingen, voor de organisatoren.
@@ -43,10 +44,13 @@ function Kaartje({
   label,
   waarde,
   toon,
+  onder,
 }: {
   label: string;
   waarde: string;
   toon?: "gewoon" | "goed" | "open";
+  /** Kleine regel onder het cijfer, bijvoorbeeld een verdeling. */
+  onder?: string;
 }) {
   const kleur =
     toon === "goed" ? "text-green-700" : toon === "open" ? "text-primary" : "text-inkt-900";
@@ -54,6 +58,7 @@ function Kaartje({
     <div className="rounded-2xl border border-zand-200/70 bg-white p-4 shadow-blad">
       <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
       <p className={`mt-1 font-display text-2xl font-bold ${kleur}`}>{waarde}</p>
+      {onder && <p className="mt-0.5 text-xs text-slate-500">{onder}</p>}
     </div>
   );
 }
@@ -172,7 +177,7 @@ export default function OverzichtClient() {
       const naald = zoek.trim().toLowerCase();
       return (
         i.naam.toLowerCase().includes(naald) ||
-        i.email.toLowerCase().includes(naald) ||
+        (i.email ?? "").toLowerCase().includes(naald) ||
         i.kenmerk.toLowerCase().includes(naald)
       );
     });
@@ -242,7 +247,18 @@ export default function OverzichtClient() {
         {totalen && (
           <>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-              <Kaartje label="Inschrijvingen" waarde={String(totalen.inschrijvingen)} />
+              <Kaartje
+                label="Inschrijvingen"
+                waarde={String(totalen.inschrijvingen)}
+                onder={
+                  totalen.perBron
+                    ? `${totalen.perBron.online} online, ${totalen.perBron.kaart} kaarten` +
+                      (totalen.perBron.verzamelpost
+                        ? `, ${totalen.perBron.verzamelpost} stapels`
+                        : "")
+                    : undefined
+                }
+              />
               <Kaartje label="Porties" waarde={String(totalen.porties)} />
               <Kaartje label="Totaal" waarde={`${euro(totalen.bedrag)} euro`} />
               <Kaartje label="Betaald" waarde={`${euro(totalen.bedragBetaald)} euro`} toon="goed" />
@@ -313,10 +329,29 @@ export default function OverzichtClient() {
                     );
                   })}
                 </div>
+                {(() => {
+                  // Een verzamelpost mag zonder zitting geboekt worden. Die
+                  // porties zitten wel in het totaal, dus we laten ze apart
+                  // zien in plaats van ze te verzwijgen.
+                  const inZittingen = Object.values(totalen.perZitting).reduce(
+                    (som, z) => som + z.porties,
+                    0,
+                  );
+                  const rest = totalen.porties - inZittingen;
+                  if (rest <= 0) return null;
+                  return (
+                    <p className="mt-2 text-sm text-slate-500">
+                      {rest} portie{rest === 1 ? "" : "s"} zonder zitting, uit stapels waarvan de
+                      zitting nog niet vastligt.
+                    </p>
+                  );
+                })()}
               </div>
             </section>
           </>
         )}
+
+        <KaartToevoegen wachtwoord={ingevoerd} onToegevoegd={() => haal(ingevoerd)} />
 
         <section className="rounded-2xl border border-zand-200/70 bg-white p-5 shadow-blad sm:p-7">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -363,17 +398,28 @@ export default function OverzichtClient() {
                 <tbody>
                   {lijst.map((i) => (
                     <tr key={i.kenmerk} className="border-b border-zand-100 align-top">
-                      <td className="py-3 pr-3 font-mono text-xs text-slate-500">{i.kenmerk}</td>
+                      <td className="py-3 pr-3 font-mono text-xs text-slate-500">
+                        {i.kenmerk}
+                        {i.bron && i.bron !== "online" && (
+                          <span className="mt-1 block font-sans text-[11px] font-medium text-slate-400">
+                            {i.bron === "kaart" ? "kaart" : "stapel"}
+                          </span>
+                        )}
+                      </td>
                       <td className="py-3 pr-3">
                         <p className="font-medium text-inkt-900">{i.naam}</p>
                         <p className="text-xs text-slate-500">{i.email}</p>
                         {i.telefoon && <p className="text-xs text-slate-500">{i.telefoon}</p>}
+                        {i.ingevoerdDoor && (
+                          <p className="text-xs text-slate-400">ingevoerd door {i.ingevoerdDoor}</p>
+                        )}
                         {i.opmerking && (
                           <p className="mt-1 text-xs italic text-slate-500">{i.opmerking}</p>
                         )}
                       </td>
                       <td className="py-3 pr-3 text-xs text-slate-600">
-                        {EVENEMENT.zittingen.find((z) => z.id === i.zitting)?.label ?? i.zitting}
+                        {EVENEMENT.zittingen.find((z) => z.id === i.zitting)?.label ||
+                          "nog niet gekend"}
                       </td>
                       <td className="py-3 pr-3 text-xs text-slate-600">
                         {GERECHTEN.filter((g) => (i.aantallen[g.id] ?? 0) > 0).map((g) => (

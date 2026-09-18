@@ -26,13 +26,29 @@ export function opslagBeschikbaar(): boolean {
   return Boolean(process.env.BLOB_READ_WRITE_TOKEN) && Boolean(sleutel());
 }
 
+/**
+ * Waar een inschrijving vandaan komt.
+ *
+ * "online" is het formulier. "kaart" is een gedrukte kaart die iemand heeft
+ * afgegeven en die een organisator heeft ingetypt. "verzamelpost" is een
+ * stapel kaarten die als een geheel geboekt is, zonder namen: alleen de
+ * aantallen, met een toelichting erbij.
+ */
+export type Bron = "online" | "kaart" | "verzamelpost";
+
 export interface Inschrijving {
   kenmerk: string;
   /** Wanneer de inschrijving binnenkwam (ISO). */
   aangemeld: string;
+  /** Bij een verzamelpost is dit de toelichting, bv. "kaarten kantine week 1". */
   naam: string;
-  email: string;
+  /** Alleen bij een inschrijving via het formulier. */
+  email?: string;
   telefoon?: string;
+  /** Ontbreekt bij oudere inschrijvingen; die zijn allemaal online gebeurd. */
+  bron?: Bron;
+  /** Wie de kaart heeft ingetypt, zodat een vraag achteraf te plaatsen is. */
+  ingevoerdDoor?: string;
   /** Id van de zitting uit kaart.ts. */
   zitting: string;
   /** Per gerecht-id het aantal porties. */
@@ -159,6 +175,8 @@ export async function schrapInschrijving(kenmerk: string): Promise<boolean> {
 
 export interface Totalen {
   inschrijvingen: number;
+  /** Hoeveel daarvan online, via een ingetypte kaart of als verzamelpost. */
+  perBron: Record<Bron, number>;
   porties: number;
   bedrag: number;
   bedragBetaald: number;
@@ -173,6 +191,7 @@ export interface Totalen {
 export function telOp(inschrijvingen: Inschrijving[]): Totalen {
   const totalen: Totalen = {
     inschrijvingen: inschrijvingen.length,
+    perBron: { online: 0, kaart: 0, verzamelpost: 0 },
     porties: 0,
     bedrag: 0,
     bedragBetaald: 0,
@@ -190,6 +209,7 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     const bedrag = inschrijving.bedrag || bedragVan(inschrijving.aantallen);
     const porties = aantalPorties(inschrijving.aantallen);
 
+    totalen.perBron[inschrijving.bron ?? "online"] += 1;
     totalen.porties += porties;
     totalen.bedrag += bedrag;
     if (inschrijving.betaald) totalen.bedragBetaald += bedrag;

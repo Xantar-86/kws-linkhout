@@ -66,8 +66,12 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   let r = 5;
   titelcel(o.getCell(`A${r}`), "In het kort");
   r += 1;
+  const bron = totalen.perBron ?? { online: totalen.inschrijvingen, kaart: 0, verzamelpost: 0 };
   const kort: [string, number | string, string?][] = [
     ["Inschrijvingen", totalen.inschrijvingen],
+    ["   waarvan online ingevuld", bron.online],
+    ["   waarvan ingetypte kaarten", bron.kaart],
+    ["   waarvan stapels kaarten", bron.verzamelpost],
     ["Porties in totaal", totalen.porties],
     ["Bedrag in totaal", totalen.bedrag, "euro"],
     ["Waarvan betaald", totalen.bedragBetaald, "euro"],
@@ -127,11 +131,20 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
 
   // ------------------------------------------------------------- inschrijvingen
   const i = boek.addWorksheet("Inschrijvingen", {
-    views: [{ state: "frozen", xSplit: 3, ySplit: 2 }],
+    // Kenmerk, datum, bron en naam blijven staan als je naar rechts schuift;
+    // anders weet je bij kolom "Portie friet" niet meer over wie het gaat.
+    views: [{ state: "frozen", xSplit: 4, ySplit: 2 }],
   });
 
-  const vasteKoppen = ["Kenmerk", "Datum", "Naam", "E-mail", "Telefoon", "Zitting"];
-  const staartKoppen = ["Porties", "Bedrag", "Betaald", "Betaald op", "Opmerking"];
+  const vasteKoppen = ["Kenmerk", "Datum", "Bron", "Naam", "E-mail", "Telefoon", "Zitting"];
+  const staartKoppen = [
+    "Porties",
+    "Bedrag",
+    "Betaald",
+    "Betaald op",
+    "Ingevoerd door",
+    "Opmerking",
+  ];
   const koppen = [...vasteKoppen, ...GERECHTEN.map((g) => g.naam), ...staartKoppen];
 
   i.columns = koppen.map((kop, index) => {
@@ -166,18 +179,26 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
 
   inschrijvingen.forEach((inschrijving, index) => {
     const rij = i.getRow(eersteGegevensRij + index);
+    const bronLabel =
+      inschrijving.bron === "kaart"
+        ? "kaart"
+        : inschrijving.bron === "verzamelpost"
+          ? "stapel"
+          : "online";
     const waarden = [
       inschrijving.kenmerk,
       new Date(inschrijving.aangemeld),
+      bronLabel,
       inschrijving.naam,
-      inschrijving.email,
+      inschrijving.email ?? "",
       inschrijving.telefoon ?? "",
-      zittingLabel.get(inschrijving.zitting) ?? inschrijving.zitting,
+      zittingLabel.get(inschrijving.zitting) ?? inschrijving.zitting ?? "",
       ...GERECHTEN.map((g) => inschrijving.aantallen[g.id] || 0),
       aantalPorties(inschrijving.aantallen),
       inschrijving.bedrag,
       inschrijving.betaald ? "ja" : "nee",
       inschrijving.betaaldOp ? new Date(inschrijving.betaaldOp) : "",
+      inschrijving.ingevoerdDoor ?? "",
       inschrijving.opmerking ?? "",
     ];
     waarden.forEach((waarde, kolom) => {

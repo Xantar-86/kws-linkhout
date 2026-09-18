@@ -98,12 +98,14 @@ export async function stuurInschrijvingMail(opts: {
     const antwoord = await resend.emails.send({
       from: afzender(),
       to: ontvangers(),
-      replyTo: inschrijving.email,
+      // Alleen bij een inschrijving via het formulier: een ingetypte kaart
+      // heeft geen e-mailadres om op te antwoorden.
+      ...(inschrijving.email ? { replyTo: inschrijving.email } : {}),
       subject: `Mosselfeest: ${inschrijving.naam} (${euro(inschrijving.bedrag)} euro)`,
       html: `${kop}
         <div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px">
           <p style="margin:0 0 4px 0;font-size:14px;color:#334155"><strong>${ontsnap(inschrijving.naam)}</strong></p>
-          <p style="margin:0;font-size:14px;color:#334155">${ontsnap(inschrijving.email)}${
+          <p style="margin:0;font-size:14px;color:#334155">${ontsnap(inschrijving.email ?? "geen e-mailadres")}${
             inschrijving.telefoon ? ` &middot; ${ontsnap(inschrijving.telefoon)}` : ""
           }</p>
         </div>
@@ -126,6 +128,10 @@ export async function stuurInschrijvingMail(opts: {
       fout: fout instanceof Error ? fout.message : "Onbekende fout",
     };
   }
+
+  // Geen adres, geen bevestiging. Dat is het geval bij een kaart die een
+  // organisator heeft ingetypt.
+  if (!inschrijving.email) return { ok: true, naarInschrijver: false };
 
   try {
     const antwoord = await resend.emails.send({

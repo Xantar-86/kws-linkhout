@@ -60,6 +60,29 @@ naar de inschrijver niet aan; de mail naar de club wel, want dat is het adres
 van het Resend-account. Zie [TOESTEMMING.md](TOESTEMMING.md). Daarom is de mail
 nooit de enige plek waar een inschrijving staat.
 
+## Kaarten die op papier zijn afgegeven
+
+Niet alles gebeurt online, en het totaal moet toch kloppen. Op
+`/mosselfeest/overzicht` staat daarvoor **Kaart of stapel toevoegen**, met twee
+manieren:
+
+- **Eén afgegeven kaart**: met naam en zitting, zodat je achteraf nog weet wie
+  wat besteld heeft en of er betaald is. Betaald staat standaard aan, want een
+  kaart wordt meestal contant afgerekend.
+- **Stapel kaarten**: een verzamelpost zonder namen, met een toelichting zoals
+  "kaarten kantine week 1". Voor wanneer één per één intypen niet opweegt tegen
+  de moeite, bijvoorbeeld 83 mosselen in één keer. De zitting mag hier leeg
+  blijven; die porties tellen dan mee in het totaal en staan op het overzicht
+  apart vermeld als "zonder zitting".
+
+Beide komen als gewone inschrijving in dezelfde lijst, dus in hetzelfde totaal,
+op het overzicht en in het Excel-logboek. De kolom **Bron** in het logboek zegt
+waar een regel vandaan komt: `online`, `kaart` of `stapel`. Bovenaan het blad
+Overzicht staat de verdeling.
+
+Vul dit dus **niet** in Excel aan: dat bestand wordt elke ronde opnieuw gemaakt
+en je regels zouden verdwijnen.
+
 ## Het Excel-logboek
 
 Twee bladen:
