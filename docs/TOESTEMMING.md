@@ -96,12 +96,52 @@ Instellingen komen uit `.env.local` van het project, of uit de omgeving:
 | `TOESTEMMING_MAP` | `%USERPROFILE%\OneDrive\Documenten\KWS\GDPR\Goedkeuring Spelers` |
 | `TOESTEMMING_TUSSEN` | `300` (seconden tussen twee rondes in `--lus`) |
 
-Als geplande taak, elk kwartier:
+Elke regel gaat ook naar `logs/toestemming-wachter.log`, want als geplande taak
+is er geen venster om naar te kijken. Boven een halve megabyte houdt het script
+enkel de laatste helft bij.
+
+### Als geplande taak
+
+Op de pc van Jochen staat de taak **KWS toestemming wachter**, die elk kwartier
+loopt. Ze roept niet rechtstreeks node aan maar
+`scripts/toestemming-wachter-stil.vbs`, een starter die node zonder venster
+opstart. Anders flitst er elk kwartier een zwart venster op het scherm: een
+taak die als aangemelde gebruiker draait, krijgt een console.
+
+Opnieuw aanmaken:
 
 ```powershell
-schtasks /Create /TN "KWS toestemming wachter" /SC MINUTE /MO 15 ^
-  /TR "\"C:\Program Files\nodejs\node.exe\" \"F:\Projecten\websites\kws-linkhout\scripts\toestemming-wachter.mjs\"" ^
-  /RL LIMITED /F
+$naam    = 'KWS toestemming wachter'
+$project = 'F:\Projecten\websites\kws-linkhout'
+$vbs     = Join-Path $project 'scripts\toestemming-wachter-stil.vbs'
+
+Get-ScheduledTask -TaskName $naam -ErrorAction SilentlyContinue |
+  Unregister-ScheduledTask -Confirm:$false
+
+Register-ScheduledTask -TaskName $naam `
+  -Action (New-ScheduledTaskAction -Execute 'wscript.exe' `
+      -Argument "//nologo `"$vbs`"" -WorkingDirectory $project) `
+  -Trigger (New-ScheduledTaskTrigger -Once -At ((Get-Date).AddMinutes(1)) `
+      -RepetitionInterval (New-TimeSpan -Minutes 15)) `
+  -Settings (New-ScheduledTaskSettingsSet -StartWhenAvailable `
+      -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Minutes 10) `
+      -RunOnlyIfNetworkAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries) `
+  -Principal (New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" `
+      -LogonType Interactive -RunLevel Limited)
+```
+
+Met beheerdersrechten kan `-LogonType S4U` in plaats van `Interactive`. Dan
+draait de taak als echte achtergrondtaak, ook zonder aangemelde sessie, en is
+de VBS-starter niet meer nodig: de taak mag dan rechtstreeks
+`C:\Program Files\nodejs\node.exe` met `scripts\toestemming-wachter.mjs`
+aanroepen.
+
+Handmatig starten en nakijken:
+
+```powershell
+Start-ScheduledTask -TaskName 'KWS toestemming wachter'
+Get-ScheduledTaskInfo -TaskName 'KWS toestemming wachter'
+Get-Content .\logs\toestemming-wachter.log -Tail 20
 ```
 
 Mislukt het wegschrijven, dan blijft de inzending in de wachtrij staan en

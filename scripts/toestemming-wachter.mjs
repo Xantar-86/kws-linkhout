@@ -21,7 +21,7 @@
  */
 
 import { createDecipheriv, createHash } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -71,8 +71,32 @@ function nu() {
   return new Date().toLocaleString("nl-BE", { timeZone: "Europe/Brussels" });
 }
 
+/**
+ * Het logboek. Als geplande taak is er geen venster om naar te kijken, dus
+ * gaat elke regel ook naar logs/toestemming-wachter.log. Boven een halve
+ * megabyte houden we enkel de laatste helft bij; dan blijft het bestand
+ * hanteerbaar zonder dat er een opruimtaak bij hoeft.
+ */
+const LOGBESTAND = path.join(PROJECT, "logs", "toestemming-wachter.log");
+
+function naarLogboek(regel) {
+  try {
+    mkdirSync(path.dirname(LOGBESTAND), { recursive: true });
+    if (existsSync(LOGBESTAND) && statSync(LOGBESTAND).size > 512 * 1024) {
+      const oud = readFileSync(LOGBESTAND, "utf8");
+      writeFileSync(LOGBESTAND, oud.slice(Math.floor(oud.length / 2)), "utf8");
+    }
+    appendFileSync(LOGBESTAND, regel + "\r\n", "utf8");
+  } catch {
+    // Kan het logboek niet weg, dan is dat geen reden om te stoppen: de
+    // formulieren afleveren is belangrijker dan erover schrijven.
+  }
+}
+
 function meld(...stukken) {
-  console.log(`[${nu()}]`, ...stukken);
+  const regel = `[${nu()}] ${stukken.join(" ")}`;
+  console.log(regel);
+  naarLogboek(regel);
 }
 
 /** Dezelfde sleutelafleiding als de site in lib/toestemming/opslag.ts. */
