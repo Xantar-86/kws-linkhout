@@ -1,0 +1,64 @@
+name: Mosselfeest-samenvatting
+
+# Stuurt één keer per dag een samenvatting naar de club: wat er die dag bijkwam
+# en hoeveel van wat er besteld moet worden. Per inschrijving vertrekt er geen
+# clubmail, dat spaart mailtegoed; de overzichtspagina is toch altijd actueel.
+#
+# De planning staat bewust UIT, en de server stuurt bovendien niets zolang
+# MOSSELFEEST_SAMENVATTING niet exact "aan" is. Twee sloten dus: zet eerst de
+# variabele in Vercel, probeer het met de hand (workflow_dispatch), en zet het
+# schedule-blok hieronder pas daarna aan.
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   # GitHub Actions draait in UTC en kent geen zomertijd. We vuren daarom
+  #   # twee keer en laten de stap hieronder afbreken als het lokaal geen 20u is:
+  #   # 18:00 UTC = 20:00 Belgische zomertijd, 19:00 UTC = 20:00 wintertijd.
+  #   - cron: "0 18 * * *"
+  #   - cron: "0 19 * * *"
+
+jobs:
+  samenvatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Alleen doorgaan om 20u Belgische tijd
+        id: klok
+        run: |
+          uur=$(TZ=Europe/Brussels date +%H)
+          echo "Belgische tijd: ${uur}u"
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$uur" != "20" ]; then
+            echo "Niet 20u lokaal, deze run wordt overgeslagen."
+            echo "doorgaan=nee" >> "$GITHUB_OUTPUT"
+          else
+            echo "doorgaan=ja" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Samenvatting aanvragen
+        if: steps.klok.outputs.doorgaan == 'ja'
+        env:
+          SITE_URL: ${{ vars.SITE_URL || 'https://www.kwslinkhout.be' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "CRON_SECRET ontbreekt in de repository secrets."
+            exit 1
+          fi
+
+          response=$(curl --silent --show-error --fail-with-body \
+            --max-time 90 \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            "$SITE_URL/api/mosselfeest/samenvatting")
+
+          echo "$response"
+
+          # Een droge proef is geen fout: dan staat de schakelaar nog uit.
+          if echo "$response" | grep -q '"droog":true'; then
+            echo "Droge proef, er is niets verstuurd."
+            exit 0
+          fi
+
+          echo "$response" | grep -q '"verstuurd":true' || {
+            echo "Er is geen samenvatting verstuurd. Zie het antwoord hierboven."
+            exit 1
+          }

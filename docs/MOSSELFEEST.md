@@ -47,6 +47,7 @@ MOSSELFEEST_SLEUTEL=      # node -e "console.log(require('crypto').randomBytes(3
 MOSSELFEEST_WACHTWOORD=   # wat de organisatoren intypen op het overzicht
 MOSSELFEEST_MAIL_TO=      # leeg = SOCIAL_MAIL_TO
 MOSSELFEEST_MAIL_FROM=    # leeg = "KWS Mosselfeest" op het adres uit SOCIAL_MAIL_FROM
+MOSSELFEEST_SAMENVATTING= # exact "aan" voor de dagelijkse mail naar de club
 ```
 
 `MOSSELFEEST_SLEUTEL` versleutelt de inschrijvingen in de opslag en geeft het
@@ -56,10 +57,44 @@ onthouden, want het staat nergens anders voor open.
 
 `BLOB_READ_WRITE_TOKEN` en `RESEND_API_KEY` zijn er al.
 
-Let op: zolang er in Resend geen domein geverifieerd is, komt de bevestiging
-naar de inschrijver niet aan; de mail naar de club wel, want dat is het adres
-van het Resend-account. Zie [TOESTEMMING.md](TOESTEMMING.md). Daarom is de mail
-nooit de enige plek waar een inschrijving staat.
+## Welke mails er vertrekken
+
+- **Per inschrijving**: enkel een bevestiging naar wie ingeschreven heeft, met
+  de bestelling, het bedrag en de mededeling voor de overschrijving.
+- **Eén keer per dag**: een samenvatting naar de club met wat er die dag bijkwam
+  en hoeveel van wat er besteld moet worden.
+
+Er gaat dus géén mail per inschrijving naar de club. Dat was dubbel werk naast
+de overzichtspagina en het logboek, en het verbruikt mailtegoed: op het gratis
+plan van Resend zijn dat 100 mails per dag en 3.000 per maand. Loopt de
+aankondiging goed, dan kan er op één avond een pak inschrijvingen binnenkomen,
+en dan wil je die dagteller niet aan jezelf verspillen.
+
+Een mail die niet vertrekt kost nooit een inschrijving: die wordt bewaard vóór
+er gemaild wordt, en staat daarna op de overzichtspagina en in het logboek.
+
+Zolang er in Resend geen domein geverifieerd is, weigert Resend elke ontvanger
+behalve het adres van het Resend-account zelf. De bevestiging naar de
+inschrijver komt dan niet aan. Zie [TOESTEMMING.md](TOESTEMMING.md).
+
+### De dagelijkse samenvatting aanzetten
+
+Twee sloten, zodat er niets ongewild vertrekt:
+
+1. `MOSSELFEEST_SAMENVATTING=aan` in Vercel. Staat die er niet, dan draait het
+   eindpunt als droge proef: je ziet in het antwoord wat er zou vertrekken en
+   er gaat niets de deur uit.
+2. Het `schedule`-blok in `.github/workflows/mosselfeest-samenvatting.yml`, dat
+   bewust uitgeschakeld staat. Probeer eerst met de hand
+   (`workflow_dispatch`), en zet de planning daarna aan.
+
+Uitproberen zonder te versturen:
+
+```bash
+curl -H "Authorization: Bearer $MOSSELFEEST_WACHTWOORD"   "https://www.kwslinkhout.be/api/mosselfeest/samenvatting?droog=1"
+```
+
+Met `?uren=48` vang je een overgeslagen dag op.
 
 ## Kaarten die op papier zijn afgegeven
 

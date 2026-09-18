@@ -1,21 +1,22 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { bedragVan } from "@/lib/mosselfeest/kaart";
-import { stuurInschrijvingMail } from "@/lib/mosselfeest/mail";
-import {
-  alleInschrijvingen,
-  bewaarInschrijving,
-  type Inschrijving,
-} from "@/lib/mosselfeest/opslag";
+import { stuurBevestiging } from "@/lib/mosselfeest/mail";
+import { bewaarInschrijving, type Inschrijving } from "@/lib/mosselfeest/opslag";
 import { controleer, schoonAantallen, type InschrijvingInvoer } from "@/lib/mosselfeest/nakijken";
 
 /**
  * Een inschrijving voor het mosselfeest aannemen.
  *
- * De inschrijving wordt versleuteld bewaard en daarna gemaild. Bewaren komt
- * eerst: een mail die niet vertrekt is lastig, een inschrijving die nergens
- * staat is erger. Mislukt het bewaren, dan zeggen we dat ook en doen we alsof
- * er niets gebeurd is, zodat niemand denkt dat hij ingeschreven is.
+ * De inschrijving wordt versleuteld bewaard en daarna bevestigd per mail.
+ * Bewaren komt eerst: een mail die niet vertrekt is lastig, een inschrijving
+ * die nergens staat is erger. Mislukt het bewaren, dan zeggen we dat ook en
+ * doen we alsof er niets gebeurd is, zodat niemand denkt dat hij ingeschreven
+ * is.
+ *
+ * Naar de club gaat hier niets. Die krijgt één samenvatting per dag, zie
+ * /api/mosselfeest/samenvatting. Dat spaart mailtegoed en de overzichtspagina
+ * is toch altijd actueel.
  */
 
 export const dynamic = "force-dynamic";
@@ -93,22 +94,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Het totaal voor de clubmail. Lukt dat niet, dan mailen we zonder.
-  let aantalTotaal: number | undefined;
-  try {
-    aantalTotaal = (await alleInschrijvingen()).length;
-  } catch {
-    aantalTotaal = undefined;
-  }
-
-  const mail = await stuurInschrijvingMail({ inschrijving, aantalTotaal });
-  if (!mail.ok) console.error("[mosselfeest] mailen mislukt:", mail.fout);
+  const mail = await stuurBevestiging(inschrijving);
+  if (!mail.ok) console.error("[mosselfeest] bevestiging mislukt:", mail.fout);
 
   return NextResponse.json({
     ok: true,
     kenmerk: inschrijving.kenmerk,
     bedrag: inschrijving.bedrag,
-    gemaild: mail.ok,
-    bevestigingVerstuurd: mail.naarInschrijver,
+    bevestigingVerstuurd: mail.verstuurd,
   });
 }
