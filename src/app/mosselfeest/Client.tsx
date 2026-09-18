@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { AlertCircle, CheckCircle2, Loader2, Minus, Plus, TriangleAlert } from "lucide-react";
 import {
   EVENEMENT,
@@ -248,18 +249,45 @@ export default function MosselfeestClient() {
 
         <div className="overflow-hidden rounded-2xl bg-inkt-900 text-white">
           <div className="grid sm:grid-cols-[1.1fr_0.9fr]">
-            <div className="order-2 p-6 sm:order-1 sm:p-8">
-              <h1 className="font-display text-2xl font-bold sm:text-3xl">
-                Inschrijven voor het mosselfeest
-              </h1>
-              <p className="mt-3 text-sm leading-relaxed text-white/80">
-                {EVENEMENT.datumTekst} in {EVENEMENT.plaats}. Schrijf in tot en met{" "}
-                {new Date(EVENEMENT.inschrijvenTot).toLocaleDateString("nl-BE", {
-                  day: "numeric",
-                  month: "long",
-                })}
-                , zodat we weten hoeveel we moeten voorzien.
-              </p>
+            {/*
+              Het vlak naast de foto is even hoog als die foto, dus staat er
+              onderaan ruimte over. Daar komt het clubschild in de gloedversie:
+              die heeft een doorzichtige achtergrond en is gemaakt voor een
+              donker vlak.
+            */}
+            <div className="order-2 flex flex-col p-6 sm:order-1 sm:p-8">
+              <div>
+                <h1 className="font-display text-2xl font-bold sm:text-3xl">
+                  Inschrijven voor het mosselfeest
+                </h1>
+                <p className="mt-3 text-sm leading-relaxed text-white/80">
+                  {EVENEMENT.datumTekst} in {EVENEMENT.plaats}. Schrijf in tot en met{" "}
+                  {new Date(EVENEMENT.inschrijvenTot).toLocaleDateString("nl-BE", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                  , zodat we weten hoeveel we moeten voorzien.
+                </p>
+              </div>
+
+              {/*
+                Het clubschild in het midden van het vlak, met een rustige
+                wip. Een eigen kleine versie van het gloedschild: het origineel
+                in public/images is 1168 pixels breed en ruim een megabyte.
+                Wie in Windows of iOS bewegingen uitzet, ziet een stil beeld;
+                dat regelt de MotionConfig in de layout.
+              */}
+              <div className="flex flex-1 items-center justify-center py-8">
+                <motion.img
+                  src="/images/mosselfeest/clubschild-gloed.webp"
+                  alt="Clubschild van K.W.S. Linkhout"
+                  width={512}
+                  height={389}
+                  className="h-auto w-44 max-w-full object-contain sm:w-64"
+                  animate={{ y: [0, -14, 0] }}
+                  transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
