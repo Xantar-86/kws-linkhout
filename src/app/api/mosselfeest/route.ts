@@ -1,8 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { bedragVan } from "@/lib/mosselfeest/kaart";
+import { aantalPlaatsen, bedragVan, zitting as zittingVan } from "@/lib/mosselfeest/kaart";
 import { stuurBevestiging } from "@/lib/mosselfeest/mail";
-import { bewaarInschrijving, type Inschrijving } from "@/lib/mosselfeest/opslag";
+import {
+  alleInschrijvingen,
+  bewaarInschrijving,
+  telOp,
+  type Inschrijving,
+} from "@/lib/mosselfeest/opslag";
 import { controleer, schoonAantallen, type InschrijvingInvoer } from "@/lib/mosselfeest/nakijken";
 
 /**
@@ -70,6 +75,43 @@ export async function POST(request: NextRequest) {
   const klachten = controleer(invoer);
   if (klachten.length > 0) {
     return NextResponse.json({ ok: false, klachten }, { status: 400 });
+  }
+
+  // Past dit nog in de gekozen zitting? De kaart zet er een maximum op, dus
+  // kijken we hier nog eens na. Het formulier toont de vrije plaatsen al, maar
+  // tussen het openen en het versturen kan er iemand anders geweest zijn.
+  const gekozen = zittingVan(invoer.zitting);
+  if (gekozen?.max) {
+    const nodig = aantalPlaatsen(aantallen);
+    try {
+      const totalen = telOp(await alleInschrijvingen());
+      const vrij = totalen.perZitting[gekozen.id]?.vrij ?? gekozen.max;
+      if (vrij <= 0) {
+        return NextResponse.json(
+          {
+            ok: false,
+            klachten: [`${gekozen.label} is volzet. Kies een andere zitting of kom afhalen.`],
+          },
+          { status: 409 },
+        );
+      }
+      if (nodig > vrij) {
+        return NextResponse.json(
+          {
+            ok: false,
+            klachten: [
+              `Er ${vrij === 1 ? "is" : "zijn"} nog ${vrij} plaats${vrij === 1 ? "" : "en"} vrij op ${gekozen.label}, en je bestelling heeft er ${nodig} nodig. Splits de inschrijving of kies een andere zitting.`,
+            ],
+          },
+          { status: 409 },
+        );
+      }
+    } catch (fout) {
+      // Kunnen we het niet nakijken, dan laten we de inschrijving door: een
+      // zitting die misschien vol is weegt niet op tegen iemand die niet kan
+      // inschrijven. De overzichtspagina toont de overschrijding dan.
+      console.error("[mosselfeest] plaatsen nakijken mislukt:", fout);
+    }
   }
 
   const inschrijving: Inschrijving = {

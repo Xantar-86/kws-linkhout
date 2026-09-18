@@ -1,118 +1,134 @@
 /**
- * De kaart van het mosselfeest.
+ * De kaart van het mosselfeest, overgenomen van de gedrukte kaart.
  *
- * ┌──────────────────────────────────────────────────────────────────────────┐
- * │ LET OP: dit is nog NIET de gedrukte kaart.                               │
- * │                                                                          │
- * │ De gerechten, de prijzen, de datum en de zittingen hieronder zijn een    │
- * │ voorlopige opzet, zodat het formulier en het logboek gebouwd en getest   │
- * │ konden worden. Zet VOORLOPIG op false zodra alles overeenkomt met de     │
- * │ kaart die al gedrukt is; tot dan staat er een waarschuwing op het        │
- * │ formulier, zodat niemand zich op verkeerde prijzen inschrijft.           │
- * └──────────────────────────────────────────────────────────────────────────┘
- *
- * Alles wat met de kaart te maken heeft, staat in dit ene bestand. Het
- * formulier, de berekening van het bedrag, de overzichtspagina en het
- * Excel-logboek leiden zich hieruit af, dus een wijziging hier werkt overal
+ * De namen en de prijzen staan hier zoals ze op het blad staan, en in dezelfde
+ * volgorde. Het formulier, de berekening van het bedrag, de overzichtspagina en
+ * het Excel-logboek leiden zich hieruit af, dus een wijziging hier werkt overal
  * door en er hoeft nergens anders iets aangepast te worden.
+ *
+ * Laat het `id` van een gerecht ongewijzigd zodra er inschrijvingen zijn: die
+ * id's staan in de bewaarde inschrijvingen. Een naam of een prijs aanpassen mag
+ * wel.
  */
 
-export const VOORLOPIG = true;
+/** Staat op false zodra alles overeenkomt met de gedrukte kaart. */
+export const VOORLOPIG = false;
 
 export interface Gerecht {
   /** Korte sleutel. Komt in de opslag te staan, dus laat ze ongewijzigd. */
   id: string;
   /** Zoals het op de kaart staat. */
   naam: string;
-  /** Extra uitleg onder de naam, bijvoorbeeld wat erbij hoort. */
-  uitleg?: string;
+  /** Kortere naam voor de kolomkop in Excel, waar de ruimte smal is. */
+  kort?: string;
   /** Prijs per portie in euro. */
   prijs: number;
-  /** Waar het gerecht in het formulier en in het logboek komt te staan. */
   groep: GroepId;
+  /**
+   * Telt dit gerecht als een plaats aan tafel?
+   *
+   * De kaart zet een maximum op elke zitting: 200 of 175 plaatsen. Een dessert
+   * is geen extra stoel, een hoofdgerecht of een kindergerecht wel. Zo weten we
+   * hoeveel volk er per zitting verwacht wordt.
+   */
+  teltAlsPlaats: boolean;
 }
 
-export type GroepId = "hoofd" | "kind" | "extra" | "dessert";
+export type GroepId = "hoofd" | "kind" | "dessert";
 
 export const GROEPEN: { id: GroepId; titel: string; uitleg?: string }[] = [
   { id: "hoofd", titel: "Hoofdgerechten" },
-  { id: "kind", titel: "Voor de kinderen" },
-  { id: "extra", titel: "Extra", uitleg: "Een extra portie of iets erbij." },
-  { id: "dessert", titel: "Dessert" },
+  { id: "kind", titel: "Kindergerechten" },
+  { id: "dessert", titel: "Desserts" },
 ];
 
 export const GERECHTEN: Gerecht[] = [
+  { id: "mosselen-friet", naam: "Mosselen Friet", prijs: 24, groep: "hoofd", teltAlsPlaats: true },
+  { id: "mosselen-brood", naam: "Mosselen Brood", prijs: 23, groep: "hoofd", teltAlsPlaats: true },
+  { id: "vide-friet", naam: "Vidé Friet", prijs: 16, groep: "hoofd", teltAlsPlaats: true },
   {
-    id: "mosselen-natuur",
-    naam: "Mosselen natuur",
-    uitleg: "Met brood of friet",
-    prijs: 28,
+    id: "stoofvlees-friet",
+    naam: "Stoofvlees Friet",
+    prijs: 16,
     groep: "hoofd",
+    teltAlsPlaats: true,
   },
+  { id: "halve-haan-friet", naam: "½ haan Friet", prijs: 16, groep: "hoofd", teltAlsPlaats: true },
   {
-    id: "mosselen-wijn",
-    naam: "Mosselen in wijnsaus",
-    uitleg: "Met brood of friet",
-    prijs: 30,
+    id: "balletjes",
+    naam: "Balletjes (tomatensaus)",
+    kort: "Balletjes",
+    prijs: 16,
     groep: "hoofd",
+    teltAlsPlaats: true,
   },
+  { id: "scampis", naam: "Scampi’s", prijs: 16, groep: "hoofd", teltAlsPlaats: true },
+
   {
-    id: "vol-au-vent",
-    naam: "Vol-au-vent met friet",
-    prijs: 20,
-    groep: "hoofd",
-  },
-  {
-    id: "koude-schotel",
-    naam: "Koude schotel",
-    uitleg: "Met brood of friet",
-    prijs: 22,
-    groep: "hoofd",
-  },
-  {
-    id: "kipfilet-kind",
-    naam: "Kipfilet met friet en appelmoes",
-    prijs: 12,
-    groep: "kind",
-  },
-  {
-    id: "frikandel-kind",
-    naam: "Frikandel met friet en appelmoes",
+    id: "hamburger",
+    naam: "Hamburger (2 stuks)",
+    kort: "Hamburger",
     prijs: 10,
     groep: "kind",
+    teltAlsPlaats: true,
   },
+  { id: "kinder-vide", naam: "Kinder Vidé", prijs: 10, groep: "kind", teltAlsPlaats: true },
   {
-    id: "extra-mosselen",
-    naam: "Extra portie mosselen",
-    prijs: 12,
-    groep: "extra",
+    id: "balletjes-kind",
+    naam: "Balletjes (tomatensaus)",
+    kort: "Balletjes kind",
+    prijs: 10,
+    groep: "kind",
+    teltAlsPlaats: true,
   },
-  { id: "extra-friet", naam: "Portie friet", prijs: 4, groep: "extra" },
-  { id: "extra-brood", naam: "Brood met boter", prijs: 2, groep: "extra" },
-  { id: "dessert-ijs", naam: "Dame blanche", prijs: 6, groep: "dessert" },
+
+  { id: "chocomousse", naam: "Chocomousse", prijs: 4, groep: "dessert", teltAlsPlaats: false },
+  { id: "rijstpap", naam: "Rijstpap", prijs: 4, groep: "dessert", teltAlsPlaats: false },
 ];
 
-/** Eén zitting: wanneer er gegeten wordt. */
+/**
+ * Eén zitting, of afhalen.
+ *
+ * De maxima komen van de kaart. Ze gaan over plaatsen aan tafel, dus we tellen
+ * enkel de gerechten met teltAlsPlaats. Afhalen heeft geen maximum: daar is
+ * geen zaal voor nodig.
+ */
 export interface Zitting {
   id: string;
   label: string;
+  /** Het aantal plaatsen, of undefined als er geen grens is. */
+  max?: number;
+  afhalen?: boolean;
 }
 
 export const EVENEMENT = {
   naam: "Mosselfeest KWS Linkhout",
-  /** Wordt op het formulier en in het logboek gebruikt. */
   jaar: 2026,
-  datumTekst: "zaterdag 14 en zondag 15 november 2026",
+  datumTekst: "vrijdag 23 en zaterdag 24 oktober 2026",
   plaats: "Kantine KWS Linkhout, Kapelstraat 72, Linkhout",
-  /** Tot wanneer er ingeschreven kan worden (ISO-datum). */
-  inschrijvenTot: "2026-11-09",
+  /**
+   * Tot wanneer er ingeschreven kan worden (ISO-datum).
+   *
+   * Staat niet op de kaart; dit is de zondag voor het feest. Aanpassen als de
+   * club een andere datum afspreekt.
+   */
+  inschrijvenTot: "2026-10-18",
   zittingen: [
-    { id: "za-18", label: "Zaterdag 14 november, 18.00 uur" },
-    { id: "zo-1130", label: "Zondag 15 november, 11.30 uur" },
-    { id: "zo-1730", label: "Zondag 15 november, 17.30 uur" },
+    { id: "vr-23-18", label: "Vrijdag 23 oktober, 18.00 tot 20.30 uur", max: 200 },
+    { id: "za-24-12", label: "Zaterdag 24 oktober, 12.00 tot 14.00 uur", max: 200 },
+    { id: "za-24-1630", label: "Zaterdag 24 oktober, 16.30 tot 18.15 uur", max: 175 },
+    { id: "za-24-1830", label: "Zaterdag 24 oktober, 18.30 tot 20.30 uur", max: 175 },
+    { id: "afhalen-23", label: "Afhalen op vrijdag 23 oktober", afhalen: true },
+    { id: "afhalen-24", label: "Afhalen op zaterdag 24 oktober", afhalen: true },
   ] as Zitting[],
-  /** Waar het geld naartoe gaat. Komt op het formulier en in de mail. */
-  rekening: "BE00 0000 0000 0000",
+  /**
+   * Rekeningnummer voor een overschrijving.
+   *
+   * Op de kaart staat er geen: wie een kaart afgeeft, betaalt ter plaatse.
+   * Blijft dit leeg, dan vraagt het formulier geen overschrijving en zegt het
+   * dat er bij aankomst of bij het afhalen betaald wordt.
+   */
+  rekening: "",
   rekeningNaam: "KWS vzw",
   contact: "info@kwslinkhout.be",
 } as const;
@@ -124,6 +140,20 @@ export function gerecht(id: string): Gerecht | undefined {
 /** De gerechten van één groep, in de volgorde van de kaart. */
 export function gerechtenVan(groep: GroepId): Gerecht[] {
   return GERECHTEN.filter((g) => g.groep === groep);
+}
+
+export function zitting(id: string): Zitting | undefined {
+  return EVENEMENT.zittingen.find((z) => z.id === id);
+}
+
+/** Wordt er ter plaatse gegeten, of afgehaald? */
+export function isAfhalen(zittingId: string): boolean {
+  return Boolean(zitting(zittingId)?.afhalen);
+}
+
+/** Wordt er met een overschrijving betaald, of ter plaatse? */
+export function metOverschrijving(): boolean {
+  return EVENEMENT.rekening.trim().length > 0;
 }
 
 /** Het bedrag van een inschrijving, in euro. */
@@ -143,6 +173,18 @@ export function aantalPorties(aantallen: Record<string, number>): number {
     (som, [id, aantal]) => (gerecht(id) && aantal > 0 ? som + aantal : som),
     0,
   );
+}
+
+/**
+ * Het aantal plaatsen dat een inschrijving inneemt: de hoofd- en
+ * kindergerechten. Desserts tellen niet mee, want daar zit niemand extra voor
+ * aan tafel.
+ */
+export function aantalPlaatsen(aantallen: Record<string, number>): number {
+  return Object.entries(aantallen).reduce((som, [id, aantal]) => {
+    const g = gerecht(id);
+    return g?.teltAlsPlaats && aantal > 0 ? som + aantal : som;
+  }, 0);
 }
 
 /** "14,50" in plaats van "14.5", zoals we het hier schrijven. */

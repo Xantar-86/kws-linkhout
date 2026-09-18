@@ -69,6 +69,7 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   const bron = totalen.perBron ?? { online: totalen.inschrijvingen, kaart: 0, verzamelpost: 0 };
   const kort: [string, number | string, string?][] = [
     ["Inschrijvingen", totalen.inschrijvingen],
+    ["Plaatsen aan tafel", totalen.plaatsen],
     ["   waarvan online ingevuld", bron.online],
     ["   waarvan ingetypte kaarten", bron.kaart],
     ["   waarvan stapels kaarten", bron.verzamelpost],
@@ -91,13 +92,21 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   r += 1;
   kopcel(o.getCell(`A${r}`), "Zitting");
   kopcel(o.getCell(`B${r}`), "Inschr.");
-  kopcel(o.getCell(`C${r}`), "Porties");
+  kopcel(o.getCell(`C${r}`), "Plaatsen");
+  kopcel(o.getCell(`D${r}`), "Nog vrij");
   r += 1;
   for (const zitting of EVENEMENT.zittingen) {
-    const cijfers = totalen.perZitting[zitting.id] ?? { inschrijvingen: 0, porties: 0 };
+    const cijfers = totalen.perZitting[zitting.id];
     o.getCell(`A${r}`).value = zitting.label;
-    o.getCell(`B${r}`).value = cijfers.inschrijvingen;
-    o.getCell(`C${r}`).value = cijfers.porties;
+    o.getCell(`B${r}`).value = cijfers?.inschrijvingen ?? 0;
+    o.getCell(`C${r}`).value = zitting.max
+      ? `${cijfers?.plaatsen ?? 0} van ${zitting.max}`
+      : (cijfers?.plaatsen ?? 0);
+    const vrij = cijfers?.vrij ?? null;
+    o.getCell(`D${r}`).value = vrij === null ? "afhalen" : vrij;
+    if (vrij !== null && vrij <= 10) {
+      o.getCell(`D${r}`).font = { bold: true, color: { argb: ROOD } };
+    }
     r += 1;
   }
 
@@ -145,7 +154,9 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     "Ingevoerd door",
     "Opmerking",
   ];
-  const koppen = [...vasteKoppen, ...GERECHTEN.map((g) => g.naam), ...staartKoppen];
+  // De korte naam waar die er is: twee kolommen "Balletjes (tomatensaus)" naast
+  // elkaar zegt niets over welke de kindportie is.
+  const koppen = [...vasteKoppen, ...GERECHTEN.map((g) => g.kort ?? g.naam), ...staartKoppen];
 
   i.columns = koppen.map((kop, index) => {
     const isGerecht = index >= vasteKoppen.length && index < vasteKoppen.length + GERECHTEN.length;

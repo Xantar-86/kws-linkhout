@@ -5,11 +5,26 @@ Inschrijven gebeurt op `/mosselfeest`. De organisatoren zien de totalen op
 kwartier bijgewerkt wordt. Doel: niet meer handmatig tellen hoeveel van wat er
 besteld moet worden.
 
-> **Nog niet in gebruik.** Deze functie staat op de branch `mosselfeest` en is
-> nog niet uitgerold. De kaart in `src/lib/mosselfeest/kaart.ts` is een
-> voorlopige opzet: de gerechten, prijzen, datums en zittingen moeten nog
-> vervangen worden door wat er gedrukt is. Zolang `VOORLOPIG` daar op `true`
-> staat, waarschuwt het formulier de bezoeker daarover.
+> **Nog niet uitgerold.** Deze functie staat op de branch `mosselfeest`. De
+> kaart in `src/lib/mosselfeest/kaart.ts` komt wel overeen met de gedrukte
+> kaart van 2026. Twee dingen staan er niet op en zijn dus een aanname:
+> de sluitingsdatum (nu zondag 18 oktober) en de betaalwijze (nu ter plaatse,
+> want er staat geen rekeningnummer op de kaart).
+
+## Plaatsen per zitting
+
+Op de kaart staat per zitting een maximum: 200, 200, 175 en 175 plaatsen.
+Afhalen heeft geen grens.
+
+Een plaats is een stoel aan tafel, dus we tellen enkel de hoofd- en
+kindergerechten mee; een dessert is geen extra stoel. Dat staat per gerecht in
+`teltAlsPlaats`.
+
+Het formulier toont per zitting hoeveel er nog vrij is en laat een volle
+zitting niet meer kiezen. De server kijkt het bij het versturen nog eens na,
+want tussen het openen van de pagina en het versturen kan er iemand anders
+geweest zijn. Een organisator kan via **Kaart of stapel toevoegen** wel boven
+het maximum gaan: die weet best of er nog een tafel bij kan.
 
 ## Waar wat staat
 

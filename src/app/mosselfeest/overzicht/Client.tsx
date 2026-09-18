@@ -259,7 +259,11 @@ export default function OverzichtClient() {
                     : undefined
                 }
               />
-              <Kaartje label="Porties" waarde={String(totalen.porties)} />
+              <Kaartje
+                label="Porties"
+                waarde={String(totalen.porties)}
+                onder={`${totalen.plaatsen} plaatsen aan tafel`}
+              />
               <Kaartje label="Totaal" waarde={`${euro(totalen.bedrag)} euro`} />
               <Kaartje label="Betaald" waarde={`${euro(totalen.bedragBetaald)} euro`} toon="goed" />
               <Kaartje
@@ -317,7 +321,13 @@ export default function OverzichtClient() {
                 </p>
                 <div className="grid gap-2 sm:grid-cols-3">
                   {EVENEMENT.zittingen.map((z) => {
-                    const cijfers = totalen.perZitting[z.id] ?? { inschrijvingen: 0, porties: 0 };
+                    const cijfers = totalen.perZitting[z.id] ?? {
+                      inschrijvingen: 0,
+                      porties: 0,
+                      plaatsen: 0,
+                      max: null,
+                      vrij: null,
+                    };
                     return (
                       <div key={z.id} className="rounded-xl bg-zand-50 p-3">
                         <p className="text-sm text-slate-700">{z.label}</p>
@@ -325,6 +335,17 @@ export default function OverzichtClient() {
                           {cijfers.inschrijvingen} inschrijving
                           {cijfers.inschrijvingen === 1 ? "" : "en"}, {cijfers.porties} porties
                         </p>
+                        {cijfers.max !== null && (
+                          <p
+                            className={
+                              "mt-1 text-sm font-medium " +
+                              ((cijfers.vrij ?? 0) <= 10 ? "text-primary" : "text-slate-700")
+                            }
+                          >
+                            {cijfers.plaatsen} van de {cijfers.max} plaatsen bezet
+                            {cijfers.vrij !== null && `, nog ${cijfers.vrij} vrij`}
+                          </p>
+                        )}
                       </div>
                     );
                   })}

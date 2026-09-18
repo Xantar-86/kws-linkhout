@@ -1,5 +1,14 @@
 import { Resend } from "resend";
-import { EVENEMENT, GERECHTEN, GROEPEN, euro, gerechtenVan, mededeling } from "./kaart";
+import {
+  EVENEMENT,
+  GERECHTEN,
+  GROEPEN,
+  euro,
+  gerechtenVan,
+  isAfhalen,
+  mededeling,
+  metOverschrijving,
+} from "./kaart";
 import { telOp, type Inschrijving, type Totalen } from "./opslag";
 
 /**
@@ -107,13 +116,23 @@ export async function stuurBevestiging(inschrijving: Inschrijving): Promise<Mail
   // Een ingetypte kaart heeft geen adres; daar valt niets te bevestigen.
   if (!inschrijving.email) return { ok: true, verstuurd: false };
 
-  const betaalblok = `
+  // Staat er geen rekeningnummer op de kaart, dan wordt er ter plaatse
+  // afgerekend en heeft een overschrijvingsblok geen zin.
+  const betaalblok = metOverschrijving()
+    ? `
     <div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:18px">
       <p style="margin:0 0 8px 0;font-size:15px;font-weight:600;color:#0f172a">Betalen</p>
       <p style="margin:0;font-size:14px;color:#334155;line-height:1.7">
         ${euro(inschrijving.bedrag)} euro op ${EVENEMENT.rekening}<br>
         op naam van ${ontsnap(EVENEMENT.rekeningNaam)}<br>
         met als mededeling <strong>${ontsnap(mededeling(inschrijving.kenmerk, inschrijving.naam))}</strong>
+      </p>
+    </div>`
+    : `
+    <div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-top:18px">
+      <p style="margin:0 0 8px 0;font-size:15px;font-weight:600;color:#0f172a">Betalen</p>
+      <p style="margin:0;font-size:14px;color:#334155;line-height:1.7">
+        ${euro(inschrijving.bedrag)} euro, ${isAfhalen(inschrijving.zitting) ? "te betalen bij het afhalen" : "te betalen bij aankomst"}.
       </p>
     </div>`;
 

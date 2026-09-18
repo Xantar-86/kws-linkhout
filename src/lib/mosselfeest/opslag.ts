@@ -1,6 +1,6 @@
 import { del, list, put } from "@vercel/blob";
 import { ontsleutelJson, sleutelUit, versleutelJson } from "@/lib/kluis";
-import { EVENEMENT, GERECHTEN, aantalPorties, bedragVan } from "./kaart";
+import { EVENEMENT, GERECHTEN, aantalPlaatsen, aantalPorties, bedragVan } from "./kaart";
 
 /**
  * De inschrijvingen van het mosselfeest.
@@ -178,13 +178,21 @@ export interface Totalen {
   /** Hoeveel daarvan online, via een ingetypte kaart of als verzamelpost. */
   perBron: Record<Bron, number>;
   porties: number;
+  /** Plaatsen aan tafel: enkel de hoofd- en kindergerechten. */
+  plaatsen: number;
   bedrag: number;
   bedragBetaald: number;
   bedragOpen: number;
   /** Per gerecht-id het totale aantal porties. */
   perGerecht: Record<string, number>;
-  /** Per zitting-id het aantal inschrijvingen en porties. */
-  perZitting: Record<string, { inschrijvingen: number; porties: number }>;
+  /**
+   * Per zitting-id de aantallen. `plaatsen` is wat telt tegenover het maximum
+   * op de kaart; `vrij` is wat er nog over is, of null bij afhalen.
+   */
+  perZitting: Record<
+    string,
+    { inschrijvingen: number; porties: number; plaatsen: number; max: number | null; vrij: number | null }
+  >;
 }
 
 /** De optelsom waar het hele logboek om draait. */
@@ -193,12 +201,22 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     inschrijvingen: inschrijvingen.length,
     perBron: { online: 0, kaart: 0, verzamelpost: 0 },
     porties: 0,
+    plaatsen: 0,
     bedrag: 0,
     bedragBetaald: 0,
     bedragOpen: 0,
     perGerecht: Object.fromEntries(GERECHTEN.map((g) => [g.id, 0])),
     perZitting: Object.fromEntries(
-      EVENEMENT.zittingen.map((z) => [z.id, { inschrijvingen: 0, porties: 0 }]),
+      EVENEMENT.zittingen.map((z) => [
+        z.id,
+        {
+          inschrijvingen: 0,
+          porties: 0,
+          plaatsen: 0,
+          max: z.max ?? null,
+          vrij: z.max ?? null,
+        },
+      ]),
     ),
   };
 
@@ -208,9 +226,11 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     // bewaarde bedrag blijft wel staan als wat er gevraagd is.
     const bedrag = inschrijving.bedrag || bedragVan(inschrijving.aantallen);
     const porties = aantalPorties(inschrijving.aantallen);
+    const plaatsen = aantalPlaatsen(inschrijving.aantallen);
 
     totalen.perBron[inschrijving.bron ?? "online"] += 1;
     totalen.porties += porties;
+    totalen.plaatsen += plaatsen;
     totalen.bedrag += bedrag;
     if (inschrijving.betaald) totalen.bedragBetaald += bedrag;
     else totalen.bedragOpen += bedrag;
@@ -224,6 +244,8 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     if (zitting) {
       zitting.inschrijvingen += 1;
       zitting.porties += porties;
+      zitting.plaatsen += plaatsen;
+      if (zitting.max !== null) zitting.vrij = Math.max(0, zitting.max - zitting.plaatsen);
     }
   }
 
