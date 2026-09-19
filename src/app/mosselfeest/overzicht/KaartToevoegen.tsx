@@ -33,6 +33,7 @@ export function KaartToevoegen({
   const [open, setOpen] = useState(false);
   const [bron, setBron] = useState<"kaart" | "verzamelpost">("kaart");
   const [naam, setNaam] = useState("");
+  const [voornaam, setVoornaam] = useState("");
   const [kaartnummer, setKaartnummer] = useState("");
   const [zitting, setZitting] = useState("");
   const [aantallen, setAantallen] = useState<Record<string, number>>({});
@@ -47,6 +48,7 @@ export function KaartToevoegen({
 
   function leegmaken() {
     setNaam("");
+    setVoornaam("");
     setKaartnummer("");
     setZitting("");
     setAantallen({});
@@ -67,6 +69,7 @@ export function KaartToevoegen({
           actie: "toevoegen",
           bron,
           naam,
+          voornaam: bron === "kaart" ? voornaam || undefined : undefined,
           kaartnummer: kaartnummer.trim() ? Number.parseInt(kaartnummer, 10) : undefined,
           zitting: zitting || undefined,
           aantallen,
@@ -182,17 +185,26 @@ export function KaartToevoegen({
         )}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-slate-700">
-            {bron === "kaart" ? "Naam op de kaart" : "Toelichting bij de stapel"}
+            {bron === "kaart" ? "Familienaam" : "Toelichting bij de stapel"}
           </span>
           <input
             className={INVOER}
             value={naam}
             onChange={(e) => setNaam(e.target.value)}
-            placeholder={
-              bron === "kaart" ? "Naam en voornaam" : "Bijvoorbeeld kaarten kantine week 1"
-            }
+            placeholder={bron === "kaart" ? "Naam" : "Bijvoorbeeld kaarten kantine week 1"}
           />
         </label>
+        {bron === "kaart" && (
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-medium text-slate-700">Voornaam</span>
+            <input
+              className={INVOER}
+              value={voornaam}
+              onChange={(e) => setVoornaam(e.target.value)}
+              placeholder="Voornaam"
+            />
+          </label>
+        )}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-slate-700">
             Zitting{bron === "verzamelpost" && " (mag leeg blijven)"}

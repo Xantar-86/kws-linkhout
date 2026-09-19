@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
     const invoer: Partial<HandmatigeInvoer> = {
       bron: body.bron,
       naam: (body.naam ?? "").trim(),
+      voornaam: (body.voornaam ?? "").trim() || undefined,
       zitting: (body.zitting ?? "").trim() || undefined,
       aantallen,
       betaald: body.betaald,
@@ -105,6 +106,7 @@ export async function POST(request: NextRequest) {
       kenmerk: randomUUID().slice(0, 6).toUpperCase(),
       aangemeld: new Date().toISOString(),
       naam: invoer.naam!,
+      voornaam: invoer.voornaam,
       kaartnummer: invoer.kaartnummer,
       zitting: invoer.zitting ?? "",
       aantallen,

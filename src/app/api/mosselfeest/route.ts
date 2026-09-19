@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
   const aantallen = schoonAantallen((body.aantallen ?? {}) as Record<string, unknown>);
   const invoer: InschrijvingInvoer = {
     naam: (body.naam ?? "").trim(),
+    voornaam: (body.voornaam ?? "").trim(),
     email: (body.email ?? "").trim(),
     telefoon: (body.telefoon ?? "").trim() || undefined,
     zitting: (body.zitting ?? "").trim(),

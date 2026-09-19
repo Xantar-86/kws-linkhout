@@ -16,6 +16,7 @@ const INKT = "#120c0d";
 const ZAND = "#f4f1ec";
 const GRIJS = "#6b7280";
 import { telOp, type Inschrijving, type Totalen } from "./opslag";
+import { volledigeNaam } from "./nakijken";
 
 /**
  * De mails rond het mosselfeest.
@@ -190,7 +191,11 @@ export async function stuurBevestiging(inschrijving: Inschrijving): Promise<Mail
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border:2px solid ${ROOD};border-radius:12px;margin-top:18px">
       <tr>
         <td style="padding:16px">
-          <div style="font-size:15px;font-weight:700;color:${INKT};margin-bottom:10px">Nog te betalen</div>
+          <div style="font-size:15px;font-weight:700;color:${INKT};margin-bottom:6px">Betalen</div>
+          <p style="margin:0 0 12px 0;font-size:14px;color:#334155;line-height:1.6">
+            Gelieve het bedrag over te schrijven op onderstaande rekening, of het
+            ${isAfhalen(inschrijving.zitting) ? "te betalen bij het afhalen" : "op de dag zelf bij aankomst te betalen"}.
+          </p>
           <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-size:14px;color:#334155">
             <tr>
               <td style="padding:3px 0;width:110px;color:${GRIJS}">Bedrag</td>
@@ -219,9 +224,10 @@ export async function stuurBevestiging(inschrijving: Inschrijving): Promise<Mail
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border:2px solid ${ROOD};border-radius:12px;margin-top:18px">
       <tr>
         <td style="padding:16px">
-          <div style="font-size:15px;font-weight:700;color:${INKT};margin-bottom:6px">Te betalen</div>
-          <div style="font-size:14px;color:#334155">
-            ${euro(inschrijving.bedrag)} euro, ${isAfhalen(inschrijving.zitting) ? "te betalen bij het afhalen" : "te betalen bij aankomst"}.
+          <div style="font-size:15px;font-weight:700;color:${INKT};margin-bottom:6px">Betalen</div>
+          <div style="font-size:14px;color:#334155;line-height:1.6">
+            Gelieve <strong>${euro(inschrijving.bedrag)} euro</strong>
+            ${isAfhalen(inschrijving.zitting) ? "te betalen bij het afhalen" : "op de dag zelf bij aankomst te betalen"}.
           </div>
         </td>
       </tr>
@@ -232,7 +238,7 @@ export async function stuurBevestiging(inschrijving: Inschrijving): Promise<Mail
     zittingLabel(inschrijving.zitting),
     `${nummerblok}
      <p style="margin:0 0 4px 0;font-size:15px;color:#334155;line-height:1.7">
-       Dag ${ontsnap(inschrijving.naam.split(" ").slice(-1)[0] || inschrijving.naam)}, bedankt voor je inschrijving.
+       Dag ${ontsnap(inschrijving.voornaam || inschrijving.naam)}, bedankt voor je inschrijving.
        Hieronder staat wat we voor je klaarzetten.
      </p>
      ${besteltabel(inschrijving)}
@@ -344,7 +350,7 @@ export async function stuurSamenvatting(opts: {
             return `
             <tr>
               <td style="padding:5px 10px;border-bottom:1px solid #f1f5f9;font-size:14px;color:#334155">
-                ${ontsnap(i.naam)}${bron}
+                ${ontsnap(volledigeNaam(i))}${bron}
                 <span style="color:#94a3b8"> &middot; ${ontsnap(i.zitting ? zittingLabel(i.zitting) : "zonder zitting")}</span>
               </td>
               <td style="padding:5px 10px;border-bottom:1px solid #f1f5f9;font-size:14px;color:#334155;text-align:right">${euro(i.bedrag)}</td>

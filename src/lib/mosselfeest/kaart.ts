@@ -105,7 +105,7 @@ export const EVENEMENT = {
   naam: "Mosselfeest KWS Linkhout",
   jaar: 2026,
   datumTekst: "vrijdag 23 en zaterdag 24 oktober 2026",
-  plaats: "Kantine KWS Linkhout, Kapelstraat 72, Linkhout",
+  plaats: "OC De Link, Linkhoutstraat 194, 3560 Linkhout",
   /**
    * Tot wanneer er ingeschreven kan worden (ISO-datum).
    *

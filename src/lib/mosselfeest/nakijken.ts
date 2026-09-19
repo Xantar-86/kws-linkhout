@@ -11,6 +11,7 @@ import { EVENEMENT, GERECHTEN, aantalPorties, gerecht } from "./kaart";
 /** Wat het formulier naar de server stuurt. */
 export interface InschrijvingInvoer {
   naam: string;
+  voornaam: string;
   email: string;
   telefoon?: string;
   zitting: string;
@@ -34,7 +35,8 @@ export function nogOpen(op = new Date()): boolean {
 export function controleer(invoer: Partial<InschrijvingInvoer>): string[] {
   const klachten: string[] = [];
 
-  if (!naamDeugt(invoer.naam)) klachten.push("Vul je naam in.");
+  if (!naamDeugt(invoer.naam)) klachten.push("Vul je familienaam in.");
+  if (!naamDeugt(invoer.voornaam)) klachten.push("Vul je voornaam in.");
   if (!invoer.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(invoer.email)) {
     klachten.push("Vul een geldig e-mailadres in; daar gaat je bevestiging naartoe.");
   }
@@ -98,6 +100,8 @@ export interface HandmatigeInvoer {
   aantallen: Record<string, number>;
   betaald?: boolean;
   opmerking?: string;
+  /** De voornaam op de kaart, voor een afgegeven kaart. */
+  voornaam?: string;
   /** Wie het heeft ingetypt. */
   ingevoerdDoor?: string;
   /**
@@ -173,4 +177,14 @@ export function schoonAantallenRuim(aantallen: Record<string, unknown>): Record<
     if (aantal > 0) netjes[g.id] = Math.min(aantal, 2000);
   }
   return netjes;
+}
+
+/**
+ * Naam en voornaam samen, in de volgorde van de kaart.
+ *
+ * Voor een verzamelpost staat er geen voornaam en is `naam` de toelichting;
+ * dan geven we die gewoon terug.
+ */
+export function volledigeNaam(wie: { naam: string; voornaam?: string }): string {
+  return wie.voornaam ? `${wie.naam} ${wie.voornaam}`.trim() : wie.naam;
 }

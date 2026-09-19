@@ -114,6 +114,7 @@ function Teller({
 
 export default function MosselfeestClient() {
   const [naam, setNaam] = useState("");
+  const [voornaam, setVoornaam] = useState("");
   const [email, setEmail] = useState("");
   const [telefoon, setTelefoon] = useState("");
   const [zitting, setZitting] = useState("");
@@ -177,6 +178,7 @@ export default function MosselfeestClient() {
     gebeurtenis.preventDefault();
     const invoer = {
       naam: naam.trim(),
+      voornaam: voornaam.trim(),
       email: email.trim(),
       telefoon: telefoon.trim() || undefined,
       zitting,
@@ -244,20 +246,32 @@ export default function MosselfeestClient() {
             </p>
 
             <div className="mt-6 rounded-xl border border-zand-200 bg-zand-50 p-5">
-              <p className="font-semibold text-inkt-900">Te betalen</p>
+              <p className="font-semibold text-inkt-900">Betalen</p>
               {metOverschrijving() ? (
-                <p className="mt-2 text-sm leading-7 text-slate-700">
-                  <strong>{euro(klaar.bedrag)} euro</strong> op {EVENEMENT.rekening}
-                  <br />
-                  op naam van {EVENEMENT.rekeningNaam}
-                  <br />
-                  mededeling{" "}
-                  <strong className="whitespace-nowrap">{mededeling(klaar.kaartnummer)}</strong>
-                </p>
+                <>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">
+                    Gelieve het bedrag over te schrijven op onderstaande rekening, of het{" "}
+                    {isAfhalen(zitting)
+                      ? "te betalen bij het afhalen"
+                      : "op de dag zelf bij aankomst te betalen"}
+                    .
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-slate-700">
+                    <strong>{euro(klaar.bedrag)} euro</strong> op {EVENEMENT.rekening}
+                    <br />
+                    op naam van {EVENEMENT.rekeningNaam}
+                    <br />
+                    mededeling{" "}
+                    <strong className="whitespace-nowrap">{mededeling(klaar.kaartnummer)}</strong>
+                  </p>
+                </>
               ) : (
                 <p className="mt-2 text-sm leading-7 text-slate-700">
-                  <strong>{euro(klaar.bedrag)} euro</strong>,{" "}
-                  {isAfhalen(zitting) ? "te betalen bij het afhalen" : "te betalen bij aankomst"}.
+                  Gelieve <strong>{euro(klaar.bedrag)} euro</strong>{" "}
+                  {isAfhalen(zitting)
+                    ? "te betalen bij het afhalen"
+                    : "op de dag zelf bij aankomst te betalen"}
+                  .
                 </p>
               )}
             </div>
@@ -358,13 +372,24 @@ export default function MosselfeestClient() {
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-slate-700">
-                Naam<span className="ml-0.5 text-primary">*</span>
+                Voornaam<span className="ml-0.5 text-primary">*</span>
+              </span>
+              <input
+                className={INVOER}
+                value={voornaam}
+                onChange={(e) => setVoornaam(e.target.value)}
+                autoComplete="given-name"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-slate-700">
+                Familienaam<span className="ml-0.5 text-primary">*</span>
               </span>
               <input
                 className={INVOER}
                 value={naam}
                 onChange={(e) => setNaam(e.target.value)}
-                autoComplete="name"
+                autoComplete="family-name"
               />
             </label>
             <label className="block">

@@ -19,6 +19,7 @@ import {
   gerechtenVan,
 } from "@/lib/mosselfeest/kaart";
 import type { Inschrijving, Totalen } from "@/lib/mosselfeest/opslag";
+import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { KaartToevoegen } from "./KaartToevoegen";
 
 /**
@@ -204,7 +205,7 @@ export default function OverzichtClient() {
       if (!zoek.trim()) return true;
       const naald = zoek.trim().toLowerCase();
       return (
-        i.naam.toLowerCase().includes(naald) ||
+        volledigeNaam(i).toLowerCase().includes(naald) ||
         (i.email ?? "").toLowerCase().includes(naald) ||
         String(i.kaartnummer ?? "").includes(naald) ||
         i.kenmerk.toLowerCase().includes(naald)
@@ -457,7 +458,7 @@ export default function OverzichtClient() {
                         </span>
                       </td>
                       <td className="py-3 pr-3">
-                        <p className="font-medium text-inkt-900">{i.naam}</p>
+                        <p className="font-medium text-inkt-900">{volledigeNaam(i)}</p>
                         <p className="text-xs text-slate-500">{i.email}</p>
                         {i.telefoon && <p className="text-xs text-slate-500">{i.telefoon}</p>}
                         {i.ingevoerdDoor && (
@@ -498,7 +499,7 @@ export default function OverzichtClient() {
                         <button
                           type="button"
                           onClick={() => doeActie(i.kenmerk, "schrappen")}
-                          aria-label={`Inschrijving van ${i.naam} schrappen`}
+                          aria-label={`Inschrijving van ${volledigeNaam(i)} schrappen`}
                           className="rounded-lg p-1.5 text-slate-400 transition hover:bg-primary-50 hover:text-primary"
                         >
                           <Trash2 className="h-4 w-4" />

@@ -56,8 +56,19 @@ export interface Inschrijving {
   kaartnummer?: number;
   /** Wanneer de inschrijving binnenkwam (ISO). */
   aangemeld: string;
-  /** Bij een verzamelpost is dit de toelichting, bv. "kaarten kantine week 1". */
+  /**
+   * De familienaam, zoals op de kaart ("naam en voornaam"). Bij een
+   * verzamelpost staat hier de toelichting, bv. "kaarten kantine week 1".
+   */
   naam: string;
+  /**
+   * De voornaam, apart gevraagd.
+   *
+   * Nodig om iemand in de bevestigingsmail met zijn voornaam aan te spreken.
+   * Uit één naamveld valt dat niet te halen: de een typt "Thoelen Jochen", de
+   * ander "Jochen Thoelen", en dan wordt het "Dag Thoelen".
+   */
+  voornaam?: string;
   /** Alleen bij een inschrijving via het formulier. */
   email?: string;
   telefoon?: string;
