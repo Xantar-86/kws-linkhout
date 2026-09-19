@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   Check,
@@ -18,7 +18,7 @@ import {
   euro,
   gerechtenVan,
 } from "@/lib/mosselfeest/kaart";
-import type { Inschrijving, Totalen } from "@/lib/mosselfeest/opslag";
+import { telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { KaartToevoegen } from "./KaartToevoegen";
 
@@ -36,9 +36,20 @@ import { KaartToevoegen } from "./KaartToevoegen";
 
 const BEWAARSLEUTEL = "kws-mosselfeest-wachtwoord";
 
-interface Gegevens {
-  totalen: Totalen;
-  inschrijvingen: Inschrijving[];
+/**
+ * Hoelang een wijziging van dit scherm voorrang krijgt op wat de server zegt.
+ *
+ * De opslag geeft na een schrijfactie soms nog even de oude toestand terug.
+ * Zonder deze voorrang sprong een pas afgevinkte inschrijving bij de eerste
+ * verversing weer op openstaand, en leek het alsof er niets gebeurde, of erger,
+ * alsof er willekeurige regels van status veranderden.
+ */
+const VOORRANG_MS = 90_000;
+
+interface Wijziging {
+  betaald?: boolean;
+  weg?: boolean;
+  tijd: number;
 }
 
 function Kaartje({
@@ -67,11 +78,35 @@ function Kaartje({
 export default function OverzichtClient() {
   const [wachtwoord, setWachtwoord] = useState("");
   const [ingevoerd, setIngevoerd] = useState<string | null>(null);
-  const [gegevens, setGegevens] = useState<Gegevens | null>(null);
+  const [inschrijvingen, setInschrijvingen] = useState<Inschrijving[] | null>(null);
+  // Wat dit scherm zelf net gewijzigd heeft, met het tijdstip erbij.
+  const wijzigingen = useRef<Map<string, Wijziging>>(new Map());
   const [bezig, setBezig] = useState(false);
   const [fout, setFout] = useState("");
   const [zoek, setZoek] = useState("");
   const [enkelOnbetaald, setEnkelOnbetaald] = useState(false);
+
+  /**
+   * De lijst van de server, met de eigen recente wijzigingen eroverheen.
+   * Wijzigingen ouder dan VOORRANG_MS laten we los; dan is de opslag bij.
+   */
+  const metEigenWijzigingen = useCallback((lijst: Inschrijving[]): Inschrijving[] => {
+    const nu = Date.now();
+    for (const [kenmerk, w] of wijzigingen.current) {
+      if (nu - w.tijd > VOORRANG_MS) wijzigingen.current.delete(kenmerk);
+    }
+    return lijst
+      .filter((i) => !wijzigingen.current.get(i.kenmerk)?.weg)
+      .map((i) => {
+        const w = wijzigingen.current.get(i.kenmerk);
+        if (!w || w.betaald === undefined) return i;
+        return {
+          ...i,
+          betaald: w.betaald,
+          betaaldOp: w.betaald ? (i.betaaldOp ?? new Date(w.tijd).toISOString()) : undefined,
+        };
+      });
+  }, []);
 
   const haal = useCallback(async (geheim: string) => {
     setBezig(true);
@@ -95,7 +130,8 @@ export default function OverzichtClient() {
         setFout("Het overzicht kon niet opgehaald worden.");
         return;
       }
-      setGegevens((await antwoord.json()) as Gegevens);
+      const gegevens = (await antwoord.json()) as { inschrijvingen: Inschrijving[] };
+      setInschrijvingen(metEigenWijzigingen(gegevens.inschrijvingen ?? []));
       setIngevoerd(geheim);
       try {
         sessionStorage.setItem(BEWAARSLEUTEL, geheim);
@@ -107,7 +143,7 @@ export default function OverzichtClient() {
     } finally {
       setBezig(false);
     }
-  }, []);
+  }, [metEigenWijzigingen]);
 
   // Eén keer bij het openen: stond het wachtwoord nog in dit tabblad?
   useEffect(() => {
@@ -119,6 +155,13 @@ export default function OverzichtClient() {
     }
     if (bewaard) haal(bewaard);
   }, [haal]);
+
+  // Zelf optellen uit de lijst die op het scherm staat, zodat de cijfers
+  // altijd overeenkomen met wat je ziet.
+  const totalen = useMemo(
+    () => (inschrijvingen ? telOp(inschrijvingen) : undefined),
+    [inschrijvingen],
+  );
 
   async function doeActie(kenmerk: string, actie: "betaald" | "schrappen", betaald?: boolean) {
     if (!ingevoerd) return;
@@ -135,33 +178,16 @@ export default function OverzichtClient() {
       return;
     }
 
-    // Meteen tonen wat er gewijzigd is, zonder te wachten op de opslag. Die
-    // heeft na een schrijfactie soms enkele seconden nodig voor ze het nieuwe
-    // blokje teruggeeft, en zolang zou de regel onveranderd lijken.
-    setGegevens((vorig) => {
-      if (!vorig) return vorig;
-      if (actie === "schrappen") {
-        return {
-          ...vorig,
-          inschrijvingen: vorig.inschrijvingen.filter((i) => i.kenmerk !== kenmerk),
-        };
-      }
-      return {
-        ...vorig,
-        inschrijvingen: vorig.inschrijvingen.map((i) =>
-          i.kenmerk === kenmerk
-            ? {
-                ...i,
-                betaald: betaald !== false,
-                betaaldOp: betaald !== false ? new Date().toISOString() : undefined,
-              }
-            : i,
-        ),
-      };
+    // De wijziging onthouden en meteen toepassen. We halen daarna niets
+    // opnieuw op: de opslag kan nog even de oude toestand teruggeven, en dan
+    // zou de regel voor je ogen terugspringen. De knop Verversen haalt de
+    // echte toestand op wanneer jij dat wil.
+    wijzigingen.current.set(kenmerk, {
+      betaald: actie === "betaald" ? betaald !== false : undefined,
+      weg: actie === "schrappen",
+      tijd: Date.now(),
     });
-
-    // En daarna de echte cijfers ophalen, zodat de totalen kloppen.
-    await haal(ingevoerd);
+    setInschrijvingen((vorig) => (vorig ? metEigenWijzigingen(vorig) : vorig));
   }
 
   if (!ingevoerd) {
@@ -198,8 +224,7 @@ export default function OverzichtClient() {
     );
   }
 
-  const totalen = gegevens?.totalen;
-  const lijst = (gegevens?.inschrijvingen ?? [])
+  const lijst = (inschrijvingen ?? [])
     .filter((i) => (enkelOnbetaald ? !i.betaald : true))
     .filter((i) => {
       if (!zoek.trim()) return true;
@@ -402,7 +427,15 @@ export default function OverzichtClient() {
           </>
         )}
 
-        <KaartToevoegen wachtwoord={ingevoerd} onToegevoegd={() => haal(ingevoerd)} />
+        <KaartToevoegen
+          wachtwoord={ingevoerd}
+          onToegevoegd={() => {
+            // Meteen en nog eens wat later: een net toegevoegde inschrijving
+            // duikt soms pas na enkele seconden op in de opslag.
+            haal(ingevoerd);
+            setTimeout(() => haal(ingevoerd), 4000);
+          }}
+        />
 
         <section className="rounded-2xl border border-zand-200/70 bg-white p-5 shadow-blad sm:p-7">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
