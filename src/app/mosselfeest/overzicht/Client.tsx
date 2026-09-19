@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
+  ArrowDown,
+  ArrowUp,
   Check,
   Download,
   Loader2,
@@ -46,6 +48,9 @@ const BEWAARSLEUTEL = "kws-mosselfeest-wachtwoord";
  */
 const VOORRANG_MS = 90_000;
 
+/** Waarop de lijst gesorteerd kan worden. */
+type SorteerSleutel = "nummer" | "naam" | "zitting" | "bedrag" | "betaald";
+
 interface Wijziging {
   betaald?: boolean;
   weg?: boolean;
@@ -85,6 +90,8 @@ export default function OverzichtClient() {
   const [fout, setFout] = useState("");
   const [zoek, setZoek] = useState("");
   const [enkelOnbetaald, setEnkelOnbetaald] = useState(false);
+  const [sorteerOp, setSorteerOp] = useState<SorteerSleutel>("nummer");
+  const [oplopend, setOplopend] = useState(true);
 
   /**
    * De lijst van de server, met de eigen recente wijzigingen eroverheen.
@@ -235,7 +242,71 @@ export default function OverzichtClient() {
         String(i.kaartnummer ?? "").includes(naald) ||
         i.kenmerk.toLowerCase().includes(naald)
       );
+    })
+    .sort((a, b) => {
+      const richting = oplopend ? 1 : -1;
+      switch (sorteerOp) {
+        case "naam":
+          return richting * volledigeNaam(a).localeCompare(volledigeNaam(b), "nl-BE");
+        case "zitting": {
+          // Op de volgorde van de kaart, niet alfabetisch: een zitting is een
+          // moment op de dag en geen woord.
+          const volgorde = (id: string) => {
+            const i = EVENEMENT.zittingen.findIndex((z) => z.id === id);
+            return i === -1 ? EVENEMENT.zittingen.length : i;
+          };
+          return richting * (volgorde(a.zitting) - volgorde(b.zitting));
+        }
+        case "bedrag":
+          return richting * (a.bedrag - b.bedrag);
+        case "betaald":
+          return richting * (Number(a.betaald) - Number(b.betaald));
+        case "nummer":
+        default: {
+          // Inschrijvingen zonder nummer, zoals een stapel kaarten, achteraan.
+          const n = (i: Inschrijving) => i.kaartnummer ?? Number.MAX_SAFE_INTEGER;
+          return richting * (n(a) - n(b));
+        }
+      }
     });
+
+  /**
+   * Een kolomkop waarop je kan klikken om te sorteren. Nog eens klikken keert
+   * de volgorde om; het pijltje toont wat er nu geldt.
+   */
+  function SorteerKop({
+    sleutel,
+    rechts,
+    children,
+  }: {
+    sleutel: SorteerSleutel;
+    rechts?: boolean;
+    children: React.ReactNode;
+  }) {
+    const actief = sorteerOp === sleutel;
+    return (
+      <th className={"py-2 pr-3 " + (rechts ? "text-right" : "")}>
+        <button
+          type="button"
+          onClick={() => {
+            if (actief) setOplopend((v) => !v);
+            else {
+              setSorteerOp(sleutel);
+              setOplopend(true);
+            }
+          }}
+          className={
+            "inline-flex items-center gap-1 uppercase tracking-wide transition hover:text-inkt-900 " +
+            (actief ? "font-semibold text-inkt-900" : "")
+          }
+        >
+          {children}
+          {actief &&
+            (oplopend ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />)}
+        </button>
+      </th>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-zand-50">
@@ -470,12 +541,14 @@ export default function OverzichtClient() {
               <table className="w-full min-w-[46rem] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-zand-200 text-left text-xs uppercase tracking-wide text-slate-500">
-                    <th className="py-2 pr-3">Nr.</th>
-                    <th className="py-2 pr-3">Naam</th>
-                    <th className="py-2 pr-3">Zitting</th>
+                    <SorteerKop sleutel="nummer">Nr.</SorteerKop>
+                    <SorteerKop sleutel="naam">Naam</SorteerKop>
+                    <SorteerKop sleutel="zitting">Zitting</SorteerKop>
                     <th className="py-2 pr-3">Bestelling</th>
-                    <th className="py-2 pr-3 text-right">Bedrag</th>
-                    <th className="py-2 pr-3">Betaald</th>
+                    <SorteerKop sleutel="bedrag" rechts>
+                      Bedrag
+                    </SorteerKop>
+                    <SorteerKop sleutel="betaald">Betaald</SorteerKop>
                     <th className="py-2" />
                   </tr>
                 </thead>
