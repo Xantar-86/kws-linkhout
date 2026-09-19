@@ -90,6 +90,10 @@ export async function POST(request: NextRequest) {
       betaald: body.betaald,
       opmerking: (body.opmerking ?? "").trim() || undefined,
       ingevoerdDoor: (body.ingevoerdDoor ?? "").trim() || undefined,
+      kaartnummer:
+        typeof body.kaartnummer === "number" && body.kaartnummer > 0
+          ? Math.floor(body.kaartnummer)
+          : undefined,
     };
 
     const klachten = controleerHandmatig(invoer);
@@ -101,6 +105,7 @@ export async function POST(request: NextRequest) {
       kenmerk: randomUUID().slice(0, 6).toUpperCase(),
       aangemeld: new Date().toISOString(),
       naam: invoer.naam!,
+      kaartnummer: invoer.kaartnummer,
       zitting: invoer.zitting ?? "",
       aantallen,
       bron: invoer.bron,

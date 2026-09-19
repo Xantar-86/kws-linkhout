@@ -206,6 +206,7 @@ export default function OverzichtClient() {
       return (
         i.naam.toLowerCase().includes(naald) ||
         (i.email ?? "").toLowerCase().includes(naald) ||
+        String(i.kaartnummer ?? "").includes(naald) ||
         i.kenmerk.toLowerCase().includes(naald)
       );
     });
@@ -411,7 +412,7 @@ export default function OverzichtClient() {
               <input
                 value={zoek}
                 onChange={(e) => setZoek(e.target.value)}
-                placeholder="Zoek op naam, mail of kenmerk"
+                placeholder="Zoek op nummer, naam of mail"
                 className="rounded-xl border border-zand-300 px-3 py-2 text-sm outline-none focus:border-primary"
               />
               <label className="flex items-center gap-2 text-sm text-slate-600">
@@ -435,7 +436,7 @@ export default function OverzichtClient() {
               <table className="w-full min-w-[46rem] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-zand-200 text-left text-xs uppercase tracking-wide text-slate-500">
-                    <th className="py-2 pr-3">Kenmerk</th>
+                    <th className="py-2 pr-3">Nr.</th>
                     <th className="py-2 pr-3">Naam</th>
                     <th className="py-2 pr-3">Zitting</th>
                     <th className="py-2 pr-3">Bestelling</th>
@@ -447,13 +448,13 @@ export default function OverzichtClient() {
                 <tbody>
                   {lijst.map((i) => (
                     <tr key={i.kenmerk} className="border-b border-zand-100 align-top">
-                      <td className="py-3 pr-3 font-mono text-xs text-slate-500">
-                        {i.kenmerk}
-                        {i.bron && i.bron !== "online" && (
-                          <span className="mt-1 block font-sans text-[11px] font-medium text-slate-400">
-                            {i.bron === "kaart" ? "kaart" : "stapel"}
-                          </span>
-                        )}
+                      <td className="py-3 pr-3">
+                        <span className="font-display text-base font-bold text-inkt-900">
+                          {i.kaartnummer ?? "-"}
+                        </span>
+                        <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
+                          {i.bron === "kaart" ? "kaart" : i.bron === "verzamelpost" ? "stapel" : "online"}
+                        </span>
                       </td>
                       <td className="py-3 pr-3">
                         <p className="font-medium text-inkt-900">{i.naam}</p>

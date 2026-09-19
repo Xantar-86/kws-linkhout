@@ -145,7 +145,7 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     views: [{ state: "frozen", xSplit: 4, ySplit: 2 }],
   });
 
-  const vasteKoppen = ["Kenmerk", "Datum", "Bron", "Naam", "E-mail", "Telefoon", "Zitting"];
+  const vasteKoppen = ["Nr.", "Datum", "Bron", "Naam", "E-mail", "Telefoon", "Zitting"];
   const staartKoppen = [
     "Porties",
     "Bedrag",
@@ -197,7 +197,7 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
           ? "stapel"
           : "online";
     const waarden = [
-      inschrijving.kenmerk,
+      inschrijving.kaartnummer ?? "",
       new Date(inschrijving.aangemeld),
       bronLabel,
       inschrijving.naam,

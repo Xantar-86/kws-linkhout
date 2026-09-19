@@ -100,6 +100,11 @@ export interface HandmatigeInvoer {
   opmerking?: string;
   /** Wie het heeft ingetypt. */
   ingevoerdDoor?: string;
+  /**
+   * Het nummer dat op de afgegeven kaart staat. De gedrukte kaarten beginnen
+   * bij 001, dus onder de 1001; die reeks is voor de online inschrijvingen.
+   */
+  kaartnummer?: number;
 }
 
 /**
@@ -145,6 +150,16 @@ export function controleerHandmatig(invoer: Partial<HandmatigeInvoer>): string[]
   if (aantalPorties(aantallen) === 0) klachten.push("Vul minstens één aantal in.");
 
   if (invoer.opmerking && invoer.opmerking.length > 500) klachten.push("De opmerking is te lang.");
+
+  if (invoer.kaartnummer !== undefined) {
+    if (!Number.isInteger(invoer.kaartnummer) || invoer.kaartnummer < 1) {
+      klachten.push("Het kaartnummer moet een heel getal zijn.");
+    } else if (invoer.kaartnummer >= 1001) {
+      klachten.push(
+        "Nummers vanaf 1001 zijn voor de online inschrijvingen. Neem het nummer over dat op de papieren kaart staat.",
+      );
+    }
+  }
 
   return klachten;
 }

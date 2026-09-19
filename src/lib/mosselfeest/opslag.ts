@@ -1,6 +1,13 @@
 import { del, list, put } from "@vercel/blob";
 import { ontsleutelJson, sleutelUit, versleutelJson } from "@/lib/kluis";
-import { EVENEMENT, GERECHTEN, aantalPlaatsen, aantalPorties, bedragVan } from "./kaart";
+import {
+  EVENEMENT,
+  GERECHTEN,
+  ONLINE_EERSTE_KAARTNUMMER,
+  aantalPlaatsen,
+  aantalPorties,
+  bedragVan,
+} from "./kaart";
 
 /**
  * De inschrijvingen van het mosselfeest.
@@ -37,7 +44,16 @@ export function opslagBeschikbaar(): boolean {
 export type Bron = "online" | "kaart" | "verzamelpost";
 
 export interface Inschrijving {
+  /** Interne sleutel, tevens de bestandsnaam in de opslag. */
   kenmerk: string;
+  /**
+   * Het nummer van de kaart, zoals mensen het gebruiken.
+   *
+   * Online inschrijvingen krijgen er een vanaf 1001; bij een afgegeven kaart
+   * typt de organisator het nummer over dat op het blad staat. Ontbreekt het,
+   * dan gaat het om een inschrijving van voor deze nummering.
+   */
+  kaartnummer?: number;
   /** Wanneer de inschrijving binnenkwam (ISO). */
   aangemeld: string;
   /** Bij een verzamelpost is dit de toelichting, bv. "kaarten kantine week 1". */
@@ -59,6 +75,21 @@ export interface Inschrijving {
   betaald: boolean;
   /** Wanneer er afgevinkt is dat het geld binnen is (ISO). */
   betaaldOp?: string;
+}
+
+/**
+ * Het volgende vrije nummer in de online reeks.
+ *
+ * We tellen niet het aantal inschrijvingen, maar nemen het hoogste nummer plus
+ * een: zo krijgt niemand het nummer van een geschrapte inschrijving opnieuw,
+ * en blijft een nummer dus voor altijd van één kaart.
+ */
+export function volgendKaartnummer(inschrijvingen: Inschrijving[]): number {
+  const hoogste = inschrijvingen.reduce((max, i) => {
+    const n = i.kaartnummer ?? 0;
+    return n >= ONLINE_EERSTE_KAARTNUMMER && n > max ? n : max;
+  }, ONLINE_EERSTE_KAARTNUMMER - 1);
+  return hoogste + 1;
 }
 
 export interface BewaarResultaat {

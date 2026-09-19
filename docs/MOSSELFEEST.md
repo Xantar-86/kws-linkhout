@@ -72,10 +72,29 @@ onthouden, want het staat nergens anders voor open.
 
 `BLOB_READ_WRITE_TOKEN` en `RESEND_API_KEY` zijn er al.
 
+## Kaartnummers
+
+De gedrukte kaarten die rondgaan beginnen bij 001. Online inschrijvingen
+krijgen een nummer vanaf **1001**, zodat de twee reeksen niet overlappen en je
+aan het nummer meteen ziet dat het een online reservatie is.
+
+Het nummer wordt toegekend als het hoogste bestaande plus een, niet als een
+telling. Schrap je een inschrijving, dan komt haar nummer dus niet opnieuw vrij
+voor iemand anders: een nummer hoort voor altijd bij één kaart.
+
+Bij een afgegeven papieren kaart typt de organisator het nummer van het blad
+over. Nummers vanaf 1001 worden daar geweigerd, die zijn voor online.
+
+De mededeling bij een overschrijving is `Mossel2026 <nummer>`, bijvoorbeeld
+`Mossel2026 1001`. Kort en zonder naam, zodat ze op een rekeninguittreksel
+volledig leesbaar blijft.
+
 ## Welke mails er vertrekken
 
-- **Per inschrijving**: enkel een bevestiging naar wie ingeschreven heeft, met
-  de bestelling, het bedrag en de mededeling voor de overschrijving.
+- **Per inschrijving**: één verzending met de bevestiging naar de inschrijver
+  en de club in blinde kopie. Dat scheelt de helft van het mailtegoed
+  tegenover twee aparte mails, en de club heeft toch dezelfde bevestiging in
+  de mailbox.
 - **Eén keer per dag**: een samenvatting naar de club met wat er die dag bijkwam
   en hoeveel van wat er besteld moet worden.
 

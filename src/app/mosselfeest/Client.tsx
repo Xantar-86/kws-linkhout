@@ -126,9 +126,11 @@ export default function MosselfeestClient() {
   >({});
   const [bezig, setBezig] = useState(false);
   const [fouten, setFouten] = useState<string[]>([]);
-  const [klaar, setKlaar] = useState<{ kenmerk: string; bedrag: number; bevestiging: boolean } | null>(
-    null,
-  );
+  const [klaar, setKlaar] = useState<{
+    kaartnummer?: number;
+    bedrag: number;
+    bevestiging: boolean;
+  } | null>(null);
 
   const bedrag = useMemo(() => bedragVan(aantallen), [aantallen]);
   const porties = useMemo(() => aantalPorties(aantallen), [aantallen]);
@@ -198,7 +200,7 @@ export default function MosselfeestClient() {
       const gegevens = (await antwoord.json()) as {
         ok: boolean;
         klachten?: string[];
-        kenmerk?: string;
+        kaartnummer?: number;
         bedrag?: number;
         bevestigingVerstuurd?: boolean;
       };
@@ -207,7 +209,7 @@ export default function MosselfeestClient() {
         return;
       }
       setKlaar({
-        kenmerk: gegevens.kenmerk ?? "",
+        kaartnummer: gegevens.kaartnummer,
         bedrag: gegevens.bedrag ?? bedrag,
         bevestiging: Boolean(gegevens.bevestigingVerstuurd),
       });
@@ -229,11 +231,16 @@ export default function MosselfeestClient() {
             <h1 className="mt-4 text-center font-display text-2xl font-bold text-inkt-900">
               Je bent ingeschreven
             </h1>
+            {klaar.kaartnummer && (
+              <div className="mx-auto mt-5 w-full max-w-xs rounded-xl bg-zand-50 py-4">
+                <p className="text-xs uppercase tracking-wide text-slate-500">Jouw kaartnummer</p>
+                <p className="font-display text-4xl font-bold text-inkt-900">{klaar.kaartnummer}</p>
+              </div>
+            )}
             <p className="mt-3 text-center text-sm text-slate-600">
-              Kenmerk <strong>{klaar.kenmerk}</strong>
               {klaar.bevestiging
-                ? `. Er is een bevestiging naar ${email} gestuurd.`
-                : ". Hou dit kenmerk bij; het staat ook in de mededeling van je betaling."}
+                ? `Er is een bevestiging naar ${email} gestuurd.`
+                : "Hou je kaartnummer bij; dat hebben we nodig aan de kassa."}
             </p>
 
             <div className="mt-6 rounded-xl border border-zand-200 bg-zand-50 p-5">
@@ -245,7 +252,7 @@ export default function MosselfeestClient() {
                   op naam van {EVENEMENT.rekeningNaam}
                   <br />
                   mededeling{" "}
-                  <strong className="whitespace-nowrap">{mededeling(klaar.kenmerk, naam)}</strong>
+                  <strong className="whitespace-nowrap">{mededeling(klaar.kaartnummer)}</strong>
                 </p>
               ) : (
                 <p className="mt-2 text-sm leading-7 text-slate-700">

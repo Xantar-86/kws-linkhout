@@ -124,14 +124,26 @@ export const EVENEMENT = {
   /**
    * Rekeningnummer voor een overschrijving.
    *
-   * Op de kaart staat er geen: wie een kaart afgeeft, betaalt ter plaatse.
    * Blijft dit leeg, dan vraagt het formulier geen overschrijving en zegt het
    * dat er bij aankomst of bij het afhalen betaald wordt.
    */
-  rekening: "",
+  rekening: "BE43 8285 7850 0901",
   rekeningNaam: "KWS vzw",
   contact: "info@kwslinkhout.be",
 } as const;
+
+/**
+ * De nummering van de kaarten.
+ *
+ * De gedrukte kaarten die aan de deur rondgaan, beginnen bij 001. De online
+ * inschrijvingen krijgen daarom een nummer vanaf 1001: zo overlappen de twee
+ * reeksen niet en zie je aan het nummer meteen dat het een online reservatie
+ * is.
+ */
+export const ONLINE_EERSTE_KAARTNUMMER = 1001;
+
+/** Het begin van de mededeling bij een overschrijving. */
+export const MEDEDELING_PREFIX = "Mossel2026";
 
 export function gerecht(id: string): Gerecht | undefined {
   return GERECHTEN.find((g) => g.id === id);
@@ -196,10 +208,11 @@ export function euro(bedrag: number): string {
 }
 
 /**
- * De mededeling voor de overschrijving. Kort en herkenbaar, zodat een
- * rekeninguittreksel te koppelen is aan een inschrijving.
+ * De mededeling voor de overschrijving: "Mossel2026 1001".
+ *
+ * Kort en zonder naam, zodat ze op een rekeninguittreksel volledig leesbaar
+ * blijft en meteen aan één kaart te koppelen is.
  */
-export function mededeling(kenmerk: string, naam: string): string {
-  const net = naam.replace(/\s+/g, " ").trim().slice(0, 30);
-  return `Mosselfeest ${EVENEMENT.jaar} ${kenmerk} ${net}`.trim();
+export function mededeling(kaartnummer: number | undefined): string {
+  return kaartnummer ? `${MEDEDELING_PREFIX} ${kaartnummer}` : MEDEDELING_PREFIX;
 }

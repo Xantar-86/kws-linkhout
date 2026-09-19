@@ -6,6 +6,7 @@ import {
   alleInschrijvingen,
   bewaarInschrijving,
   telOp,
+  volgendKaartnummer,
   type Inschrijving,
 } from "@/lib/mosselfeest/opslag";
 import { controleer, schoonAantallen, type InschrijvingInvoer } from "@/lib/mosselfeest/nakijken";
@@ -80,11 +81,18 @@ export async function POST(request: NextRequest) {
   // Past dit nog in de gekozen zitting? De kaart zet er een maximum op, dus
   // kijken we hier nog eens na. Het formulier toont de vrije plaatsen al, maar
   // tussen het openen en het versturen kan er iemand anders geweest zijn.
+  let bestaande: Inschrijving[] | null = null;
+  try {
+    bestaande = await alleInschrijvingen();
+  } catch (fout) {
+    console.error("[mosselfeest] inschrijvingen ophalen mislukt:", fout);
+  }
+
   const gekozen = zittingVan(invoer.zitting);
-  if (gekozen?.max) {
+  if (gekozen?.max && bestaande) {
     const nodig = aantalPlaatsen(aantallen);
-    try {
-      const totalen = telOp(await alleInschrijvingen());
+    {
+      const totalen = telOp(bestaande);
       const vrij = totalen.perZitting[gekozen.id]?.vrij ?? gekozen.max;
       if (vrij <= 0) {
         return NextResponse.json(
@@ -106,16 +114,14 @@ export async function POST(request: NextRequest) {
           { status: 409 },
         );
       }
-    } catch (fout) {
-      // Kunnen we het niet nakijken, dan laten we de inschrijving door: een
-      // zitting die misschien vol is weegt niet op tegen iemand die niet kan
-      // inschrijven. De overzichtspagina toont de overschrijding dan.
-      console.error("[mosselfeest] plaatsen nakijken mislukt:", fout);
     }
   }
 
   const inschrijving: Inschrijving = {
     kenmerk: randomUUID().slice(0, 6).toUpperCase(),
+    // Konden we de lijst niet ophalen, dan geven we liever geen nummer dan een
+    // nummer dat al bestaat; het overzicht toont dat dan als ontbrekend.
+    kaartnummer: bestaande ? volgendKaartnummer(bestaande) : undefined,
     aangemeld: new Date().toISOString(),
     ...invoer,
     bedrag: bedragVan(aantallen),
@@ -142,6 +148,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     ok: true,
     kenmerk: inschrijving.kenmerk,
+    kaartnummer: inschrijving.kaartnummer,
     bedrag: inschrijving.bedrag,
     bevestigingVerstuurd: mail.verstuurd,
   });

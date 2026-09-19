@@ -33,6 +33,7 @@ export function KaartToevoegen({
   const [open, setOpen] = useState(false);
   const [bron, setBron] = useState<"kaart" | "verzamelpost">("kaart");
   const [naam, setNaam] = useState("");
+  const [kaartnummer, setKaartnummer] = useState("");
   const [zitting, setZitting] = useState("");
   const [aantallen, setAantallen] = useState<Record<string, number>>({});
   const [betaald, setBetaald] = useState(true);
@@ -46,6 +47,7 @@ export function KaartToevoegen({
 
   function leegmaken() {
     setNaam("");
+    setKaartnummer("");
     setZitting("");
     setAantallen({});
     setOpmerking("");
@@ -65,6 +67,7 @@ export function KaartToevoegen({
           actie: "toevoegen",
           bron,
           naam,
+          kaartnummer: kaartnummer.trim() ? Number.parseInt(kaartnummer, 10) : undefined,
           zitting: zitting || undefined,
           aantallen,
           betaald,
@@ -159,7 +162,24 @@ export function KaartToevoegen({
         })}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
+        {bron === "kaart" && (
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-medium text-slate-700">
+              Nummer op de kaart
+            </span>
+            <input
+              className={INVOER}
+              value={kaartnummer}
+              onChange={(e) => setKaartnummer(e.target.value.replace(/[^0-9]/g, ""))}
+              inputMode="numeric"
+              placeholder="bijvoorbeeld 037"
+            />
+            <span className="mt-1 block text-xs text-slate-500">
+              De gedrukte kaarten; 1001 en hoger is voor online.
+            </span>
+          </label>
+        )}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-slate-700">
             {bron === "kaart" ? "Naam op de kaart" : "Toelichting bij de stapel"}
