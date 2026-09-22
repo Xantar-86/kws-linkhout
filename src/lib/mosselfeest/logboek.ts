@@ -1,6 +1,6 @@
 import ExcelJS from "exceljs";
 import { EVENEMENT, GERECHTEN, GROEPEN, aantalPorties, gerechtenVan } from "./kaart";
-import { telOp, type Inschrijving } from "./opslag";
+import { openstaand, reedsBetaald, telOp, type Inschrijving } from "./opslag";
 
 /**
  * Het Excel-logboek van het mosselfeest.
@@ -151,6 +151,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   const staartKoppen = [
     "Porties",
     "Bedrag",
+    "Reeds betaald",
+    "Nog te betalen",
     "Betaald",
     "Betaald op",
     "Ingevoerd door",
@@ -175,8 +177,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   totaalRij.getCell(1).value = "Totaal";
   totaalRij.getCell(1).font = { bold: true };
   const eersteGerechtKolom = vasteKoppen.length + 1;
-  for (let k = 0; k < GERECHTEN.length + 2; k++) {
-    // De gerechten, plus de kolommen Porties en Bedrag erachter.
+  for (let k = 0; k < GERECHTEN.length + 4; k++) {
+    // De gerechten, plus Porties, Bedrag, Reeds betaald en Nog te betalen.
     const kolom = eersteGerechtKolom + k;
     const letter = i.getColumn(kolom).letter;
     const cel = totaalRij.getCell(kolom);
@@ -184,7 +186,9 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
       formula: `SUBTOTAL(109,${letter}${eersteGegevensRij}:${letter}${laatsteGegevensRij})`,
     };
     cel.font = { bold: true };
-    if (koppen[kolom - 1] === "Bedrag") cel.numFmt = '#,##0.00';
+    if (["Bedrag", "Reeds betaald", "Nog te betalen"].includes(koppen[kolom - 1])) {
+      cel.numFmt = '#,##0.00';
+    }
   }
   totaalRij.fill = { type: "pattern", pattern: "solid", fgColor: { argb: ZAND } };
 
@@ -210,6 +214,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
       ...GERECHTEN.map((g) => inschrijving.aantallen[g.id] || 0),
       aantalPorties(inschrijving.aantallen),
       inschrijving.bedrag,
+      reedsBetaald(inschrijving),
+      Math.max(0, openstaand(inschrijving)),
       inschrijving.betaald ? "ja" : "nee",
       inschrijving.betaaldOp ? new Date(inschrijving.betaaldOp) : "",
       inschrijving.ingevoerdDoor ?? "",
@@ -220,7 +226,9 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     });
     rij.getCell(2).numFmt = "dd/mm/yyyy hh:mm";
     rij.getCell(koppen.indexOf("Betaald op") + 1).numFmt = "dd/mm/yyyy hh:mm";
-    rij.getCell(koppen.indexOf("Bedrag") + 1).numFmt = '#,##0.00';
+    for (const kop of ["Bedrag", "Reeds betaald", "Nog te betalen"]) {
+      rij.getCell(koppen.indexOf(kop) + 1).numFmt = '#,##0.00';
+    }
 
     // Een niet-betaalde inschrijving valt op, zodat opvolgen simpel blijft.
     const betaaldCel = rij.getCell(koppen.indexOf("Betaald") + 1);

@@ -127,6 +127,7 @@ export async function POST(request: NextRequest) {
     ...invoer,
     bedrag: bedragVan(aantallen),
     betaald: false,
+    betaaldBedrag: 0,
   };
 
   const bewaard = await bewaarInschrijving(inschrijving);

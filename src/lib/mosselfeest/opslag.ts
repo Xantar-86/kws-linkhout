@@ -2,6 +2,8 @@ import { del, list, put } from "@vercel/blob";
 import { ontsleutelJson, sleutelUit, versleutelJson } from "@/lib/kluis";
 import { EVENEMENT } from "./kaart";
 import {
+  openstaand,
+  reedsBetaald,
   telOp,
   volgendKaartnummer,
   type Bron,
@@ -9,7 +11,7 @@ import {
   type Totalen,
 } from "./totalen";
 
-export { telOp, volgendKaartnummer };
+export { openstaand, reedsBetaald, telOp, volgendKaartnummer };
 export type { Bron, Inschrijving, Totalen };
 
 /**
@@ -152,9 +154,12 @@ export async function zetBetaald(
   const bestaande = await haalInschrijving(kenmerk);
   if (!bestaande) return { ok: false, fout: "Inschrijving niet gevonden." };
 
+  // Betaald zetten betekent: het volledige openstaande bedrag is ontvangen.
+  // Terugzetten betekent: er is niets ontvangen.
   const bijgewerkt: Inschrijving = {
     ...bestaande,
     betaald,
+    betaaldBedrag: betaald ? bestaande.bedrag : 0,
     betaaldOp: betaald ? new Date().toISOString() : undefined,
   };
   const resultaat = await zetWeg(bijgewerkt);

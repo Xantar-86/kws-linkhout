@@ -22,7 +22,7 @@ import {
   euro,
   gerechtenVan,
 } from "@/lib/mosselfeest/kaart";
-import { telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
+import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { KaartToevoegen } from "./KaartToevoegen";
 import { Bewerken } from "./Bewerken";
@@ -435,6 +435,11 @@ export default function OverzichtClient() {
                 label="Nog te ontvangen"
                 waarde={`${euro(totalen.bedragOpen)} euro`}
                 toon="open"
+                onder={
+                  totalen.deelsBetaald > 0
+                    ? `${totalen.deelsBetaald} deels betaald, na een bijbestelling`
+                    : undefined
+                }
               />
             </div>
 
@@ -637,10 +642,30 @@ export default function OverzichtClient() {
                           }
                         >
                           {i.betaald ? <Check className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
-                          {i.betaald ? "Betaald" : "Openstaand"}
+                          {i.betaald
+                            ? "Betaald"
+                            : reedsBetaald(i) > 0
+                              ? `Nog ${euro(openstaand(i))}`
+                              : "Openstaand"}
                         </button>
                       </td>
                       <td className="py-3">
+                        {i.kaartnummer && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              window.open(
+                                `/mosselfeest/afdruk?nr=${i.kaartnummer}&print=1`,
+                                "_blank",
+                                "noopener",
+                              )
+                            }
+                            aria-label={`Bonnetje van ${volledigeNaam(i)} afdrukken`}
+                            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-zand-100 hover:text-inkt-900"
+                          >
+                            <Printer className="h-4 w-4" />
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() => setBewerkt(i)}

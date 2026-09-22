@@ -6,12 +6,13 @@ import {
   Loader2,
   LockKeyhole,
   Pencil,
+  Printer,
   RefreshCw,
   Search,
   X,
 } from "lucide-react";
 import { EVENEMENT, GERECHTEN, euro, isAfhalen } from "@/lib/mosselfeest/kaart";
-import { telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
+import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { Bewerken } from "../overzicht/Bewerken";
 
@@ -323,7 +324,7 @@ export default function KassaClient() {
                       (i.betaald ? "bg-green-100 text-green-800" : "bg-primary-100 text-primary-800")
                     }
                   >
-                    {i.betaald ? "betaald" : "open"}
+                    {i.betaald ? "betaald" : `${euro(Math.max(0, openstaand(i)))} open`}
                   </span>
                 </button>
               );
@@ -358,10 +359,27 @@ export default function KassaClient() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs uppercase tracking-wide text-slate-500">Te betalen</p>
-                  <p className="font-display text-4xl font-bold text-inkt-900">
-                    {euro(gekozen.bedrag)}
+                  <p className="text-xs uppercase tracking-wide text-slate-500">
+                    {openstaand(gekozen) > 0 ? "Nog te betalen" : "Te betalen"}
                   </p>
+                  <p
+                    className={
+                      "font-display text-4xl font-bold " +
+                      (openstaand(gekozen) > 0 ? "text-primary" : "text-inkt-900")
+                    }
+                  >
+                    {euro(Math.max(0, openstaand(gekozen)))}
+                  </p>
+                  {reedsBetaald(gekozen) > 0 && openstaand(gekozen) > 0 && (
+                    <p className="mt-1 text-sm text-slate-500">
+                      {euro(reedsBetaald(gekozen))} van {euro(gekozen.bedrag)} al betaald
+                    </p>
+                  )}
+                  {openstaand(gekozen) < 0 && (
+                    <p className="mt-1 text-sm text-green-700">
+                      {euro(-openstaand(gekozen))} te veel ontvangen
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -406,7 +424,9 @@ export default function KassaClient() {
                   ) : (
                     <>
                       <Check className="h-6 w-6" />
-                      Zet op betaald
+                      {reedsBetaald(gekozen) > 0
+                        ? `Ontvang de resterende ${euro(openstaand(gekozen))} euro`
+                        : "Zet op betaald"}
                     </>
                   )}
                 </button>
@@ -418,6 +438,22 @@ export default function KassaClient() {
                   <Pencil className="h-5 w-5" />
                   Iets bijzetten of wijzigen
                 </button>
+                {gekozen.kaartnummer && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.open(
+                        `/mosselfeest/afdruk?nr=${gekozen.kaartnummer}&print=1`,
+                        "_blank",
+                        "noopener",
+                      )
+                    }
+                    className="flex items-center justify-center gap-2 rounded-2xl border-2 border-zand-300 px-6 py-5 text-base font-semibold text-slate-700 transition hover:border-slate-400"
+                  >
+                    <Printer className="h-5 w-5" />
+                    Bonnetje
+                  </button>
+                )}
               </div>
 
               {gekozen.gewijzigdOp && (

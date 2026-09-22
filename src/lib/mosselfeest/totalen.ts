@@ -67,7 +67,23 @@ export interface Inschrijving {
   opmerking?: string;
   /** Het bedrag op het moment van inschrijven, in euro. */
   bedrag: number;
+  /**
+   * Of het volledige bedrag betaald is. Blijft bestaan naast betaaldBedrag,
+   * want mails, Excel en oudere inschrijvingen gebruiken dit vinkje.
+   */
   betaald: boolean;
+  /**
+   * Hoeveel er al betaald is, in euro.
+   *
+   * Nodig omdat een inschrijving na de betaling nog kan wijzigen: iemand die
+   * al afgerekend heeft en er aan de kassa nog een portie bij neemt, heeft dat
+   * verschil nog niet betaald. Met enkel een vinkje zou die bijbestelling er
+   * als betaald uitzien.
+   *
+   * Ontbreekt het, dan leiden we het af uit het vinkje: bij een betaalde
+   * inschrijving is dat het volledige bedrag.
+   */
+  betaaldBedrag?: number;
   /** Wanneer er afgevinkt is dat het geld binnen is (ISO). */
   betaaldOp?: string;
 }
@@ -110,6 +126,10 @@ export interface Totalen {
   bedrag: number;
   bedragBetaald: number;
   bedragOpen: number;
+  /** Te veel ontvangen, als een bestelling na de betaling kleiner werd. */
+  bedragTeveel: number;
+  /** Inschrijvingen waarvan een deel betaald is, maar niet alles. */
+  deelsBetaald: number;
   /** Per gerecht-id het totale aantal porties. */
   perGerecht: Record<string, number>;
   /**
@@ -120,6 +140,20 @@ export interface Totalen {
     string,
     { inschrijvingen: number; porties: number; plaatsen: number; max: number | null; vrij: number | null }
   >;
+}
+
+/** Hoeveel er van deze inschrijving al betaald is. */
+export function reedsBetaald(inschrijving: Inschrijving): number {
+  if (typeof inschrijving.betaaldBedrag === "number") return inschrijving.betaaldBedrag;
+  return inschrijving.betaald ? inschrijving.bedrag : 0;
+}
+
+/**
+ * Wat er nog te betalen is. Negatief betekent dat er te veel betaald is, wat
+ * kan gebeuren als er na de betaling iets van de bestelling af gaat.
+ */
+export function openstaand(inschrijving: Inschrijving): number {
+  return Math.round((inschrijving.bedrag - reedsBetaald(inschrijving)) * 100) / 100;
 }
 
 /** De optelsom waar het hele logboek om draait. */
@@ -138,6 +172,8 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     bedrag: 0,
     bedragBetaald: 0,
     bedragOpen: 0,
+    bedragTeveel: 0,
+    deelsBetaald: 0,
     perGerecht: Object.fromEntries(GERECHTEN.map((g) => [g.id, 0])),
     perZitting: Object.fromEntries(
       EVENEMENT.zittingen.map((z) => [
@@ -165,8 +201,15 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     totalen.porties += porties;
     totalen.plaatsen += plaatsen;
     totalen.bedrag += bedrag;
-    if (inschrijving.betaald) totalen.bedragBetaald += bedrag;
-    else totalen.bedragOpen += bedrag;
+    const betaald = reedsBetaald(inschrijving);
+    const open = bedrag - betaald;
+    totalen.bedragBetaald += Math.min(betaald, bedrag);
+    if (open > 0) {
+      totalen.bedragOpen += open;
+      if (betaald > 0) totalen.deelsBetaald += 1;
+    } else if (open < 0) {
+      totalen.bedragTeveel += -open;
+    }
 
     const dag = dagVan(inschrijving.zitting);
     for (const [id, aantal] of Object.entries(inschrijving.aantallen)) {
@@ -192,5 +235,6 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
   totalen.bedrag = Math.round(totalen.bedrag * 100) / 100;
   totalen.bedragBetaald = Math.round(totalen.bedragBetaald * 100) / 100;
   totalen.bedragOpen = Math.round(totalen.bedragOpen * 100) / 100;
+  totalen.bedragTeveel = Math.round(totalen.bedragTeveel * 100) / 100;
   return totalen;
 }

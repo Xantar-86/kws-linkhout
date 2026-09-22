@@ -5,6 +5,7 @@ import {
   alleInschrijvingen,
   bewaarInschrijving,
   haalInschrijving,
+  reedsBetaald,
   schrapInschrijving,
   telOp,
   volgendKaartnummer,
@@ -135,6 +136,7 @@ export async function POST(request: NextRequest) {
       bedrag: bedragVan(aantallen),
       // Een kaart wordt meestal contant afgerekend, dus standaard betaald.
       betaald: invoer.betaald !== false,
+      betaaldBedrag: invoer.betaald !== false ? bedragVan(aantallen) : 0,
       betaaldOp: invoer.betaald !== false ? new Date().toISOString() : undefined,
     };
 
@@ -183,6 +185,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: klachten.join(" "), klachten }, { status: 400 });
     }
 
+    // Wat er al betaald is, blijft staan. Wordt de bestelling groter, dan
+    // verschijnt het verschil vanzelf als openstaand; dat is precies wat er aan
+    // de kassa nog geïnd moet worden.
+    const alBetaald = reedsBetaald(bestaande);
+    const nieuwBedrag = bedragVan(aantallen);
+
     const bijgewerkt: Inschrijving = {
       ...bestaande,
       naam: invoer.naam!,
@@ -191,7 +199,9 @@ export async function POST(request: NextRequest) {
       aantallen,
       opmerking: invoer.opmerking,
       telefoon: (body.telefoon ?? bestaande.telefoon ?? "").trim() || undefined,
-      bedrag: bedragVan(aantallen),
+      bedrag: nieuwBedrag,
+      betaaldBedrag: alBetaald,
+      betaald: alBetaald >= nieuwBedrag,
       gewijzigdOp: new Date().toISOString(),
       gewijzigdDoor: (body.ingevoerdDoor ?? "").trim() || undefined,
     };

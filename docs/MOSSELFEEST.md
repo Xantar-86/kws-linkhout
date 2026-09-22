@@ -129,6 +129,26 @@ een tablet, waar de twee kolommen onder elkaar schuiven.
 Beide kan je beperken tot één zitting of tot de onbetaalde. De keuzebalk
 verdwijnt bij het afdrukken.
 
+Eén bonnetje apart kan ook: op het overzicht en op het avondscherm staat per
+inschrijving een printerknopje. Dat opent `/mosselfeest/afdruk?nr=1017&print=1`,
+en die pagina drukt zichzelf af. Zo is het aan de kassa één klik.
+
+## Betalen in delen
+
+Een inschrijving houdt bij **hoeveel** er betaald is, niet enkel of ze betaald
+is. Dat is nodig omdat een bestelling na de betaling nog kan wijzigen: wie al
+afgerekend heeft en er aan de kassa nog een dessert bij neemt, heeft dat
+verschil nog niet betaald. Met enkel een vinkje zou die bijbestelling er als
+betaald uitzien.
+
+Bij een wijziging blijft het betaalde bedrag staan en verschijnt het verschil
+als openstaand, op het overzicht, op het avondscherm, op het bonnetje en in het
+logboek. Wordt de bestelling kleiner dan wat er al betaald is, dan staat er hoe
+veel er te veel ontvangen is.
+
+Afvinken betekent: het volledige openstaande bedrag is ontvangen. Terugzetten
+betekent: er is niets ontvangen.
+
 ## Voorraad per dag
 
 `/mosselfeest/voorraad` is het vroegere blad "LeftOvers": per dag en per gerecht

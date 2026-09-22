@@ -10,7 +10,7 @@ import {
   gerechtenVan,
   isAfhalen,
 } from "@/lib/mosselfeest/kaart";
-import { telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
+import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 
 /**
@@ -42,6 +42,18 @@ export default function AfdrukClient() {
   const [soort, setSoort] = useState<Soort>("bonnen");
   const [welkeZitting, setWelkeZitting] = useState("alle");
   const [enkelOnbetaald, setEnkelOnbetaald] = useState(false);
+  /** Eén bepaalde inschrijving, via ?nr= in het adres. */
+  const [enkelNummer, setEnkelNummer] = useState<number | null>(null);
+  const [autoAfdrukken, setAutoAfdrukken] = useState(false);
+
+  // Het adres uitlezen doen we hier en niet met useSearchParams: dan blijft
+  // deze pagina een gewone statische pagina zonder Suspense eromheen.
+  useEffect(() => {
+    const vraag = new URLSearchParams(window.location.search);
+    const nr = Number.parseInt(vraag.get("nr") ?? "", 10);
+    if (Number.isFinite(nr) && nr > 0) setEnkelNummer(nr);
+    if (vraag.get("print") === "1") setAutoAfdrukken(true);
+  }, []);
 
   const haal = useCallback(async (geheim: string) => {
     setBezig(true);
@@ -87,11 +99,20 @@ export default function AfdrukClient() {
 
   const gekozen = useMemo(() => {
     const alles = inschrijvingen ?? [];
+    if (enkelNummer !== null) return alles.filter((i) => i.kaartnummer === enkelNummer);
     return alles
       .filter((i) => (welkeZitting === "alle" ? true : (i.zitting || "zonder") === welkeZitting))
       .filter((i) => (enkelOnbetaald ? !i.betaald : true))
       .sort((a, b) => (a.kaartnummer ?? Number.MAX_SAFE_INTEGER) - (b.kaartnummer ?? Number.MAX_SAFE_INTEGER));
-  }, [inschrijvingen, welkeZitting, enkelOnbetaald]);
+  }, [inschrijvingen, welkeZitting, enkelOnbetaald, enkelNummer]);
+
+  // Eén bonnetje dat met ?print=1 geopend wordt, drukt zichzelf af. Zo is het
+  // aan de kassa één klik in plaats van drie.
+  useEffect(() => {
+    if (!autoAfdrukken || gekozen.length === 0) return;
+    const wachten = setTimeout(() => window.print(), 400);
+    return () => clearTimeout(wachten);
+  }, [autoAfdrukken, gekozen.length]);
 
   if (!ingevoerd) {
     return (
@@ -129,6 +150,20 @@ export default function AfdrukClient() {
       {/* De keuzebalk, enkel op het scherm. */}
       <div className="border-b border-zand-200 bg-white print:hidden">
         <div className="container-custom flex flex-wrap items-end gap-4 py-4">
+          {enkelNummer !== null && (
+            <div className="w-full">
+              <p className="text-sm text-slate-600">
+                Eén bonnetje, kaartnummer <strong>{enkelNummer}</strong>.{" "}
+                <button
+                  type="button"
+                  onClick={() => setEnkelNummer(null)}
+                  className="text-primary underline"
+                >
+                  Toon toch de hele lijst
+                </button>
+              </p>
+            </div>
+          )}
           <div>
             <p className="text-xs uppercase tracking-wide text-slate-500">Wat</p>
             <div className="mt-1 flex gap-2">
@@ -231,7 +266,11 @@ function Bonnen({ lijst }: { lijst: Inschrijving[] }) {
                   <p className="font-bold uppercase text-slate-900">Afhalen</p>
                 )}
                 <p className={i.betaald ? "text-green-700" : "font-bold text-primary"}>
-                  {i.betaald ? "betaald" : "nog te betalen"}
+                  {i.betaald
+                    ? "betaald"
+                    : reedsBetaald(i) > 0
+                      ? `nog ${euro(openstaand(i))} euro`
+                      : "nog te betalen"}
                 </p>
               </div>
             </div>
@@ -332,7 +371,7 @@ function Keukenlijst({ lijst, welkeZitting }: { lijst: Inschrijving[]; welkeZitt
                     </td>
                     <td className="py-1 text-right">{euro(i.bedrag)}</td>
                     <td className={"py-1 " + (i.betaald ? "text-green-700" : "font-bold text-primary")}>
-                      {i.betaald ? "ja" : "nee"}
+                      {i.betaald ? "ja" : reedsBetaald(i) > 0 ? `nog ${euro(openstaand(i))}` : "nee"}
                     </td>
                   </tr>
                 ))}
