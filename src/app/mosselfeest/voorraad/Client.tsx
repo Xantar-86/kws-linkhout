@@ -173,9 +173,10 @@ export default function VoorraadClient() {
 
       <div className="container-custom max-w-5xl space-y-5 py-6">
         <p className="text-sm text-slate-600">
-          Vul in hoeveel er van elk gerecht voorzien is. Wat er besteld is komt uit de
-          inschrijvingen, dus dat hoef je niet bij te houden. Het verschil is wat er die dag nog
-          aan de deur verkocht kan worden.
+          Per dag staat eerst wat je <strong>nodig</strong> hebt: dat zijn de bestellingen uit de
+          inschrijvingen, en dat telt zichzelf bij. Vul daarnaast in hoeveel je{" "}
+          <strong>voorziet</strong>. In de laatste kolom zie je wat er dan nog bij moet, of wat je
+          over hebt om die avond aan de deur te verkopen.
         </p>
 
         {DAGEN.map((dag) => (
@@ -189,9 +190,9 @@ export default function VoorraadClient() {
                 <thead>
                   <tr className="border-b border-zand-200 text-left text-xs uppercase tracking-wide text-slate-500">
                     <th className="py-2">Gerecht</th>
-                    <th className="w-28 py-2 text-right">Voorzien</th>
-                    <th className="w-24 py-2 text-right">Besteld</th>
-                    <th className="w-28 py-2 text-right">Nog vrij</th>
+                    <th className="w-24 py-2 pr-3 text-right">Nodig</th>
+                    <th className="w-28 py-2 pr-3 text-right">Voorzien</th>
+                    <th className="w-32 py-2 text-right">Te kort of over</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -213,7 +214,15 @@ export default function VoorraadClient() {
                                 return (
                                   <tr key={g.id} className="border-b border-zand-100">
                                     <td className="py-1.5 text-slate-700">{g.naam}</td>
-                                    <td className="w-28 py-1.5 text-right">
+                                    <td
+                                      className={
+                                        "w-24 py-1.5 pr-3 text-right font-bold " +
+                                        (isBesteld > 0 ? "text-inkt-900" : "text-slate-300")
+                                      }
+                                    >
+                                      {isBesteld}
+                                    </td>
+                                    <td className="w-28 py-1.5 pr-3 text-right">
                                       <input
                                         type="number"
                                         inputMode="numeric"
@@ -228,20 +237,23 @@ export default function VoorraadClient() {
                                         className="h-9 w-20 rounded-lg border border-zand-300 text-center outline-none focus:border-primary [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
                                       />
                                     </td>
-                                    <td className="w-24 py-1.5 text-right font-medium text-slate-700">
-                                      {isBesteld}
-                                    </td>
                                     <td
                                       className={
-                                        "w-28 py-1.5 text-right font-bold " +
+                                        "w-32 py-1.5 text-right font-bold " +
                                         (isVoorzien === 0
                                           ? "text-slate-300"
                                           : rest < 0
                                             ? "text-primary"
-                                            : "text-inkt-900")
+                                            : "text-green-700")
                                       }
                                     >
-                                      {isVoorzien === 0 ? "-" : rest}
+                                      {isVoorzien === 0
+                                        ? "-"
+                                        : rest < 0
+                                          ? `${-rest} te kort`
+                                          : rest === 0
+                                            ? "juist genoeg"
+                                            : `${rest} over`}
                                     </td>
                                   </tr>
                                 );

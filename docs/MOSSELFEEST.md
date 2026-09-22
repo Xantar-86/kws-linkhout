@@ -151,10 +151,14 @@ betekent: er is niets ontvangen.
 
 ## Voorraad per dag
 
-`/mosselfeest/voorraad` is het vroegere blad "LeftOvers": per dag en per gerecht
-vul je in hoeveel er voorzien is, en ernaast staat wat er besteld is en wat er
-dus nog aan de deur verkocht kan worden. Staat er een negatief getal, dan is er
-meer besteld dan voorzien.
+`/mosselfeest/voorraad`, het vroegere blad "LeftOvers". Per dag staat eerst wat
+er **nodig** is, want dat is wat je moet weten voor je gaat inkopen: de
+bestellingen van die dag, die zichzelf bijhouden. Daarnaast vul je in wat je
+**voorziet**, en de laatste kolom zegt hoeveel er te kort is of over blijft om
+aan de deur te verkopen.
+
+Wat er per dag nodig is, staat ook op het overzicht en als afdrukkeuze "Wat
+voorzien per dag", met een kolom voor vrijdag, zaterdag en het totaal.
 
 De voorraad staat als apart versleuteld blokje in de opslag, buiten de map met
 inschrijvingen. Dat is niet toevallig: alles in die map wordt als inschrijving
