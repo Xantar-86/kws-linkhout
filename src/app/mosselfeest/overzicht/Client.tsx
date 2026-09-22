@@ -9,6 +9,8 @@ import {
   Download,
   Loader2,
   LockKeyhole,
+  Pencil,
+  Printer,
   RefreshCw,
   Trash2,
   X,
@@ -23,6 +25,7 @@ import {
 import { telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { KaartToevoegen } from "./KaartToevoegen";
+import { Bewerken } from "./Bewerken";
 
 /**
  * Het overzicht van de inschrijvingen, voor de organisatoren.
@@ -54,6 +57,8 @@ type SorteerSleutel = "nummer" | "naam" | "zitting" | "bedrag" | "betaald";
 interface Wijziging {
   betaald?: boolean;
   weg?: boolean;
+  /** Een volledig bijgewerkte inschrijving, na een wijziging. */
+  vervanging?: Inschrijving;
   tijd: number;
 }
 
@@ -90,6 +95,7 @@ export default function OverzichtClient() {
   const [fout, setFout] = useState("");
   const [zoek, setZoek] = useState("");
   const [enkelOnbetaald, setEnkelOnbetaald] = useState(false);
+  const [bewerkt, setBewerkt] = useState<Inschrijving | null>(null);
   const [sorteerOp, setSorteerOp] = useState<SorteerSleutel>("nummer");
   const [oplopend, setOplopend] = useState(true);
 
@@ -106,11 +112,13 @@ export default function OverzichtClient() {
       .filter((i) => !wijzigingen.current.get(i.kenmerk)?.weg)
       .map((i) => {
         const w = wijzigingen.current.get(i.kenmerk);
-        if (!w || w.betaald === undefined) return i;
+        if (!w) return i;
+        const basis = w.vervanging ?? i;
+        if (w.betaald === undefined) return basis;
         return {
-          ...i,
+          ...basis,
           betaald: w.betaald,
-          betaaldOp: w.betaald ? (i.betaaldOp ?? new Date(w.tijd).toISOString()) : undefined,
+          betaaldOp: w.betaald ? (basis.betaaldOp ?? new Date(w.tijd).toISOString()) : undefined,
         };
       });
   }, []);
@@ -169,6 +177,18 @@ export default function OverzichtClient() {
     () => (inschrijvingen ? telOp(inschrijvingen) : undefined),
     [inschrijvingen],
   );
+
+  /** Een bijgewerkte inschrijving meteen in beeld zetten. */
+  function nabewerking(bijgewerkt: Inschrijving) {
+    const vorige = wijzigingen.current.get(bijgewerkt.kenmerk);
+    wijzigingen.current.set(bijgewerkt.kenmerk, {
+      ...vorige,
+      vervanging: bijgewerkt,
+      tijd: Date.now(),
+    });
+    setInschrijvingen((vorig) => (vorig ? metEigenWijzigingen(vorig) : vorig));
+    setBewerkt(null);
+  }
 
   async function doeActie(kenmerk: string, actie: "betaald" | "schrappen", betaald?: boolean) {
     if (!ingevoerd) return;
@@ -318,7 +338,26 @@ export default function OverzichtClient() {
             </p>
             <p className="text-xs text-white/70">{EVENEMENT.datumTekst}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <a
+              href="/mosselfeest/kassa"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+            >
+              Avondscherm
+            </a>
+            <a
+              href="/mosselfeest/voorraad"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+            >
+              Voorraad
+            </a>
+            <a
+              href="/mosselfeest/afdruk"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+            >
+              <Printer className="h-4 w-4" />
+              Afdrukken
+            </a>
             <button
               type="button"
               onClick={() => haal(ingevoerd)}
@@ -388,7 +427,7 @@ export default function OverzichtClient() {
               <Kaartje
                 label="Porties"
                 waarde={String(totalen.porties)}
-                onder={`${totalen.plaatsen} plaatsen aan tafel`}
+                onder={`${totalen.plaatsen} plaatsen: ${totalen.volwassenen} volwassen, ${totalen.kinderen} kind`}
               />
               <Kaartje label="Totaal" waarde={`${euro(totalen.bedrag)} euro`} />
               <Kaartje label="Betaald" waarde={`${euro(totalen.bedragBetaald)} euro`} toon="goed" />
@@ -604,6 +643,14 @@ export default function OverzichtClient() {
                       <td className="py-3">
                         <button
                           type="button"
+                          onClick={() => setBewerkt(i)}
+                          aria-label={`Inschrijving van ${volledigeNaam(i)} wijzigen`}
+                          className="rounded-lg p-1.5 text-slate-400 transition hover:bg-zand-100 hover:text-inkt-900"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => doeActie(i.kenmerk, "schrappen")}
                           aria-label={`Inschrijving van ${volledigeNaam(i)} schrappen`}
                           className="rounded-lg p-1.5 text-slate-400 transition hover:bg-primary-50 hover:text-primary"
@@ -624,6 +671,15 @@ export default function OverzichtClient() {
           </p>
         </section>
       </div>
+
+      {bewerkt && (
+        <Bewerken
+          wachtwoord={ingevoerd}
+          inschrijving={bewerkt}
+          onKlaar={nabewerking}
+          onSluiten={() => setBewerkt(null)}
+        />
+      )}
     </main>
   );
 }

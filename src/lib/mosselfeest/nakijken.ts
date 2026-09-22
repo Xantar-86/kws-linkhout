@@ -1,4 +1,11 @@
-import { EVENEMENT, GERECHTEN, aantalPorties, gerecht } from "./kaart";
+import {
+  BRIEFJE_EERSTE_KAARTNUMMER,
+  EVENEMENT,
+  GERECHTEN,
+  ONLINE_EERSTE_KAARTNUMMER,
+  aantalPorties,
+  gerecht,
+} from "./kaart";
 
 /**
  * Nakijken of een inschrijving bruikbaar is.
@@ -109,6 +116,12 @@ export interface HandmatigeInvoer {
    * bij 001, dus onder de 1001; die reeks is voor de online inschrijvingen.
    */
   kaartnummer?: number;
+  /**
+   * Geen nummer op het papier? Dan kent het systeem er zelf een toe vanaf
+   * 2001. Dat nummer wordt op het briefje geschreven, zodat een gesorteerde
+   * stapel terug te vinden is.
+   */
+  automatischNummer?: boolean;
 }
 
 /**
@@ -131,9 +144,10 @@ export function controleerHandmatig(invoer: Partial<HandmatigeInvoer>): string[]
         : "Vul de naam in die op de kaart staat.",
     );
   }
-  if (invoer.bron === "kaart" && (!invoer.zitting || !EVENEMENT.zittingen.some((z) => z.id === invoer.zitting))) {
-    klachten.push("Kies bij een kaart wanneer die persoon komt eten.");
-  }
+  // Het moment mag ontbreken. In het bestand van het bestuur stond het bij een
+  // aantal inschrijvingen ook niet ingevuld, en dan is niets invullen beter dan
+  // iets verzinnen. Zo'n inschrijving telt mee in het totaal en staat apart
+  // vermeld als "zonder zitting".
   if (invoer.zitting && !EVENEMENT.zittingen.some((z) => z.id === invoer.zitting)) {
     klachten.push("Die zitting bestaat niet.");
   }
@@ -155,12 +169,12 @@ export function controleerHandmatig(invoer: Partial<HandmatigeInvoer>): string[]
 
   if (invoer.opmerking && invoer.opmerking.length > 500) klachten.push("De opmerking is te lang.");
 
-  if (invoer.kaartnummer !== undefined) {
+  if (invoer.kaartnummer !== undefined && !invoer.automatischNummer) {
     if (!Number.isInteger(invoer.kaartnummer) || invoer.kaartnummer < 1) {
       klachten.push("Het kaartnummer moet een heel getal zijn.");
-    } else if (invoer.kaartnummer >= 1001) {
+    } else if (invoer.kaartnummer >= ONLINE_EERSTE_KAARTNUMMER) {
       klachten.push(
-        "Nummers vanaf 1001 zijn voor de online inschrijvingen. Neem het nummer over dat op de papieren kaart staat.",
+        `Nummers vanaf ${ONLINE_EERSTE_KAARTNUMMER} deelt het systeem zelf uit: ${ONLINE_EERSTE_KAARTNUMMER} en hoger voor online, ${BRIEFJE_EERSTE_KAARTNUMMER} en hoger voor briefjes zonder nummer. Neem hier het nummer over dat op de kaart gedrukt staat.`,
       );
     }
   }

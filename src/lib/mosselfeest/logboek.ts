@@ -70,6 +70,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   const kort: [string, number | string, string?][] = [
     ["Inschrijvingen", totalen.inschrijvingen],
     ["Plaatsen aan tafel", totalen.plaatsen],
+    ["   waarvan volwassenen", totalen.volwassenen],
+    ["   waarvan kinderen", totalen.kinderen],
     ["   waarvan online ingevuld", bron.online],
     ["   waarvan ingetypte kaarten", bron.kaart],
     ["   waarvan stapels kaarten", bron.verzamelpost],

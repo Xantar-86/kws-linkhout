@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import { AlertCircle, ClipboardList, Layers, Loader2, Plus } from "lucide-react";
-import { EVENEMENT, GROEPEN, bedragVan, euro, gerechtenVan } from "@/lib/mosselfeest/kaart";
+import { BRIEFJE_EERSTE_KAARTNUMMER, EVENEMENT, bedragVan, euro } from "@/lib/mosselfeest/kaart";
+import { Aantallen } from "./Aantallen";
 
 /**
  * Een inschrijving toevoegen die niet online gebeurd is.
  *
  * Twee manieren, want ze dienen iets anders:
  *
- *  - Eén kaart: iemand heeft een gedrukte kaart afgegeven. Met naam en zitting,
- *    zodat je achteraf nog weet wie wat besteld heeft en of er betaald is.
+ *  - Eén kaart: iemand heeft een gedrukte kaart of een briefje afgegeven. Met
+ *    naam en zitting, zodat je achteraf nog weet wie wat besteld heeft en of er
+ *    betaald is. Staat er geen nummer op het papier, dan kent het systeem er
+ *    een toe vanaf 2001; dat schrijf je op het briefje.
  *  - Stapel kaarten: een verzamelpost zonder namen, bijvoorbeeld "83 mosselen
  *    van de kaarten in de kantine". Voor wanneer één per één intypen niet
  *    opweegt tegen de moeite.
@@ -35,6 +38,7 @@ export function KaartToevoegen({
   const [naam, setNaam] = useState("");
   const [voornaam, setVoornaam] = useState("");
   const [kaartnummer, setKaartnummer] = useState("");
+  const [zonderNummer, setZonderNummer] = useState(false);
   const [zitting, setZitting] = useState("");
   const [aantallen, setAantallen] = useState<Record<string, number>>({});
   const [betaald, setBetaald] = useState(true);
@@ -70,7 +74,11 @@ export function KaartToevoegen({
           bron,
           naam,
           voornaam: bron === "kaart" ? voornaam || undefined : undefined,
-          kaartnummer: kaartnummer.trim() ? Number.parseInt(kaartnummer, 10) : undefined,
+          kaartnummer:
+            bron === "kaart" && !zonderNummer && kaartnummer.trim()
+              ? Number.parseInt(kaartnummer, 10)
+              : undefined,
+          automatischNummer: bron === "kaart" && zonderNummer,
           zitting: zitting || undefined,
           aantallen,
           betaald,
@@ -78,13 +86,22 @@ export function KaartToevoegen({
           ingevoerdDoor: ingevoerdDoor || undefined,
         }),
       });
-      const gegevens = (await antwoord.json()) as { ok?: boolean; error?: string };
+      const gegevens = (await antwoord.json()) as {
+        ok?: boolean;
+        error?: string;
+        inschrijving?: { kaartnummer?: number };
+      };
       if (!antwoord.ok || !gegevens.ok) {
         setFout(gegevens.error ?? "Toevoegen is niet gelukt.");
         return;
       }
+      const nummer = gegevens.inschrijving?.kaartnummer;
       setGelukt(
-        bron === "kaart" ? `Kaart van ${naam} toegevoegd.` : `Stapel "${naam}" toegevoegd.`,
+        bron === "verzamelpost"
+          ? `Stapel "${naam}" toegevoegd.`
+          : zonderNummer && nummer
+            ? `Toegevoegd met nummer ${nummer}. Schrijf dat nummer op het briefje.`
+            : `Kaart van ${naam} toegevoegd.`,
       );
       leegmaken();
       onToegevoegd();
@@ -130,14 +147,14 @@ export function KaartToevoegen({
             {
               id: "kaart" as const,
               icoon: ClipboardList,
-              titel: "Eén afgegeven kaart",
-              uitleg: "Met naam en zitting, zodat je weet wie wat besteld heeft.",
+              titel: "Eén kaart of briefje",
+              uitleg: "Met naam, zodat je weet wie wat besteld heeft.",
             },
             {
               id: "verzamelpost" as const,
               icoon: Layers,
               titel: "Stapel kaarten",
-              uitleg: "Enkel de aantallen, met een toelichting. Bijvoorbeeld 83 mosselen.",
+              uitleg: "Enkel de aantallen, met een toelichting.",
             },
           ]
         ).map((keuze) => {
@@ -167,21 +184,33 @@ export function KaartToevoegen({
 
       <div className="grid gap-4 sm:grid-cols-3">
         {bron === "kaart" && (
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-slate-700">
-              Nummer op de kaart
-            </span>
-            <input
-              className={INVOER}
-              value={kaartnummer}
-              onChange={(e) => setKaartnummer(e.target.value.replace(/[^0-9]/g, ""))}
-              inputMode="numeric"
-              placeholder="bijvoorbeeld 037"
-            />
-            <span className="mt-1 block text-xs text-slate-500">
-              De gedrukte kaarten; 1001 en hoger is voor online.
-            </span>
-          </label>
+          <div>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-slate-700">
+                Nummer op de kaart
+              </span>
+              <input
+                className={INVOER + (zonderNummer ? " bg-zand-50 text-slate-400" : "")}
+                value={zonderNummer ? "" : kaartnummer}
+                disabled={zonderNummer}
+                onChange={(e) => setKaartnummer(e.target.value.replace(/[^0-9]/g, ""))}
+                inputMode="numeric"
+                placeholder="bijvoorbeeld 037"
+              />
+            </label>
+            <label className="mt-2 flex items-start gap-2 text-xs text-slate-600">
+              <input
+                type="checkbox"
+                checked={zonderNummer}
+                onChange={(e) => setZonderNummer(e.target.checked)}
+                className="mt-0.5 h-3.5 w-3.5 accent-primary"
+              />
+              <span>
+                Geen nummer op het papier. Het systeem geeft er een vanaf{" "}
+                {BRIEFJE_EERSTE_KAARTNUMMER}, schrijf dat op het briefje.
+              </span>
+            </label>
+          </div>
         )}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-slate-700">
@@ -207,10 +236,10 @@ export function KaartToevoegen({
         )}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-slate-700">
-            Zitting{bron === "verzamelpost" && " (mag leeg blijven)"}
+            Zitting <span className="text-slate-400">(mag leeg)</span>
           </span>
           <select className={INVOER} value={zitting} onChange={(e) => setZitting(e.target.value)}>
-            <option value="">{bron === "kaart" ? "Kies de zitting" : "Nog niet gekend"}</option>
+            <option value="">Nog niet gekend</option>
             {EVENEMENT.zittingen.map((z) => (
               <option key={z.id} value={z.id}>
                 {z.label}
@@ -222,48 +251,11 @@ export function KaartToevoegen({
 
       <div className="mt-5">
         <p className="mb-2 text-sm font-medium text-slate-700">Aantallen</p>
-        <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-          {GROEPEN.map((groep) => {
-            const gerechten = gerechtenVan(groep.id);
-            if (gerechten.length === 0) return null;
-            return (
-              <div key={groep.id}>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {groep.titel}
-                </p>
-                <div className="divide-y divide-zand-100">
-                  {gerechten.map((g) => (
-                    <div key={g.id} className="flex items-center justify-between gap-3 py-1.5">
-                      <label htmlFor={`aantal-${g.id}`} className="text-sm text-slate-700">
-                        {g.naam}
-                        <span className="ml-1 text-xs text-slate-400">{euro(g.prijs)}</span>
-                      </label>
-                      <input
-                        id={`aantal-${g.id}`}
-                        type="number"
-                        inputMode="numeric"
-                        min={0}
-                        max={bron === "verzamelpost" ? 2000 : 40}
-                        value={aantallen[g.id] ?? ""}
-                        placeholder="0"
-                        onChange={(e) => {
-                          const getal = Number.parseInt(e.target.value, 10);
-                          setAantallen((vorig) => {
-                            const volgend = { ...vorig };
-                            if (Number.isFinite(getal) && getal > 0) volgend[g.id] = getal;
-                            else delete volgend[g.id];
-                            return volgend;
-                          });
-                        }}
-                        className="h-9 w-16 rounded-lg border border-zand-300 text-center text-sm outline-none focus:border-primary [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Aantallen
+          aantallen={aantallen}
+          onChange={setAantallen}
+          max={bron === "verzamelpost" ? 2000 : 40}
+        />
       </div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -306,15 +298,17 @@ export function KaartToevoegen({
           {fout}
         </p>
       )}
-      {gelukt && (
-        <p className="mt-4 rounded-xl bg-green-50 p-3 text-sm text-green-800">{gelukt}</p>
-      )}
+      {gelukt && <p className="mt-4 rounded-xl bg-green-50 p-3 text-sm text-green-800">{gelukt}</p>}
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-slate-600">
           Bedrag volgens de kaart: <strong>{euro(bedrag)} euro</strong>
         </p>
-        <button type="submit" disabled={bezig} className="btn-primary justify-center disabled:opacity-60">
+        <button
+          type="submit"
+          disabled={bezig}
+          className="btn-primary justify-center disabled:opacity-60"
+        >
           {bezig ? <Loader2 className="h-4 w-4 animate-spin" /> : "Toevoegen"}
         </button>
       </div>

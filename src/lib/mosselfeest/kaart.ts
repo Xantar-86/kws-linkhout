@@ -93,12 +93,18 @@ export const GERECHTEN: Gerecht[] = [
  * enkel de gerechten met teltAlsPlaats. Afhalen heeft geen maximum: daar is
  * geen zaal voor nodig.
  */
+export type Dag = "vrijdag" | "zaterdag";
+
 export interface Zitting {
   id: string;
   label: string;
   /** Het aantal plaatsen, of undefined als er geen grens is. */
   max?: number;
   afhalen?: boolean;
+  /** Op welke dag er gekookt wordt. Voor de voorraad per dag. */
+  dag: Dag;
+  /** Korte naam voor smalle schermen en afdrukken, bv. "Zat 18u30". */
+  kort: string;
 }
 
 export const EVENEMENT = {
@@ -114,12 +120,12 @@ export const EVENEMENT = {
    */
   inschrijvenTot: "2026-10-18",
   zittingen: [
-    { id: "vr-23-18", label: "Vrijdag 23 oktober, 18.00 tot 20.30 uur", max: 200 },
-    { id: "za-24-12", label: "Zaterdag 24 oktober, 12.00 tot 14.00 uur", max: 200 },
-    { id: "za-24-1630", label: "Zaterdag 24 oktober, 16.30 tot 18.15 uur", max: 175 },
-    { id: "za-24-1830", label: "Zaterdag 24 oktober, 18.30 tot 20.30 uur", max: 175 },
-    { id: "afhalen-23", label: "Afhalen op vrijdag 23 oktober", afhalen: true },
-    { id: "afhalen-24", label: "Afhalen op zaterdag 24 oktober", afhalen: true },
+    { id: "vr-23-18", label: "Vrijdag 23 oktober, 18.00 tot 20.30 uur", kort: "Vrij 18u", max: 200, dag: "vrijdag" },
+    { id: "za-24-12", label: "Zaterdag 24 oktober, 12.00 tot 14.00 uur", kort: "Zat 12u", max: 200, dag: "zaterdag" },
+    { id: "za-24-1630", label: "Zaterdag 24 oktober, 16.30 tot 18.15 uur", kort: "Zat 16u30", max: 175, dag: "zaterdag" },
+    { id: "za-24-1830", label: "Zaterdag 24 oktober, 18.30 tot 20.30 uur", kort: "Zat 18u30", max: 175, dag: "zaterdag" },
+    { id: "afhalen-23", label: "Afhalen op vrijdag 23 oktober", kort: "Afh vrij", afhalen: true, dag: "vrijdag" },
+    { id: "afhalen-24", label: "Afhalen op zaterdag 24 oktober", kort: "Afh zat", afhalen: true, dag: "zaterdag" },
   ] as Zitting[],
   /**
    * Rekeningnummer voor een overschrijving.
@@ -133,14 +139,27 @@ export const EVENEMENT = {
 } as const;
 
 /**
- * De nummering van de kaarten.
+ * De nummering van de kaarten, in drie reeksen.
  *
- * De gedrukte kaarten die aan de deur rondgaan, beginnen bij 001. De online
- * inschrijvingen krijgen daarom een nummer vanaf 1001: zo overlappen de twee
- * reeksen niet en zie je aan het nummer meteen dat het een online reservatie
- * is.
+ *   1 tot 1000   de gedrukte kaarten die rondgaan; dat nummer staat op het blad
+ *   1001 tot 2000 de online inschrijvingen, automatisch toegekend
+ *   vanaf 2001    de briefjes uit de brievenbus, die geen nummer op papier
+ *                 hebben; het systeem kent er een toe en die wordt erop
+ *                 geschreven, zodat een stapel gesorteerd terug te vinden is
+ *
+ * Aan het nummer zie je dus meteen waar een inschrijving vandaan komt.
  */
 export const ONLINE_EERSTE_KAARTNUMMER = 1001;
+export const ONLINE_LAATSTE_KAARTNUMMER = 2000;
+export const BRIEFJE_EERSTE_KAARTNUMMER = 2001;
+
+/** Welke reeks hoort bij een nummer? */
+export function reeksVan(kaartnummer: number | undefined): "papier" | "online" | "briefje" | null {
+  if (!kaartnummer || kaartnummer < 1) return null;
+  if (kaartnummer < ONLINE_EERSTE_KAARTNUMMER) return "papier";
+  if (kaartnummer <= ONLINE_LAATSTE_KAARTNUMMER) return "online";
+  return "briefje";
+}
 
 /** Het begin van de mededeling bij een overschrijving. */
 export const MEDEDELING_PREFIX = "Mossel2026";
@@ -156,6 +175,11 @@ export function gerechtenVan(groep: GroepId): Gerecht[] {
 
 export function zitting(id: string): Zitting | undefined {
   return EVENEMENT.zittingen.find((z) => z.id === id);
+}
+
+/** Op welke dag een zitting valt. Onbekende zitting geeft null. */
+export function dagVan(zittingId: string): Dag | null {
+  return zitting(zittingId)?.dag ?? null;
 }
 
 /** Wordt er ter plaatse gegeten, of afgehaald? */

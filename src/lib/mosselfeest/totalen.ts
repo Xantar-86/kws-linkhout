@@ -1,10 +1,15 @@
 import {
+  BRIEFJE_EERSTE_KAARTNUMMER,
   EVENEMENT,
   GERECHTEN,
   ONLINE_EERSTE_KAARTNUMMER,
+  ONLINE_LAATSTE_KAARTNUMMER,
   aantalPlaatsen,
   aantalPorties,
   bedragVan,
+  dagVan,
+  gerecht,
+  type Dag,
 } from "./kaart";
 
 /**
@@ -51,6 +56,10 @@ export interface Inschrijving {
   bron?: Bron;
   /** Wie de kaart heeft ingetypt, zodat een vraag achteraf te plaatsen is. */
   ingevoerdDoor?: string;
+  /** Wanneer er voor het laatst iets gewijzigd is (ISO). */
+  gewijzigdOp?: string;
+  /** Wie die wijziging deed. */
+  gewijzigdDoor?: string;
   /** Id van de zitting uit kaart.ts. */
   zitting: string;
   /** Per gerecht-id het aantal porties. */
@@ -70,14 +79,18 @@ export interface Inschrijving {
  * een: zo krijgt niemand het nummer van een geschrapte inschrijving opnieuw,
  * en blijft een nummer dus voor altijd van één kaart.
  */
-export function volgendKaartnummer(inschrijvingen: Inschrijving[]): number {
+export function volgendKaartnummer(
+  inschrijvingen: Inschrijving[],
+  reeks: "online" | "briefje" = "online",
+): number {
+  const van = reeks === "online" ? ONLINE_EERSTE_KAARTNUMMER : BRIEFJE_EERSTE_KAARTNUMMER;
+  const tot = reeks === "online" ? ONLINE_LAATSTE_KAARTNUMMER : Number.MAX_SAFE_INTEGER;
   const hoogste = inschrijvingen.reduce((max, i) => {
     const n = i.kaartnummer ?? 0;
-    return n >= ONLINE_EERSTE_KAARTNUMMER && n > max ? n : max;
-  }, ONLINE_EERSTE_KAARTNUMMER - 1);
+    return n >= van && n <= tot && n > max ? n : max;
+  }, van - 1);
   return hoogste + 1;
 }
-
 
 export interface Totalen {
   inschrijvingen: number;
@@ -86,6 +99,14 @@ export interface Totalen {
   porties: number;
   /** Plaatsen aan tafel: enkel de hoofd- en kindergerechten. */
   plaatsen: number;
+  /**
+   * Volwassenen en kinderen apart, zoals in het Excel-bestand dat het bestuur
+   * vroeger bijhield: de hoofdgerechten tegenover de kindergerechten.
+   */
+  volwassenen: number;
+  kinderen: number;
+  /** Per dag het aantal porties per gerecht, voor de voorraad in de keuken. */
+  perDagGerecht: Record<Dag, Record<string, number>>;
   bedrag: number;
   bedragBetaald: number;
   bedragOpen: number;
@@ -108,6 +129,12 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     perBron: { online: 0, kaart: 0, verzamelpost: 0 },
     porties: 0,
     plaatsen: 0,
+    volwassenen: 0,
+    kinderen: 0,
+    perDagGerecht: {
+      vrijdag: Object.fromEntries(GERECHTEN.map((g) => [g.id, 0])),
+      zaterdag: Object.fromEntries(GERECHTEN.map((g) => [g.id, 0])),
+    },
     bedrag: 0,
     bedragBetaald: 0,
     bedragOpen: 0,
@@ -141,9 +168,16 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     if (inschrijving.betaald) totalen.bedragBetaald += bedrag;
     else totalen.bedragOpen += bedrag;
 
+    const dag = dagVan(inschrijving.zitting);
     for (const [id, aantal] of Object.entries(inschrijving.aantallen)) {
       if (!(id in totalen.perGerecht) || !(aantal > 0)) continue;
       totalen.perGerecht[id] += aantal;
+      const g = gerecht(id);
+      if (g?.groep === "hoofd") totalen.volwassenen += aantal;
+      if (g?.groep === "kind") totalen.kinderen += aantal;
+      // Een inschrijving zonder zitting weten we niet toe te wijzen aan een
+      // dag; die telt wel in het geheel mee, maar niet in de voorraad per dag.
+      if (dag) totalen.perDagGerecht[dag][id] += aantal;
     }
 
     const zitting = totalen.perZitting[inschrijving.zitting];

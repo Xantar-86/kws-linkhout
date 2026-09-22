@@ -4,8 +4,10 @@ import { bedragVan } from "@/lib/mosselfeest/kaart";
 import {
   alleInschrijvingen,
   bewaarInschrijving,
+  haalInschrijving,
   schrapInschrijving,
   telOp,
+  volgendKaartnummer,
   zetBetaald,
   type Inschrijving,
 } from "@/lib/mosselfeest/opslag";
@@ -71,7 +73,7 @@ export async function POST(request: NextRequest) {
     actie?: string;
     kenmerk?: string;
     betaald?: boolean;
-  } & Partial<HandmatigeInvoer>;
+  } & Partial<HandmatigeInvoer> & { telefoon?: string };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -95,6 +97,7 @@ export async function POST(request: NextRequest) {
         typeof body.kaartnummer === "number" && body.kaartnummer > 0
           ? Math.floor(body.kaartnummer)
           : undefined,
+      automatischNummer: body.automatischNummer === true,
     };
 
     const klachten = controleerHandmatig(invoer);
@@ -102,12 +105,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: klachten.join(" "), klachten }, { status: 400 });
     }
 
+    // Een briefje uit de bus heeft geen nummer op papier. Dan kennen we er een
+    // toe uit de reeks vanaf 2001, die daarna op het briefje geschreven wordt,
+    // zodat een gesorteerde stapel terug te vinden is.
+    let nummer = invoer.kaartnummer;
+    if (invoer.automatischNummer) {
+      try {
+        nummer = volgendKaartnummer(await alleInschrijvingen(), "briefje");
+      } catch (fout) {
+        console.error("[mosselfeest] nummer toekennen mislukt:", fout);
+        return NextResponse.json(
+          { error: "Er kon geen nummer toegekend worden. Probeer het opnieuw." },
+          { status: 503 },
+        );
+      }
+    }
+
     const inschrijving: Inschrijving = {
       kenmerk: randomUUID().slice(0, 6).toUpperCase(),
       aangemeld: new Date().toISOString(),
       naam: invoer.naam!,
       voornaam: invoer.voornaam,
-      kaartnummer: invoer.kaartnummer,
+      kaartnummer: nummer,
       zitting: invoer.zitting ?? "",
       aantallen,
       bron: invoer.bron,
@@ -136,6 +155,50 @@ export async function POST(request: NextRequest) {
     const resultaat = await zetBetaald(kenmerk, body.betaald !== false);
     if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 404 });
     return NextResponse.json({ ok: true, inschrijving: resultaat.inschrijving });
+  }
+
+  if (body.actie === "wijzigen") {
+    const bestaande = await haalInschrijving(kenmerk);
+    if (!bestaande) {
+      return NextResponse.json({ error: "Inschrijving niet gevonden" }, { status: 404 });
+    }
+
+    const aantallen = schoonAantallenRuim((body.aantallen ?? {}) as Record<string, unknown>);
+    const invoer: Partial<HandmatigeInvoer> = {
+      // De bron blijft wat ze was: een online inschrijving die hier bijgewerkt
+      // wordt, blijft een online inschrijving.
+      bron: bestaande.bron === "verzamelpost" ? "verzamelpost" : "kaart",
+      naam: (body.naam ?? bestaande.naam).trim(),
+      voornaam: (body.voornaam ?? bestaande.voornaam ?? "").trim() || undefined,
+      zitting: (body.zitting ?? bestaande.zitting ?? "").trim() || undefined,
+      aantallen,
+      opmerking: (body.opmerking ?? bestaande.opmerking ?? "").trim() || undefined,
+      // Het kaartnummer wordt hier niet gewijzigd, dus we laten het buiten de
+      // controle: die weigert nummers vanaf 1001, en net die heeft een online
+      // inschrijving of een briefje uit de bus.
+    };
+
+    const klachten = controleerHandmatig(invoer);
+    if (klachten.length > 0) {
+      return NextResponse.json({ error: klachten.join(" "), klachten }, { status: 400 });
+    }
+
+    const bijgewerkt: Inschrijving = {
+      ...bestaande,
+      naam: invoer.naam!,
+      voornaam: invoer.voornaam,
+      zitting: invoer.zitting ?? "",
+      aantallen,
+      opmerking: invoer.opmerking,
+      telefoon: (body.telefoon ?? bestaande.telefoon ?? "").trim() || undefined,
+      bedrag: bedragVan(aantallen),
+      gewijzigdOp: new Date().toISOString(),
+      gewijzigdDoor: (body.ingevoerdDoor ?? "").trim() || undefined,
+    };
+
+    const bewaard = await bewaarInschrijving(bijgewerkt);
+    if (!bewaard.ok) return NextResponse.json({ error: bewaard.fout }, { status: 500 });
+    return NextResponse.json({ ok: true, inschrijving: bijgewerkt });
   }
 
   if (body.actie === "schrappen") {

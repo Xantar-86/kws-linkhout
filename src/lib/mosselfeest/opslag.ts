@@ -121,7 +121,13 @@ export async function alleInschrijvingen(): Promise<Inschrijving[]> {
         }
       }),
     );
-    for (const stuk of stukken) if (stuk) gevonden.push(stuk);
+    for (const stuk of stukken) {
+      // Enkel wat er echt als inschrijving uitziet. Staat er ooit een ander
+      // bestand in deze map, dan mag dat de hele lijst niet onderuithalen.
+      if (stuk && typeof stuk.kenmerk === "string" && typeof stuk.aangemeld === "string") {
+        gevonden.push(stuk);
+      }
+    }
   }
 
   return gevonden.sort((a, b) => a.aangemeld.localeCompare(b.aangemeld));
@@ -170,3 +176,59 @@ export async function schrapInschrijving(kenmerk: string): Promise<boolean> {
   return true;
 }
 
+/**
+ * De voorraad per dag: hoeveel er van elk gerecht voorzien is.
+ *
+ * Dat is wat het bestuur vroeger op het blad "LeftOvers" bijhield. Samen met
+ * wat er besteld is, weet de keuken hoeveel er die avond nog aan de deur
+ * verkocht kan worden.
+ *
+ * Eén blokje voor het hele feest, versleuteld zoals de inschrijvingen.
+ */
+export interface Voorraad {
+  /** Per dag en per gerecht-id het aantal dat voorzien is. */
+  voorzien: Record<string, Record<string, number>>;
+  bijgewerkt?: string;
+  bijgewerktDoor?: string;
+}
+
+// Bewust buiten MAP: alles onder die map wordt als inschrijving gelezen.
+const VOORRAADPAD = `mosselfeest/voorraad-${EVENEMENT.jaar}.bin`;
+
+export async function haalVoorraad(): Promise<Voorraad> {
+  const leeg: Voorraad = { voorzien: { vrijdag: {}, zaterdag: {} } };
+  const key = sleutel();
+  if (!key || !process.env.BLOB_READ_WRITE_TOKEN) return leeg;
+  try {
+    const { blobs } = await list({ prefix: VOORRAADPAD });
+    const blob = blobs.find((b) => b.pathname === VOORRAADPAD);
+    if (!blob) return leeg;
+    const antwoord = await fetch(vers(blob.url), { cache: "no-store" });
+    if (!antwoord.ok) return leeg;
+    const gelezen = ontsleutelJson<Voorraad>(Buffer.from(await antwoord.arrayBuffer()), key);
+    return gelezen ?? leeg;
+  } catch (fout) {
+    console.error("[mosselfeest] voorraad lezen mislukt:", fout);
+    return leeg;
+  }
+}
+
+export async function bewaarVoorraad(voorraad: Voorraad): Promise<BewaarResultaat> {
+  const key = sleutel();
+  if (!key) return { ok: false, fout: "MOSSELFEEST_SLEUTEL ontbreekt." };
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return { ok: false, fout: "BLOB_READ_WRITE_TOKEN ontbreekt." };
+  }
+  try {
+    await put(VOORRAADPAD, versleutelJson(voorraad, key), {
+      access: "public",
+      contentType: "application/octet-stream",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: 0,
+    });
+    return { ok: true };
+  } catch (fout) {
+    return { ok: false, fout: fout instanceof Error ? fout.message : "Onbekende fout" };
+  }
+}

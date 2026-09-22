@@ -5,11 +5,15 @@ Inschrijven gebeurt op `/mosselfeest`. De organisatoren zien de totalen op
 kwartier bijgewerkt wordt. Doel: niet meer handmatig tellen hoeveel van wat er
 besteld moet worden.
 
-> **Nog niet uitgerold.** Deze functie staat op de branch `mosselfeest`. De
-> kaart in `src/lib/mosselfeest/kaart.ts` komt wel overeen met de gedrukte
-> kaart van 2026. Twee dingen staan er niet op en zijn dus een aanname:
-> de sluitingsdatum (nu zondag 18 oktober) en de betaalwijze (nu ter plaatse,
-> want er staat geen rekeningnummer op de kaart).
+Er zijn vier schermen, alle vier achter hetzelfde wachtwoord:
+
+| Scherm | Waarvoor |
+| --- | --- |
+| `/mosselfeest` | inschrijven, openbaar |
+| `/mosselfeest/overzicht` | de lijst, de totalen, kaarten intypen, betaald afvinken |
+| `/mosselfeest/kassa` | het avondscherm: zoeken, afvinken, iets bijzetten |
+| `/mosselfeest/afdruk` | bonnetjes per inschrijving of een keukenlijst per zitting |
+| `/mosselfeest/voorraad` | voorzien tegenover besteld, per dag |
 
 ## Plaatsen per zitting
 
@@ -88,6 +92,53 @@ over. Nummers vanaf 1001 worden daar geweigerd, die zijn voor online.
 De mededeling bij een overschrijving is `Mossel2026 <nummer>`, bijvoorbeeld
 `Mossel2026 1001`. Kort en zonder naam, zodat ze op een rekeninguittreksel
 volledig leesbaar blijft.
+
+## Het moment mag ontbreken
+
+In het bestand van het bestuur stond bij een aantal inschrijvingen geen moment
+ingevuld. Dat kan hier ook: laat de zitting leeg en de inschrijving telt mee in
+het totaal, met op het overzicht een aparte vermelding "zonder zitting". Beter
+dat dan iets verzinnen.
+
+## Een inschrijving wijzigen
+
+Op het overzicht en op het avondscherm staat bij elke regel een potlood. Daar
+wijzig je de naam, de zitting, de aantallen en de opmerking. Het bedrag wordt
+opnieuw berekend en het kaartnummer blijft wat het was, want dat staat op het
+papier van de gast. Wie de wijziging deed en wanneer wordt bijgehouden.
+
+Dat is nodig op de avond zelf: iemand wil er nog een portie bij. Zonder deze
+mogelijkheid werd dat een tweede inschrijving met een nieuw nummer, en dan
+kloppen de aantallen niet meer.
+
+## Het avondscherm
+
+`/mosselfeest/kassa`, gemaakt voor de laptop aan de kassa. Zoeken op
+kaartnummer of naam, Enter neemt de eerste treffer. Rechts staat de bestelling
+groot, met het bedrag en één brede knop om betaald af te vinken. Werkt ook op
+een tablet, waar de twee kolommen onder elkaar schuiven.
+
+## Afdrukken
+
+`/mosselfeest/afdruk`, met twee soorten:
+
+- **Bonnetjes**: één kadertje per inschrijving, zoals de online inschrijvingen
+  vroeger werden afgedrukt om mee naar de keuken te geven.
+- **Keukenlijst**: per zitting de totalen per gerecht met de namen eronder.
+
+Beide kan je beperken tot één zitting of tot de onbetaalde. De keuzebalk
+verdwijnt bij het afdrukken.
+
+## Voorraad per dag
+
+`/mosselfeest/voorraad` is het vroegere blad "LeftOvers": per dag en per gerecht
+vul je in hoeveel er voorzien is, en ernaast staat wat er besteld is en wat er
+dus nog aan de deur verkocht kan worden. Staat er een negatief getal, dan is er
+meer besteld dan voorzien.
+
+De voorraad staat als apart versleuteld blokje in de opslag, buiten de map met
+inschrijvingen. Dat is niet toevallig: alles in die map wordt als inschrijving
+gelezen.
 
 ## Welke mails er vertrekken
 
