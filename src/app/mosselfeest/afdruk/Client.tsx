@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Loader2, LockKeyhole, Printer } from "lucide-react";
+import { ArrowLeft, Loader2, LockKeyhole, Printer } from "lucide-react";
 import {
   EVENEMENT,
   GERECHTEN,
@@ -147,6 +147,33 @@ export default function AfdrukClient() {
 
   return (
     <main className="min-h-screen bg-zand-50 print:bg-white">
+      {/* De kop met de weg terug, enkel op het scherm. */}
+      <header className="bg-inkt-900 text-white print:hidden">
+        <div className="container-custom flex flex-wrap items-center justify-between gap-3 py-3">
+          <a
+            href="/mosselfeest/overzicht"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Terug naar het overzicht
+          </a>
+          <div className="flex gap-2">
+            <a
+              href="/mosselfeest/kassa"
+              className="rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+            >
+              Avondscherm
+            </a>
+            <a
+              href="/mosselfeest/voorraad"
+              className="rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+            >
+              Voorraad
+            </a>
+          </div>
+        </div>
+      </header>
+
       {/* De keuzebalk, enkel op het scherm. */}
       <div className="border-b border-zand-200 bg-white print:hidden">
         <div className="container-custom flex flex-wrap items-end gap-4 py-4">
