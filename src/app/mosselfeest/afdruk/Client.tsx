@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Loader2, LockKeyhole, Printer } from "lucide-react";
 import {
   EVENEMENT,
@@ -12,6 +12,7 @@ import {
 } from "@/lib/mosselfeest/kaart";
 import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
+import { bewaarWachtwoord, leesWachtwoord } from "../toegang";
 
 /**
  * Afdrukken voor de keuken.
@@ -28,9 +29,7 @@ import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
  * papier. Daarvoor staat overal de print-variant van Tailwind.
  */
 
-const BEWAARSLEUTEL = "kws-mosselfeest-wachtwoord";
-
-type Soort = "bonnen" | "keuken";
+type Soort = "bonnen" | "keuken" | "dag";
 
 export default function AfdrukClient() {
   const [wachtwoord, setWachtwoord] = useState("");
@@ -44,6 +43,8 @@ export default function AfdrukClient() {
   const [enkelOnbetaald, setEnkelOnbetaald] = useState(false);
   /** Eén bepaalde inschrijving, via ?nr= in het adres. */
   const [enkelNummer, setEnkelNummer] = useState<number | null>(null);
+  /** Of via een klik op een bonnetje in de lijst hieronder. */
+  const [enkelKenmerk, setEnkelKenmerk] = useState<string | null>(null);
   const [autoAfdrukken, setAutoAfdrukken] = useState(false);
 
   // Het adres uitlezen doen we hier en niet met useSearchParams: dan blijft
@@ -75,11 +76,7 @@ export default function AfdrukClient() {
       const gegevens = (await antwoord.json()) as { inschrijvingen: Inschrijving[] };
       setInschrijvingen(gegevens.inschrijvingen ?? []);
       setIngevoerd(geheim);
-      try {
-        sessionStorage.setItem(BEWAARSLEUTEL, geheim);
-      } catch {
-        // Geen opslag: dan vraagt de pagina het de volgende keer opnieuw.
-      }
+      bewaarWachtwoord(geheim);
     } catch {
       setFout("De lijst kon niet opgehaald worden.");
     } finally {
@@ -88,23 +85,19 @@ export default function AfdrukClient() {
   }, []);
 
   useEffect(() => {
-    let bewaard: string | null = null;
-    try {
-      bewaard = sessionStorage.getItem(BEWAARSLEUTEL);
-    } catch {
-      bewaard = null;
-    }
+    const bewaard = leesWachtwoord();
     if (bewaard) haal(bewaard);
   }, [haal]);
 
   const gekozen = useMemo(() => {
     const alles = inschrijvingen ?? [];
+    if (enkelKenmerk !== null) return alles.filter((i) => i.kenmerk === enkelKenmerk);
     if (enkelNummer !== null) return alles.filter((i) => i.kaartnummer === enkelNummer);
     return alles
       .filter((i) => (welkeZitting === "alle" ? true : (i.zitting || "zonder") === welkeZitting))
       .filter((i) => (enkelOnbetaald ? !i.betaald : true))
       .sort((a, b) => (a.kaartnummer ?? Number.MAX_SAFE_INTEGER) - (b.kaartnummer ?? Number.MAX_SAFE_INTEGER));
-  }, [inschrijvingen, welkeZitting, enkelOnbetaald, enkelNummer]);
+  }, [inschrijvingen, welkeZitting, enkelOnbetaald, enkelNummer, enkelKenmerk]);
 
   // Eén bonnetje dat met ?print=1 geopend wordt, drukt zichzelf af. Zo is het
   // aan de kassa één klik in plaats van drie.
@@ -177,13 +170,17 @@ export default function AfdrukClient() {
       {/* De keuzebalk, enkel op het scherm. */}
       <div className="border-b border-zand-200 bg-white print:hidden">
         <div className="container-custom flex flex-wrap items-end gap-4 py-4">
-          {enkelNummer !== null && (
+          {(enkelNummer !== null || enkelKenmerk !== null) && (
             <div className="w-full">
               <p className="text-sm text-slate-600">
-                Eén bonnetje, kaartnummer <strong>{enkelNummer}</strong>.{" "}
+                Eén bonnetje
+                {gekozen[0]?.kaartnummer ? `, kaartnummer ${gekozen[0].kaartnummer}` : ""}.{" "}
                 <button
                   type="button"
-                  onClick={() => setEnkelNummer(null)}
+                  onClick={() => {
+                    setEnkelNummer(null);
+                    setEnkelKenmerk(null);
+                  }}
                   className="text-primary underline"
                 >
                   Toon toch de hele lijst
@@ -191,13 +188,14 @@ export default function AfdrukClient() {
               </p>
             </div>
           )}
-          <div>
+          <div className={enkelNummer !== null || enkelKenmerk !== null ? "hidden" : ""}>
             <p className="text-xs uppercase tracking-wide text-slate-500">Wat</p>
             <div className="mt-1 flex gap-2">
               {(
                 [
                   { id: "bonnen" as const, label: "Bonnetjes per inschrijving" },
                   { id: "keuken" as const, label: "Keukenlijst per zitting" },
+                  { id: "dag" as const, label: "Wat voorzien per dag" },
                 ]
               ).map((k) => (
                 <button
@@ -217,7 +215,11 @@ export default function AfdrukClient() {
             </div>
           </div>
 
-          <label className="block">
+          <label
+            className={
+              "block " + (enkelNummer !== null || enkelKenmerk !== null ? "hidden" : "")
+            }
+          >
             <span className="text-xs uppercase tracking-wide text-slate-500">Zitting</span>
             <select
               value={welkeZitting}
@@ -234,7 +236,12 @@ export default function AfdrukClient() {
             </select>
           </label>
 
-          <label className="flex items-center gap-2 pb-2 text-sm text-slate-600">
+          <label
+            className={
+              "flex items-center gap-2 pb-2 text-sm text-slate-600 " +
+              (enkelNummer !== null || enkelKenmerk !== null ? "hidden" : "")
+            }
+          >
             <input
               type="checkbox"
               checked={enkelOnbetaald}
@@ -245,7 +252,9 @@ export default function AfdrukClient() {
           </label>
 
           <div className="ml-auto flex items-center gap-3 pb-1">
-            <span className="text-sm text-slate-500">{gekozen.length} inschrijvingen</span>
+            <span className="text-sm text-slate-500">
+              {gekozen.length} inschrijving{gekozen.length === 1 ? "" : "en"}
+            </span>
             <button type="button" onClick={() => window.print()} className="btn-primary">
               <Printer className="mr-2 h-4 w-4" />
               Afdrukken
@@ -255,18 +264,27 @@ export default function AfdrukClient() {
       </div>
 
       <div className="container-custom py-6 print:px-0 print:py-0">
-        {soort === "bonnen" ? (
-          <Bonnen lijst={gekozen} />
+        {enkelNummer !== null || enkelKenmerk !== null || soort === "bonnen" ? (
+          <Bonnen lijst={gekozen} onEnkel={setEnkelKenmerk} />
+        ) : soort === "dag" ? (
+          <PerDag lijst={gekozen} />
         ) : (
-          <Keukenlijst lijst={gekozen} welkeZitting={welkeZitting} />
+          <Keukenlijst lijst={gekozen} />
         )}
       </div>
     </main>
   );
 }
 
-/** Eén kadertje per inschrijving, vier per blad. */
-function Bonnen({ lijst }: { lijst: Inschrijving[] }) {
+/** Eén kadertje per inschrijving. */
+function Bonnen({
+  lijst,
+  onEnkel,
+}: {
+  lijst: Inschrijving[];
+  /** Enkel dit bonnetje tonen, om het apart af te drukken. */
+  onEnkel?: (kenmerk: string) => void;
+}) {
   if (lijst.length === 0) {
     return <p className="text-sm text-slate-500">Geen inschrijvingen die hieraan voldoen.</p>;
   }
@@ -293,6 +311,19 @@ function Bonnen({ lijst }: { lijst: Inschrijving[] }) {
                 </p>
               </div>
               <div className="text-right text-xs text-slate-600 print:text-lg">
+                {onEnkel && lijst.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onEnkel(i.kenmerk);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="mb-1 inline-flex items-center gap-1 rounded-lg border border-zand-300 px-2 py-1 text-xs text-slate-600 transition hover:border-primary hover:text-primary print:hidden"
+                  >
+                    <Printer className="h-3 w-3" />
+                    Enkel deze
+                  </button>
+                )}
                 <p className="font-semibold print:text-xl">{zitting?.kort ?? "zonder zitting"}</p>
                 {zitting && isAfhalen(zitting.id) && (
                   <p className="font-bold uppercase text-slate-900">Afhalen</p>
@@ -336,11 +367,16 @@ function Bonnen({ lijst }: { lijst: Inschrijving[] }) {
 }
 
 /** Per zitting de totalen per gerecht, met de namen eronder. */
-function Keukenlijst({ lijst, welkeZitting }: { lijst: Inschrijving[]; welkeZitting: string }) {
-  const zittingen =
-    welkeZitting === "alle"
-      ? [...EVENEMENT.zittingen.map((z) => z.id), "zonder"]
-      : [welkeZitting];
+function Keukenlijst({ lijst }: { lijst: Inschrijving[] }) {
+  // De zittingen die echt in deze lijst voorkomen, in de volgorde van de kaart.
+  const aanwezig = new Set(lijst.map((i) => i.zitting || "zonder"));
+  const zittingen = [...EVENEMENT.zittingen.map((z) => z.id), "zonder"].filter((id) =>
+    aanwezig.has(id),
+  );
+
+  if (lijst.length === 0) {
+    return <p className="text-sm text-slate-500">Geen inschrijvingen die hieraan voldoen.</p>;
+  }
 
   return (
     <div className="space-y-8">
@@ -386,24 +422,24 @@ function Keukenlijst({ lijst, welkeZitting }: { lijst: Inschrijving[]; welkeZitt
             <table className="mt-4 w-full border-collapse text-sm">
               <thead>
                 <tr className="border-b border-slate-300 text-left text-xs uppercase text-slate-500">
-                  <th className="w-16 py-1">Nr.</th>
-                  <th className="py-1">Naam</th>
-                  <th className="py-1">Bestelling</th>
-                  <th className="w-20 py-1 text-right">Bedrag</th>
-                  <th className="w-20 py-1">Betaald</th>
+                  <th className="w-14 py-1 pr-3">Nr.</th>
+                  <th className="py-1 pr-3">Naam</th>
+                  <th className="py-1 pr-3">Bestelling</th>
+                  <th className="w-24 py-1 pr-4 text-right">Bedrag</th>
+                  <th className="w-28 py-1">Betaald</th>
                 </tr>
               </thead>
               <tbody>
                 {vanZitting.map((i) => (
                   <tr key={i.kenmerk} className="border-b border-slate-100 align-top">
-                    <td className="py-1 font-bold">{i.kaartnummer ?? "-"}</td>
-                    <td className="py-1">{volledigeNaam(i)}</td>
-                    <td className="py-1 text-slate-700">
+                    <td className="py-1 pr-3 font-bold">{i.kaartnummer ?? "-"}</td>
+                    <td className="py-1 pr-3">{volledigeNaam(i)}</td>
+                    <td className="py-1 pr-3 text-slate-700">
                       {GERECHTEN.filter((g) => (i.aantallen[g.id] ?? 0) > 0)
                         .map((g) => `${i.aantallen[g.id]} ${g.kort ?? g.naam}`)
                         .join(", ")}
                     </td>
-                    <td className="py-1 text-right">{euro(i.bedrag)}</td>
+                    <td className="py-1 pr-4 text-right">{euro(i.bedrag)}</td>
                     <td className={"py-1 " + (i.betaald ? "text-green-700" : "font-bold text-primary")}>
                       {i.betaald ? "ja" : reedsBetaald(i) > 0 ? `nog ${euro(openstaand(i))}` : "nee"}
                     </td>
@@ -415,5 +451,90 @@ function Keukenlijst({ lijst, welkeZitting }: { lijst: Inschrijving[]; welkeZitt
         );
       })}
     </div>
+  );
+}
+
+/**
+ * Wat er per dag voorzien moet worden.
+ *
+ * Het blad om mee te nemen naar de winkel: per gerecht wat vrijdag nodig heeft,
+ * wat zaterdag nodig heeft, en het geheel. Porties van een inschrijving zonder
+ * zitting horen bij geen van beide dagen en staan apart, zodat ze niet stil
+ * verdwijnen.
+ */
+function PerDag({ lijst }: { lijst: Inschrijving[] }) {
+  if (lijst.length === 0) {
+    return <p className="text-sm text-slate-500">Geen inschrijvingen die hieraan voldoen.</p>;
+  }
+
+  const totalen = telOp(lijst);
+  const zonderDag =
+    totalen.porties -
+    Object.values(totalen.perDagGerecht.vrijdag).reduce((a, b) => a + b, 0) -
+    Object.values(totalen.perDagGerecht.zaterdag).reduce((a, b) => a + b, 0);
+
+  return (
+    <section>
+      <div className="flex items-baseline justify-between border-b-2 border-inkt-900 pb-1">
+        <h2 className="font-display text-xl font-bold text-inkt-900">
+          Wat er voorzien moet worden
+        </h2>
+        <p className="text-sm text-slate-600">
+          {totalen.inschrijvingen} inschrijving{totalen.inschrijvingen === 1 ? "" : "en"},{" "}
+          {totalen.porties} porties
+        </p>
+      </div>
+
+      <table className="mt-3 w-full border-collapse text-sm print:text-base">
+        <thead>
+          <tr className="border-b border-slate-300 text-left text-xs uppercase text-slate-500">
+            <th className="py-1 pr-3">Gerecht</th>
+            <th className="w-28 py-1 pr-3 text-right">Vrijdag 23</th>
+            <th className="w-28 py-1 pr-3 text-right">Zaterdag 24</th>
+            {zonderDag > 0 && <th className="w-28 py-1 pr-3 text-right">Zonder dag</th>}
+            <th className="w-24 py-1 text-right">Totaal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {GROEPEN.map((groep) => {
+            const gerechten = gerechtenVan(groep.id);
+            if (gerechten.length === 0) return null;
+            return (
+              <Fragment key={groep.id}>
+                <tr>
+                  <td colSpan={zonderDag > 0 ? 5 : 4} className="pt-3 pb-1">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      {groep.titel}
+                    </span>
+                  </td>
+                </tr>
+                {gerechten.map((g) => {
+                  const vrijdag = totalen.perDagGerecht.vrijdag[g.id] ?? 0;
+                  const zaterdag = totalen.perDagGerecht.zaterdag[g.id] ?? 0;
+                  const totaal = totalen.perGerecht[g.id] ?? 0;
+                  return (
+                    <tr key={g.id} className="border-b border-slate-100">
+                      <td className="py-1 pr-3">{g.naam}</td>
+                      <td className="py-1 pr-3 text-right">{vrijdag || ""}</td>
+                      <td className="py-1 pr-3 text-right">{zaterdag || ""}</td>
+                      {zonderDag > 0 && (
+                        <td className="py-1 pr-3 text-right text-slate-500">
+                          {totaal - vrijdag - zaterdag || ""}
+                        </td>
+                      )}
+                      <td className="py-1 text-right font-bold">{totaal}</td>
+                    </tr>
+                  );
+                })}
+              </Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+
+      <p className="mt-4 text-xs text-slate-500">
+        Afhalen telt mee bij de dag waarop er afgehaald wordt.
+      </p>
+    </section>
   );
 }

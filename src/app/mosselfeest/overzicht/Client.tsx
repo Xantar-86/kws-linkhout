@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   ArrowDown,
@@ -26,6 +26,7 @@ import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mossel
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { KaartToevoegen } from "./KaartToevoegen";
 import { Bewerken } from "./Bewerken";
+import { bewaarWachtwoord, leesWachtwoord, vergeetWachtwoord } from "../toegang";
 
 /**
  * Het overzicht van de inschrijvingen, voor de organisatoren.
@@ -39,7 +40,6 @@ import { Bewerken } from "./Bewerken";
  * tabblad, dan is het weg.
  */
 
-const BEWAARSLEUTEL = "kws-mosselfeest-wachtwoord";
 
 /**
  * Hoelang een wijziging van dit scherm voorrang krijgt op wat de server zegt.
@@ -134,11 +134,7 @@ export default function OverzichtClient() {
       if (antwoord.status === 401) {
         setFout("Dat wachtwoord klopt niet.");
         setIngevoerd(null);
-        try {
-          sessionStorage.removeItem(BEWAARSLEUTEL);
-        } catch {
-          // Geen opslag beschikbaar: dan vraagt de pagina het straks opnieuw.
-        }
+        vergeetWachtwoord();
         return;
       }
       if (!antwoord.ok) {
@@ -148,11 +144,7 @@ export default function OverzichtClient() {
       const gegevens = (await antwoord.json()) as { inschrijvingen: Inschrijving[] };
       setInschrijvingen(metEigenWijzigingen(gegevens.inschrijvingen ?? []));
       setIngevoerd(geheim);
-      try {
-        sessionStorage.setItem(BEWAARSLEUTEL, geheim);
-      } catch {
-        // Niet kunnen bewaren is geen ramp, enkel wat onhandiger.
-      }
+      bewaarWachtwoord(geheim);
     } catch {
       setFout("Het overzicht kon niet opgehaald worden.");
     } finally {
@@ -162,12 +154,7 @@ export default function OverzichtClient() {
 
   // Eén keer bij het openen: stond het wachtwoord nog in dit tabblad?
   useEffect(() => {
-    let bewaard: string | null = null;
-    try {
-      bewaard = sessionStorage.getItem(BEWAARSLEUTEL);
-    } catch {
-      bewaard = null;
-    }
+    const bewaard = leesWachtwoord();
     if (bewaard) haal(bewaard);
   }, [haal]);
 
@@ -177,6 +164,17 @@ export default function OverzichtClient() {
     () => (inschrijvingen ? telOp(inschrijvingen) : undefined),
     [inschrijvingen],
   );
+
+  /**
+   * Porties die aan geen enkele dag toegewezen zijn, omdat de zitting nog niet
+   * ingevuld is. Die tonen we apart zodat ze niet stil uit de dagtotalen
+   * verdwijnen.
+   */
+  const zonderDag = totalen
+    ? totalen.porties -
+      Object.values(totalen.perDagGerecht.vrijdag).reduce((a, b) => a + b, 0) -
+      Object.values(totalen.perDagGerecht.zaterdag).reduce((a, b) => a + b, 0)
+    : 0;
 
   /** Een bijgewerkte inschrijving meteen in beeld zetten. */
   function nabewerking(bijgewerkt: Inschrijving) {
@@ -339,6 +337,17 @@ export default function OverzichtClient() {
             <p className="text-xs text-white/70">{EVENEMENT.datumTekst}</p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                vergeetWachtwoord();
+                setIngevoerd(null);
+                setInschrijvingen(null);
+              }}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+            >
+              Afmelden
+            </button>
             <a
               href="/mosselfeest/kassa"
               className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
@@ -444,45 +453,82 @@ export default function OverzichtClient() {
             </div>
 
             <section className="rounded-2xl border border-zand-200/70 bg-white p-5 shadow-blad sm:p-7">
-              <h2 className="mb-4 font-display text-lg font-bold text-inkt-900">
-                Wat er besteld moet worden
+              <h2 className="mb-1 font-display text-lg font-bold text-inkt-900">
+                Wat er voorzien moet worden
               </h2>
-              <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
-                {GROEPEN.map((groep) => {
-                  const gerechten = gerechtenVan(groep.id);
-                  if (gerechten.length === 0) return null;
-                  return (
-                    <div key={groep.id}>
-                      <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        {groep.titel}
-                      </p>
-                      <div className="divide-y divide-zand-200">
-                        {gerechten.map((g) => {
-                          const aantal = totalen.perGerecht[g.id] ?? 0;
-                          return (
-                            <div key={g.id} className="flex items-baseline justify-between gap-4 py-2">
-                              <span
-                                className={
-                                  "text-sm " + (aantal > 0 ? "text-inkt-900" : "text-slate-400")
-                                }
-                              >
-                                {g.naam}
+              <p className="mb-4 text-sm text-slate-500">
+                Per dag, zodat je weet wat er die dag klaar moet staan. De kolom Totaal is wat je
+                in het geheel nodig hebt.
+              </p>
+
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-96 border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-zand-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                      <th className="py-2 pr-3">Gerecht</th>
+                      <th className="w-24 py-2 pr-3 text-right">Vrijdag</th>
+                      <th className="w-24 py-2 pr-3 text-right">Zaterdag</th>
+                      {zonderDag > 0 && (
+                        <th className="w-28 py-2 pr-3 text-right">Zonder dag</th>
+                      )}
+                      <th className="w-20 py-2 text-right">Totaal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {GROEPEN.map((groep) => {
+                      const gerechten = gerechtenVan(groep.id);
+                      if (gerechten.length === 0) return null;
+                      return (
+                        <Fragment key={groep.id}>
+                          <tr>
+                            <td colSpan={zonderDag > 0 ? 5 : 4} className="pt-4 pb-1">
+                              <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                                {groep.titel}
                               </span>
-                              <span
-                                className={
-                                  "shrink-0 font-display text-lg font-bold " +
-                                  (aantal > 0 ? "text-inkt-900" : "text-slate-300")
-                                }
-                              >
-                                {aantal}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
+                            </td>
+                          </tr>
+                          {gerechten.map((g) => {
+                            const vrijdag = totalen.perDagGerecht.vrijdag[g.id] ?? 0;
+                            const zaterdag = totalen.perDagGerecht.zaterdag[g.id] ?? 0;
+                            const totaal = totalen.perGerecht[g.id] ?? 0;
+                            const rest = totaal - vrijdag - zaterdag;
+                            return (
+                              <tr key={g.id} className="border-b border-zand-100">
+                                <td
+                                  className={
+                                    "py-1.5 pr-3 " +
+                                    (totaal > 0 ? "text-inkt-900" : "text-slate-400")
+                                  }
+                                >
+                                  {g.naam}
+                                </td>
+                                <td className="py-1.5 pr-3 text-right text-slate-700">
+                                  {vrijdag || ""}
+                                </td>
+                                <td className="py-1.5 pr-3 text-right text-slate-700">
+                                  {zaterdag || ""}
+                                </td>
+                                {zonderDag > 0 && (
+                                  <td className="py-1.5 pr-3 text-right text-slate-500">
+                                    {rest || ""}
+                                  </td>
+                                )}
+                                <td
+                                  className={
+                                    "py-1.5 text-right font-bold " +
+                                    (totaal > 0 ? "text-inkt-900" : "text-slate-300")
+                                  }
+                                >
+                                  {totaal}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
 
               <div className="mt-6 border-t border-zand-200 pt-4">
@@ -657,7 +703,6 @@ export default function OverzichtClient() {
                               window.open(
                                 `/mosselfeest/afdruk?nr=${i.kaartnummer}&print=1`,
                                 "_blank",
-                                "noopener",
                               )
                             }
                             aria-label={`Bonnetje van ${volledigeNaam(i)} afdrukken`}

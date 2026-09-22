@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AlertCircle, Check, Loader2, LockKeyhole, RefreshCw } from "lucide-react";
 import { GROEPEN, gerechtenVan } from "@/lib/mosselfeest/kaart";
+import { bewaarWachtwoord, leesWachtwoord } from "../toegang";
 
 /**
  * Voorzien tegenover besteld, per dag.
@@ -14,7 +15,6 @@ import { GROEPEN, gerechtenVan } from "@/lib/mosselfeest/kaart";
  * voorzien en moet er bijgekocht worden.
  */
 
-const BEWAARSLEUTEL = "kws-mosselfeest-wachtwoord";
 const DAGEN = [
   { id: "vrijdag", label: "Vrijdag 23 oktober" },
   { id: "zaterdag", label: "Zaterdag 24 oktober" },
@@ -60,11 +60,7 @@ export default function VoorraadClient() {
       });
       setBesteld(gegevens.besteld ?? { vrijdag: {}, zaterdag: {} });
       setIngevoerd(geheim);
-      try {
-        sessionStorage.setItem(BEWAARSLEUTEL, geheim);
-      } catch {
-        // Geen opslag beschikbaar, niet erg.
-      }
+      bewaarWachtwoord(geheim);
     } catch {
       setFout("De voorraad kon niet opgehaald worden.");
     } finally {
@@ -73,12 +69,7 @@ export default function VoorraadClient() {
   }, []);
 
   useEffect(() => {
-    let bewaard: string | null = null;
-    try {
-      bewaard = sessionStorage.getItem(BEWAARSLEUTEL);
-    } catch {
-      bewaard = null;
-    }
+    const bewaard = leesWachtwoord();
     if (bewaard) haal(bewaard);
   }, [haal]);
 

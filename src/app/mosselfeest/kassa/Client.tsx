@@ -15,6 +15,7 @@ import { EVENEMENT, GERECHTEN, euro, isAfhalen } from "@/lib/mosselfeest/kaart";
 import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { Bewerken } from "../overzicht/Bewerken";
+import { bewaarWachtwoord, leesWachtwoord } from "../toegang";
 
 /**
  * Het avondscherm, voor aan de kassa.
@@ -32,7 +33,6 @@ import { Bewerken } from "../overzicht/Bewerken";
  * achter, en op een drukke avond wil je geen regel zien terugspringen.
  */
 
-const BEWAARSLEUTEL = "kws-mosselfeest-wachtwoord";
 const VOORRANG_MS = 90_000;
 
 interface Wijziging {
@@ -92,11 +92,7 @@ export default function KassaClient() {
         const gegevens = (await antwoord.json()) as { inschrijvingen: Inschrijving[] };
         setInschrijvingen(metEigenWijzigingen(gegevens.inschrijvingen ?? []));
         setIngevoerd(geheim);
-        try {
-          sessionStorage.setItem(BEWAARSLEUTEL, geheim);
-        } catch {
-          // Geen opslag beschikbaar, dan vraagt de pagina het straks opnieuw.
-        }
+        bewaarWachtwoord(geheim);
       } catch {
         setFout("De lijst kon niet opgehaald worden.");
       } finally {
@@ -107,12 +103,7 @@ export default function KassaClient() {
   );
 
   useEffect(() => {
-    let bewaard: string | null = null;
-    try {
-      bewaard = sessionStorage.getItem(BEWAARSLEUTEL);
-    } catch {
-      bewaard = null;
-    }
+    const bewaard = leesWachtwoord();
     if (bewaard) haal(bewaard);
   }, [haal]);
 
@@ -445,7 +436,6 @@ export default function KassaClient() {
                       window.open(
                         `/mosselfeest/afdruk?nr=${gekozen.kaartnummer}&print=1`,
                         "_blank",
-                        "noopener",
                       )
                     }
                     className="flex items-center justify-center gap-2 rounded-2xl border-2 border-zand-300 px-6 py-5 text-base font-semibold text-slate-700 transition hover:border-slate-400"
