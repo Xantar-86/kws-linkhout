@@ -271,24 +271,29 @@ function Bonnen({ lijst }: { lijst: Inschrijving[] }) {
     return <p className="text-sm text-slate-500">Geen inschrijvingen die hieraan voldoen.</p>;
   }
 
+  // Op papier onder elkaar en over de volle breedte: in de keuken moet zo'n
+  // bonnetje van op een afstand leesbaar zijn. Op het scherm blijven het er
+  // twee naast elkaar, want daar wil je overzicht.
   return (
-    <div className="grid gap-4 sm:grid-cols-2 print:gap-2">
+    <div className="grid gap-4 sm:grid-cols-2 print:grid-cols-1 print:gap-5">
       {lijst.map((i) => {
         const zitting = EVENEMENT.zittingen.find((z) => z.id === i.zitting);
         return (
           <div
             key={i.kenmerk}
-            className="break-inside-avoid rounded-xl border-2 border-dashed border-slate-400 bg-white p-4 print:rounded-none"
+            className="break-inside-avoid rounded-xl border-2 border-dashed border-slate-400 bg-white p-4 print:rounded-none print:p-6"
           >
             <div className="flex items-start justify-between gap-3 border-b border-slate-200 pb-2">
               <div>
-                <p className="font-display text-2xl font-bold leading-none text-inkt-900">
+                <p className="font-display text-2xl font-bold leading-none text-inkt-900 print:text-5xl">
                   {i.kaartnummer ?? "-"}
                 </p>
-                <p className="mt-1 text-sm font-semibold text-inkt-900">{volledigeNaam(i)}</p>
+                <p className="mt-1 text-sm font-semibold text-inkt-900 print:mt-2 print:text-2xl">
+                  {volledigeNaam(i)}
+                </p>
               </div>
-              <div className="text-right text-xs text-slate-600">
-                <p className="font-semibold">{zitting?.kort ?? "zonder zitting"}</p>
+              <div className="text-right text-xs text-slate-600 print:text-lg">
+                <p className="font-semibold print:text-xl">{zitting?.kort ?? "zonder zitting"}</p>
                 {zitting && isAfhalen(zitting.id) && (
                   <p className="font-bold uppercase text-slate-900">Afhalen</p>
                 )}
@@ -302,23 +307,25 @@ function Bonnen({ lijst }: { lijst: Inschrijving[] }) {
               </div>
             </div>
 
-            <table className="mt-2 w-full text-sm">
+            <table className="mt-2 w-full text-sm print:mt-4 print:text-xl">
               <tbody>
                 {GERECHTEN.filter((g) => (i.aantallen[g.id] ?? 0) > 0).map((g) => (
                   <tr key={g.id}>
-                    <td className="w-8 py-0.5 font-bold text-inkt-900">{i.aantallen[g.id]}</td>
-                    <td className="py-0.5 text-slate-700">{g.naam}</td>
+                    <td className="w-8 py-0.5 font-bold text-inkt-900 print:w-14 print:py-1 print:text-2xl">
+                      {i.aantallen[g.id]}
+                    </td>
+                    <td className="py-0.5 text-slate-700 print:py-1">{g.naam}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
             {i.opmerking && (
-              <p className="mt-2 border-t border-slate-200 pt-1 text-xs italic text-slate-600">
+              <p className="mt-2 border-t border-slate-200 pt-1 text-xs italic text-slate-600 print:text-base">
                 {i.opmerking}
               </p>
             )}
-            <p className="mt-2 text-right text-sm font-bold text-inkt-900">
+            <p className="mt-2 text-right text-sm font-bold text-inkt-900 print:mt-3 print:text-2xl">
               {euro(i.bedrag)} euro
             </p>
           </div>
