@@ -355,10 +355,10 @@ export default function OverzichtClient() {
               Avondscherm
             </a>
             <a
-              href="/mosselfeest/voorraad"
+              href="/mosselfeest/leftovers"
               className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
             >
-              Voorraad
+              LeftOvers
             </a>
             <a
               href="/mosselfeest/afdruk"

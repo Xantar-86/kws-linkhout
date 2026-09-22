@@ -158,10 +158,10 @@ export default function AfdrukClient() {
               Avondscherm
             </a>
             <a
-              href="/mosselfeest/voorraad"
+              href="/mosselfeest/leftovers"
               className="rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
             >
-              Voorraad
+              LeftOvers
             </a>
           </div>
         </div>

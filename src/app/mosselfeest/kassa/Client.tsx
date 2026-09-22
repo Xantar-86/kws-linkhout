@@ -203,10 +203,10 @@ export default function KassaClient() {
           </div>
           <div className="flex gap-2">
             <a
-              href="/mosselfeest/voorraad"
+              href="/mosselfeest/leftovers"
               className="rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
             >
-              Voorraad
+              LeftOvers
             </a>
             <a
               href="/mosselfeest/afdruk"

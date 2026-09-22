@@ -37,6 +37,14 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       { source: '/clubinfo/sectie', destination: '/clubinfo', permanent: true },
+      // Het blad met wat er per dag nodig is heette eerst "voorraad". Het
+      // bestuur noemt dat al jaren LeftOvers, dus heet het nu zo; wie de oude
+      // link nog heeft, komt op de juiste pagina uit.
+      {
+        source: '/mosselfeest/voorraad',
+        destination: '/mosselfeest/leftovers',
+        permanent: false,
+      },
       // En voor de nieuwsartikels.
       {
         source: '/nieuws/artikel',
