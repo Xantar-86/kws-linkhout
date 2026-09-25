@@ -44,13 +44,15 @@ const AFFICHES: Affiche[] = [
     tot: new Date("2026-10-01T00:00:00+02:00"),
   },
   {
-    id: "ref-in-1-day",
-    beeld: "/images/social/pop-up referee.jpeg",
-    tekst: "Ref in 1 Day: word scheidsrechter, zaterdag 3 oktober 2026 in Sint-Truiden",
-    breedte: 831,
-    hoogte: 1209,
-    // Tot en met zaterdag 3 oktober 2026; vanaf de vierde blijft het weg.
-    tot: new Date("2026-10-04T00:00:00+02:00"),
+    id: "dag-van-de-sportclub",
+    beeld: "/images/nieuws/Dag van de sportclub.jpeg",
+    tekst:
+      "Dag van de Sportclub op woensdag 30 september: trek je KWS Linkhout-outfit " +
+      "aan en ga er in stijl mee naar school.",
+    breedte: 1024,
+    hoogte: 1536,
+    // De dag zelf is woensdag 30 september; op 1 oktober hangt het affiche weg.
+    tot: new Date("2026-10-01T00:00:00+02:00"),
   },
 ];
 
