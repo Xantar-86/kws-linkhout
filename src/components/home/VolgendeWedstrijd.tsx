@@ -6,9 +6,6 @@ import { ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
 import { varianten } from "@/lib/beweging";
 import type { WedstrijdEvent } from "@/types";
 
-const DAGEN = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
-const MAANDEN = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
-
 /**
  * De eerstvolgende wedstrijd van één ploeg, als kaart.
  *
@@ -141,53 +138,145 @@ export function VolgendeWedstrijd({
     );
   }
 
-  const dag = DAGEN[wedstrijd.start.getDay()];
-  const dagNummer = wedstrijd.start.getDate();
-  const maand = MAANDEN[wedstrijd.start.getMonth()];
-  const uur = wedstrijd.start.getHours().toString().padStart(2, "0");
-  const minuten = wedstrijd.start.getMinutes().toString().padStart(2, "0");
+  const zone = "Europe/Brussels";
+  const datum = wedstrijd.start.toLocaleDateString("nl-BE", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: zone,
+  });
+  const aftrap = wedstrijd.start.toLocaleTimeString("nl-BE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: zone,
+  });
+  const wanneer = relatief(wedstrijd.start);
+
+  const [thuis, uit] = ploegen(wedstrijd);
+  const eigenThuis = isEigen(thuis.naam);
+  const routeUrl = wedstrijd.location
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(wedstrijd.location)}`
+    : null;
 
   return (
     <Kaart>
-      {kop}
+      <div className="flex items-center justify-between gap-3">
+        {kop}
+        <span
+          className={
+            "rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide " +
+            (eigenThuis ? "bg-emerald-600 text-white" : "bg-gray-900 text-white")
+          }
+        >
+          {eigenThuis ? "Thuis" : "Uit"}
+        </span>
+      </div>
 
-      <div className="mt-6 flex flex-1 flex-col">
-        {/* De datum als blikvanger. Het dagnummer draagt het gewicht, de rest
-            staat eromheen: zo lees je in één oogopslag wanneer. */}
-        <div className="flex items-baseline gap-2.5">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
-            {dag}
-          </span>
-          <span className="font-display text-5xl font-extrabold leading-none tracking-tight text-gray-900">
-            {dagNummer}
-          </span>
-          <span className="text-sm font-semibold uppercase text-gray-500">{maand}</span>
-          <span className="ml-auto text-sm font-semibold tabular-nums text-gray-900">
-            {uur}:{minuten}
-          </span>
+      <div className="mt-5 flex flex-1 flex-col">
+        {/* Wanneer: voluit, zodat niemand "za 3 okt" hoeft te ontcijferen,
+            met het uur ernaast en hoelang het nog duurt. */}
+        <div className="rounded-xl bg-zand-50 px-4 py-3">
+          <p className="text-base font-bold capitalize leading-tight text-gray-900">{datum}</p>
+          <p className="mt-1 flex items-center justify-between gap-2 text-sm text-gray-600">
+            <span>
+              Aftrap <span className="font-bold tabular-nums text-gray-900">{aftrap}</span>
+            </span>
+            {wanneer && <span className={`font-semibold ${accent}`}>{wanneer}</span>}
+          </p>
         </div>
 
-        <h3 className="mt-4 text-base font-bold leading-snug text-gray-900">
-          {wedstrijd.summary}
-        </h3>
+        {/* Wie: de twee ploegen onder elkaar met hun logo, de thuisploeg
+            bovenaan zoals op elk wedstrijdblad. Onze ploeg in het vet. */}
+        <ul className="mt-4 space-y-2">
+          {[thuis, uit].map((p) => {
+            const eigen = isEigen(p.naam);
+            return (
+              <li key={p.naam} className="flex items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-zand-200 bg-white">
+                  {p.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.logo} alt="" loading="lazy" className="h-7 w-7 object-contain" />
+                  ) : null}
+                </span>
+                <span
+                  className={
+                    "min-w-0 truncate text-base " +
+                    (eigen ? "font-bold text-gray-900" : "font-medium text-gray-700")
+                  }
+                >
+                  {eigen ? "KWS Linkhout" : p.naam}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
 
         {wedstrijd.location && (
-          <p className="mt-2 flex items-start gap-1.5 text-sm text-gray-500">
+          <p className="mt-4 flex items-start gap-1.5 text-sm text-gray-500">
             <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             <span className="line-clamp-2">{wedstrijd.location}</span>
           </p>
         )}
 
-        <a
-          href={kalenderUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`group mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold ${accent}`}
-        >
-          Volledige kalender
-          <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
+        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-5 text-sm font-semibold">
+          {routeUrl && !eigenThuis && (
+            <a
+              href={routeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-1.5 text-gray-900 hover:underline"
+            >
+              Route
+              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </a>
+          )}
+          <a
+            href={kalenderUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`group inline-flex items-center gap-1.5 ${accent}`}
+          >
+            Volledige kalender
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </a>
+        </div>
       </div>
     </Kaart>
   );
+}
+
+/** De eigen ploeg heet bij de bond telkens anders ("WS Linkhout A", "W.S. LINKHOUT A"). */
+function isEigen(naam: string): boolean {
+  return /linkhout/i.test(naam);
+}
+
+/**
+ * Thuis- en uitploeg. De bond levert ze apart, met logo; bij een andere bron
+ * halen we ze uit de titel "Thuis - Uit".
+ */
+function ploegen(w: WedstrijdEvent): [{ naam: string; logo?: string }, { naam: string; logo?: string }] {
+  if (w.thuisNaam && w.uitNaam) {
+    return [
+      { naam: w.thuisNaam, logo: w.thuisLogo },
+      { naam: w.uitNaam, logo: w.uitLogo },
+    ];
+  }
+  const [a, b] = w.summary.split(/\s+-\s+/);
+  return [{ naam: a ?? w.summary }, { naam: b ?? "" }];
+}
+
+/** "Vandaag", "Morgen" of "Over 5 dagen", in kalenderdagen in België. */
+function relatief(start: Date): string | null {
+  const dagVan = (d: Date) => {
+    const [j, m, dd] = d
+      .toLocaleDateString("en-CA", { timeZone: "Europe/Brussels" })
+      .split("-")
+      .map(Number);
+    return Date.UTC(j, m - 1, dd) / 86_400_000;
+  };
+  const verschil = dagVan(start) - dagVan(new Date());
+  if (verschil < 0) return null;
+  if (verschil === 0) return "Vandaag";
+  if (verschil === 1) return "Morgen";
+  return `Over ${verschil} dagen`;
 }

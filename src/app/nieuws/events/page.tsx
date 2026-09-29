@@ -174,6 +174,11 @@ export default async function EventsPage() {
                           <MapPin className="w-4 h-4" />
                           <span>{event.location || "KWS Linkhout"}</span>
                         </div>
+                        {event.link && (
+                          <Link href={event.link} className="btn-primary mt-4 inline-flex">
+                            {event.linkTekst ?? "Meer weten"}
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>

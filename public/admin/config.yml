@@ -22,6 +22,8 @@ collections:
       - { label: Kleur, name: color, widget: select, options: [yellow, red, green, blue, orange, purple], default: yellow }
       - { label: Locatie, name: location, widget: string, default: KWS Linkhout }
       - { label: Afbeelding, name: image, widget: image, required: false }
+      - { label: Link, name: link, widget: string, required: false, hint: "bv. /mosselfeest; leeg = de evenementenpagina" }
+      - { label: Tekst op de knop, name: linkTekst, widget: string, required: false, hint: "bv. Schrijf je in" }
 
   - name: fotos
     label: Fotogalerij

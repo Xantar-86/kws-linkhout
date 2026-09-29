@@ -57,41 +57,62 @@ export function EvenementenSection({ events }: { events: Event[] }) {
             variants={varianten.groep(0.1)}
             className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
           >
-            {events.map((event) => (
-              <motion.li key={event.id} variants={varianten.lid} className="h-full">
-                <Link
-                  href="/nieuws/events"
-                  className="group block h-full focus:outline-none"
-                >
-                  <article className="kaart kaart-tilt flex h-full flex-col overflow-hidden">
-                    <div className={`bg-linear-to-r ${event.color} px-5 py-3.5`}>
-                      <div className="flex items-center justify-between gap-3">
-                        <CalendarDays
-                          className="h-4 w-4 text-white/70"
-                          aria-hidden="true"
-                        />
-                        <span className="text-sm font-semibold text-white">
-                          {event.date}
-                        </span>
-                      </div>
+            {events.map((event) => {
+              const kaart = (
+                <article className="kaart kaart-tilt flex h-full flex-col overflow-hidden">
+                  <div className={`bg-linear-to-r ${event.color} px-5 py-3.5`}>
+                    <div className="flex items-center justify-between gap-3">
+                      <CalendarDays className="h-4 w-4 text-white/70" aria-hidden="true" />
+                      <span className="text-sm font-semibold text-white">{event.date}</span>
                     </div>
+                  </div>
 
-                    <div className="flex flex-1 flex-col p-6">
-                      <h3 className="text-lg font-bold leading-snug text-gray-900 transition-colors duration-200 group-hover:text-primary">
-                        {event.title}
-                      </h3>
-                      <p className="mt-2.5 whitespace-pre-line text-sm leading-relaxed text-gray-600">
-                        {event.description}
-                      </p>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="text-lg font-bold leading-snug text-gray-900 transition-colors duration-200 group-hover:text-primary">
+                      {event.title}
+                    </h3>
+                    <p className="mt-2.5 whitespace-pre-line text-sm leading-relaxed text-gray-600">
+                      {event.description}
+                    </p>
+                    {event.link ? (
+                      // Een evenement met een eigen link, zoals de inschrijving
+                      // voor het mosselfeest: dat is een echte knop, want daar
+                      // moet de bezoeker naartoe. "Meer weten" blijft ernaast.
+                      <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-5">
+                        <Link href={event.link} className="btn-primary group/knop">
+                          {event.linkTekst ?? "Schrijf je in"}
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover/knop:translate-x-1" />
+                        </Link>
+                        <Link
+                          href="/nieuws/events"
+                          className="text-sm font-semibold text-gray-600 transition-colors hover:text-primary"
+                        >
+                          Meer weten
+                        </Link>
+                      </div>
+                    ) : (
                       <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-primary">
                         Meer weten
                         <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
-                    </div>
-                  </article>
-                </Link>
-              </motion.li>
-            ))}
+                    )}
+                  </div>
+                </article>
+              );
+              return (
+                <motion.li key={event.id} variants={varianten.lid} className="h-full">
+                  {/* Met twee knoppen kan de hele kaart geen link zijn: een
+                      link in een link mag niet. */}
+                  {event.link ? (
+                    <div className="group h-full">{kaart}</div>
+                  ) : (
+                    <Link href="/nieuws/events" className="group block h-full focus:outline-none">
+                      {kaart}
+                    </Link>
+                  )}
+                </motion.li>
+              );
+            })}
           </motion.ul>
         )}
 

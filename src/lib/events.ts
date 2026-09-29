@@ -7,6 +7,13 @@ export interface Event {
   color: string;
   location?: string;
   image?: string;
+  /**
+   * Waar de kaart naartoe gaat, bv. "/mosselfeest" voor de inschrijving.
+   * Zonder link gaat ze naar de evenementenpagina.
+   */
+  link?: string;
+  /** De tekst op die knop, bv. "Schrijf je in". */
+  linkTekst?: string;
   addedAt?: number;
   sortDate?: number;
   /** Laatste dag van het evenement; bij één dag gelijk aan sortDate. */
@@ -104,6 +111,8 @@ async function loadEvents(): Promise<Event[]> {
         color: colorOptions[data.color] || colorOptions.primary,
         location: data.location || "KWS Linkhout",
         image: data.image || undefined,
+        link: data.link || undefined,
+        linkTekst: data.linkTekst || undefined,
         addedAt: getLastCommitTime(filePath),
         sortDate: parseDutchDate(data.dateFull || data.date || ""),
         eindDate: parseDutchDate(data.dateFull || data.date || "", true),

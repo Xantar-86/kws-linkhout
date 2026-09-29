@@ -167,6 +167,18 @@ collections:
         required: false
         hint: "Optionele afbeelding voor het evenement"
 
+      - label: Link
+        name: link
+        widget: string
+        required: false
+        hint: "Waar de kaart naartoe gaat, bv. /mosselfeest. Leeg = de evenementenpagina"
+
+      - label: Tekst op de knop
+        name: linkTekst
+        widget: string
+        required: false
+        hint: "Bijvoorbeeld: 'Schrijf je in'"
+
   # Krantenartikelen
   - name: press
     label: "In de Krant"

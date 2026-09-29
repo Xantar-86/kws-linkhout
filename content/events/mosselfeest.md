@@ -6,4 +6,6 @@ description: Ons jaarlijkse mosselfeest in de kantine. Mosselen naar keuze, en
   voor wie geen mosselen lust is er een alternatief.
 color: orange
 location: KWS Linkhout
+link: /mosselfeest
+linkTekst: Schrijf je online in
 ---
