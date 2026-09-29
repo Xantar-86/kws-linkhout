@@ -86,6 +86,14 @@ export interface Inschrijving {
   betaaldBedrag?: number;
   /** Wanneer er afgevinkt is dat het geld binnen is (ISO). */
   betaaldOp?: string;
+  /**
+   * Of de kaart op de avond zelf behandeld is: de mensen zijn geweest en hun
+   * bestelling is doorgegeven. Zo zie je naar het einde toe hoeveel er nog
+   * moet komen. Staat los van betaald: wie vooraf overschreef, komt ook nog.
+   */
+  behandeld?: boolean;
+  /** Wanneer de kaart behandeld is (ISO). */
+  behandeldOp?: string;
 }
 
 /**
@@ -130,6 +138,11 @@ export interface Totalen {
   bedragTeveel: number;
   /** Inschrijvingen waarvan een deel betaald is, maar niet alles. */
   deelsBetaald: number;
+  /** Kaarten die op de avond al behandeld zijn. */
+  behandeld: number;
+  /** Kaarten die nog moeten komen, en hun porties. */
+  nogTeKomen: number;
+  portiesNogTeKomen: number;
   /** Per gerecht-id het totale aantal porties. */
   perGerecht: Record<string, number>;
   /**
@@ -138,7 +151,15 @@ export interface Totalen {
    */
   perZitting: Record<
     string,
-    { inschrijvingen: number; porties: number; plaatsen: number; max: number | null; vrij: number | null }
+    {
+      inschrijvingen: number;
+      porties: number;
+      plaatsen: number;
+      max: number | null;
+      vrij: number | null;
+      /** Hoeveel kaarten van deze zitting al behandeld zijn. */
+      behandeld: number;
+    }
   >;
 }
 
@@ -174,6 +195,9 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     bedragOpen: 0,
     bedragTeveel: 0,
     deelsBetaald: 0,
+    behandeld: 0,
+    nogTeKomen: 0,
+    portiesNogTeKomen: 0,
     perGerecht: Object.fromEntries(GERECHTEN.map((g) => [g.id, 0])),
     perZitting: Object.fromEntries(
       EVENEMENT.zittingen.map((z) => [
@@ -184,6 +208,7 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
           plaatsen: 0,
           max: z.max ?? null,
           vrij: z.max ?? null,
+          behandeld: 0,
         },
       ]),
     ),
@@ -198,6 +223,12 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
     const plaatsen = aantalPlaatsen(inschrijving.aantallen);
 
     totalen.perBron[inschrijving.bron ?? "online"] += 1;
+    if (inschrijving.behandeld) {
+      totalen.behandeld += 1;
+    } else {
+      totalen.nogTeKomen += 1;
+      totalen.portiesNogTeKomen += porties;
+    }
     totalen.porties += porties;
     totalen.plaatsen += plaatsen;
     totalen.bedrag += bedrag;
@@ -228,6 +259,7 @@ export function telOp(inschrijvingen: Inschrijving[]): Totalen {
       zitting.inschrijvingen += 1;
       zitting.porties += porties;
       zitting.plaatsen += plaatsen;
+      if (inschrijving.behandeld) zitting.behandeld += 1;
       if (zitting.max !== null) zitting.vrij = Math.max(0, zitting.max - zitting.plaatsen);
     }
   }

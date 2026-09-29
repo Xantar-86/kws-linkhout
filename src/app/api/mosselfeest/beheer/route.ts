@@ -9,6 +9,7 @@ import {
   schrapInschrijving,
   telOp,
   volgendKaartnummer,
+  zetBehandeld,
   zetBetaald,
   type Inschrijving,
 } from "@/lib/mosselfeest/opslag";
@@ -21,7 +22,8 @@ import {
 /**
  * Het beheer van de inschrijvingen, voor de overzichtspagina.
  *
- * GET geeft de totalen en de lijst. POST zet het vinkje "betaald", schrapt een
+ * GET geeft de totalen en de lijst. POST zet het vinkje "betaald" of
+ * "behandeld", schrapt een
  * inschrijving, of voegt er een toe die niet online gebeurd is: een kaart die
  * iemand heeft afgegeven, of een hele stapel als verzamelpost. Zo zit alles in
  * hetzelfde totaal en hoeft er nergens nog geteld te worden.
@@ -74,6 +76,7 @@ export async function POST(request: NextRequest) {
     actie?: string;
     kenmerk?: string;
     betaald?: boolean;
+    behandeld?: boolean;
   } & Partial<HandmatigeInvoer> & { telefoon?: string };
   try {
     body = (await request.json()) as typeof body;
@@ -155,6 +158,12 @@ export async function POST(request: NextRequest) {
 
   if (body.actie === "betaald") {
     const resultaat = await zetBetaald(kenmerk, body.betaald !== false);
+    if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 404 });
+    return NextResponse.json({ ok: true, inschrijving: resultaat.inschrijving });
+  }
+
+  if (body.actie === "behandeld") {
+    const resultaat = await zetBehandeld(kenmerk, body.behandeld !== false);
     if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 404 });
     return NextResponse.json({ ok: true, inschrijving: resultaat.inschrijving });
   }

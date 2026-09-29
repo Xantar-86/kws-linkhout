@@ -13,7 +13,9 @@ import { openstaand, reedsBetaald, telOp, type Inschrijving } from "./opslag";
  * Het bestand wordt bij elke aanvraag volledig opnieuw gemaakt uit de
  * inschrijvingen. Zet er dus zelf niets in wat je wil bewaren: je eigen
  * wijzigingen verdwijnen bij de volgende keer dat de wachter het bestand
- * ophaalt. Betaald afvinken doe je op de overzichtspagina, niet in Excel.
+ * ophaalt. Betaald en behandeld afvinken doe je op de overzichtspagina of het
+ * avondscherm, niet in Excel. Een behandelde kaart staat hier in het groen,
+ * zodat je ziet wie er nog moet komen.
  *
  * De totaalregel bovenaan "Inschrijvingen" gebruikt SUBTOTAL, zodat de
  * aantallen meerekenen met de filter: filter je op één zitting, dan zie je
@@ -23,6 +25,7 @@ import { openstaand, reedsBetaald, telOp, type Inschrijving } from "./opslag";
 const ROOD = "FFB91C1C";
 const ZAND = "FFF4F1EC";
 const WIT = "FFFFFFFF";
+const LICHTGROEN = "FFDCFCE7";
 
 function kopcel(cel: ExcelJS.Cell, tekst: string): void {
   cel.value = tekst;
@@ -52,6 +55,7 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     { width: 12 },
     { width: 12 },
     { width: 14 },
+    { width: 14 },
   ];
 
   o.getCell("A1").value = `${EVENEMENT.naam} ${EVENEMENT.jaar}`;
@@ -79,6 +83,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     ["Bedrag in totaal", totalen.bedrag, "euro"],
     ["Waarvan betaald", totalen.bedragBetaald, "euro"],
     ["Nog te ontvangen", totalen.bedragOpen, "euro"],
+    ["Kaarten behandeld", totalen.behandeld],
+    ["Kaarten nog te komen", totalen.nogTeKomen],
   ];
   for (const [label, waarde, eenheid] of kort) {
     o.getCell(`A${r}`).value = label;
@@ -96,6 +102,7 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   kopcel(o.getCell(`B${r}`), "Inschr.");
   kopcel(o.getCell(`C${r}`), "Plaatsen");
   kopcel(o.getCell(`D${r}`), "Nog vrij");
+  kopcel(o.getCell(`E${r}`), "Nog te komen");
   r += 1;
   for (const zitting of EVENEMENT.zittingen) {
     const cijfers = totalen.perZitting[zitting.id];
@@ -108,6 +115,12 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     o.getCell(`D${r}`).value = vrij === null ? "afhalen" : vrij;
     if (vrij !== null && vrij <= 10) {
       o.getCell(`D${r}`).font = { bold: true, color: { argb: ROOD } };
+    }
+    const nog = (cijfers?.inschrijvingen ?? 0) - (cijfers?.behandeld ?? 0);
+    o.getCell(`E${r}`).value = nog;
+    o.getCell(`E${r}`).font = { bold: nog > 0 };
+    if (nog === 0 && (cijfers?.inschrijvingen ?? 0) > 0) {
+      o.getCell(`E${r}`).fill = { type: "pattern", pattern: "solid", fgColor: { argb: LICHTGROEN } };
     }
     r += 1;
   }
@@ -155,6 +168,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     "Nog te betalen",
     "Betaald",
     "Betaald op",
+    "Behandeld",
+    "Behandeld op",
     "Ingevoerd door",
     "Opmerking",
   ];
@@ -218,6 +233,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
       Math.max(0, openstaand(inschrijving)),
       inschrijving.betaald ? "ja" : "nee",
       inschrijving.betaaldOp ? new Date(inschrijving.betaaldOp) : "",
+      inschrijving.behandeld ? "ja" : "nee",
+      inschrijving.behandeldOp ? new Date(inschrijving.behandeldOp) : "",
       inschrijving.ingevoerdDoor ?? "",
       inschrijving.opmerking ?? "",
     ];
@@ -226,6 +243,16 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     });
     rij.getCell(2).numFmt = "dd/mm/yyyy hh:mm";
     rij.getCell(koppen.indexOf("Betaald op") + 1).numFmt = "dd/mm/yyyy hh:mm";
+    rij.getCell(koppen.indexOf("Behandeld op") + 1).numFmt = "dd/mm/yyyy hh:mm";
+
+    // Een behandelde kaart kleurt de hele regel groen: wat wit blijft, moet
+    // nog komen. Filter op de kolom Behandeld voor enkel die lijst.
+    if (inschrijving.behandeld) {
+      for (let k = 1; k <= koppen.length; k++) {
+        rij.getCell(k).fill = { type: "pattern", pattern: "solid", fgColor: { argb: LICHTGROEN } };
+      }
+    }
+    rij.getCell(koppen.indexOf("Behandeld") + 1).alignment = { horizontal: "center" };
     for (const kop of ["Bedrag", "Reeds betaald", "Nog te betalen"]) {
       rij.getCell(koppen.indexOf(kop) + 1).numFmt = '#,##0.00';
     }

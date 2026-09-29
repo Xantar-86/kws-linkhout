@@ -118,6 +118,21 @@ kaartnummer of naam, Enter neemt de eerste treffer. Rechts staat de bestelling
 groot, met het bedrag en één brede knop om betaald af te vinken. Werkt ook op
 een tablet, waar de twee kolommen onder elkaar schuiven.
 
+## Behandeld afvinken
+
+Op de avond zelf vink je een kaart af als **behandeld** zodra de mensen er
+zijn. Dat staat los van betaald: wie vooraf overschreef, moet ook nog komen.
+
+- Op het avondscherm kies je bovenaan de zitting die bezig is. Per zitting
+  staat er "nog 12 van 80". Zonder zoekterm toont de lijst dan iedereen van
+  die zitting, met wie nog moet komen bovenaan. Zoeken gaat altijd over alle
+  zittingen, voor wie op het verkeerde uur komt.
+- Op het overzicht staat een kolom Behandeld, een kaartje "Nog te komen", per
+  zitting hoeveel er nog moet komen, en een filter op zitting en op "Enkel nog
+  te komen".
+- In het Excel-logboek is een behandelde regel groen, met kolommen Behandeld
+  en Behandeld op, en op het blad Overzicht per zitting "Nog te komen".
+
 ## Afdrukken
 
 `/mosselfeest/afdruk`, met twee soorten:

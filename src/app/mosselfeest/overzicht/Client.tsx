@@ -6,6 +6,7 @@ import {
   ArrowDown,
   ArrowUp,
   Check,
+  CheckCheck,
   Download,
   Loader2,
   LockKeyhole,
@@ -52,10 +53,11 @@ import { bewaarWachtwoord, leesWachtwoord, vergeetWachtwoord } from "../toegang"
 const VOORRANG_MS = 90_000;
 
 /** Waarop de lijst gesorteerd kan worden. */
-type SorteerSleutel = "nummer" | "naam" | "zitting" | "bedrag" | "betaald";
+type SorteerSleutel = "nummer" | "naam" | "zitting" | "bedrag" | "betaald" | "behandeld";
 
 interface Wijziging {
   betaald?: boolean;
+  behandeld?: boolean;
   weg?: boolean;
   /** Een volledig bijgewerkte inschrijving, na een wijziging. */
   vervanging?: Inschrijving;
@@ -95,6 +97,9 @@ export default function OverzichtClient() {
   const [fout, setFout] = useState("");
   const [zoek, setZoek] = useState("");
   const [enkelOnbetaald, setEnkelOnbetaald] = useState(false);
+  const [enkelNogTeKomen, setEnkelNogTeKomen] = useState(false);
+  // Leeg is alle zittingen, "geen" is zonder zitting.
+  const [zittingFilter, setZittingFilter] = useState("");
   const [bewerkt, setBewerkt] = useState<Inschrijving | null>(null);
   const [sorteerOp, setSorteerOp] = useState<SorteerSleutel>("nummer");
   const [oplopend, setOplopend] = useState(true);
@@ -113,7 +118,16 @@ export default function OverzichtClient() {
       .map((i) => {
         const w = wijzigingen.current.get(i.kenmerk);
         if (!w) return i;
-        const basis = w.vervanging ?? i;
+        let basis = w.vervanging ?? i;
+        if (w.behandeld !== undefined) {
+          basis = {
+            ...basis,
+            behandeld: w.behandeld,
+            behandeldOp: w.behandeld
+              ? (basis.behandeldOp ?? new Date(w.tijd).toISOString())
+              : undefined,
+          };
+        }
         if (w.betaald === undefined) return basis;
         return {
           ...basis,
@@ -188,7 +202,11 @@ export default function OverzichtClient() {
     setBewerkt(null);
   }
 
-  async function doeActie(kenmerk: string, actie: "betaald" | "schrappen", betaald?: boolean) {
+  async function doeActie(
+    kenmerk: string,
+    actie: "betaald" | "behandeld" | "schrappen",
+    aan?: boolean,
+  ) {
     if (!ingevoerd) return;
     if (actie === "schrappen" && !confirm("Deze inschrijving definitief schrappen?")) return;
 
@@ -196,7 +214,12 @@ export default function OverzichtClient() {
     const antwoord = await fetch("/api/mosselfeest/beheer", {
       method: "POST",
       headers: { authorization: `Bearer ${ingevoerd}`, "content-type": "application/json" },
-      body: JSON.stringify({ actie, kenmerk, betaald }),
+      body: JSON.stringify({
+        actie,
+        kenmerk,
+        betaald: actie === "betaald" ? aan : undefined,
+        behandeld: actie === "behandeld" ? aan : undefined,
+      }),
     });
     if (!antwoord.ok) {
       setFout("Die wijziging is niet gelukt.");
@@ -207,8 +230,13 @@ export default function OverzichtClient() {
     // opnieuw op: de opslag kan nog even de oude toestand teruggeven, en dan
     // zou de regel voor je ogen terugspringen. De knop Verversen haalt de
     // echte toestand op wanneer jij dat wil.
+    // Wat er eerder gewijzigd is blijft staan: wie eerst behandeld en dan
+    // betaald aanvinkt, mag het eerste vinkje niet zien terugspringen.
+    const vorige = wijzigingen.current.get(kenmerk);
     wijzigingen.current.set(kenmerk, {
-      betaald: actie === "betaald" ? betaald !== false : undefined,
+      ...vorige,
+      ...(actie === "betaald" ? { betaald: aan !== false } : {}),
+      ...(actie === "behandeld" ? { behandeld: aan !== false } : {}),
       weg: actie === "schrappen",
       tijd: Date.now(),
     });
@@ -251,6 +279,12 @@ export default function OverzichtClient() {
 
   const lijst = (inschrijvingen ?? [])
     .filter((i) => (enkelOnbetaald ? !i.betaald : true))
+    .filter((i) => (enkelNogTeKomen ? !i.behandeld : true))
+    .filter((i) => {
+      if (!zittingFilter) return true;
+      if (zittingFilter === "geen") return !EVENEMENT.zittingen.some((z) => z.id === i.zitting);
+      return i.zitting === zittingFilter;
+    })
     .filter((i) => {
       if (!zoek.trim()) return true;
       const naald = zoek.trim().toLowerCase();
@@ -279,6 +313,8 @@ export default function OverzichtClient() {
           return richting * (a.bedrag - b.bedrag);
         case "betaald":
           return richting * (Number(a.betaald) - Number(b.betaald));
+        case "behandeld":
+          return richting * (Number(Boolean(a.behandeld)) - Number(Boolean(b.behandeld)));
         case "nummer":
         default: {
           // Inschrijvingen zonder nummer, zoals een stapel kaarten, achteraan.
@@ -420,7 +456,7 @@ export default function OverzichtClient() {
 
         {totalen && (
           <>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
               <Kaartje
                 label="Inschrijvingen"
                 waarde={String(totalen.inschrijvingen)}
@@ -449,6 +485,12 @@ export default function OverzichtClient() {
                     ? `${totalen.deelsBetaald} deels betaald, na een bijbestelling`
                     : undefined
                 }
+              />
+              <Kaartje
+                label="Nog te komen"
+                waarde={String(totalen.nogTeKomen)}
+                toon={totalen.nogTeKomen === 0 && totalen.inschrijvingen > 0 ? "goed" : "gewoon"}
+                onder={`${totalen.behandeld} van ${totalen.inschrijvingen} behandeld, nog ${totalen.portiesNogTeKomen} porties`}
               />
             </div>
 
@@ -543,6 +585,7 @@ export default function OverzichtClient() {
                       plaatsen: 0,
                       max: null,
                       vrij: null,
+                      behandeld: 0,
                     };
                     return (
                       <div key={z.id} className="rounded-xl bg-zand-50 p-3">
@@ -560,6 +603,22 @@ export default function OverzichtClient() {
                           >
                             {cijfers.plaatsen} van de {cijfers.max} plaatsen bezet
                             {cijfers.vrij !== null && `, nog ${cijfers.vrij} vrij`}
+                          </p>
+                        )}
+                        {cijfers.inschrijvingen > 0 && (
+                          <p
+                            className={
+                              "mt-1 text-sm " +
+                              (cijfers.behandeld === cijfers.inschrijvingen
+                                ? "text-green-700"
+                                : "text-slate-700")
+                            }
+                          >
+                            {cijfers.behandeld} behandeld, nog{" "}
+                            <span className="font-semibold">
+                              {cijfers.inschrijvingen - cijfers.behandeld}
+                            </span>{" "}
+                            te komen
                           </p>
                         )}
                       </div>
@@ -610,6 +669,20 @@ export default function OverzichtClient() {
                 placeholder="Zoek op nummer, naam of mail"
                 className="rounded-xl border border-zand-300 px-3 py-2 text-sm outline-none focus:border-primary"
               />
+              <select
+                value={zittingFilter}
+                onChange={(e) => setZittingFilter(e.target.value)}
+                aria-label="Zitting"
+                className="rounded-xl border border-zand-300 bg-white px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                <option value="">Alle zittingen</option>
+                {EVENEMENT.zittingen.map((z) => (
+                  <option key={z.id} value={z.id}>
+                    {z.label}
+                  </option>
+                ))}
+                <option value="geen">Zonder zitting</option>
+              </select>
               <label className="flex items-center gap-2 text-sm text-slate-600">
                 <input
                   type="checkbox"
@@ -618,6 +691,15 @@ export default function OverzichtClient() {
                   className="h-4 w-4 accent-primary"
                 />
                 Enkel onbetaald
+              </label>
+              <label className="flex items-center gap-2 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={enkelNogTeKomen}
+                  onChange={(e) => setEnkelNogTeKomen(e.target.checked)}
+                  className="h-4 w-4 accent-primary"
+                />
+                Enkel nog te komen
               </label>
             </div>
           </div>
@@ -628,7 +710,7 @@ export default function OverzichtClient() {
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[46rem] border-collapse text-sm">
+              <table className="w-full min-w-[54rem] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-zand-200 text-left text-xs uppercase tracking-wide text-slate-500">
                     <SorteerKop sleutel="nummer">Nr.</SorteerKop>
@@ -639,12 +721,18 @@ export default function OverzichtClient() {
                       Bedrag
                     </SorteerKop>
                     <SorteerKop sleutel="betaald">Betaald</SorteerKop>
+                    <SorteerKop sleutel="behandeld">Behandeld</SorteerKop>
                     <th className="py-2" />
                   </tr>
                 </thead>
                 <tbody>
                   {lijst.map((i) => (
-                    <tr key={i.kenmerk} className="border-b border-zand-100 align-top">
+                    <tr
+                      key={i.kenmerk}
+                      className={
+                        "border-b border-zand-100 align-top " + (i.behandeld ? "bg-green-50" : "")
+                      }
+                    >
                       <td className="py-3 pr-3">
                         <span className="font-display text-base font-bold text-inkt-900">
                           {i.kaartnummer ?? "-"}
@@ -695,6 +783,21 @@ export default function OverzichtClient() {
                               : "Openstaand"}
                         </button>
                       </td>
+                      <td className="py-3 pr-3">
+                        <button
+                          type="button"
+                          onClick={() => doeActie(i.kenmerk, "behandeld", !i.behandeld)}
+                          className={
+                            "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition " +
+                            (i.behandeld
+                              ? "bg-green-600 text-white hover:bg-green-700"
+                              : "border border-zand-300 text-slate-600 hover:border-slate-400")
+                          }
+                        >
+                          <CheckCheck className="h-3.5 w-3.5" />
+                          {i.behandeld ? "Behandeld" : "Nog te komen"}
+                        </button>
+                      </td>
                       <td className="py-3">
                         {i.kaartnummer && (
                           <button
@@ -736,7 +839,7 @@ export default function OverzichtClient() {
           )}
 
           <p className="mt-4 text-xs text-slate-500">
-            Betaald afvinken doe je hier, niet in Excel: dat bestand wordt elke keer opnieuw
+            Betaald en behandeld afvinken doe je hier of op het avondscherm, niet in Excel: dat bestand wordt elke keer opnieuw
             gemaakt uit deze gegevens, dus wijzigingen erin verdwijnen.
           </p>
         </section>

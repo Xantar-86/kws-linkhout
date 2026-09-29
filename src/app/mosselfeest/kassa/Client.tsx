@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
+  CheckCheck,
   Loader2,
   LockKeyhole,
   Pencil,
@@ -28,6 +29,12 @@ import { bewaarWachtwoord, leesWachtwoord } from "../toegang";
  * Alles staat in twee kolommen die op een tablet onder elkaar schuiven, en de
  * knoppen zijn groot genoeg om staand aan een toog te bedienen.
  *
+ * Bovenaan kies je de zitting die bezig is. Zonder zoekterm staat links dan
+ * wie er van die zitting nog moet komen, en met "Behandeld" vink je een kaart
+ * af zodra de mensen er zijn. Zo zie je naar het einde toe hoeveel er nog
+ * moet komen. Zoeken gaat altijd over alle zittingen: wie op het verkeerde
+ * uur komt, moet je ook kunnen vinden.
+ *
  * Net als op de overzichtspagina krijgt wat hier gewijzigd wordt voorrang op
  * wat de opslag terugmeldt: die loopt na een schrijfactie soms enkele seconden
  * achter, en op een drukke avond wil je geen regel zien terugspringen.
@@ -37,6 +44,7 @@ const VOORRANG_MS = 90_000;
 
 interface Wijziging {
   betaald?: boolean;
+  behandeld?: boolean;
   vervanging?: Inschrijving;
   tijd: number;
 }
@@ -51,6 +59,8 @@ export default function KassaClient() {
   const [zoek, setZoek] = useState("");
   const [gekozenKenmerk, setGekozenKenmerk] = useState<string | null>(null);
   const [bewerkt, setBewerkt] = useState<Inschrijving | null>(null);
+  // De zitting die nu bezig is; leeg is alle zittingen.
+  const [zitting, setZitting] = useState("");
   const zoekveld = useRef<HTMLInputElement | null>(null);
 
   const metEigenWijzigingen = useCallback((lijst: Inschrijving[]): Inschrijving[] => {
@@ -61,7 +71,16 @@ export default function KassaClient() {
     return lijst.map((i) => {
       const w = wijzigingen.current.get(i.kenmerk);
       if (!w) return i;
-      const basis = w.vervanging ?? i;
+      let basis = w.vervanging ?? i;
+      if (w.behandeld !== undefined) {
+        basis = {
+          ...basis,
+          behandeld: w.behandeld,
+          behandeldOp: w.behandeld
+            ? (basis.behandeldOp ?? new Date(w.tijd).toISOString())
+            : undefined,
+        };
+      }
       if (w.betaald === undefined) return basis;
       return {
         ...basis,
@@ -115,6 +134,17 @@ export default function KassaClient() {
   const gevonden = useMemo(() => {
     const alles = inschrijvingen ?? [];
     const naald = zoek.trim().toLowerCase();
+    if (!naald && zitting) {
+      // Een zitting gekozen: iedereen van die zitting, wie nog moet komen
+      // bovenaan, op kaartnummer.
+      return alles
+        .filter((i) => i.zitting === zitting)
+        .sort(
+          (a, b) =>
+            Number(Boolean(a.behandeld)) - Number(Boolean(b.behandeld)) ||
+            (a.kaartnummer ?? Number.MAX_SAFE_INTEGER) - (b.kaartnummer ?? Number.MAX_SAFE_INTEGER),
+        );
+    }
     if (!naald) {
       // Zonder zoekterm de laatst gewijzigde bovenaan: dat is meestal waar je
       // mee bezig bent.
@@ -130,7 +160,7 @@ export default function KassaClient() {
       )
       .sort((a, b) => (a.kaartnummer ?? 0) - (b.kaartnummer ?? 0))
       .slice(0, 40);
-  }, [inschrijvingen, zoek]);
+  }, [inschrijvingen, zoek, zitting]);
 
   const gekozen = useMemo(
     () => (inschrijvingen ?? []).find((i) => i.kenmerk === gekozenKenmerk) ?? null,
@@ -156,6 +186,21 @@ export default function KassaClient() {
       return;
     }
     onthoud(inschrijving.kenmerk, { betaald });
+  }
+
+  async function zetBehandeld(inschrijving: Inschrijving, behandeld: boolean) {
+    if (!ingevoerd) return;
+    setFout("");
+    const antwoord = await fetch("/api/mosselfeest/beheer", {
+      method: "POST",
+      headers: { authorization: `Bearer ${ingevoerd}`, "content-type": "application/json" },
+      body: JSON.stringify({ actie: "behandeld", kenmerk: inschrijving.kenmerk, behandeld }),
+    });
+    if (!antwoord.ok) {
+      setFout("Dat afvinken is niet gelukt.");
+      return;
+    }
+    onthoud(inschrijving.kenmerk, { behandeld });
   }
 
   if (!ingevoerd) {
@@ -197,7 +242,7 @@ export default function KassaClient() {
             <p className="font-display text-base font-bold leading-tight">Avondscherm</p>
             <p className="text-xs text-white/70">
               {totalen
-                ? `${totalen.inschrijvingen} inschrijvingen, ${euro(totalen.bedragOpen)} euro nog te ontvangen`
+                ? `${totalen.inschrijvingen} inschrijvingen, nog ${totalen.nogTeKomen} te komen, ${euro(totalen.bedragOpen)} euro nog te ontvangen`
                 : "bezig met laden"}
             </p>
           </div>
@@ -236,6 +281,59 @@ export default function KassaClient() {
           </div>
         </div>
       </header>
+
+      {totalen && (
+        <div className="border-b border-zand-200 bg-white">
+          <div className="container-custom flex flex-wrap gap-2 py-3">
+            <button
+              type="button"
+              onClick={() => setZitting("")}
+              className={
+                "rounded-xl border-2 px-3 py-2 text-sm font-semibold transition " +
+                (zitting === ""
+                  ? "border-inkt-900 bg-inkt-900 text-white"
+                  : "border-zand-300 text-slate-700 hover:border-slate-400")
+              }
+            >
+              Alle zittingen
+              <span className="ml-2 font-normal opacity-80">nog {totalen.nogTeKomen}</span>
+            </button>
+            {EVENEMENT.zittingen.map((z) => {
+              const cijfers = totalen.perZitting[z.id];
+              const nog = cijfers ? cijfers.inschrijvingen - cijfers.behandeld : 0;
+              const actief = zitting === z.id;
+              return (
+                <button
+                  key={z.id}
+                  type="button"
+                  onClick={() => {
+                    setZitting(z.id);
+                    setZoek("");
+                  }}
+                  className={
+                    "rounded-xl border-2 px-3 py-2 text-sm font-semibold transition " +
+                    (actief
+                      ? "border-inkt-900 bg-inkt-900 text-white"
+                      : "border-zand-300 text-slate-700 hover:border-slate-400")
+                  }
+                >
+                  {z.kort ?? z.label}
+                  <span
+                    className={
+                      "ml-2 font-normal " +
+                      (actief ? "opacity-80" : nog === 0 ? "text-green-700" : "text-slate-500")
+                    }
+                  >
+                    {nog === 0 && (cijfers?.inschrijvingen ?? 0) > 0
+                      ? "iedereen er"
+                      : `nog ${nog} van ${cijfers?.inschrijvingen ?? 0}`}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="container-custom grid gap-5 py-5 lg:grid-cols-[minmax(0,22rem)_1fr]">
         {/* Zoeken en de lijst met treffers. */}
@@ -279,7 +377,9 @@ export default function KassaClient() {
           <div className="mt-3 space-y-2">
             {gevonden.length === 0 && (
               <p className="rounded-xl bg-white p-4 text-sm text-slate-500">
-                Niets gevonden met &ldquo;{zoek}&rdquo;.
+                {zoek
+                  ? <>Niets gevonden met &ldquo;{zoek}&rdquo;.</>
+                  : "Geen inschrijvingen voor deze zitting."}
               </p>
             )}
             {gevonden.map((i) => {
@@ -293,7 +393,9 @@ export default function KassaClient() {
                     "flex w-full items-center gap-3 rounded-xl border p-3 text-left transition " +
                     (actief
                       ? "border-primary bg-white shadow-blad"
-                      : "border-zand-200 bg-white/70 hover:border-slate-300")
+                      : i.behandeld
+                        ? "border-green-200 bg-green-50/70 hover:border-green-300"
+                        : "border-zand-200 bg-white/70 hover:border-slate-300")
                   }
                 >
                   <span className="w-12 shrink-0 font-display text-lg font-bold text-inkt-900">
@@ -309,13 +411,21 @@ export default function KassaClient() {
                       {euro(i.bedrag)} euro
                     </span>
                   </span>
-                  <span
-                    className={
-                      "shrink-0 rounded-lg px-2 py-1 text-xs font-semibold " +
-                      (i.betaald ? "bg-green-100 text-green-800" : "bg-primary-100 text-primary-800")
-                    }
-                  >
-                    {i.betaald ? "betaald" : `${euro(Math.max(0, openstaand(i)))} open`}
+                  <span className="flex shrink-0 flex-col items-end gap-1">
+                    <span
+                      className={
+                        "rounded-lg px-2 py-1 text-xs font-semibold " +
+                        (i.betaald ? "bg-green-100 text-green-800" : "bg-primary-100 text-primary-800")
+                      }
+                    >
+                      {i.betaald ? "betaald" : `${euro(Math.max(0, openstaand(i)))} open`}
+                    </span>
+                    {i.behandeld && (
+                      <span className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+                        <CheckCheck className="h-3 w-3" />
+                        behandeld
+                      </span>
+                    )}
                   </span>
                 </button>
               );
@@ -396,7 +506,7 @@ export default function KassaClient() {
                 </p>
               )}
 
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-6 flex flex-col flex-wrap gap-3 sm:flex-row">
                 <button
                   type="button"
                   onClick={() => zetBetaald(gekozen, !gekozen.betaald)}
@@ -420,6 +530,19 @@ export default function KassaClient() {
                         : "Zet op betaald"}
                     </>
                   )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => zetBehandeld(gekozen, !gekozen.behandeld)}
+                  className={
+                    "flex flex-1 items-center justify-center gap-3 rounded-2xl px-6 py-5 text-lg font-bold transition " +
+                    (gekozen.behandeld
+                      ? "bg-green-600 text-white hover:bg-green-700"
+                      : "border-2 border-green-600 text-green-800 hover:bg-green-50")
+                  }
+                >
+                  <CheckCheck className="h-6 w-6" />
+                  {gekozen.behandeld ? "Behandeld, klik om terug te zetten" : "Zet op behandeld"}
                 </button>
                 <button
                   type="button"

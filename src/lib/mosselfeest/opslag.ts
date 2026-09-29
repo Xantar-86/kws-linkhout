@@ -169,6 +169,28 @@ export async function zetBetaald(
 }
 
 /**
+ * Het vinkje "behandeld" zetten of weghalen: de kaart is op de avond zelf
+ * afgehandeld. Raakt niets aan de betaling.
+ */
+export async function zetBehandeld(
+  kenmerk: string,
+  behandeld: boolean,
+): Promise<{ ok: boolean; inschrijving?: Inschrijving; fout?: string }> {
+  const bestaande = await haalInschrijving(kenmerk);
+  if (!bestaande) return { ok: false, fout: "Inschrijving niet gevonden." };
+
+  const bijgewerkt: Inschrijving = {
+    ...bestaande,
+    behandeld,
+    behandeldOp: behandeld ? new Date().toISOString() : undefined,
+  };
+  const resultaat = await zetWeg(bijgewerkt);
+  return resultaat.ok
+    ? { ok: true, inschrijving: bijgewerkt }
+    : { ok: false, fout: resultaat.fout };
+}
+
+/**
  * Een inschrijving schrappen. Gebeurt bij een afmelding of een dubbele
  * inzending; de aantallen moeten kloppen met wat er in de keuken nodig is.
  */
