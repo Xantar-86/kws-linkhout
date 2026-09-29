@@ -133,6 +133,10 @@ zijn. Dat staat los van betaald: wie vooraf overschreef, moet ook nog komen.
 - In het Excel-logboek is een behandelde regel groen, met kolommen Behandeld
   en Behandeld op, en op het blad Overzicht per zitting "Nog te komen".
 
+Afhalen telt als een eigen zitting (vrijdag en zaterdag). Daar heet het vinkje
+**afgehaald** en staat er "nog af te halen" in plaats van "nog te komen"; het
+is hetzelfde vinkje, alleen het woord verschilt.
+
 ## Afdrukken
 
 `/mosselfeest/afdruk`, met twee soorten:

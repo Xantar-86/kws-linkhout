@@ -325,7 +325,9 @@ export default function KassaClient() {
                     }
                   >
                     {nog === 0 && (cijfers?.inschrijvingen ?? 0) > 0
-                      ? "iedereen er"
+                      ? z.afhalen
+                        ? "alles afgehaald"
+                        : "iedereen er"
                       : `nog ${nog} van ${cijfers?.inschrijvingen ?? 0}`}
                   </span>
                 </button>
@@ -423,7 +425,7 @@ export default function KassaClient() {
                     {i.behandeld && (
                       <span className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-2 py-0.5 text-[11px] font-semibold text-white">
                         <CheckCheck className="h-3 w-3" />
-                        behandeld
+                        {isAfhalen(i.zitting) ? "afgehaald" : "behandeld"}
                       </span>
                     )}
                   </span>
@@ -542,7 +544,13 @@ export default function KassaClient() {
                   }
                 >
                   <CheckCheck className="h-6 w-6" />
-                  {gekozen.behandeld ? "Behandeld, klik om terug te zetten" : "Zet op behandeld"}
+                  {isAfhalen(gekozen.zitting)
+                    ? gekozen.behandeld
+                      ? "Afgehaald, klik om terug te zetten"
+                      : "Zet op afgehaald"
+                    : gekozen.behandeld
+                      ? "Behandeld, klik om terug te zetten"
+                      : "Zet op behandeld"}
                 </button>
                 <button
                   type="button"

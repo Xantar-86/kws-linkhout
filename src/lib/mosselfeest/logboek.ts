@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import { EVENEMENT, GERECHTEN, GROEPEN, aantalPorties, gerechtenVan } from "./kaart";
+import { EVENEMENT, GERECHTEN, GROEPEN, aantalPorties, gerechtenVan, isAfhalen } from "./kaart";
 import { openstaand, reedsBetaald, telOp, type Inschrijving } from "./opslag";
 
 /**
@@ -233,7 +233,7 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
       Math.max(0, openstaand(inschrijving)),
       inschrijving.betaald ? "ja" : "nee",
       inschrijving.betaaldOp ? new Date(inschrijving.betaaldOp) : "",
-      inschrijving.behandeld ? "ja" : "nee",
+      inschrijving.behandeld ? (isAfhalen(inschrijving.zitting) ? "afgehaald" : "ja") : "nee",
       inschrijving.behandeldOp ? new Date(inschrijving.behandeldOp) : "",
       inschrijving.ingevoerdDoor ?? "",
       inschrijving.opmerking ?? "",

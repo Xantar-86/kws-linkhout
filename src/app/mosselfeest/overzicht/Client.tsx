@@ -22,6 +22,7 @@ import {
   GROEPEN,
   euro,
   gerechtenVan,
+  isAfhalen,
 } from "@/lib/mosselfeest/kaart";
 import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
@@ -614,11 +615,11 @@ export default function OverzichtClient() {
                                 : "text-slate-700")
                             }
                           >
-                            {cijfers.behandeld} behandeld, nog{" "}
+                            {cijfers.behandeld} {z.afhalen ? "afgehaald" : "behandeld"}, nog{" "}
                             <span className="font-semibold">
                               {cijfers.inschrijvingen - cijfers.behandeld}
                             </span>{" "}
-                            te komen
+                            {z.afhalen ? "af te halen" : "te komen"}
                           </p>
                         )}
                       </div>
@@ -795,7 +796,13 @@ export default function OverzichtClient() {
                           }
                         >
                           <CheckCheck className="h-3.5 w-3.5" />
-                          {i.behandeld ? "Behandeld" : "Nog te komen"}
+                          {isAfhalen(i.zitting)
+                            ? i.behandeld
+                              ? "Afgehaald"
+                              : "Nog af te halen"
+                            : i.behandeld
+                              ? "Behandeld"
+                              : "Nog te komen"}
                         </button>
                       </td>
                       <td className="py-3">
