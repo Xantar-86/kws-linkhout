@@ -162,6 +162,10 @@ export default function KassaClient() {
       .slice(0, 40);
   }, [inschrijvingen, zoek, zitting]);
 
+  // Wie al geweest is, staat in een aparte lijst onder wie nog moet komen.
+  const nogTeKomen = useMemo(() => gevonden.filter((i) => !i.behandeld), [gevonden]);
+  const geweest = useMemo(() => gevonden.filter((i) => i.behandeld), [gevonden]);
+
   const gekozen = useMemo(
     () => (inschrijvingen ?? []).find((i) => i.kenmerk === gekozenKenmerk) ?? null,
     [inschrijvingen, gekozenKenmerk],
@@ -234,6 +238,58 @@ export default function KassaClient() {
     );
   }
 
+  /** Eén regel in de lijst links. */
+  function regel(i: Inschrijving) {
+    const actief = i.kenmerk === gekozenKenmerk;
+    return (
+      <button
+        key={i.kenmerk}
+        type="button"
+        onClick={() => setGekozenKenmerk(i.kenmerk)}
+        className={
+          "flex w-full items-center gap-3 rounded-xl border p-3 text-left transition " +
+          (actief
+            ? "border-primary bg-white shadow-blad"
+            : i.behandeld
+              ? "border-green-200 bg-green-50/70 hover:border-green-300"
+              : "border-zand-200 bg-white/70 hover:border-slate-300")
+        }
+      >
+        <span className="w-12 shrink-0 font-display text-lg font-bold text-inkt-900">
+          {i.kaartnummer ?? "-"}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-medium text-inkt-900">
+            {volledigeNaam(i)}
+          </span>
+          <span className="block text-xs text-slate-500">
+            {EVENEMENT.zittingen.find((z) => z.id === i.zitting)?.kort ?? "zonder zitting"}
+            {" · "}
+            {euro(i.bedrag)} euro
+          </span>
+        </span>
+        <span className="flex shrink-0 flex-col items-end gap-1">
+          <span
+            className={
+              "rounded-lg px-2 py-1 text-xs font-semibold " +
+              (i.betaald ? "bg-green-100 text-green-800" : "bg-primary-100 text-primary-800")
+            }
+          >
+            {i.betaald ? "betaald" : `${euro(Math.max(0, openstaand(i)))} open`}
+          </span>
+          {i.behandeld && (
+            <span className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+              <CheckCheck className="h-3 w-3" />
+              {isAfhalen(i.zitting) ? "afgehaald" : "behandeld"}
+            </span>
+          )}
+        </span>
+      </button>
+    );
+  }
+
+  const zittingIsAfhalen = zitting !== "" && isAfhalen(zitting);
+
   return (
     <main className="min-h-screen bg-zand-50">
       <header className="bg-inkt-900 text-white">
@@ -296,7 +352,9 @@ export default function KassaClient() {
               }
             >
               Alle zittingen
-              <span className="ml-2 font-normal opacity-80">nog {totalen.nogTeKomen}</span>
+              <span className="ml-2 font-normal opacity-80">
+                nog {totalen.nogTeKomen} te komen
+              </span>
             </button>
             {EVENEMENT.zittingen.map((z) => {
               const cijfers = totalen.perZitting[z.id];
@@ -324,11 +382,13 @@ export default function KassaClient() {
                       (actief ? "opacity-80" : nog === 0 ? "text-green-700" : "text-slate-500")
                     }
                   >
-                    {nog === 0 && (cijfers?.inschrijvingen ?? 0) > 0
-                      ? z.afhalen
-                        ? "alles afgehaald"
-                        : "iedereen er"
-                      : `nog ${nog} van ${cijfers?.inschrijvingen ?? 0}`}
+                    {(cijfers?.inschrijvingen ?? 0) === 0
+                      ? "geen kaarten"
+                      : nog === 0
+                        ? z.afhalen
+                          ? "alles afgehaald"
+                          : "iedereen geweest"
+                        : `nog ${nog} van ${cijfers?.inschrijvingen ?? 0} ${z.afhalen ? "af te halen" : "te komen"}`}
                   </span>
                 </button>
               );
@@ -347,8 +407,9 @@ export default function KassaClient() {
               value={zoek}
               onChange={(e) => setZoek(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && gevonden.length > 0) {
-                  setGekozenKenmerk(gevonden[0].kenmerk);
+                const eerste = nogTeKomen[0] ?? geweest[0];
+                if (e.key === "Enter" && eerste) {
+                  setGekozenKenmerk(eerste.kenmerk);
                 }
                 if (e.key === "Escape") {
                   setZoek("");
@@ -384,54 +445,18 @@ export default function KassaClient() {
                   : "Geen inschrijvingen voor deze zitting."}
               </p>
             )}
-            {gevonden.map((i) => {
-              const actief = i.kenmerk === gekozenKenmerk;
-              return (
-                <button
-                  key={i.kenmerk}
-                  type="button"
-                  onClick={() => setGekozenKenmerk(i.kenmerk)}
-                  className={
-                    "flex w-full items-center gap-3 rounded-xl border p-3 text-left transition " +
-                    (actief
-                      ? "border-primary bg-white shadow-blad"
-                      : i.behandeld
-                        ? "border-green-200 bg-green-50/70 hover:border-green-300"
-                        : "border-zand-200 bg-white/70 hover:border-slate-300")
-                  }
-                >
-                  <span className="w-12 shrink-0 font-display text-lg font-bold text-inkt-900">
-                    {i.kaartnummer ?? "-"}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-inkt-900">
-                      {volledigeNaam(i)}
-                    </span>
-                    <span className="block text-xs text-slate-500">
-                      {EVENEMENT.zittingen.find((z) => z.id === i.zitting)?.kort ?? "zonder zitting"}
-                      {" · "}
-                      {euro(i.bedrag)} euro
-                    </span>
-                  </span>
-                  <span className="flex shrink-0 flex-col items-end gap-1">
-                    <span
-                      className={
-                        "rounded-lg px-2 py-1 text-xs font-semibold " +
-                        (i.betaald ? "bg-green-100 text-green-800" : "bg-primary-100 text-primary-800")
-                      }
-                    >
-                      {i.betaald ? "betaald" : `${euro(Math.max(0, openstaand(i)))} open`}
-                    </span>
-                    {i.behandeld && (
-                      <span className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-2 py-0.5 text-[11px] font-semibold text-white">
-                        <CheckCheck className="h-3 w-3" />
-                        {isAfhalen(i.zitting) ? "afgehaald" : "behandeld"}
-                      </span>
-                    )}
-                  </span>
-                </button>
-              );
-            })}
+            {nogTeKomen.length > 0 && (geweest.length > 0 || zitting) && (
+              <p className="px-1 pt-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {zittingIsAfhalen ? "Nog af te halen" : "Nog te komen"} ({nogTeKomen.length})
+              </p>
+            )}
+            {nogTeKomen.map(regel)}
+            {geweest.length > 0 && (
+              <p className="px-1 pt-4 text-xs font-semibold uppercase tracking-wide text-green-700">
+                {zittingIsAfhalen ? "Afgehaald" : "Geweest"} ({geweest.length})
+              </p>
+            )}
+            {geweest.map(regel)}
           </div>
         </section>
 
