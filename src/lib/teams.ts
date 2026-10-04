@@ -304,7 +304,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Jasper Peremans",
     spelersGroep: "U15",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U15-2025.jpg
+    image: "/images/teams/U15-2026.jpeg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -412,7 +412,7 @@ export const teams: Team[] = [
     trainersTitel: "Trainer",
     // A en B delen voorlopig een kern; iedereen staat op allebei de pagina's.
     spelersGroep: "U9",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
+    image: "/images/teams/U9-2026.jpeg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -434,7 +434,7 @@ export const teams: Team[] = [
     coach: "Gunther Vanneroem",
     trainersTitel: "Trainer",
     spelersGroep: "U9",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U9-2025.jpg
+    image: "/images/teams/U9-2026.jpeg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:

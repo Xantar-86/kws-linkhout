@@ -105,6 +105,11 @@ const SNIJ_VERSIE = 13;
  * wordt, met de klok mee. Alleen invullen als iemand duidelijk scheef op de
  * foto staat; een beetje scheef is gewoon hoe mensen staan. `schaal` maakt
  * iemand kleiner (0.9) of groter (1.1) dan de vaste maat op de wand.
+ *
+ * `vierkant` vergroot het vierkantje dat voor het raster om het hoofd gelegd
+ * wordt. Dat vierkantje volgt de breedte van de uitsnede, dus wie smal
+ * uitgesneden is (armen gekruist, dicht bij het toestel) krijgt een te grote
+ * kop. Met 1.5 of 2 staat hij weer even groot als de rest.
  */
 const CORRECTIES = {
   "Brent Gilissen": { kruin: 0.215, midden: 0.51 },
@@ -117,6 +122,11 @@ const CORRECTIES = {
   // zonder dit wordt hij dan groter geschaald dan de rest en staat hij te
   // dicht op de kijker.
   "Noah Stockmans": { draai: -5, schaal: 0.95 },
+  // Stond dichter bij het toestel dan de rest van de U15.
+  // Zijn uitsnede is smal (armen gekruist, dicht bij het toestel); het
+  // vierkantje om zijn hoofd werd daardoor te klein en zijn kop te groot.
+  "Lander Rymen": { vierkant: 1.5 },
+  "Vic Janssen": { vierkant: 1.4 },
 };
 
 /** Maakt van "Lorenzo Silvente Fernandez" een bestandsnaam zonder rare tekens. */
@@ -463,6 +473,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
   const hoogteFractie = correctie.hoogte ?? UITSNEDE_HOOGTE;
   const draai = correctie.draai ?? 0;
   const schaal = correctie.schaal ?? 1;
+  const vierkant = correctie.vierkant ?? 1;
 
   // Een vingerafdruk van de foto en de uitsnede in de bestandsnaam. Verandert
   // er iets, dan verandert het webadres mee en tonen browsers en de
@@ -487,6 +498,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
         // gaat wel mee, anders blijft de browser de oude versie tonen.
         ...(draai ? [`draai${draai}`] : []),
         ...(schaal !== 1 ? [`schaal${schaal}`] : []),
+        ...(vierkant !== 1 ? [`vierkant${vierkant}`] : []),
         ...(opfrissen === true ? [`opfris${OPFRIS_VERSIE}`] : []),
       ].join("|")
     )
@@ -641,7 +653,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
     const zijde = Math.min(
       portretBreed,
       GROOT,
-      Math.round(Math.min(maat.width * 1.2, maat.height))
+      Math.round(Math.min(maat.width * 1.2 * vierkant, maat.height))
     );
     const zijLinks = Math.max(
       0,

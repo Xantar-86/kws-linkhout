@@ -26,6 +26,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/alexander-manshoven-f9053700.webp"
   },
   {
+    "naam": "Alexander Thomas",
+    "ploeg": "U15",
+    "klein": "/images/spelers/alexander-thomas-c610ce97-klein.webp",
+    "groot": "/images/spelers/alexander-thomas-c610ce97.webp"
+  },
+  {
     "naam": "Aliano Baeten",
     "ploeg": "U17A",
     "klein": "/images/spelers/aliano-baeten-81403dbf-klein.webp",
@@ -44,10 +50,22 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/amelie-mondelaers-69f1292d.webp"
   },
   {
+    "naam": "Arthur Fabré",
+    "ploeg": "U15",
+    "klein": "/images/spelers/arthur-fabre-32b2a3e6-klein.webp",
+    "groot": "/images/spelers/arthur-fabre-32b2a3e6.webp"
+  },
+  {
     "naam": "Arthur Hoogstijns",
     "ploeg": "U9",
     "klein": "/images/spelers/arthur-hoogstijns-ac6abc9c-klein.webp",
     "groot": "/images/spelers/arthur-hoogstijns-ac6abc9c.webp"
+  },
+  {
+    "naam": "Axel Coomans",
+    "ploeg": "U15",
+    "klein": "/images/spelers/axel-coomans-5e6f98f5-klein.webp",
+    "groot": "/images/spelers/axel-coomans-5e6f98f5.webp"
   },
   {
     "naam": "Ben Andries",
@@ -90,6 +108,12 @@ export const spelers: Speler[] = [
     "ploeg": "U11",
     "klein": "/images/spelers/castor-ulenaers-08e1330a-klein.webp",
     "groot": "/images/spelers/castor-ulenaers-08e1330a.webp"
+  },
+  {
+    "naam": "Charly Politic",
+    "ploeg": "U15",
+    "klein": "/images/spelers/charly-politic-505abf91-klein.webp",
+    "groot": "/images/spelers/charly-politic-505abf91.webp"
   },
   {
     "naam": "Cisse Simons",
@@ -146,6 +170,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/emiel-neyens-16707b30.webp"
   },
   {
+    "naam": "Emile Huls",
+    "ploeg": "U15",
+    "klein": "/images/spelers/emile-huls-86fb434f-klein.webp",
+    "groot": "/images/spelers/emile-huls-86fb434f.webp"
+  },
+  {
     "naam": "Emilie Konings",
     "ploeg": "Dames P1",
     "klein": "/images/spelers/emilie-konings-0e05a4f7-klein.webp",
@@ -162,6 +192,18 @@ export const spelers: Speler[] = [
     "ploeg": "Dames P2",
     "klein": "/images/spelers/emma-veekmans-ace999eb-klein.webp",
     "groot": "/images/spelers/emma-veekmans-ace999eb.webp"
+  },
+  {
+    "naam": "Ferre Luts",
+    "ploeg": "U15",
+    "klein": "/images/spelers/ferre-luts-81d60dde-klein.webp",
+    "groot": "/images/spelers/ferre-luts-81d60dde.webp"
+  },
+  {
+    "naam": "Fynn Deferme",
+    "ploeg": "U15",
+    "klein": "/images/spelers/fynn-deferme-4865f4fc-klein.webp",
+    "groot": "/images/spelers/fynn-deferme-4865f4fc.webp"
   },
   {
     "naam": "Hannelore Barro",
@@ -338,6 +380,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/kyra-sagovac-6b0d667e.webp"
   },
   {
+    "naam": "Lander Rymen",
+    "ploeg": "U15",
+    "klein": "/images/spelers/lander-rymen-da69ec45-klein.webp",
+    "groot": "/images/spelers/lander-rymen-da69ec45.webp"
+  },
+  {
     "naam": "Lars Andries",
     "ploeg": "P4",
     "klein": "/images/spelers/lars-andries-8ad24768-klein.webp",
@@ -434,6 +482,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/matthias-corten-ce77a0eb.webp"
   },
   {
+    "naam": "Mauro Deprez",
+    "ploeg": "U15",
+    "klein": "/images/spelers/mauro-deprez-c4fa3811-klein.webp",
+    "groot": "/images/spelers/mauro-deprez-c4fa3811.webp"
+  },
+  {
     "naam": "Maxim Coemans",
     "ploeg": "U9",
     "klein": "/images/spelers/maxim-coemans-03c83319-klein.webp",
@@ -494,6 +548,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/nena-convents-d7766c41.webp"
   },
   {
+    "naam": "Niccolò Liaci",
+    "ploeg": "U15",
+    "klein": "/images/spelers/niccolo-liaci-b97577f7-klein.webp",
+    "groot": "/images/spelers/niccolo-liaci-b97577f7.webp"
+  },
+  {
     "naam": "Nick Tuteleers",
     "ploeg": "P2",
     "klein": "/images/spelers/nick-tuteleers-0dc36880-klein.webp",
@@ -504,6 +564,12 @@ export const spelers: Speler[] = [
     "ploeg": "P2",
     "klein": "/images/spelers/niels-gabriels-2800d265-klein.webp",
     "groot": "/images/spelers/niels-gabriels-2800d265.webp"
+  },
+  {
+    "naam": "Nio Thoelen",
+    "ploeg": "U15",
+    "klein": "/images/spelers/nio-thoelen-8b79ef7b-klein.webp",
+    "groot": "/images/spelers/nio-thoelen-8b79ef7b.webp"
   },
   {
     "naam": "Noah Gielkens",
@@ -554,6 +620,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/raissa-ciavarro-b14d77b4.webp"
   },
   {
+    "naam": "Robbe Reynders",
+    "ploeg": "U15",
+    "klein": "/images/spelers/robbe-reynders-6baf7203-klein.webp",
+    "groot": "/images/spelers/robbe-reynders-6baf7203.webp"
+  },
+  {
     "naam": "Sam Das",
     "ploeg": "U17A",
     "klein": "/images/spelers/sam-das-3adc2d63-klein.webp",
@@ -564,6 +636,12 @@ export const spelers: Speler[] = [
     "ploeg": "U11",
     "klein": "/images/spelers/senn-deferme-a7e53051-klein.webp",
     "groot": "/images/spelers/senn-deferme-a7e53051.webp"
+  },
+  {
+    "naam": "Seppe Breugelmans",
+    "ploeg": "U15",
+    "klein": "/images/spelers/seppe-breugelmans-907dc420-klein.webp",
+    "groot": "/images/spelers/seppe-breugelmans-907dc420.webp"
   },
   {
     "naam": "Seppe Verdonck",
@@ -584,6 +662,12 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/sharleen-vanderheyden-1ec5f670.webp"
   },
   {
+    "naam": "Simon De Bruycker",
+    "ploeg": "U15",
+    "klein": "/images/spelers/simon-de-bruycker-8a195ff7-klein.webp",
+    "groot": "/images/spelers/simon-de-bruycker-8a195ff7.webp"
+  },
+  {
     "naam": "Simon Reykers",
     "ploeg": "P2",
     "klein": "/images/spelers/simon-reykers-70b6314b-klein.webp",
@@ -600,6 +684,12 @@ export const spelers: Speler[] = [
     "ploeg": "U9",
     "klein": "/images/spelers/stan-clemens-fd7134af-klein.webp",
     "groot": "/images/spelers/stan-clemens-fd7134af.webp"
+  },
+  {
+    "naam": "Thomas Buyck",
+    "ploeg": "U15",
+    "klein": "/images/spelers/thomas-buyck-390528d0-klein.webp",
+    "groot": "/images/spelers/thomas-buyck-390528d0.webp"
   },
   {
     "naam": "Thomas Kellens",
@@ -624,6 +714,12 @@ export const spelers: Speler[] = [
     "ploeg": "U17A",
     "klein": "/images/spelers/tygo-de-grave-0c96e7cd-klein.webp",
     "groot": "/images/spelers/tygo-de-grave-0c96e7cd.webp"
+  },
+  {
+    "naam": "Vic Janssen",
+    "ploeg": "U15",
+    "klein": "/images/spelers/vic-janssen-5579695e-klein.webp",
+    "groot": "/images/spelers/vic-janssen-5579695e.webp"
   },
   {
     "naam": "Victor Darville",
@@ -705,6 +801,12 @@ export const trainers: Speler[] = [
     "ploeg": "U9",
     "klein": "/images/spelers/gunther-vanneroem-95455c4d-klein.webp",
     "groot": "/images/spelers/gunther-vanneroem-95455c4d.webp"
+  },
+  {
+    "naam": "Jasper Peremans",
+    "ploeg": "",
+    "klein": "/images/spelers/jasper-peremans-078f6c23-klein.webp",
+    "groot": "/images/spelers/jasper-peremans-078f6c23.webp"
   },
   {
     "naam": "Jelle Aerts",
