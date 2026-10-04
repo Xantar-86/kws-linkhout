@@ -24,11 +24,11 @@ Een plaats is een stoel aan tafel, dus we tellen enkel de hoofd- en
 kindergerechten mee; een dessert is geen extra stoel. Dat staat per gerecht in
 `teltAlsPlaats`.
 
-Het formulier toont per zitting hoeveel er nog vrij is en laat een volle
-zitting niet meer kiezen. De server kijkt het bij het versturen nog eens na,
-want tussen het openen van de pagina en het versturen kan er iemand anders
-geweest zijn. Een organisator kan via **Kaart of stapel toevoegen** wel boven
-het maximum gaan: die weet best of er nog een tafel bij kan.
+Het maximum is een richtcijfer voor de organisatie, geen slot. Het formulier
+toont per zitting hoeveel er nog vrij is zolang dat er is, maar een volle
+zitting blijft te kiezen en de server weigert niets: wie wil komen, moet zich
+kunnen inschrijven, en de club zet er desnoods een tafel bij. Op het overzicht
+zie je per zitting hoeveel plaatsen er bezet zijn tegenover het maximum.
 
 ## Waar wat staat
 

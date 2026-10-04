@@ -1,11 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { aantalPlaatsen, bedragVan, zitting as zittingVan } from "@/lib/mosselfeest/kaart";
+import { bedragVan } from "@/lib/mosselfeest/kaart";
 import { stuurBevestiging } from "@/lib/mosselfeest/mail";
 import {
   alleInschrijvingen,
   bewaarInschrijving,
-  telOp,
   volgendKaartnummer,
   type Inschrijving,
 } from "@/lib/mosselfeest/opslag";
@@ -79,43 +78,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, klachten }, { status: 400 });
   }
 
-  // Past dit nog in de gekozen zitting? De kaart zet er een maximum op, dus
-  // kijken we hier nog eens na. Het formulier toont de vrije plaatsen al, maar
-  // tussen het openen en het versturen kan er iemand anders geweest zijn.
+  // De bestaande inschrijvingen zijn nodig voor het volgende kaartnummer. Het
+  // maximum per zitting wordt hier met opzet NIET nagekeken: dat is een
+  // richtcijfer voor de organisatie, geen slot. Wie wil komen, moet zich
+  // kunnen inschrijven; de club zet er desnoods een tafel bij.
   let bestaande: Inschrijving[] | null = null;
   try {
     bestaande = await alleInschrijvingen();
   } catch (fout) {
     console.error("[mosselfeest] inschrijvingen ophalen mislukt:", fout);
-  }
-
-  const gekozen = zittingVan(invoer.zitting);
-  if (gekozen?.max && bestaande) {
-    const nodig = aantalPlaatsen(aantallen);
-    {
-      const totalen = telOp(bestaande);
-      const vrij = totalen.perZitting[gekozen.id]?.vrij ?? gekozen.max;
-      if (vrij <= 0) {
-        return NextResponse.json(
-          {
-            ok: false,
-            klachten: [`${gekozen.label} is volzet. Kies een andere zitting of kom afhalen.`],
-          },
-          { status: 409 },
-        );
-      }
-      if (nodig > vrij) {
-        return NextResponse.json(
-          {
-            ok: false,
-            klachten: [
-              `Er ${vrij === 1 ? "is" : "zijn"} nog ${vrij} plaats${vrij === 1 ? "" : "en"} vrij op ${gekozen.label}, en je bestelling heeft er ${nodig} nodig. Splits de inschrijving of kies een andere zitting.`,
-            ],
-          },
-          { status: 409 },
-        );
-      }
-    }
   }
 
   const inschrijving: Inschrijving = {

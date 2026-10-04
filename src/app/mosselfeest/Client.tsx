@@ -424,45 +424,37 @@ export default function MosselfeestClient() {
             </legend>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {EVENEMENT.zittingen.map((z) => {
+                // Het maximum per zitting is een richtcijfer voor de
+                // organisatie, geen slot: een volle zitting blijft te kiezen,
+                // de club zet er desnoods een tafel bij. We tonen enkel wat er
+                // nog vrij is zolang dat er is.
                 const cijfers = plaatsen[z.id];
-                const volzet = Boolean(cijfers?.volzet);
-                const teKrap =
-                  !volzet &&
-                  cijfers?.vrij !== null &&
-                  cijfers?.vrij !== undefined &&
-                  plaatsenNodig > cijfers.vrij;
+                const vrij = cijfers?.vrij ?? null;
                 return (
-                  <label key={z.id} className={volzet ? "cursor-not-allowed" : ""}>
+                  <label key={z.id}>
                     <input
                       type="radio"
                       name="zitting"
                       value={z.id}
                       checked={zitting === z.id}
-                      disabled={volzet}
                       onChange={() => setZitting(z.id)}
                       className="peer sr-only"
                     />
                     <span
                       className={
-                        "block rounded-xl border px-4 py-3 text-sm transition " +
-                        (volzet
-                          ? "cursor-not-allowed border-zand-200 bg-zand-100 text-slate-400"
-                          : "cursor-pointer border-zand-300 bg-white text-slate-700 hover:border-slate-400 " +
-                            "peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white")
+                        "block cursor-pointer rounded-xl border border-zand-300 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-slate-400 " +
+                        "peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white"
                       }
                     >
                       {z.label}
                       <span className="mt-0.5 block text-xs opacity-80">
-                        {volzet
-                          ? "volzet"
-                          : z.afhalen
-                            ? "afhalen, geen plaatsen nodig"
-                            : cijfers?.vrij !== null && cijfers?.vrij !== undefined
-                              ? `nog ${cijfers.vrij} van de ${cijfers.max} plaatsen vrij`
-                              : z.max
-                                ? `${z.max} plaatsen`
-                                : ""}
-                        {teKrap && " (te weinig voor je bestelling)"}
+                        {z.afhalen
+                          ? "afhalen, geen plaatsen nodig"
+                          : vrij !== null && vrij > 0
+                            ? `nog ${vrij} van de ${cijfers?.max} plaatsen vrij`
+                            : z.max
+                              ? `${z.max} plaatsen`
+                              : ""}
                       </span>
                     </span>
                   </label>
