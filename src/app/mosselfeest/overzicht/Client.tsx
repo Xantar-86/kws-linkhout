@@ -500,7 +500,7 @@ export default function OverzichtClient() {
                 label="Nog te komen"
                 waarde={String(totalen.nogTeKomen)}
                 toon={totalen.nogTeKomen === 0 && totalen.inschrijvingen > 0 ? "goed" : "gewoon"}
-                onder={`${totalen.behandeld} van ${totalen.inschrijvingen} behandeld, nog ${totalen.gerechtenNogTeKomen} gerechten`}
+                onder={`${totalen.behandeld} van ${totalen.inschrijvingen} behandeld`}
               />
             </div>
 
