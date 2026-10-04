@@ -195,18 +195,18 @@ export const KERNEN: Record<string, Kernspeler[]> = {
 
   // De damesploegen, seizoen 2026-27.
   DamesP1: [
-    { naam: "Aline Flossie" },
+    { naam: "Aline Flossie", nummer: 16 },
     { naam: "Briana Geerts" },
-    { naam: "Emilie Konings" },
-    { naam: "Hannelore Barro" },
-    { naam: "Jacey Vanweddingen" },
-    { naam: "Janne Vaes" },
-    { naam: "Jolien Wouters" },
-    { naam: "Kyra Sagovac" },
-    { naam: "Lola Jouck" },
-    { naam: "Marie Doggen" },
+    { naam: "Emilie Konings", nummer: 1 },
+    { naam: "Hannelore Barro", nummer: 5 },
+    { naam: "Jacey Vanweddingen", nummer: 14 },
+    { naam: "Janne Vaes", nummer: 2 },
+    { naam: "Jolien Wouters", nummer: 18 },
+    { naam: "Kyra Sagovac", nummer: 12 },
+    { naam: "Lola Jouck", nummer: 9 },
+    { naam: "Marie Doggen", nummer: 17 },
     { naam: "Meret Moldonado" },
-    { naam: "Nena Convents" },
+    { naam: "Nena Convents", nummer: 13 },
   ],
   DamesP2: [
     { naam: "Amélie Mondelaers" },
