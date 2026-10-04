@@ -57,8 +57,11 @@ export const KERNEN: Record<string, Kernspeler[]> = {
     { naam: "Gerard Vanleuven", nummer: 99 },
     { naam: "Jorne Ghijs", nummer: 53 },
     { naam: "Levi Lopez Hernandez", nummer: 16 },
-    { naam: "Mathias Vandebroek", nummer: 33 },
     { naam: "Maxime Mathieu", nummer: 37 },
+    // Op het GDPR-formulier gevraagd om zonder naam op de site te staan. De
+    // foto mag wel; "Speler 33" is enkel de sleutel waarmee de foto aan deze
+    // regel hangt. Zet hier nooit de echte naam, ook niet in een opmerking.
+    { naam: "Speler 33", nummer: 33 },
     { naam: "Rune Vanbrabant", nummer: 66 },
     { naam: "Sander Van Mieghem", nummer: 21 },
     { naam: "Senn Jacobs", nummer: 14 },

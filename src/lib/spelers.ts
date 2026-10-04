@@ -470,12 +470,6 @@ export const spelers: Speler[] = [
     "groot": "/images/spelers/marie-doggen-9b06fc12.webp"
   },
   {
-    "naam": "Mathias Vandebroek",
-    "ploeg": "U17B",
-    "klein": "/images/spelers/mathias-vandebroek-60d41879-klein.webp",
-    "groot": "/images/spelers/mathias-vandebroek-60d41879.webp"
-  },
-  {
     "naam": "Mathieu Huls",
     "ploeg": "U11",
     "klein": "/images/spelers/mathieu-huls-d206d6eb-klein.webp",
@@ -732,6 +726,12 @@ export const spelers: Speler[] = [
     "ploeg": "P2",
     "klein": "/images/spelers/simon-volders-fbfeb489-klein.webp",
     "groot": "/images/spelers/simon-volders-fbfeb489.webp"
+  },
+  {
+    "naam": "Speler 33",
+    "ploeg": "U17B",
+    "klein": "/images/spelers/speler-33-60d41879-klein.webp",
+    "groot": "/images/spelers/speler-33-60d41879.webp"
   },
   {
     "naam": "Stan Clemens",

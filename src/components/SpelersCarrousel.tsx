@@ -217,7 +217,10 @@ function Vergroting({
         />
         <figcaption className="mt-3 text-center text-white">
           <span className="block text-lg font-bold uppercase">
-            {speler.nummer !== undefined ? `${speler.nummer}. ` : ""}
+            {/* Geen "33. Speler 33" bij wie enkel met zijn nummer op de site staat. */}
+            {speler.nummer !== undefined && !speler.naam.includes(String(speler.nummer))
+              ? `${speler.nummer}. `
+              : ""}
             {speler.naam}
           </span>
           <span className="mt-1 block text-sm text-white/70">
