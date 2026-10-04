@@ -254,7 +254,8 @@ en je regels zouden verdwijnen.
 
 Twee bladen:
 
-- **Overzicht**: de totalen. Inschrijvingen, porties, bedrag, betaald, nog te
+- **Overzicht**: de totalen. Inschrijvingen, gerechten en desserts apart,
+  bedrag, betaald, nog te
   ontvangen, per zitting, en per gerecht hoeveel er besteld moet worden.
 - **Inschrijvingen**: één regel per inschrijving met een kolom per gerecht. De
   totaalregel bovenaan gebruikt `SUBTOTAL`, dus als je filtert (bijvoorbeeld op

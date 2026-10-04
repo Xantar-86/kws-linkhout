@@ -212,6 +212,25 @@ export function aantalPorties(aantallen: Record<string, number>): number {
 }
 
 /**
+ * De gerechten en de desserts apart. Een dessert is geen maaltijd: wie
+ * "14 porties" leest terwijl er 8 mensen komen eten, telt verkeerd in de
+ * keuken. Samen zijn ze wat aantalPorties geeft.
+ */
+export function aantalGerechten(aantallen: Record<string, number>): number {
+  return Object.entries(aantallen).reduce((som, [id, aantal]) => {
+    const g = gerecht(id);
+    return g && g.groep !== "dessert" && aantal > 0 ? som + aantal : som;
+  }, 0);
+}
+
+export function aantalDesserts(aantallen: Record<string, number>): number {
+  return Object.entries(aantallen).reduce((som, [id, aantal]) => {
+    const g = gerecht(id);
+    return g && g.groep === "dessert" && aantal > 0 ? som + aantal : som;
+  }, 0);
+}
+
+/**
  * Het aantal plaatsen dat een inschrijving inneemt: de hoofd- en
  * kindergerechten. Desserts tellen niet mee, want daar zit niemand extra voor
  * aan tafel.

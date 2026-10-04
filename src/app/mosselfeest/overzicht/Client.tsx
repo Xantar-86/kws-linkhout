@@ -68,11 +68,14 @@ interface Wijziging {
 function Kaartje({
   label,
   waarde,
+  naast,
   toon,
   onder,
 }: {
   label: string;
   waarde: string;
+  /** Een tweede, kleiner cijfer naast het grote, bijvoorbeeld de desserts. */
+  naast?: string;
   toon?: "gewoon" | "goed" | "open";
   /** Kleine regel onder het cijfer, bijvoorbeeld een verdeling. */
   onder?: string;
@@ -82,7 +85,12 @@ function Kaartje({
   return (
     <div className="rounded-2xl border border-zand-200/70 bg-white p-4 shadow-blad">
       <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
-      <p className={`mt-1 font-display text-2xl font-bold ${kleur}`}>{waarde}</p>
+      <p className={`mt-1 font-display text-2xl font-bold ${kleur}`}>
+        {waarde}
+        {naast && (
+          <span className="ml-2 font-sans text-sm font-semibold text-slate-500">{naast}</span>
+        )}
+      </p>
       {onder && <p className="mt-0.5 text-xs text-slate-500">{onder}</p>}
     </div>
   );
@@ -471,8 +479,9 @@ export default function OverzichtClient() {
                 }
               />
               <Kaartje
-                label="Porties"
-                waarde={String(totalen.porties)}
+                label="Gerechten"
+                waarde={String(totalen.gerechten)}
+                naast={`+ ${totalen.desserts} dessert${totalen.desserts === 1 ? "" : "s"}`}
                 onder={`${totalen.plaatsen} plaatsen: ${totalen.volwassenen} volwassen, ${totalen.kinderen} kind`}
               />
               <Kaartje label="Totaal" waarde={`${euro(totalen.bedrag)} euro`} />
@@ -491,7 +500,7 @@ export default function OverzichtClient() {
                 label="Nog te komen"
                 waarde={String(totalen.nogTeKomen)}
                 toon={totalen.nogTeKomen === 0 && totalen.inschrijvingen > 0 ? "goed" : "gewoon"}
-                onder={`${totalen.behandeld} van ${totalen.inschrijvingen} behandeld, nog ${totalen.portiesNogTeKomen} porties`}
+                onder={`${totalen.behandeld} van ${totalen.inschrijvingen} behandeld, nog ${totalen.gerechtenNogTeKomen} gerechten`}
               />
             </div>
 
@@ -583,6 +592,8 @@ export default function OverzichtClient() {
                     const cijfers = totalen.perZitting[z.id] ?? {
                       inschrijvingen: 0,
                       porties: 0,
+                      gerechten: 0,
+                      desserts: 0,
                       plaatsen: 0,
                       max: null,
                       vrij: null,
@@ -593,7 +604,9 @@ export default function OverzichtClient() {
                         <p className="text-sm text-slate-700">{z.label}</p>
                         <p className="mt-0.5 text-sm text-slate-500">
                           {cijfers.inschrijvingen} inschrijving
-                          {cijfers.inschrijvingen === 1 ? "" : "en"}, {cijfers.porties} porties
+                          {cijfers.inschrijvingen === 1 ? "" : "en"}, {cijfers.gerechten} gerecht
+                          {cijfers.gerechten === 1 ? "" : "en"}
+                          {cijfers.desserts > 0 && `, ${cijfers.desserts} dessert${cijfers.desserts === 1 ? "" : "s"}`}
                         </p>
                         {cijfers.max !== null && (
                           <p
@@ -631,14 +644,14 @@ export default function OverzichtClient() {
                   // porties zitten wel in het totaal, dus we laten ze apart
                   // zien in plaats van ze te verzwijgen.
                   const inZittingen = Object.values(totalen.perZitting).reduce(
-                    (som, z) => som + z.porties,
+                    (som, z) => som + z.gerechten,
                     0,
                   );
-                  const rest = totalen.porties - inZittingen;
+                  const rest = totalen.gerechten - inZittingen;
                   if (rest <= 0) return null;
                   return (
                     <p className="mt-2 text-sm text-slate-500">
-                      {rest} portie{rest === 1 ? "" : "s"} zonder zitting, uit stapels waarvan de
+                      {rest} gerecht{rest === 1 ? "" : "en"} zonder zitting, uit stapels waarvan de
                       zitting nog niet vastligt.
                     </p>
                   );

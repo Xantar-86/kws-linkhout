@@ -481,7 +481,7 @@ function PerDag({ lijst }: { lijst: Inschrijving[] }) {
         </h2>
         <p className="text-sm text-slate-600">
           {totalen.inschrijvingen} inschrijving{totalen.inschrijvingen === 1 ? "" : "en"},{" "}
-          {totalen.porties} porties
+          {totalen.gerechten} gerechten, {totalen.desserts} desserts
         </p>
       </div>
 

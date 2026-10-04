@@ -366,11 +366,12 @@ export async function stuurSamenvatting(opts: {
 
   const html = omhulsel(
     `Mosselfeest: stand van zaken`,
-    `${totalen.inschrijvingen} inschrijving${totalen.inschrijvingen === 1 ? "" : "en"}, ${totalen.porties} porties`,
+    `${totalen.inschrijvingen} inschrijving${totalen.inschrijvingen === 1 ? "" : "en"}, ${totalen.gerechten} gerechten en ${totalen.desserts} desserts`,
     `<table style="width:100%;border-collapse:separate;border-spacing:6px 0">
        <tr>
          ${cijfer("Nieuw", String(nieuwe.length))}
-         ${cijfer("Porties", String(totalen.porties))}
+         ${cijfer("Gerechten", String(totalen.gerechten))}
+         ${cijfer("Desserts", String(totalen.desserts))}
          ${cijfer("Nog te ontvangen", `${euro(totalen.bedragOpen)} euro`)}
        </tr>
      </table>
@@ -394,7 +395,7 @@ export async function stuurSamenvatting(opts: {
     const antwoord = await new Resend(apiKey).emails.send({
       from: afzender(),
       to: ontvangers(),
-      subject: `Mosselfeest: ${nieuwe.length} nieuw, ${totalen.porties} porties in totaal`,
+      subject: `Mosselfeest: ${nieuwe.length} nieuw, ${totalen.gerechten} gerechten in totaal`,
       html,
     });
     if (antwoord.error) return { ...basis, ok: false, verstuurd: false, fout: antwoord.error.message };

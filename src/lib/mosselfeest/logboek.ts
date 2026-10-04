@@ -1,5 +1,13 @@
 import ExcelJS from "exceljs";
-import { EVENEMENT, GERECHTEN, GROEPEN, aantalPorties, gerechtenVan, isAfhalen } from "./kaart";
+import {
+  EVENEMENT,
+  GERECHTEN,
+  GROEPEN,
+  aantalDesserts,
+  aantalGerechten,
+  gerechtenVan,
+  isAfhalen,
+} from "./kaart";
 import { openstaand, reedsBetaald, telOp, type Inschrijving } from "./opslag";
 
 /**
@@ -79,7 +87,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
     ["   waarvan online ingevuld", bron.online],
     ["   waarvan ingetypte kaarten", bron.kaart],
     ["   waarvan stapels kaarten", bron.verzamelpost],
-    ["Porties in totaal", totalen.porties],
+    ["Gerechten in totaal", totalen.gerechten],
+    ["Desserts in totaal", totalen.desserts],
     ["Bedrag in totaal", totalen.bedrag, "euro"],
     ["Waarvan betaald", totalen.bedragBetaald, "euro"],
     ["Nog te ontvangen", totalen.bedragOpen, "euro"],
@@ -162,7 +171,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
 
   const vasteKoppen = ["Nr.", "Datum", "Bron", "Naam", "Voornaam", "E-mail", "Telefoon", "Zitting"];
   const staartKoppen = [
-    "Porties",
+    "Gerechten",
+    "Desserts",
     "Bedrag",
     "Reeds betaald",
     "Nog te betalen",
@@ -192,8 +202,9 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
   totaalRij.getCell(1).value = "Totaal";
   totaalRij.getCell(1).font = { bold: true };
   const eersteGerechtKolom = vasteKoppen.length + 1;
-  for (let k = 0; k < GERECHTEN.length + 4; k++) {
-    // De gerechten, plus Porties, Bedrag, Reeds betaald en Nog te betalen.
+  for (let k = 0; k < GERECHTEN.length + 5; k++) {
+    // De gerechten, plus Gerechten, Desserts, Bedrag, Reeds betaald en Nog te
+    // betalen.
     const kolom = eersteGerechtKolom + k;
     const letter = i.getColumn(kolom).letter;
     const cel = totaalRij.getCell(kolom);
@@ -227,7 +238,8 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
       inschrijving.telefoon ?? "",
       zittingLabel.get(inschrijving.zitting) ?? inschrijving.zitting ?? "",
       ...GERECHTEN.map((g) => inschrijving.aantallen[g.id] || 0),
-      aantalPorties(inschrijving.aantallen),
+      aantalGerechten(inschrijving.aantallen),
+      aantalDesserts(inschrijving.aantallen),
       inschrijving.bedrag,
       reedsBetaald(inschrijving),
       Math.max(0, openstaand(inschrijving)),
