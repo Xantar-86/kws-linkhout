@@ -373,6 +373,17 @@ export interface SeizoenWedstrijd {
   veld: Speelveld | undefined;
 }
 
+type SeizoenRij = {
+  id: string;
+  startTime: string | null;
+  state: string;
+  homeTeam: RbfaTeam | null;
+  awayTeam: RbfaTeam | null;
+  series: { id: string; name: string } | null;
+  location: RbfaLocation | null;
+  outcome: { status: string; homeTeamGoals: number | null; awayTeamGoals: number | null } | null;
+    };
+
 /** Alle wedstrijden van een ploeg dit seizoen, met uitslag waar gespeeld. */
 export async function getSeizoen(teamId: string): Promise<SeizoenWedstrijd[] | null> {
   try {
@@ -383,17 +394,17 @@ export async function getSeizoen(teamId: string): Promise<SeizoenWedstrijd[] | n
       next: { revalidate: 3600 },
     });
     if (!response.ok) return null;
-    const json = await response.json();
-    const lijst: {
-      id: string;
-      startTime: string | null;
-      state: string;
-      homeTeam: RbfaTeam | null;
-      awayTeam: RbfaTeam | null;
-      series: { id: string; name: string } | null;
-      location: RbfaLocation | null;
-      outcome: { status: string; homeTeamGoals: number | null; awayTeamGoals: number | null } | null;
-    }[] = json?.data?.teamCalendar ?? [];
+    return seizoenUitAntwoord(await response.json());
+  } catch {
+    return null;
+  }
+}
+
+/** Het antwoord van teamCalendar omzetten naar het seizoen. */
+export function seizoenUitAntwoord(json: unknown): SeizoenWedstrijd[] {
+  {
+    const lijst: SeizoenRij[] =
+      (json as { data?: { teamCalendar?: SeizoenRij[] } })?.data?.teamCalendar ?? [];
 
     return lijst
       .filter((m) => m.startTime && m.homeTeam?.name && m.awayTeam?.name)
@@ -435,8 +446,6 @@ export async function getSeizoen(teamId: string): Promise<SeizoenWedstrijd[] | n
           veld: naarSpeelveld(m.location),
         };
       });
-  } catch {
-    return null;
   }
 }
 
@@ -532,13 +541,26 @@ export async function getKlassement(
       seizoen !== undefined ? Promise.resolve(seizoen) : getSeizoen(teamId),
     ]);
     if (!response.ok) return null;
+    void wedstrijden;
+    return klassementUitAntwoord(await response.json(), teamId, venster);
+  } catch {
+    return null;
+  }
+}
 
-    const json = await response.json();
-    const rangschikkingen: Rangschikking[] = json?.data?.teamSeriesAndRankings?.rankings ?? [];
+/** Het antwoord van teamSeriesAndRankings omzetten naar ons klassement. */
+export function klassementUitAntwoord(
+  json: unknown,
+  teamId: string,
+  venster = 5
+): Klassement | null {
+  {
+    const rangschikkingen: Rangschikking[] =
+      (json as { data?: { teamSeriesAndRankings?: { rankings?: Rangschikking[] } } })?.data
+        ?.teamSeriesAndRankings?.rankings ?? [];
 
     // Hetzelfde klassement als de overzichtspagina van de ploeg op de
     // RBFA-site: de eerste reeks die de bond teruggeeft en mag tonen.
-    void wedstrijden;
     const gekozen = rangschikkingen.find((r) => r.visibility?.showRanking);
 
     if (!gekozen?.visibility?.showRanking) return null;
@@ -578,7 +600,32 @@ export async function getKlassement(
       venster: rijen.slice(start, start + venster),
       link: `${RBFA_SITE}/competitie/${gekozen.id}/rangschikking`,
     };
-  } catch {
-    return null;
   }
+}
+
+/**
+ * Seizoen en klassement, opgehaald door de browser van de bezoeker.
+ *
+ * Zelfde reden als bij haalRbfaWedstrijdenInBrowser: de bond laat sinds
+ * oktober 2026 enkel echte browsers toe. Krijgt de server niets, dan vult de
+ * ploegpagina kalender en klassement hiermee alsnog in.
+ */
+export async function haalSeizoenInBrowser(teamId: string): Promise<SeizoenWedstrijd[]> {
+  const response = await fetch(RBFA_GRAPHQL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: SEIZOEN_QUERY, variables: { teamId, language: "nl" } }),
+  });
+  if (!response.ok) throw new Error(`RBFA-API gaf status ${response.status}`);
+  return seizoenUitAntwoord(await response.json());
+}
+
+export async function haalKlassementInBrowser(teamId: string): Promise<Klassement | null> {
+  const response = await fetch(RBFA_GRAPHQL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query: KLASSEMENT_QUERY, variables: { teamId, language: "nl" } }),
+  });
+  if (!response.ok) throw new Error(`RBFA-API gaf status ${response.status}`);
+  return klassementUitAntwoord(await response.json(), teamId);
 }

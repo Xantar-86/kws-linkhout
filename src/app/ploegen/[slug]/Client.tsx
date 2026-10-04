@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +13,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaginaKop } from "@/components/PaginaKop";
 import { KlassementBlok } from "@/components/ploeg/KlassementBlok";
 import { KalenderBlok } from "@/components/ploeg/KalenderBlok";
-import type { Klassement, SeizoenWedstrijd } from "@/lib/rbfa";
+import {
+  haalKlassementInBrowser,
+  haalSeizoenInBrowser,
+  rbfaTeamId,
+  type Klassement,
+  type SeizoenWedstrijd,
+} from "@/lib/rbfa";
 import { 
   Trophy, 
   Clock, 
@@ -42,6 +48,12 @@ export default function TeamClient({
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showStandingsModal, setShowStandingsModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
+
+  // Wat de server van de bond kreeg. Kreeg hij niets (de bond weigert sinds
+  // oktober 2026 alles wat niet uit een echte browser komt), dan haalt deze
+  // browser het hieronder zelf op.
+  const [kalenderNu, setKalenderNu] = useState(kalender);
+  const [klassementNu, setKlassementNu] = useState(klassement);
   
   // De host voor het agenda-adres: op de server leeg, in de browser echt.
   const site = useSyncExternalStore(
@@ -51,6 +63,31 @@ export default function TeamClient({
   );
 
   const team = getTeamBySlug(slug);
+
+  const rbfaId = rbfaTeamId([team?.standingsIframe, team?.calendarIframe]);
+  const kalenderLink = team?.calendarIframe;
+  const klassementLink = team?.standingsIframe;
+  useEffect(() => {
+    if (!rbfaId) return;
+    let afgebroken = false;
+    if (!kalender && kalenderLink) {
+      haalSeizoenInBrowser(rbfaId)
+        .then((seizoen) => {
+          if (!afgebroken && seizoen.length) setKalenderNu({ seizoen, link: kalenderLink });
+        })
+        .catch(() => {});
+    }
+    if (!klassement) {
+      haalKlassementInBrowser(rbfaId)
+        .then((k) => {
+          if (!afgebroken && k) setKlassementNu(klassementLink ? { ...k, link: klassementLink } : k);
+        })
+        .catch(() => {});
+    }
+    return () => {
+      afgebroken = true;
+    };
+  }, [rbfaId, kalender, klassement, kalenderLink, klassementLink]);
 
   if (!team) {
     notFound();
@@ -314,18 +351,18 @@ export default function TeamClient({
               pagina blijft het rustig, en hier hoort het bij het sportieve deel.
               Enkel waar de bond een stand publiceert, dus vanaf de U15. Ploegen
               zonder spelerskern krijgen het op dezelfde plaats. */}
-          {klassement && (
+          {klassementNu && (
             <div className="mt-12">
               <KlassementBlok
-                klassement={klassement}
+                klassement={klassementNu}
               />
             </div>
           )}
 
           {/* Wedstrijdkalender: een eigen blok waar dat er is, anders de RBFA-site */}
-          {kalender ? (
+          {kalenderNu ? (
             <div className="mt-12">
-              <KalenderBlok seizoen={kalender.seizoen} link={kalender.link} />
+              <KalenderBlok seizoen={kalenderNu.seizoen} link={kalenderNu.link} />
             </div>
           ) : team.calendarIframe && (
             <div className="mt-12 overflow-hidden rounded-2xl bg-white shadow-lg">
