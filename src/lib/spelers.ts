@@ -28,8 +28,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Alexander Thomas",
     "ploeg": "U15",
-    "klein": "/images/spelers/alexander-thomas-c610ce97-klein.webp",
-    "groot": "/images/spelers/alexander-thomas-c610ce97.webp"
+    "klein": "/images/spelers/alexander-thomas-02afb87e-klein.webp",
+    "groot": "/images/spelers/alexander-thomas-02afb87e.webp"
   },
   {
     "naam": "Aliano Baeten",
@@ -52,8 +52,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Arthur Fabré",
     "ploeg": "U15",
-    "klein": "/images/spelers/arthur-fabre-32b2a3e6-klein.webp",
-    "groot": "/images/spelers/arthur-fabre-32b2a3e6.webp"
+    "klein": "/images/spelers/arthur-fabre-bc338ef5-klein.webp",
+    "groot": "/images/spelers/arthur-fabre-bc338ef5.webp"
   },
   {
     "naam": "Arthur Hoogstijns",
@@ -64,8 +64,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Axel Coomans",
     "ploeg": "U15",
-    "klein": "/images/spelers/axel-coomans-5e6f98f5-klein.webp",
-    "groot": "/images/spelers/axel-coomans-5e6f98f5.webp"
+    "klein": "/images/spelers/axel-coomans-5b1a948a-klein.webp",
+    "groot": "/images/spelers/axel-coomans-5b1a948a.webp"
   },
   {
     "naam": "Ben Andries",
@@ -112,8 +112,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Charly Politic",
     "ploeg": "U15",
-    "klein": "/images/spelers/charly-politic-505abf91-klein.webp",
-    "groot": "/images/spelers/charly-politic-505abf91.webp"
+    "klein": "/images/spelers/charly-politic-b2de36ac-klein.webp",
+    "groot": "/images/spelers/charly-politic-b2de36ac.webp"
   },
   {
     "naam": "Cisse Simons",
@@ -172,8 +172,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Emile Huls",
     "ploeg": "U15",
-    "klein": "/images/spelers/emile-huls-86fb434f-klein.webp",
-    "groot": "/images/spelers/emile-huls-86fb434f.webp"
+    "klein": "/images/spelers/emile-huls-67c93133-klein.webp",
+    "groot": "/images/spelers/emile-huls-67c93133.webp"
   },
   {
     "naam": "Emilie Konings",
@@ -196,14 +196,14 @@ export const spelers: Speler[] = [
   {
     "naam": "Ferre Luts",
     "ploeg": "U15",
-    "klein": "/images/spelers/ferre-luts-81d60dde-klein.webp",
-    "groot": "/images/spelers/ferre-luts-81d60dde.webp"
+    "klein": "/images/spelers/ferre-luts-8bbf86d6-klein.webp",
+    "groot": "/images/spelers/ferre-luts-8bbf86d6.webp"
   },
   {
     "naam": "Fynn Deferme",
     "ploeg": "U15",
-    "klein": "/images/spelers/fynn-deferme-4865f4fc-klein.webp",
-    "groot": "/images/spelers/fynn-deferme-4865f4fc.webp"
+    "klein": "/images/spelers/fynn-deferme-b7556eae-klein.webp",
+    "groot": "/images/spelers/fynn-deferme-b7556eae.webp"
   },
   {
     "naam": "Hannelore Barro",
@@ -382,8 +382,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Lander Rymen",
     "ploeg": "U15",
-    "klein": "/images/spelers/lander-rymen-da69ec45-klein.webp",
-    "groot": "/images/spelers/lander-rymen-da69ec45.webp"
+    "klein": "/images/spelers/lander-rymen-fb79b669-klein.webp",
+    "groot": "/images/spelers/lander-rymen-fb79b669.webp"
   },
   {
     "naam": "Lars Andries",
@@ -484,8 +484,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Mauro Deprez",
     "ploeg": "U15",
-    "klein": "/images/spelers/mauro-deprez-c4fa3811-klein.webp",
-    "groot": "/images/spelers/mauro-deprez-c4fa3811.webp"
+    "klein": "/images/spelers/mauro-deprez-3140cfa2-klein.webp",
+    "groot": "/images/spelers/mauro-deprez-3140cfa2.webp"
   },
   {
     "naam": "Maxim Coemans",
@@ -550,8 +550,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Niccolò Liaci",
     "ploeg": "U15",
-    "klein": "/images/spelers/niccolo-liaci-b97577f7-klein.webp",
-    "groot": "/images/spelers/niccolo-liaci-b97577f7.webp"
+    "klein": "/images/spelers/niccolo-liaci-92133b74-klein.webp",
+    "groot": "/images/spelers/niccolo-liaci-92133b74.webp"
   },
   {
     "naam": "Nick Tuteleers",
@@ -568,8 +568,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Nio Thoelen",
     "ploeg": "U15",
-    "klein": "/images/spelers/nio-thoelen-8b79ef7b-klein.webp",
-    "groot": "/images/spelers/nio-thoelen-8b79ef7b.webp"
+    "klein": "/images/spelers/nio-thoelen-6e8aa65e-klein.webp",
+    "groot": "/images/spelers/nio-thoelen-6e8aa65e.webp"
   },
   {
     "naam": "Noah Gielkens",
@@ -622,8 +622,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Robbe Reynders",
     "ploeg": "U15",
-    "klein": "/images/spelers/robbe-reynders-6baf7203-klein.webp",
-    "groot": "/images/spelers/robbe-reynders-6baf7203.webp"
+    "klein": "/images/spelers/robbe-reynders-f9b8c348-klein.webp",
+    "groot": "/images/spelers/robbe-reynders-f9b8c348.webp"
   },
   {
     "naam": "Sam Das",
@@ -640,8 +640,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Seppe Breugelmans",
     "ploeg": "U15",
-    "klein": "/images/spelers/seppe-breugelmans-907dc420-klein.webp",
-    "groot": "/images/spelers/seppe-breugelmans-907dc420.webp"
+    "klein": "/images/spelers/seppe-breugelmans-3accb5e2-klein.webp",
+    "groot": "/images/spelers/seppe-breugelmans-3accb5e2.webp"
   },
   {
     "naam": "Seppe Verdonck",
@@ -664,8 +664,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Simon De Bruycker",
     "ploeg": "U15",
-    "klein": "/images/spelers/simon-de-bruycker-8a195ff7-klein.webp",
-    "groot": "/images/spelers/simon-de-bruycker-8a195ff7.webp"
+    "klein": "/images/spelers/simon-de-bruycker-ec37a4af-klein.webp",
+    "groot": "/images/spelers/simon-de-bruycker-ec37a4af.webp"
   },
   {
     "naam": "Simon Reykers",
@@ -688,8 +688,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Thomas Buyck",
     "ploeg": "U15",
-    "klein": "/images/spelers/thomas-buyck-390528d0-klein.webp",
-    "groot": "/images/spelers/thomas-buyck-390528d0.webp"
+    "klein": "/images/spelers/thomas-buyck-1d388ef9-klein.webp",
+    "groot": "/images/spelers/thomas-buyck-1d388ef9.webp"
   },
   {
     "naam": "Thomas Kellens",
@@ -718,8 +718,8 @@ export const spelers: Speler[] = [
   {
     "naam": "Vic Janssen",
     "ploeg": "U15",
-    "klein": "/images/spelers/vic-janssen-5579695e-klein.webp",
-    "groot": "/images/spelers/vic-janssen-5579695e.webp"
+    "klein": "/images/spelers/vic-janssen-12dafbc3-klein.webp",
+    "groot": "/images/spelers/vic-janssen-12dafbc3.webp"
   },
   {
     "naam": "Victor Darville",

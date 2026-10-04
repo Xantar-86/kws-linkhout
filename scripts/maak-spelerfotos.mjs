@@ -73,6 +73,63 @@ async function clubwand(breedte, hoogte) {
   return sharp(WAND).resize(breedte, hoogte, { fit: "cover" }).toBuffer();
 }
 
+/**
+ * Meet het hoofd in een bijgesneden uitsnede: hoe breed het is en waar het
+ * midden zit.
+ *
+ * De bovenste rij met pixels is de kruin. Van daar naar beneden wordt de
+ * figuur breder tot aan de oren en dan weer smaller aan de hals; de grootste
+ * breedte vóór die versmalling is het hoofd. Daaronder komen de schouders,
+ * veel breder, en daar kijken we niet meer naar. Vinden we geen hals (haar
+ * tot op de schouders), dan nemen we het breedste punt in het bovenste
+ * stuk; dat is dan een schatting.
+ */
+async function meetHoofd(png) {
+  const B = 160;
+  const { data, info } = await sharp(png)
+    .resize({ width: B })
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const H = info.height;
+  const { width: echteBreedte } = await sharp(png).metadata();
+  const terug = echteBreedte / B;
+
+  const rij = (y) => {
+    let a = -1;
+    let b = -1;
+    for (let x = 0; x < B; x++) {
+      if (data[(y * B + x) * 4 + 3] > 128) {
+        if (a < 0) a = x;
+        b = x;
+      }
+    }
+    return a < 0 ? null : { breed: b - a + 1, midden: (a + b) / 2 };
+  };
+
+  let top = null;
+  let breedst = { breed: 0, midden: B / 2 };
+  let vroeg = { breed: 0, midden: B / 2 };
+  let hals = false;
+  for (let y = 0; y < H; y++) {
+    const r = rij(y);
+    if (!r) continue;
+    if (top === null) top = y;
+    const diepte = y - top;
+    if (diepte <= H * 0.18 && r.breed > vroeg.breed) vroeg = r;
+    if (r.breed > breedst.breed) breedst = r;
+    // De hals: duidelijk smaller dan het breedste punt tot nu toe, en niet in
+    // de eerste rijen, want een kruin begint altijd smal.
+    if (diepte > H * 0.04 && breedst.breed > B * 0.08 && r.breed < breedst.breed * 0.78) {
+      hals = true;
+      break;
+    }
+    if (diepte > H * 0.4) break;
+  }
+  const hoofd = hals ? breedst : vroeg;
+  return { breedte: hoofd.breed * terug, midden: hoofd.midden * terug, gevonden: hals };
+}
+
 /** Kleine versie voor het raster, en een grotere voor het vergrote beeld. */
 const KLEIN = 560;
 const GROOT = 1400;
@@ -83,6 +140,25 @@ const RUIMTE_BOVEN = 0.1;
 
 /** Het staande beeld voor de kaarten loopt verder door dan kop en schouders. */
 const PORTRET_FACTOR = 1.7;
+
+/**
+ * Hoe groot het hoofd op de kaart staat (deel van de kaartbreedte) en hoe
+ * hoog de kruin hangt (deel van de kaarthoogte).
+ *
+ * Iedereen wordt op de maat van zijn hoofd geschaald, niet op de hoogte van
+ * zijn uitsnede. Wie tot de borst gefotografeerd is en wie ten voeten uit
+ * staat, krijgt zo een even grote kop op dezelfde hoogte, en de onderrand van
+ * de kaart snijdt iedereen rond het middel af.
+ */
+const HOOFD_AANDEEL = 0.33;
+const KRUIN_HOOGTE = 0.07;
+
+/**
+ * Voor welke ploegen de kaarten op hoofdmaat staan. Eerst alleen de U15, om
+ * het te bekijken; de andere ploegen blijven intussen zoals ze waren. Zet op
+ * "alle" om iedereen zo te zetten.
+ */
+const HOOFDMAAT_PLOEGEN = new Set(["U15"]);
 
 /**
  * Hoog dit op zodra je iets aan het snijden verandert.
@@ -106,10 +182,10 @@ const SNIJ_VERSIE = 13;
  * foto staat; een beetje scheef is gewoon hoe mensen staan. `schaal` maakt
  * iemand kleiner (0.9) of groter (1.1) dan de vaste maat op de wand.
  *
- * `vierkant` vergroot het vierkantje dat voor het raster om het hoofd gelegd
- * wordt. Dat vierkantje volgt de breedte van de uitsnede, dus wie smal
- * uitgesneden is (armen gekruist, dicht bij het toestel) krijgt een te grote
- * kop. Met 1.5 of 2 staat hij weer even groot als de rest.
+ * `hoofd` is de breedte van het hoofd als deel van de breedte van de
+ * uitsnede, voor als het meten misgaat: bij haar tot op de schouders vindt
+ * het script de hals niet en meet het de schouders als hoofd. Zoek een
+ * speler met een goede meting op in de uitvoer en neem die als maat.
  */
 const CORRECTIES = {
   "Brent Gilissen": { kruin: 0.215, midden: 0.51 },
@@ -122,11 +198,9 @@ const CORRECTIES = {
   // zonder dit wordt hij dan groter geschaald dan de rest en staat hij te
   // dicht op de kijker.
   "Noah Stockmans": { draai: -5, schaal: 0.95 },
-  // Stond dichter bij het toestel dan de rest van de U15.
-  // Zijn uitsnede is smal (armen gekruist, dicht bij het toestel); het
-  // vierkantje om zijn hoofd werd daardoor te klein en zijn kop te groot.
-  "Lander Rymen": { vierkant: 1.5 },
-  "Vic Janssen": { vierkant: 1.4 },
+  // Zijn hals is amper smaller dan zijn hoofd; het script vond de "hals" pas
+  // bij zijn ellebogen en nam de schouders als hoofd.
+  "Steven Bottu": { hoofd: 0.29 },
 };
 
 /** Maakt van "Lorenzo Silvente Fernandez" een bestandsnaam zonder rare tekens. */
@@ -473,7 +547,8 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
   const hoogteFractie = correctie.hoogte ?? UITSNEDE_HOOGTE;
   const draai = correctie.draai ?? 0;
   const schaal = correctie.schaal ?? 1;
-  const vierkant = correctie.vierkant ?? 1;
+  const hoofdCorrectie = correctie.hoofd;
+  const opHoofdmaat = HOOFDMAAT_PLOEGEN === "alle" || HOOFDMAAT_PLOEGEN.has(ploeg);
 
   // Een vingerafdruk van de foto en de uitsnede in de bestandsnaam. Verandert
   // er iets, dan verandert het webadres mee en tonen browsers en de
@@ -498,7 +573,8 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
         // gaat wel mee, anders blijft de browser de oude versie tonen.
         ...(draai ? [`draai${draai}`] : []),
         ...(schaal !== 1 ? [`schaal${schaal}`] : []),
-        ...(vierkant !== 1 ? [`vierkant${vierkant}`] : []),
+        ...(opHoofdmaat && hoofdCorrectie ? [`hoofd${hoofdCorrectie}`] : []),
+        ...(opHoofdmaat ? ["hoofdmaat1"] : []),
         ...(opfrissen === true ? [`opfris${OPFRIS_VERSIE}`] : []),
       ].join("|")
     )
@@ -600,6 +676,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
   // Buiten de tak, zodat de gemeten waarden verderop nog te melden zijn.
   let toon = null;
   let snippers = 0;
+  let hoofdMelding = "";
 
   if (bruikbareKnip) {
     // Verkleinen maakt een beeld altijd wat weker, en op een donkere wand
@@ -609,66 +686,140 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
     const opgefrist = await opfrisbeurt(knipPad, { aan: opfrissen === true, draai });
     snippers = opgefrist.snippers;
     toon = opgefrist.toon;
-    // Op HOOGTE schalen, niet op breedte. Zo staat elke kruin op dezelfde
-    // hoogte op de wand, ook bij wie breed uitgesneden is (armen wijd, een
-    // vierkante uitsnede). Wie daardoor breder wordt dan de wand, verliest
-    // een reepje aan de zijkanten; dat is een stukje elleboog, en dat valt
-    // minder op dan een hoofd dat een kop lager hangt dan de buren.
-    const persoonHoogte = Math.round(GROOT * 0.9 * schaal);
-    const ruw = await sharp(opgefrist.buffer).resize({ height: persoonHoogte }).png().toBuffer();
-    const ruwMaat = await sharp(ruw).metadata();
-    const persoon = await sharp(ruw)
-      .extract({
-        left: Math.max(0, Math.round((ruwMaat.width - portretBreed) / 2)),
-        top: 0,
-        width: Math.min(ruwMaat.width, portretBreed),
-        height: ruwMaat.height,
-      })
-      // Witbalans en contrast in een keer: per kanaal een eigen versterking.
-      // Eerst dit en pas daarna de verzadiging, anders wordt de zweem mee
-      // opgeblazen in plaats van weggewerkt.
-      .linear(
-        toon.wit.map((w) => toon.versterking * w),
-        [toon.verschuiving, toon.verschuiving, toon.verschuiving]
-      )
-      .modulate({ saturation: toon.verzadiging })
-      .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
-      .toBuffer();
+    if (opHoofdmaat) {
+      // Op de maat van het HOOFD schalen, niet op de hoogte van de uitsnede.
+      // Zie HOOFD_AANDEEL. Reikt een korte uitsnede (tot de borst) zo niet tot
+      // de onderrand van de kaart, dan wordt hij net zo ver vergroot dat hij dat
+      // wel doet: een romp die boven de rand zweeft, kan niet.
+      const knipMaatNu = await sharp(opgefrist.buffer).metadata();
+      const hoofd = await meetHoofd(opgefrist.buffer);
+      const hoofdBreedte = hoofdCorrectie ? hoofdCorrectie * knipMaatNu.width : hoofd.breedte;
+      hoofdMelding = `hoofd ${(hoofdBreedte / knipMaatNu.width).toFixed(2)}${
+        hoofdCorrectie ? " (opgegeven)" : hoofd.gevonden ? "" : " (geschat)"
+      }`;
+      const kruinTop = Math.round(GROOT * KRUIN_HOOGTE);
+      const schaalHoofd = (portretBreed * HOOFD_AANDEEL) / hoofdBreedte;
+      const schaalVul = (GROOT - kruinTop) / knipMaatNu.height;
+      const factorWand = Math.max(schaalHoofd, schaalVul) * schaal;
 
-    const gerekt = persoon;
-    const maat = await sharp(gerekt).metadata();
-    const persoonLinks = Math.round((portretBreed - maat.width) / 2);
-    const persoonTop = GROOT - maat.height;
+      const ruw = await sharp(opgefrist.buffer)
+        .resize({ width: Math.max(1, Math.round(knipMaatNu.width * factorWand)) })
+        .png()
+        .toBuffer();
+      const ruwMaat = await sharp(ruw).metadata();
+      const hoofdMidden = hoofd.midden * factorWand;
 
-    await sharp(await clubwand(portretBreed, GROOT))
-      .composite([{ input: gerekt, left: persoonLinks, top: persoonTop }])
-      .webp({ quality: 86 })
-      .toFile(grootPad);
+      // De kaart rond het midden van het HOOFD leggen, niet rond het midden van
+      // de figuur: wie zijn armen kruist of half opzij staat, hangt anders
+      // scheef in beeld.
+      const stukBreed = Math.min(ruwMaat.width, portretBreed);
+      const links = Math.max(
+        0,
+        Math.min(ruwMaat.width - stukBreed, Math.round(hoofdMidden - portretBreed / 2))
+      );
+      const persoon = await sharp(ruw)
+        .extract({
+          left: links,
+          top: 0,
+          width: stukBreed,
+          height: Math.min(ruwMaat.height, GROOT - kruinTop),
+        })
+        // Witbalans en contrast in een keer: per kanaal een eigen versterking.
+        // Eerst dit en pas daarna de verzadiging, anders wordt de zweem mee
+        // opgeblazen in plaats van weggewerkt.
+        .linear(
+          toon.wit.map((w) => toon.versterking * w),
+          [toon.verschuiving, toon.verschuiving, toon.verschuiving]
+        )
+        .modulate({ saturation: toon.verzadiging })
+        .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
+        .toBuffer();
 
-    // Het vierkantje wordt om het hoofd gelegd in plaats van om een vaste
-    // plek in het beeld. De bovenkant van de uitsnede is de kruin, en een kop
-    // met schouders is ongeveer even hoog als de speler breed is. Zo staat
-    // iedereen goed, of hij nu ten voeten uit of tot de borst gefotografeerd
-    // is.
-    const zijde = Math.min(
-      portretBreed,
-      GROOT,
-      Math.round(Math.min(maat.width * 1.2 * vierkant, maat.height))
-    );
-    const zijLinks = Math.max(
-      0,
-      Math.min(portretBreed - zijde, Math.round(persoonLinks + maat.width / 2 - zijde / 2))
-    );
-    const zijTop = Math.max(
-      0,
-      Math.min(GROOT - zijde, Math.round(persoonTop - zijde * 0.06))
-    );
+      const maat = await sharp(persoon).metadata();
+      // Smaller dan de kaart: dan zo schuiven dat het hoofd in het midden staat.
+      const persoonLinks = Math.round(
+        Math.max(0, Math.min(portretBreed - maat.width, portretBreed / 2 - (hoofdMidden - links)))
+      );
+      const persoonTop = kruinTop;
 
-    await sharp(grootPad)
-      .extract({ left: zijLinks, top: zijTop, width: zijde, height: zijde })
-      .resize(KLEIN, KLEIN)
-      .webp({ quality: 82 })
-      .toFile(kleinPad);
+      await sharp(await clubwand(portretBreed, GROOT))
+        .composite([{ input: persoon, left: persoonLinks, top: persoonTop }])
+        .webp({ quality: 86 })
+        .toFile(grootPad);
+
+      // Het vierkantje voor het raster: een vaste maat rond het hoofd. Het hoofd
+      // staat op de kaart toch al overal even groot, dus hier ook.
+      const zijde = Math.min(portretBreed, Math.round(portretBreed * HOOFD_AANDEEL * 2.3));
+      const hoofdX = persoonLinks + (hoofdMidden - links);
+      const zijLinks = Math.max(0, Math.min(portretBreed - zijde, Math.round(hoofdX - zijde / 2)));
+      const zijTop = Math.max(0, Math.min(GROOT - zijde, Math.round(kruinTop - zijde * 0.08)));
+
+      await sharp(grootPad)
+        .extract({ left: zijLinks, top: zijTop, width: zijde, height: zijde })
+        .resize(KLEIN, KLEIN)
+        .webp({ quality: 82 })
+        .toFile(kleinPad);
+    } else {
+      // Op HOOGTE schalen, niet op breedte. Zo staat elke kruin op dezelfde
+      // hoogte op de wand, ook bij wie breed uitgesneden is (armen wijd, een
+      // vierkante uitsnede). Wie daardoor breder wordt dan de wand, verliest
+      // een reepje aan de zijkanten; dat is een stukje elleboog, en dat valt
+      // minder op dan een hoofd dat een kop lager hangt dan de buren.
+      const persoonHoogte = Math.round(GROOT * 0.9 * schaal);
+      const ruw = await sharp(opgefrist.buffer).resize({ height: persoonHoogte }).png().toBuffer();
+      const ruwMaat = await sharp(ruw).metadata();
+      const persoon = await sharp(ruw)
+        .extract({
+          left: Math.max(0, Math.round((ruwMaat.width - portretBreed) / 2)),
+          top: 0,
+          width: Math.min(ruwMaat.width, portretBreed),
+          height: ruwMaat.height,
+        })
+        // Witbalans en contrast in een keer: per kanaal een eigen versterking.
+        // Eerst dit en pas daarna de verzadiging, anders wordt de zweem mee
+        // opgeblazen in plaats van weggewerkt.
+        .linear(
+          toon.wit.map((w) => toon.versterking * w),
+          [toon.verschuiving, toon.verschuiving, toon.verschuiving]
+        )
+        .modulate({ saturation: toon.verzadiging })
+        .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
+        .toBuffer();
+
+      const maat = await sharp(persoon).metadata();
+      const persoonLinks = Math.round((portretBreed - maat.width) / 2);
+      const persoonTop = GROOT - maat.height;
+
+      await sharp(await clubwand(portretBreed, GROOT))
+        .composite([{ input: persoon, left: persoonLinks, top: persoonTop }])
+        .webp({ quality: 86 })
+        .toFile(grootPad);
+
+      // Het vierkantje wordt om het hoofd gelegd in plaats van om een vaste
+      // plek in het beeld. De bovenkant van de uitsnede is de kruin, en een kop
+      // met schouders is ongeveer even hoog als de speler breed is. Zo staat
+      // iedereen goed, of hij nu ten voeten uit of tot de borst gefotografeerd
+      // is.
+      const zijde = Math.min(
+        portretBreed,
+        GROOT,
+        Math.round(Math.min(maat.width * 1.2, maat.height))
+      );
+      const zijLinks = Math.max(
+        0,
+        Math.min(portretBreed - zijde, Math.round(persoonLinks + maat.width / 2 - zijde / 2))
+      );
+      const zijTop = Math.max(
+        0,
+        Math.min(GROOT - zijde, Math.round(persoonTop - zijde * 0.06))
+      );
+
+      await sharp(grootPad)
+        .extract({ left: zijLinks, top: zijTop, width: zijde, height: zijde })
+        .resize(KLEIN, KLEIN)
+        .webp({ quality: 82 })
+        .toFile(kleinPad);
+    }
   } else {
     await snij({ uitBreedte: KLEIN, uitHoogte: KLEIN, doelPad: kleinPad, kwaliteit: 82 });
     await snij({
@@ -688,6 +839,7 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
       (toon
         ? `  toon x${toon.versterking.toFixed(2)}${toon.versterking > 1.15 ? " opgehaald" : ""}`
         : "") +
+      (hoofdMelding ? `  ${hoofdMelding}` : "") +
       (snippers > 0 ? `  ${snippers} snipperpunten weg` : "") +
       (draai ? `  ${draai} graden rechtgezet` : "")
   );
