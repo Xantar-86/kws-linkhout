@@ -127,7 +127,15 @@ async function meetHoofd(png) {
     if (diepte > H * 0.4) break;
   }
   const hoofd = hals ? breedst : vroeg;
-  return { breedte: hoofd.breed * terug, midden: hoofd.midden * terug, gevonden: hals };
+  return {
+    breedte: hoofd.breed * terug,
+    midden: hoofd.midden * terug,
+    gevonden: hals,
+    // De echte kruin: de eerste rij met stevige pixels. Boven de kruin blijft
+    // na het bijsnijden soms een bijna doorzichtig puntje hangen, en dan
+    // hangt de hele speler een kop te laag.
+    kruin: (top ?? 0) * terug,
+  };
 }
 
 /** Kleine versie voor het raster, en een grotere voor het vergrote beeld. */
@@ -158,7 +166,7 @@ const KRUIN_HOOGTE = 0.07;
  * het te bekijken; de andere ploegen blijven intussen zoals ze waren. Zet op
  * "alle" om iedereen zo te zetten.
  */
-const HOOFDMAAT_PLOEGEN = new Set(["U15"]);
+const HOOFDMAAT_PLOEGEN = "alle";
 
 /**
  * Hoog dit op zodra je iets aan het snijden verandert.
@@ -186,6 +194,12 @@ const SNIJ_VERSIE = 13;
  * uitsnede, voor als het meten misgaat: bij haar tot op de schouders vindt
  * het script de hals niet en meet het de schouders als hoofd. Zoek een
  * speler met een goede meting op in de uitvoer en neem die als maat.
+ *
+ * `licht` dempt een portret dat in de volle zon genomen is: 0.8 maakt het
+ * twintig procent donkerder. `wit` is de witbalans per kanaal (rood, groen,
+ * blauw): met [0.92, 0.98, 1.06] wordt een warme zonnefoto koeler, zoals de
+ * foto's die binnen genomen zijn. `kleur` vermenigvuldigt de verzadiging;
+ * 0.8 haalt het felle uit een neonshirt in de zon.
  */
 const CORRECTIES = {
   "Brent Gilissen": { kruin: 0.215, midden: 0.51 },
@@ -201,6 +215,8 @@ const CORRECTIES = {
   // Zijn hals is amper smaller dan zijn hoofd; het script vond de "hals" pas
   // bij zijn ellebogen en nam de schouders als hoofd.
   "Steven Bottu": { hoofd: 0.29 },
+  // De enige van de U17 die in de volle zon gefotografeerd is.
+  "Tygo de Grave": { licht: 0.8, wit: [0.92, 0.98, 1.06], kleur: 0.78 },
 };
 
 /** Maakt van "Lorenzo Silvente Fernandez" een bestandsnaam zonder rare tekens. */
@@ -548,6 +564,9 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
   const draai = correctie.draai ?? 0;
   const schaal = correctie.schaal ?? 1;
   const hoofdCorrectie = correctie.hoofd;
+  const licht = correctie.licht ?? 1;
+  const witCorrectie = correctie.wit ?? null;
+  const kleur = correctie.kleur ?? 1;
   const opHoofdmaat = HOOFDMAAT_PLOEGEN === "alle" || HOOFDMAAT_PLOEGEN.has(ploeg);
 
   // Een vingerafdruk van de foto en de uitsnede in de bestandsnaam. Verandert
@@ -574,7 +593,10 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
         ...(draai ? [`draai${draai}`] : []),
         ...(schaal !== 1 ? [`schaal${schaal}`] : []),
         ...(opHoofdmaat && hoofdCorrectie ? [`hoofd${hoofdCorrectie}`] : []),
-        ...(opHoofdmaat ? ["hoofdmaat1"] : []),
+        ...(opHoofdmaat ? ["hoofdmaat2"] : []),
+        ...(licht !== 1 ? [`licht${licht}`] : []),
+        ...(witCorrectie ? [`wit${witCorrectie.join(",")}`] : []),
+        ...(kleur !== 1 ? [`kleur${kleur}`] : []),
         ...(opfrissen === true ? [`opfris${OPFRIS_VERSIE}`] : []),
       ].join("|")
     )
@@ -691,18 +713,33 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
       // Zie HOOFD_AANDEEL. Reikt een korte uitsnede (tot de borst) zo niet tot
       // de onderrand van de kaart, dan wordt hij net zo ver vergroot dat hij dat
       // wel doet: een romp die boven de rand zweeft, kan niet.
-      const knipMaatNu = await sharp(opgefrist.buffer).metadata();
       const hoofd = await meetHoofd(opgefrist.buffer);
+      // Wat er boven de echte kruin hangt, gaat eraf; zie meetHoofd.
+      const kruinRij = Math.floor(hoofd.kruin);
+      const figuur =
+        kruinRij > 0
+          ? await (async () => {
+              const m = await sharp(opgefrist.buffer).metadata();
+              return sharp(opgefrist.buffer)
+                .extract({ left: 0, top: kruinRij, width: m.width, height: m.height - kruinRij })
+                .png()
+                .toBuffer();
+            })()
+          : opgefrist.buffer;
+      const knipMaatNu = await sharp(figuur).metadata();
       const hoofdBreedte = hoofdCorrectie ? hoofdCorrectie * knipMaatNu.width : hoofd.breedte;
       hoofdMelding = `hoofd ${(hoofdBreedte / knipMaatNu.width).toFixed(2)}${
         hoofdCorrectie ? " (opgegeven)" : hoofd.gevonden ? "" : " (geschat)"
-      }`;
+      }${kruinRij > 0 ? `  ${kruinRij}px boven de kruin weg` : ""}`;
       const kruinTop = Math.round(GROOT * KRUIN_HOOGTE);
       const schaalHoofd = (portretBreed * HOOFD_AANDEEL) / hoofdBreedte;
       const schaalVul = (GROOT - kruinTop) / knipMaatNu.height;
-      const factorWand = Math.max(schaalHoofd, schaalVul) * schaal;
+      // De vulling tot de onderrand wint altijd, ook van een handmatige
+      // `schaal`: anders eindigt de uitsnede net boven de rand en zie je daar
+      // een reep wand onder de speler.
+      const factorWand = Math.max(schaalHoofd * schaal, schaalVul);
 
-      const ruw = await sharp(opgefrist.buffer)
+      const ruw = await sharp(figuur)
         .resize({ width: Math.max(1, Math.round(knipMaatNu.width * factorWand)) })
         .png()
         .toBuffer();
@@ -728,10 +765,10 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
         // Eerst dit en pas daarna de verzadiging, anders wordt de zweem mee
         // opgeblazen in plaats van weggewerkt.
         .linear(
-          toon.wit.map((w) => toon.versterking * w),
+          (witCorrectie ?? toon.wit).map((w) => toon.versterking * licht * w),
           [toon.verschuiving, toon.verschuiving, toon.verschuiving]
         )
-        .modulate({ saturation: toon.verzadiging })
+        .modulate({ saturation: toon.verzadiging * kleur })
         .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
         .toBuffer();
 
@@ -779,10 +816,10 @@ for (const { map, bestand, altijdTrainer, dames, ploegUitMap, opfrissen } of teD
         // Eerst dit en pas daarna de verzadiging, anders wordt de zweem mee
         // opgeblazen in plaats van weggewerkt.
         .linear(
-          toon.wit.map((w) => toon.versterking * w),
+          (witCorrectie ?? toon.wit).map((w) => toon.versterking * licht * w),
           [toon.verschuiving, toon.verschuiving, toon.verschuiving]
         )
-        .modulate({ saturation: toon.verzadiging })
+        .modulate({ saturation: toon.verzadiging * kleur })
         .sharpen({ sigma: 1.1, m1: 0.6, m2: 2.4 })
         .toBuffer();
 
