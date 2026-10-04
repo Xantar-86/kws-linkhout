@@ -238,6 +238,7 @@ function Vergroting({
 function Kaart({ speler, onOpen }: { speler: Kernlid; onOpen?: () => void }) {
   const jaren = leeftijd(speler.geboren);
   const gegevens = [
+    speler.nummer !== undefined && { waarde: String(speler.nummer), label: "Rugnummer" },
     jaren !== null && { waarde: String(jaren), label: "Jaar" },
     { waarde: vlag(speler.land), label: "Nationaliteit" },
     speler.positie && { waarde: speler.positie, label: "Positie" },
