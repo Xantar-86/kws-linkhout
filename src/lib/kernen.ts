@@ -35,7 +35,7 @@ export const KERNEN: Record<string, Kernspeler[]> = {
     { naam: "Braien Suha" },
     { naam: "Daan Moermans", nummer: 6 },
     { naam: "Daan Tombeur", nummer: 1 },
-    { naam: "Felix Fabre" },
+    { naam: "Felix Fabre", nummer: 11 },
     { naam: "Ignas Van Genechten", nummer: 12 },
     { naam: "Jure Neven", nummer: 17 },
     { naam: "Juul Vanheukelom", nummer: 13 },
