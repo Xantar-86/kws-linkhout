@@ -256,8 +256,36 @@ export async function getRbfaWedstrijden(teamId: string): Promise<WedstrijdEvent
     throw new Error(`RBFA-API gaf status ${response.status}`);
   }
 
-  const json = await response.json();
-  const matches: RbfaMatch[] = json?.data?.teamCalendar ?? [];
+  return kalenderNaarWedstrijden(await response.json());
+}
+
+/**
+ * Dezelfde kalender, maar opgehaald door de browser van de bezoeker.
+ *
+ * Sinds oktober 2026 weigert de bond (via Akamai) elke aanvraag die niet uit
+ * een echte browser komt, ook die van onze server op Vercel. Een browser mag
+ * het wel, en de API laat dat ook toe vanaf kwslinkhout.be. Lukt het op de
+ * server niet, dan doet de pagina het dus zelf.
+ */
+export async function haalRbfaWedstrijdenInBrowser(teamId: string): Promise<WedstrijdEvent[]> {
+  const response = await fetch(RBFA_GRAPHQL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: TEAM_CALENDAR_QUERY,
+      variables: { teamId, language: "nl", sortByDate: "asc" },
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`RBFA-API gaf status ${response.status}`);
+  }
+  return kalenderNaarWedstrijden(await response.json());
+}
+
+/** Het antwoord van teamCalendar omzetten naar onze wedstrijden. */
+function kalenderNaarWedstrijden(json: unknown): WedstrijdEvent[] {
+  const matches: RbfaMatch[] =
+    (json as { data?: { teamCalendar?: RbfaMatch[] } })?.data?.teamCalendar ?? [];
 
   return matches
     .filter((m) => m.startTime && m.homeTeam?.name && m.awayTeam?.name)

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
 import { varianten } from "@/lib/beweging";
+import { haalRbfaWedstrijdenInBrowser } from "@/lib/rbfa";
 import type { WedstrijdEvent } from "@/types";
 
 /**
@@ -22,6 +23,8 @@ import type { WedstrijdEvent } from "@/types";
 
 interface VolgendeWedstrijdProps {
   apiUrl: string;
+  /** RBFA-nummer van de ploeg, voor als de server de bond niet bereikt. */
+  teamId: string;
   kalenderUrl: string;
   titel: string;
   kleur?: "primary" | "pink";
@@ -48,6 +51,7 @@ function Kaart({
 
 export function VolgendeWedstrijd({
   apiUrl,
+  teamId,
   kalenderUrl,
   titel,
   kleur = "primary",
@@ -71,7 +75,16 @@ export function VolgendeWedstrijd({
         if (afgebroken) return;
         if (data.volgende) {
           setWedstrijd({ ...data.volgende, start: new Date(data.volgende.start) });
+          return;
         }
+        // De server kreeg niets van de bond. Dan vraagt deze browser het zelf:
+        // een echte browser wordt wel doorgelaten.
+        if (antwoord.ok && !data.error) return;
+        const nu = new Date();
+        const volgende = (await haalRbfaWedstrijdenInBrowser(teamId))
+          .filter((w) => w.start > nu)
+          .sort((a, b) => a.start.getTime() - b.start.getTime())[0];
+        if (!afgebroken && volgende) setWedstrijd(volgende);
       } catch (fout) {
         console.error("Fout bij ophalen wedstrijden:", fout);
       } finally {
@@ -85,7 +98,7 @@ export function VolgendeWedstrijd({
     return () => {
       afgebroken = true;
     };
-  }, [apiUrl]);
+  }, [apiUrl, teamId]);
 
   const kop = (
     <span

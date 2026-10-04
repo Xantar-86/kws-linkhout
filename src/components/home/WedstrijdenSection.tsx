@@ -25,18 +25,21 @@ import { kijk, varianten } from "@/lib/beweging";
 const PLOEGEN = [
   {
     apiUrl: "/api/wedstrijden",
+    teamId: "365216",
     kalenderUrl: "https://www.rbfa.be/nl/club/1595/ploeg/365216/kalender",
     titel: "Heren P2",
     kleur: "primary" as const,
   },
   {
     apiUrl: "/api/wedstrijden/p4",
+    teamId: "365215",
     kalenderUrl: "https://www.rbfa.be/nl/club/1595/ploeg/365215/kalender",
     titel: "Heren P4",
     kleur: "primary" as const,
   },
   {
     apiUrl: "/api/wedstrijden/dames",
+    teamId: "365217",
     kalenderUrl: "https://www.rbfa.be/nl/club/1595/ploeg/365217/kalender",
     titel: "Dames",
     kleur: "pink" as const,
