@@ -52,7 +52,7 @@ export const KERNEN: Record<string, Kernspeler[]> = {
   // U17B, zoals de club de lijst doorgaf.
   U17B: [
     { naam: "Axl Reynders", nummer: 77 },
-    { naam: "Daan Tombeur" },
+    { naam: "Daan Tombeur", nummer: 1 },
     { naam: "Elliot Avoux", nummer: 23 },
     { naam: "Gerard Vanleuven", nummer: 99 },
     { naam: "Jorne Ghijs", nummer: 53 },
