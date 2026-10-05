@@ -80,17 +80,25 @@ Dit reglement is van toepassing op alle jeugdspelers.
 
 1.4 Roken is verboden, net als alcoholische drank - en drugsgebruik. Wees respectvol t.o.v. de jeugdtrainer, de scheidsrechter, mede - en tegenspelers, ouders.
 
-1.5 Racisme en discriminatie horen niet thuis binnen onze club. Elke speler, trainer, afgevaardigde of bestuurslid die een inbreuk maakt op deze regel zal gesanctioneerd worden door de club.
+1.5 Racisme en discriminatie horen niet thuis binnen onze club. Elke speler, trainer, afgevaardigde, bestuurslid, supporter of andere persoon die een inbreuk maakt op deze regel zal gesanctioneerd worden door de club.
 
 1.6 Afhankelijk van de aard van de inbreuk kan de club de betrokkene sanctioneren met:
 - een individueel gesprek
 - een schriftelijke verwittiging
 - het verplicht volgen van een cursus
 - een schorsing
+- een geldboete
+- intrekking van toegang tot de terreinen van KWS Linkhout
 
-1.7 Als jeugdspeler (en ook als ouder) van KWS Linkhout gedragen we ons altijd respectvol, beleefd en vriendelijk t.o.v. andere mensen.
+1.7 Doorberekening van geldboetes voetbalbond
 
-1.8 Indien een speler zich uitschrijft om bij een andere ploeg aan te sluiten maar zich daarna bedenkt zal er een administratieve kost van 25 EUR aangerekend worden om deze opnieuw in te schrijven.
+Wanneer de voetbalbond (Voetbal Vlaanderen of bevoegde voetbalautoriteiten) KWS Linkhout een geldboete oplegt wegens gedrag van een individuele speler, trainer, supporter, afgevaardigde of ander persoon op of rond de terreinen van KWS Linkhout, zal deze geldboete volledig worden doorgerekend aan de betrokkene.
+
+De betrokken persoon is verplicht de boete binnen 14 dagen na schriftelijke kennisgeving van de club te betalen. Niet-betaling kan leiden tot verdere disciplinaire maatregelen, waaronder schorsing of intrekking van toegang tot de terreinen.
+
+1.8 Als jeugdspeler (en ook als ouder) van KWS Linkhout gedragen we ons altijd respectvol, beleefd en vriendelijk t.o.v. andere mensen.
+
+1.9 Indien een speler zich uitschrijft om bij een andere ploeg aan te sluiten maar zich daarna bedenkt zal er een administratieve kost van 25 EUR aangerekend worden om deze opnieuw in te schrijven.
 
 **2. Aanwezigheid**
 
