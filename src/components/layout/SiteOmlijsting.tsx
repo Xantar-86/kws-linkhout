@@ -28,6 +28,8 @@ const ZONDER_OMLIJSTING = [
   "toestemming",
   // Inschrijven voor het mosselfeest, en het overzicht met de totalen.
   "mosselfeest",
+  // Inschrijven voor het voetbalkamp, en het overzicht voor de organisatoren.
+  "voetbalkamp",
 ];
 
 export function SiteOmlijsting({ children }: { children: React.ReactNode }) {

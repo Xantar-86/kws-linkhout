@@ -109,6 +109,15 @@ const nextConfig: NextConfig = {
         source: '/mosselfeest/:pad*',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
+      // Het voetbalkamp: formulier en overzicht met namen van kinderen.
+      {
+        source: '/voetbalkamp/:pad*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      {
+        source: '/voetbalkamp',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
     ];
   },
 };
