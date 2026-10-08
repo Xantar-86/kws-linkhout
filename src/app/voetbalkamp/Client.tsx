@@ -238,7 +238,7 @@ export default function VoetbalkampClient() {
               </h1>
               <p className="mt-3 text-sm leading-relaxed text-white/80">
                 Drie dagen voetballen in de herfstvakantie, met de trainers van KWS Linkhout. Voor
-                leden en voor wie het eens wil proberen.
+                meisjes en jongens, voor leden en voor wie het eens wil proberen.
               </p>
               <ul className="mt-5 space-y-2 text-sm">
                 <li className="flex items-start gap-2">
