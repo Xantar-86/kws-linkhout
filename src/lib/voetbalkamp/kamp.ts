@@ -31,6 +31,11 @@ export const KAMP = {
   rekening: MOSSELFEEST.rekening,
   rekeningNaam: MOSSELFEEST.rekeningNaam,
   contact: "info@kwslinkhout.be",
+  /**
+   * Het begin van de mededeling op de overschrijving. Er zijn meerdere kampen
+   * per jaar op dezelfde rekening, dus de naam van het kamp moet erin staan.
+   */
+  mededeling: "Allerheiligen Kamp",
   /** Wat er bij de prijs inbegrepen is; staat op het formulier en in de mail. */
   inbegrepen: [
     { teken: "🍲", tekst: "Elke middag warme soep" },
@@ -77,12 +82,12 @@ export function volledigeNaam(wie: { voornaam: string; naam: string }): string {
 }
 
 /**
- * De mededeling voor de overschrijving: het inschrijfnummer en de naam van de
- * speler, zoals gevraagd. Zo ziet de penningmeester op het uittreksel meteen
- * voor wie er betaald is, ook als iemand het nummer vergeet.
+ * De mededeling voor de overschrijving: het kamp, het inschrijfnummer en de
+ * naam van de speler. Zo ziet de penningmeester op het uittreksel meteen voor
+ * welk kamp en voor wie er betaald is, ook als iemand het nummer vergeet.
  */
 export function mededeling(wie: { nummer?: number; voornaam: string; naam: string }): string {
-  return `Kamp ${wie.nummer ?? ""} ${volledigeNaam(wie)}`.replace(/\s+/g, " ").trim();
+  return `${KAMP.mededeling} ${wie.nummer ?? ""} ${volledigeNaam(wie)}`.replace(/\s+/g, " ").trim();
 }
 
 export function euro(bedrag: number): string {
