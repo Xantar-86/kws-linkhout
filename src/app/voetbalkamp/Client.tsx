@@ -11,6 +11,7 @@ import {
   MapPin,
   TriangleAlert,
   UserPlus,
+  Users,
 } from "lucide-react";
 import {
   KAMP,
@@ -248,6 +249,12 @@ export default function VoetbalkampClient() {
                 <li className="flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary-400" />
                   <span>{KAMP.plaats}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Users className="mt-0.5 h-4 w-4 shrink-0 text-primary-400" />
+                  <span>
+                    Meisjes en jongens van {CATEGORIEEN[0]} tot {CATEGORIEEN[CATEGORIEEN.length - 1]}
+                  </span>
                 </li>
               </ul>
               <div className="mt-6 inline-flex items-baseline gap-2 rounded-xl bg-white/10 px-4 py-2.5">
