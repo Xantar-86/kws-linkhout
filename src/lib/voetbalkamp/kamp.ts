@@ -34,7 +34,7 @@ export const KAMP = {
   /** Wat er bij de prijs inbegrepen is; staat op het formulier en in de mail. */
   inbegrepen: [
     { teken: "🍲", tekst: "Elke middag warme soep" },
-    { teken: "🍔", tekst: "Op de laatste dag friet met een hamburger" },
+    { teken: "🍟", tekst: "Op de laatste dag friet met een curryworst" },
   ],
 };
 
