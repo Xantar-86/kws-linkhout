@@ -13,6 +13,37 @@ export const metadata: Metadata = {
   openGraph: ogVoor("/nieuws/events"),
 };
 
+/**
+ * De plaats van een evenement voor Google.
+ *
+ * Bijna alles gebeurt op de club, Kapelstraat 72. Staat er bij een evenement
+ * een eigen adres in de vorm "Naam, straat en nummer, gemeente" (zoals het
+ * mosselfeest in OC De Link), dan krijgt Google dat adres. Anders het adres
+ * van de club.
+ */
+function plaatsVan(locatie?: string) {
+  const delen = (locatie ?? "").split(",").map((d) => d.trim()).filter(Boolean);
+  if (delen.length >= 3) {
+    const [naam, straat, gemeente] = delen;
+    return {
+      "@type": "Place",
+      name: naam,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: straat,
+        postalCode: "3560",
+        addressLocality: gemeente,
+        addressCountry: "BE",
+      },
+    };
+  }
+  return {
+    "@type": "Place",
+    name: locatie || "KWS Linkhout",
+    address: { "@type": "PostalAddress", streetAddress: "Kapelstraat 72", postalCode: "3560", addressLocality: "Lummen", addressCountry: "BE" },
+  };
+}
+
 export default async function EventsPage() {
   // Server-side: Haal alle events op (uit CMS) + recent toegevoegde apart
   const [events, recentEvents] = await Promise.all([
@@ -35,11 +66,7 @@ export default async function EventsPage() {
       ...(e.eindDate && e.eindDate !== e.sortDate ? { endDate: dag(e.eindDate) } : {}),
       eventStatus: "https://schema.org/EventScheduled",
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-      location: {
-        "@type": "Place",
-        name: e.location || "KWS Linkhout",
-        address: { "@type": "PostalAddress", streetAddress: "Kapelstraat 72", postalCode: "3560", addressLocality: "Lummen", addressCountry: "BE" },
-      },
+      location: plaatsVan(e.location),
       organizer: { "@id": "https://www.kwslinkhout.be/#club" },
       ...(e.image ? { image: [`https://www.kwslinkhout.be${e.image}`] } : {}),
     }));
