@@ -103,7 +103,10 @@ export function nogOpen(op = new Date()): boolean {
  * De leeftijdscategorieën waaruit je kiest, zoals de jeugdploegen van de club.
  * Op het kamp worden de groepen hiermee gemaakt.
  */
-export const CATEGORIEEN = ["U6", "U7", "U8", "U9", "U10", "U11", "U12", "U13", "U15", "U17"] as const;
+export const GEMENGD = ["U6", "U7", "U8", "U9", "U10", "U11", "U12", "U13", "U15", "U17"] as const;
+/** De meisjesploegen. Een meisje kan ook in een gemengde categorie spelen. */
+export const MEISJES = ["WU8", "WU10", "WU13", "WU16"] as const;
+export const CATEGORIEEN = [...GEMENGD, ...MEISJES] as const;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

@@ -15,7 +15,8 @@ import {
 } from "lucide-react";
 import {
   KAMP,
-  CATEGORIEEN,
+  GEMENGD,
+  MEISJES,
   VOORLOPIG,
   controleer,
   euro,
@@ -253,7 +254,10 @@ export default function VoetbalkampClient() {
                 <li className="flex items-start gap-2">
                   <Users className="mt-0.5 h-4 w-4 shrink-0 text-primary-400" />
                   <span>
-                    Meisjes en jongens van {CATEGORIEEN[0]} tot {CATEGORIEEN[CATEGORIEEN.length - 1]}
+                    Meisjes en jongens van {GEMENGD[0]} tot {GEMENGD[GEMENGD.length - 1]}
+                    <span className="block text-white/70">
+                      Meisjesploegen {MEISJES.slice(0, -1).join(", ")} en {MEISJES[MEISJES.length - 1]}
+                    </span>
                   </span>
                 </li>
               </ul>
@@ -331,12 +335,21 @@ export default function VoetbalkampClient() {
                 value={kind.categorie}
                 onChange={(e) => setKind({ ...kind, categorie: e.target.value })}
               >
-                <option value="">Kies U6, U7, U8, ...</option>
-                {CATEGORIEEN.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
+                <option value="">Kies U6, U7, ... of WU8, WU10, ...</option>
+                <optgroup label="Jongens en meisjes">
+                  {GEMENGD.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Meisjesploegen">
+                  {MEISJES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
             </Veld>
             <fieldset className="sm:col-span-2">
