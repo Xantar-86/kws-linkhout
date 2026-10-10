@@ -215,7 +215,7 @@ export const teams: Team[] = [
     coach: "Sharleen Vanderheyden",
     assistantCoach: "Lotte Claeys",
     trainersTitel: "Trainster",
-    image: "/images/under-construction.png",
+    image: "/images/teams/WU10-2026-2027.jpg",
     description:
       "De Women U10 traint op maandag en woensdag van 18.15 tot 19.30 uur in Zelem, met Sharleen " +
       "Vanderheyden en Lotte Claeys. Op deze leeftijd ligt de nadruk op passen, controle en het " +
@@ -238,7 +238,7 @@ export const teams: Team[] = [
     coach: "Ylana De Vos",
     assistantCoach: "Siena Bottu",
     trainersTitel: "Trainster",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/placeholder-dames-2025.jpg
+    image: "/images/teams/WU8-2026-2027.jpg",
     description:
       "De Women U8 is onze jongste meisjesploeg en traint op maandag en woensdag van 18.15 tot " +
       "19.30 uur in Zelem, met Ylana De Vos en Siena Bottu. Alles draait om balgevoel, kleine " +
@@ -260,7 +260,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Steven Bosmans",
     spelersGroep: "U17A",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U17-2025.jpg
+    image: "/images/teams/U17-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -281,7 +281,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Kevin Thoelen",
     spelersGroep: "U17B",
-    image: "/images/under-construction.png",
+    image: "/images/teams/U17-2026-2027.jpg",
     description:
       "De U17 B is onze tweede ploeg op deze leeftijd, speelt elf tegen elf in 2-Gewestelijk en " +
       "telt zeventien spelers, met Kevin Thoelen als trainer. Er wordt getraind in Zelem, op " +
@@ -304,7 +304,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Jasper Peremans",
     spelersGroep: "U15",
-    image: "/images/teams/U15-2026.jpeg",
+    image: "/images/teams/U15-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -325,7 +325,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Stijn Vlaeyen",
     spelersGroep: "U13",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U13-2025.jpg
+    image: "/images/teams/U13-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -347,7 +347,7 @@ export const teams: Team[] = [
     trainingLocation: "KWS",
     coach: "Franky Forier",
     spelersGroep: "U12",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U12-2025.jpg
+    image: "/images/teams/U12-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -368,7 +368,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Jorne Bynens",
     spelersGroep: "U11",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U11-2025.jpg
+    image: "/images/teams/U11-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -389,7 +389,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Kevin Thoelen",
     spelersGroep: "U10",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U10-2025.jpg
+    image: "/images/teams/U10-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -412,7 +412,7 @@ export const teams: Team[] = [
     trainersTitel: "Trainer",
     // A en B delen voorlopig een kern; iedereen staat op allebei de pagina's.
     spelersGroep: "U9",
-    image: "/images/teams/U9-2026.jpeg",
+    image: "/images/teams/U9-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -434,7 +434,7 @@ export const teams: Team[] = [
     coach: "Gunther Vanneroem",
     trainersTitel: "Trainer",
     spelersGroep: "U9",
-    image: "/images/teams/U9-2026.jpeg",
+    image: "/images/teams/U9-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -455,7 +455,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Simon Biesmans",
     spelersGroep: "U8",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U8-2025.jpg
+    image: "/images/teams/U8-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -476,7 +476,7 @@ export const teams: Team[] = [
     trainingLocation: "Zelem",
     coach: "Simon Biesmans",
     spelersGroep: "U8",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U8-2025.jpg
+    image: "/images/teams/U8-2026-2027.jpg",
     calendarUrl: "#",
     standingsUrl: "#",
     description:
@@ -499,7 +499,7 @@ export const teams: Team[] = [
     spelersGroep: "U7",
     assistantCoach: "Simon Biesmans",
     trainersTitel: "Trainer",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
+    image: "/images/teams/U7-2026-2027.jpg",
     calendarUrl: "#",
     description:
       "De U7 A speelt 3 tegen 3 en traint op maandag en woensdag van 18 tot 19.15 uur in Linkhout, " +
@@ -521,7 +521,7 @@ export const teams: Team[] = [
     spelersGroep: "U7",
     assistantCoach: "Simon Biesmans",
     trainersTitel: "Trainer",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U7-2025.jpg
+    image: "/images/teams/U7-2026-2027.jpg",
     calendarUrl: "#",
     description:
       "De U7 B is onze tweede ploeg op deze leeftijd, speelt 3 tegen 3 en traint op maandag en " +
@@ -541,7 +541,7 @@ export const teams: Team[] = [
     trainingLocation: "KWS",
     coach: "Aliano Baeten",
     spelersGroep: "U6",
-    image: "/images/under-construction.png", // TODO nieuwe foto: /images/teams/U6-2025.jpg
+    image: "/images/teams/U6-2026-2027.jpg",
     description:
       "De U6 speelt 2 tegen 2, telt elf spelers en traint op maandag en woensdag van 18 tot 19 uur " +
       "in Linkhout, met Aliano Baeten als trainer. Plezier staat voorop: veel spelletjes, " +

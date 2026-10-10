@@ -272,10 +272,10 @@ export default function VoetbalkampClient() {
             {/* De hele jeugdwerking op een foto; het midden van de groep in beeld. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/teams/alle-jeugd.jpg"
+              src="/images/teams/alle-jeugd-2026-2027.jpg"
               alt="De jeugdspelers en trainers van KWS Linkhout samen op het veld"
               className="order-1 h-48 w-full object-cover sm:order-2 sm:h-full"
-              style={{ objectPosition: "50% 55%" }}
+              style={{ objectPosition: "45% 50%" }}
             />
           </div>
           <div className="border-t border-white/10 px-6 py-5 sm:px-8">

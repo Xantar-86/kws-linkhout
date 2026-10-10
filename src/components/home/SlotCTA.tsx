@@ -34,7 +34,7 @@ export function SlotCTA() {
           dat de ruimte opengaat op het moment dat de vraag gesteld wordt. */}
       <ParallaxZoom van={1.14} naar={1.02} className="absolute inset-0">
         <Image
-          src="/images/teams/alle-jeugd.jpg"
+          src="/images/teams/alle-jeugd-2026-2027.jpg"
           alt=""
           fill
           sizes="100vw"

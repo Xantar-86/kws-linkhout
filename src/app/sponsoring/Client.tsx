@@ -329,7 +329,7 @@ export default function SponsoringClient() {
             <div className="overflow-hidden rounded-3xl shadow-blad">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/teams/alle-jeugd.jpg"
+                src="/images/teams/alle-jeugd-2026-2027.jpg"
                 alt="De jeugdspelers van KWS Linkhout samen op het terrein"
                 className="aspect-[4/3] h-full w-full object-cover"
                 loading="lazy"

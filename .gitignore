@@ -79,3 +79,6 @@ public/images/Fotos spelers/
 
 # Uitgeknipte spelers; afgeleid, wordt lokaal opnieuw gemaakt
 public/images/uitgeknipt/
+
+# Originele ploegfoto's 2026-2027 (90 MB); de webversies staan in public/images/teams/
+public/images/Ploegfotos/
