@@ -413,7 +413,7 @@ export default function PloegvoorstellingClient() {
 
         <motion.div
           style={stil ? undefined : { opacity: dim }}
-          className="container-custom relative pb-14 pt-40 sm:pb-20"
+          className="container-custom relative w-full min-w-0 pb-14 pt-40 sm:pb-20"
         >
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -432,7 +432,7 @@ export default function PloegvoorstellingClient() {
                 delay: 0.3,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="block text-[17vw] sm:text-[13vw] lg:text-[10.5rem]"
+              className="block text-[23vw] sm:text-[13vw] lg:text-[10.5rem]"
             >
               Ploeg
             </motion.span>
@@ -445,7 +445,7 @@ export default function PloegvoorstellingClient() {
                 ease: [0.22, 1, 0.36, 1],
               }}
               style={{ WebkitTextStroke: "2px #fff", color: "transparent" }}
-              className="block text-[13.5vw] sm:text-[10.5vw] lg:text-[8.5rem]"
+              className="block text-[10vw] sm:text-[10.5vw] lg:text-[8.5rem]"
             >
               voorstelling
             </motion.span>
@@ -524,16 +524,17 @@ export default function PloegvoorstellingClient() {
       </div>
 
       {/* -------------------------------------------------------------- slot */}
-      <section className="relative overflow-hidden py-20 sm:py-28">
+      <section id="samen" className="relative overflow-hidden py-20 sm:py-28">
         <div className="absolute inset-0 bg-[radial-gradient(60%_70%_at_50%_100%,rgba(220,38,38,0.28),transparent_70%)]" />
         <div className="container-custom relative text-center">
           <p className="font-display text-sm font-bold uppercase tracking-[0.35em] text-primary-400">
             Allemaal samen
           </p>
-          <h2 className="mt-3 font-display text-5xl font-black uppercase leading-[0.9] tracking-tighter sm:text-7xl">
+          <h2 className="mt-3 font-display text-[9.6vw] font-black uppercase leading-[1.2] tracking-tighter sm:text-7xl sm:leading-[1.05]">
             Eén club.{" "}
             <span
               style={{ WebkitTextStroke: "1.5px #fff", color: "transparent" }}
+              className="block whitespace-nowrap sm:inline"
             >
               Eén familie.
             </span>
