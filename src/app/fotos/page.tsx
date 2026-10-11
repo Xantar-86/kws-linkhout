@@ -21,9 +21,10 @@ function getThumbnailPath(album: FotoAlbum): string {
 function FotoAlbumCard({ album }: { album: FotoAlbum; index: number }) {
   // Google Photos heeft voorrang als hij gezet is, anders lokale gallery als er uploads zijn,
   // anders geen link (card is niet klikbaar).
-  const hasGoogle = !!album.googlePhotosUrl;
+  // Een eigen pagina op de site (zoals de ploegvoorstelling) gaat voor alles.
+  const hasGoogle = !album.link && !!album.googlePhotosUrl;
   const hasLocal = album.images.length > 0;
-  const href = hasGoogle ? album.googlePhotosUrl : hasLocal ? `/fotos/${album.id}` : null;
+  const href = album.link ?? (hasGoogle ? album.googlePhotosUrl : hasLocal ? `/fotos/${album.id}` : null);
   const external = hasGoogle;
 
   const cardContent = (

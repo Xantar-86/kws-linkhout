@@ -8,6 +8,13 @@ export interface FotoAlbum {
   fotoCount: number | null;
   category?: string;
   images: string[];
+  /**
+   * Een eigen pagina op de site in plaats van een album, bv.
+   * "/ploegvoorstelling". Heeft voorrang op Google Photos en op uploads.
+   */
+  link?: string;
+  /** Staat dit album vooraan, los van de datum? */
+  vooraan?: boolean;
 }
 
 // Default thumbnail als fallback
@@ -59,6 +66,8 @@ export async function getCmsFotoAlbums(): Promise<FotoAlbum[]> {
         fotoCount: data.fotoCount ?? (images.length > 0 ? images.length : null),
         category: data.category || "",
         images,
+        link: typeof data.link === "string" && data.link.startsWith("/") ? data.link : undefined,
+        vooraan: data.vooraan === true,
       };
     });
   } catch (error) {
@@ -72,6 +81,8 @@ export async function getAllFotoAlbums(): Promise<FotoAlbum[]> {
   const albums = await getCmsFotoAlbums();
   // Sorteer op datum (nieuwste eerst, leeg datum = onderaan)
   return albums.sort((a, b) => {
+    // Wat vooraan gezet is, komt eerst; daarbinnen en daarna op datum.
+    if (Boolean(a.vooraan) !== Boolean(b.vooraan)) return a.vooraan ? -1 : 1;
     if (!a.date && !b.date) return 0;
     if (!a.date) return 1;
     if (!b.date) return -1;
