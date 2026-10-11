@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import {
   GROEPSFOTO,
+  AANTAL_PLOEGEN,
   PLOEGEN,
   SEIZOEN,
   type VoorstellingPloeg,
@@ -91,11 +92,15 @@ function Poster({
         aria-hidden="true"
         style={stil ? HOL : { ...HOL, x }}
         className={
-          "pointer-events-none absolute top-1/2 -translate-y-1/2 select-none whitespace-nowrap font-display text-[38vw] font-black leading-none tracking-tighter sm:text-[30vw] " +
+          "pointer-events-none absolute top-1/2 -translate-y-1/2 select-none whitespace-nowrap font-display font-black leading-none tracking-tighter " +
+          // Een lang woord ("HEREN", "RECREA") moet kleiner om in beeld te blijven.
+          (ploeg.letters.length > 4
+            ? "text-[24vw] sm:text-[19vw] "
+            : "text-[38vw] sm:text-[30vw] ") +
           (links ? "right-[-4vw]" : "left-[-4vw]")
         }
       >
-        {ploeg.code}
+        {ploeg.letters}
       </motion.p>
 
       <div className="container-custom relative grid items-center gap-10 lg:grid-cols-12">
@@ -122,7 +127,10 @@ function Poster({
                 : "-translate-x-3 translate-y-3 group-hover:-translate-x-4")
             }
           />
-          <span className="relative block aspect-[3/2] overflow-hidden bg-inkt-800 ring-1 ring-white/15">
+          <span
+            style={{ aspectRatio: ploeg.verhouding }}
+            className="relative block overflow-hidden bg-inkt-800 ring-1 ring-white/15"
+          >
             <Image
               src={ploeg.foto}
               alt={`Ploegfoto ${ploeg.naam} van KWS Linkhout, seizoen ${SEIZOEN}`}
@@ -153,7 +161,7 @@ function Poster({
           {/* Bij "U7" zou de code twee keer boven elkaar staan; dan zegt het
               opschrift wat voor ploeg het is. */}
           <p className="font-display text-sm font-bold uppercase tracking-[0.3em] text-primary-400">
-            {ploeg.naam === ploeg.code ? "Jeugdploeg" : ploeg.code}
+            {ploeg.opschrift}
           </p>
           <h2 className="mt-2 font-display text-4xl font-extrabold leading-[0.95] tracking-tight sm:text-5xl">
             {ploeg.naam}
@@ -457,8 +465,8 @@ export default function PloegvoorstellingClient() {
             className="mt-8 flex flex-wrap items-end justify-between gap-6"
           >
             <p className="max-w-md text-base leading-relaxed text-white/80">
-              {PLOEGEN.length} ploegen, één club. Dit zijn de gezichten van de
-              jeugd van KWS Linkhout dit seizoen.
+              {AANTAL_PLOEGEN} ploegen, één club. Dit zijn de gezichten van KWS
+              Linkhout dit seizoen, van de allerkleinsten tot de senioren.
             </p>
             <div className="flex items-center gap-3">
               <button
@@ -505,7 +513,7 @@ export default function PloegvoorstellingClient() {
                     : "text-white/60 hover:bg-white/10 hover:text-white")
                 }
               >
-                {p.code}
+                {p.kort}
               </a>
             ))}
           </div>
@@ -513,13 +521,33 @@ export default function PloegvoorstellingClient() {
 
         {/* --------------------------------------------------------- de ploegen */}
         {PLOEGEN.map((ploeg, i) => (
-          <Poster
-            key={ploeg.code}
-            ploeg={ploeg}
-            nummer={i + 1}
-            links={i % 2 === 0}
-            onOpen={() => setOpen(i + 1)}
-          />
+          <Fragment key={ploeg.code}>
+            {/* Een tussenkop waar de jeugd ophoudt en de senioren beginnen. */}
+            {ploeg.senior && !PLOEGEN[i - 1]?.senior && (
+              <div className="container-custom relative pb-4 pt-16 text-center sm:pt-24">
+                <p className="font-display text-sm font-bold uppercase tracking-[0.35em] text-primary-400">
+                  En dan
+                </p>
+                <h2 className="mt-3 font-display text-[12vw] font-black uppercase leading-none tracking-tighter sm:text-7xl">
+                  De{" "}
+                  <span
+                    style={{
+                      WebkitTextStroke: "1.5px #fff",
+                      color: "transparent",
+                    }}
+                  >
+                    senioren
+                  </span>
+                </h2>
+              </div>
+            )}
+            <Poster
+              ploeg={ploeg}
+              nummer={i + 1}
+              links={i % 2 === 0}
+              onOpen={() => setOpen(i + 1)}
+            />
+          </Fragment>
         ))}
       </div>
 

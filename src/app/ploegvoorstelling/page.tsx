@@ -4,11 +4,12 @@ import { GROEPSFOTO, SEIZOEN } from "./ploegen";
 
 export const metadata: Metadata = {
   title: `Ploegvoorstelling ${SEIZOEN}`,
-  description: `Alle jeugdploegen van KWS Linkhout op de foto, seizoen ${SEIZOEN}: van de U6 tot de U17 en de meisjesploegen.`,
+  description: `Alle ploegen van KWS Linkhout op de foto, seizoen ${SEIZOEN}: de jeugd van U6 tot U17, de meisjesploegen en de senioren.`,
   alternates: { canonical: "/ploegvoorstelling" },
   openGraph: {
     title: `Ploegvoorstelling ${SEIZOEN} | KWS Linkhout`,
-    description: "Alle jeugdploegen op de foto, en iedereen samen op één beeld.",
+    description:
+      "Alle ploegen op de foto, van de allerkleinsten tot de senioren.",
     url: "https://www.kwslinkhout.be/ploegvoorstelling",
     images: [GROEPSFOTO],
   },
