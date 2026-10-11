@@ -25,10 +25,11 @@ kindergerechten mee; een dessert is geen extra stoel. Dat staat per gerecht in
 `teltAlsPlaats`.
 
 Het maximum is een richtcijfer voor de organisatie, geen slot. Het formulier
-toont per zitting hoeveel er nog vrij is zolang dat er is, maar een volle
-zitting blijft te kiezen en de server weigert niets: wie wil komen, moet zich
-kunnen inschrijven, en de club zet er desnoods een tafel bij. Op het overzicht
-zie je per zitting hoeveel plaatsen er bezet zijn tegenover het maximum.
+toont er niets van: geen maximum, geen vrije plaatsen. Een volle zitting
+blijft te kiezen en de server weigert niets: wie wil komen, moet zich kunnen
+inschrijven, en de club zet er desnoods een tafel bij. Enkel op het overzicht
+zie je per zitting hoeveel plaatsen er bezet zijn tegenover het maximum; er
+is ook geen openbaar adres meer waar die cijfers op te vragen zijn.
 
 ## Waar wat staat
 

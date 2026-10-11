@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { AlertCircle, CheckCircle2, Loader2, Minus, Plus, TriangleAlert } from "lucide-react";
 import {
   EVENEMENT,
   GROEPEN,
   VOORLOPIG,
-  aantalPlaatsen,
   aantalPorties,
   bedragVan,
   euro,
@@ -122,9 +121,6 @@ export default function MosselfeestClient() {
   const [opmerking, setOpmerking] = useState("");
   const [honeypot, setHoneypot] = useState("");
 
-  const [plaatsen, setPlaatsen] = useState<
-    Record<string, { max: number | null; vrij: number | null; volzet: boolean }>
-  >({});
   const [bezig, setBezig] = useState(false);
   const [fouten, setFouten] = useState<string[]>([]);
   const [klaar, setKlaar] = useState<{
@@ -135,35 +131,7 @@ export default function MosselfeestClient() {
 
   const bedrag = useMemo(() => bedragVan(aantallen), [aantallen]);
   const porties = useMemo(() => aantalPorties(aantallen), [aantallen]);
-  const plaatsenNodig = useMemo(() => aantalPlaatsen(aantallen), [aantallen]);
   const open = nogOpen();
-
-  /**
-   * De vrije plaatsen ophalen. De kaart zet een maximum op elke zitting, dus
-   * iemand die inschrijft moet vooraf zien of er nog plaats is in plaats van
-   * het pas bij het versturen te horen.
-   */
-  useEffect(() => {
-    let afgebroken = false;
-    fetch("/api/mosselfeest/plaatsen", { cache: "no-store" })
-      .then((antwoord) => (antwoord.ok ? antwoord.json() : null))
-      .then((gegevens) => {
-        if (afgebroken || !gegevens?.zittingen) return;
-        const kaart: Record<string, { max: number | null; vrij: number | null; volzet: boolean }> =
-          {};
-        for (const z of gegevens.zittingen) {
-          kaart[z.id] = { max: z.max, vrij: z.vrij, volzet: Boolean(z.volzet) };
-        }
-        setPlaatsen(kaart);
-      })
-      .catch(() => {
-        // Lukt het niet, dan tonen we gewoon geen cijfers; de server kijkt bij
-        // het versturen toch nog een keer na.
-      });
-    return () => {
-      afgebroken = true;
-    };
-  }, []);
 
   function zet(id: string, nieuw: number) {
     setAantallen((vorig) => {
@@ -424,12 +392,10 @@ export default function MosselfeestClient() {
             </legend>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {EVENEMENT.zittingen.map((z) => {
-                // Het maximum per zitting is een richtcijfer voor de
-                // organisatie, geen slot: een volle zitting blijft te kiezen,
-                // de club zet er desnoods een tafel bij. We tonen enkel wat er
-                // nog vrij is zolang dat er is.
-                const cijfers = plaatsen[z.id];
-                const vrij = cijfers?.vrij ?? null;
+                // Hoeveel plaatsen er zijn of nog vrij zijn, staat hier met
+                // opzet niet: dat is een richtcijfer voor de organisatie en
+                // staat enkel op het overzicht. Wie inschrijft, hoeft er geen
+                // rekening mee te houden.
                 return (
                   <label key={z.id}>
                     <input
@@ -447,15 +413,6 @@ export default function MosselfeestClient() {
                       }
                     >
                       {z.label}
-                      <span className="mt-0.5 block text-xs opacity-80">
-                        {z.afhalen
-                          ? "afhalen, geen plaatsen nodig"
-                          : vrij !== null && vrij > 0
-                            ? `nog ${vrij} van de ${cijfers?.max} plaatsen vrij`
-                            : z.max
-                              ? `${z.max} plaatsen`
-                              : ""}
-                      </span>
                     </span>
                   </label>
                 );
@@ -559,7 +516,6 @@ export default function MosselfeestClient() {
             </button>
           </div>
           <p className="mt-2 text-xs text-slate-500">
-            {porties > 0 && plaatsenNodig > 0 && `${plaatsenNodig} plaats${plaatsenNodig === 1 ? "" : "en"} aan tafel. `}
             {metOverschrijving()
               ? "Je betaalt met een overschrijving; de gegevens krijg je na het inschrijven."
               : "Betalen doe je ter plaatse."}
