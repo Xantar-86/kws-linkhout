@@ -44,7 +44,7 @@ export const GROEPEN: { id: GroepId; titel: string; uitleg?: string }[] = [
 
 export const GERECHTEN: Gerecht[] = [
   { id: "mosselen-friet", naam: "Mosselen Friet", prijs: 24, groep: "hoofd", teltAlsPlaats: true },
-  { id: "mosselen-brood", naam: "Mosselen Brood", prijs: 23, groep: "hoofd", teltAlsPlaats: true },
+  { id: "mosselen-brood", naam: "Mosselen Brood", prijs: 24, groep: "hoofd", teltAlsPlaats: true },
   { id: "vide-friet", naam: "Vidé Friet", prijs: 16, groep: "hoofd", teltAlsPlaats: true },
   {
     id: "stoofvlees-friet",
