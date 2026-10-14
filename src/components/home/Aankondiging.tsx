@@ -13,6 +13,11 @@
 //
 // Een affiche bijzetten is een regel in AFFICHES erbij. Alles weghalen doe je
 // door <Aankondiging /> uit app/page.tsx te schrappen.
+//
+// De affiches staan in public/images/Pop-up/. Het origineel blijft daar zoals
+// het aangeleverd is; de site gebruikt een lichtere versie ernaast met
+// "-web.jpg" achter de naam (1024 pixels breed, JPEG kwaliteit 85). Enkel die
+// webversies gaan mee in git, zie .gitignore.
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
@@ -32,27 +37,17 @@ type Affiche = {
 
 const AFFICHES: Affiche[] = [
   {
-    id: "instaptraining",
-    beeld: "/images/nieuws/instaptraining.jpeg",
+    id: "uitfasering-clubkaart",
+    beeld: "/images/Pop-up/payconiq-web.jpg",
     tekst:
-      "Instaptrainingen voor nieuwe spelers geboren in 2020, 2021 of 2022: " +
-      "woensdag 16, 23 en 30 september van 18.00 tot 19.15 uur bij KWS Linkhout. " +
-      "Gratis, voor meisjes en jongens, geen ervaring nodig.",
+      "Uitfasering van de clubkaart: we zijn overgeschakeld naar een nieuw kassasysteem. " +
+      "Bancontact blijft werken en ook Payconiq kan opnieuw gebruikt worden. Uw saldo " +
+      "blijft behouden; maak het bij voorkeur op voor 1 december. Laad de clubkaart niet " +
+      "meer op via de Knip-app. Vragen? Spreek een bestuurslid aan aan de kassa of in de kantine.",
     breedte: 1024,
     hoogte: 1536,
-    // De laatste instaptraining is woensdag 30 september; op 1 oktober weg.
-    tot: new Date("2026-10-01T00:00:00+02:00"),
-  },
-  {
-    id: "dag-van-de-sportclub",
-    beeld: "/images/nieuws/Dag van de sportclub.jpeg",
-    tekst:
-      "Dag van de Sportclub op woensdag 30 september: trek je KWS Linkhout-outfit " +
-      "aan en ga er in stijl mee naar school.",
-    breedte: 1024,
-    hoogte: 1536,
-    // De dag zelf is woensdag 30 september; op 1 oktober hangt het affiche weg.
-    tot: new Date("2026-10-01T00:00:00+02:00"),
+    // Hangt tot en met 15 december; op 16 december is het weg.
+    tot: new Date("2026-12-16T00:00:00+01:00"),
   },
 ];
 

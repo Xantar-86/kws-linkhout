@@ -82,3 +82,7 @@ public/images/uitgeknipt/
 
 # Originele ploegfoto's 2026-2027 (90 MB); de webversies staan in public/images/teams/
 public/images/Ploegfotos/
+
+# Pop-ups: de originelen blijven lokaal, enkel de webversies (-web.jpg) gaan mee
+public/images/Pop-up/*
+!public/images/Pop-up/*-web.jpg
