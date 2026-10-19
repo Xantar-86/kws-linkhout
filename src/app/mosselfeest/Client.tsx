@@ -289,12 +289,22 @@ export default function MosselfeestClient() {
                   Inschrijven voor het mosselfeest
                 </h1>
                 <p className="mt-3 text-sm leading-relaxed text-white/80">
-                  {EVENEMENT.datumTekst} in {EVENEMENT.plaats}. Schrijf in tot en met{" "}
+                  {EVENEMENT.datumTekst} in {EVENEMENT.plaats}. Schrijf in tot{" "}
                   {new Date(EVENEMENT.inschrijvenTot).toLocaleDateString("nl-BE", {
+                    weekday: "long",
                     day: "numeric",
                     month: "long",
-                  })}
-                  , zodat we weten hoeveel we moeten voorzien.
+                    timeZone: "Europe/Brussels",
+                  })}{" "}
+                  om{" "}
+                  {new Date(EVENEMENT.inschrijvenTot)
+                    .toLocaleTimeString("nl-BE", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: "Europe/Brussels",
+                    })
+                    .replace(":", ".")}{" "}
+                  uur, zodat we weten hoeveel we moeten voorzien.
                 </p>
               </div>
 

@@ -113,12 +113,13 @@ export const EVENEMENT = {
   datumTekst: "vrijdag 23 en zaterdag 24 oktober 2026",
   plaats: "OC De Link, Linkhoutstraat 194, 3560 Linkhout",
   /**
-   * Tot wanneer er ingeschreven kan worden (ISO-datum).
+   * Tot wanneer er ingeschreven kan worden: een volledig tijdstip met de
+   * Belgische tijdzone erbij (in oktober zomertijd, +02:00).
    *
-   * Staat niet op de kaart; dit is de zondag voor het feest. Aanpassen als de
-   * club een andere datum afspreekt.
+   * Eerst stond hier enkel de zondag voor het feest; de club verlengde tot
+   * woensdag 21 oktober 11.00 uur.
    */
-  inschrijvenTot: "2026-10-18",
+  inschrijvenTot: "2026-10-21T11:00:00+02:00",
   zittingen: [
     { id: "vr-23-18", label: "Vrijdag 23 oktober, 18.00 tot 20.30 uur", kort: "Vrij 18u", max: 200, dag: "vrijdag" },
     { id: "za-24-12", label: "Zaterdag 24 oktober, 12.00 tot 14.00 uur", kort: "Zat 12u", max: 200, dag: "zaterdag" },

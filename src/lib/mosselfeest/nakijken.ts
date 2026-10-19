@@ -33,10 +33,16 @@ function naamDeugt(waarde: unknown): waarde is string {
   return typeof waarde === "string" && waarde.trim().length >= 2 && waarde.length <= 120;
 }
 
-/** Is de inschrijving nog open op de gegeven dag? */
+/**
+ * Is de inschrijving nog open op het gegeven moment?
+ *
+ * inschrijvenTot is een volledig tijdstip. Staat er toch enkel een datum, dan
+ * telt die dag nog helemaal mee.
+ */
 export function nogOpen(op = new Date()): boolean {
-  const grens = new Date(`${EVENEMENT.inschrijvenTot}T23:59:59+01:00`);
-  return op.getTime() <= grens.getTime();
+  const tot = EVENEMENT.inschrijvenTot;
+  const grens = new Date(tot.includes("T") ? tot : `${tot}T23:59:59+02:00`);
+  return op.getTime() < grens.getTime();
 }
 
 export function controleer(invoer: Partial<InschrijvingInvoer>): string[] {
