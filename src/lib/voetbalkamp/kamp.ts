@@ -25,8 +25,12 @@ export const KAMP = {
    * waarschuwing dat het nog niet doorgegeven mag worden.
    */
   prijs: 110 as number | null,
-  /** Tot wanneer het formulier openstaat (de dag zelf inbegrepen). */
-  inschrijvenTot: "2026-11-02",
+  /**
+   * Het moment waarop het formulier sluit, met de Belgische tijdzone erbij (in
+   * november winteruur, +01:00). Afgesproken met de club: dinsdag 3 november
+   * om middernacht, dus op het einde van die dinsdag.
+   */
+  inschrijvenTot: "2026-11-04T00:00:00+01:00",
   /** Dezelfde rekening als het mosselfeest. */
   rekening: MOSSELFEEST.rekening,
   rekeningNaam: MOSSELFEEST.rekeningNaam,
@@ -95,8 +99,7 @@ export function euro(bedrag: number): string {
 }
 
 export function nogOpen(op = new Date()): boolean {
-  const grens = new Date(`${KAMP.inschrijvenTot}T23:59:59+01:00`);
-  return op <= grens;
+  return op.getTime() < new Date(KAMP.inschrijvenTot).getTime();
 }
 
 /**
