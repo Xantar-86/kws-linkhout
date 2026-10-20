@@ -406,23 +406,31 @@ export default function MosselfeestClient() {
                 // opzet niet: dat is een richtcijfer voor de organisatie en
                 // staat enkel op het overzicht. Wie inschrijft, hoeft er geen
                 // rekening mee te houden.
+                // Een zitting die de club online heeft afgesloten, blijft in
+                // de lijst staan maar is niet meer te kiezen.
+                const vol = z.onlineVolzet === true;
                 return (
-                  <label key={z.id}>
+                  <label key={z.id} className={vol ? "cursor-not-allowed" : ""}>
                     <input
                       type="radio"
                       name="zitting"
                       value={z.id}
                       checked={zitting === z.id}
+                      disabled={vol}
                       onChange={() => setZitting(z.id)}
                       className="peer sr-only"
                     />
                     <span
                       className={
-                        "block cursor-pointer rounded-xl border border-zand-300 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-slate-400 " +
-                        "peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white"
+                        "block rounded-xl border px-4 py-3 text-sm transition " +
+                        (vol
+                          ? "border-zand-200 bg-zand-100 text-slate-400"
+                          : "cursor-pointer border-zand-300 bg-white text-slate-700 hover:border-slate-400 " +
+                            "peer-checked:border-primary peer-checked:bg-primary peer-checked:text-white")
                       }
                     >
                       {z.label}
+                      {vol && <span className="mt-0.5 block text-xs font-semibold">Volzet</span>}
                     </span>
                   </label>
                 );

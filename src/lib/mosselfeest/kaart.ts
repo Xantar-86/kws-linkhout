@@ -105,6 +105,12 @@ export interface Zitting {
   dag: Dag;
   /** Korte naam voor smalle schermen en afdrukken, bv. "Zat 18u30". */
   kort: string;
+  /**
+   * Online volzet: het formulier laat deze zitting niet meer kiezen en de
+   * server weigert ze. Via het overzicht en het avondscherm kan de club er wel
+   * nog iemand bijzetten.
+   */
+  onlineVolzet?: boolean;
 }
 
 export const EVENEMENT = {
@@ -121,7 +127,8 @@ export const EVENEMENT = {
    */
   inschrijvenTot: "2026-10-21T11:00:00+02:00",
   zittingen: [
-    { id: "vr-23-18", label: "Vrijdag 23 oktober, 18.00 tot 20.30 uur", kort: "Vrij 18u", max: 200, dag: "vrijdag" },
+    // Op vraag van de club online afgesloten wegens volzet (20 oktober 2026).
+    { id: "vr-23-18", label: "Vrijdag 23 oktober, 18.00 tot 20.30 uur", kort: "Vrij 18u", max: 200, dag: "vrijdag", onlineVolzet: true },
     { id: "za-24-12", label: "Zaterdag 24 oktober, 12.00 tot 14.00 uur", kort: "Zat 12u", max: 200, dag: "zaterdag" },
     { id: "za-24-1630", label: "Zaterdag 24 oktober, 16.30 tot 18.15 uur", kort: "Zat 16u30", max: 175, dag: "zaterdag" },
     { id: "za-24-1830", label: "Zaterdag 24 oktober, 18.30 tot 20.30 uur", kort: "Zat 18u30", max: 175, dag: "zaterdag" },

@@ -58,6 +58,13 @@ export function controleer(invoer: Partial<InschrijvingInvoer>): string[] {
   }
   if (!invoer.zitting || !EVENEMENT.zittingen.some((z) => z.id === invoer.zitting)) {
     klachten.push("Kies wanneer je komt eten.");
+  } else {
+    // Enkel voor online inschrijvingen: controleerHandmatig, voor het
+    // overzicht en het avondscherm, kijkt hier bewust niet naar.
+    const gekozen = EVENEMENT.zittingen.find((z) => z.id === invoer.zitting);
+    if (gekozen?.onlineVolzet) {
+      klachten.push(`${gekozen.label} is volzet. Kies een andere zitting of kom afhalen.`);
+    }
   }
 
   const aantallen = invoer.aantallen ?? {};
