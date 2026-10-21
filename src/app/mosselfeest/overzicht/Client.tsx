@@ -141,6 +141,10 @@ export default function OverzichtClient() {
         return {
           ...basis,
           betaald: w.betaald,
+          // Zoals de server het doet: afvinken = het volledige bedrag ontvangen,
+          // terugzetten = niets ontvangen. Zonder dit bleef "nog te betalen" op het
+          // scherm staan tot iemand ververste.
+          betaaldBedrag: w.betaald ? basis.bedrag : 0,
           betaaldOp: w.betaald ? (basis.betaaldOp ?? new Date(w.tijd).toISOString()) : undefined,
         };
       });
