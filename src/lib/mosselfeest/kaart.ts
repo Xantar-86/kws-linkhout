@@ -123,9 +123,9 @@ export const EVENEMENT = {
    * Belgische tijdzone erbij (in oktober zomertijd, +02:00).
    *
    * Eerst stond hier enkel de zondag voor het feest; de club verlengde tot
-   * woensdag 21 oktober 11.00 uur.
+   * woensdag 21 oktober 11.00 uur, en daarna tot 17.00 uur die dag.
    */
-  inschrijvenTot: "2026-10-21T11:00:00+02:00",
+  inschrijvenTot: "2026-10-21T17:00:00+02:00",
   zittingen: [
     // Op vraag van de club online afgesloten wegens volzet (20 oktober 2026).
     { id: "vr-23-18", label: "Vrijdag 23 oktober, 18.00 tot 20.30 uur", kort: "Vrij 18u", max: 200, dag: "vrijdag", onlineVolzet: true },
