@@ -25,6 +25,26 @@ import {
 
 export type Bron = "online" | "kaart" | "verzamelpost";
 
+/** Hoe er aan de kassa betaald is. */
+export type Betaalmanier = "cash" | "bancontact";
+
+export const BETAALMANIEREN: { id: Betaalmanier; label: string }[] = [
+  { id: "cash", label: "Cash" },
+  { id: "bancontact", label: "Bancontact" },
+];
+
+/**
+ * Eén betaling aan de kassa. Een kaart kan in delen betaald worden: een deel
+ * cash en een deel met Bancontact, of twee mensen die elk hun deel betalen.
+ */
+export interface Betaling {
+  id: string;
+  bedrag: number;
+  manier: Betaalmanier;
+  /** Wanneer het geld binnenkwam (ISO). */
+  op: string;
+}
+
 export interface Inschrijving {
   /** Interne sleutel, tevens de bestandsnaam in de opslag. */
   kenmerk: string;
@@ -36,6 +56,13 @@ export interface Inschrijving {
    * dan gaat het om een inschrijving van voor deze nummering.
    */
   kaartnummer?: number;
+  /**
+   * De letter achter het nummer van een afgesplitste kaart: wie van kaart 409
+   * later of op een andere dag komt, krijgt kaart 409B, daarna 409C.
+   */
+  kaartLetter?: string;
+  /** Het kenmerk van de kaart waarvan deze afgesplitst is. */
+  afgesplitstVan?: string;
   /** Wanneer de inschrijving binnenkwam (ISO). */
   aangemeld: string;
   /**
@@ -89,6 +116,12 @@ export interface Inschrijving {
   /** Wanneer er afgevinkt is dat het geld binnen is (ISO). */
   betaaldOp?: string;
   /**
+   * De betalingen aan de kassa, met hoe er betaald is. Staat los van
+   * betaaldBedrag: een overschrijving vooraf of een vinkje op het overzicht
+   * heeft geen betaalmanier en staat hier dus niet in.
+   */
+  betalingen?: Betaling[];
+  /**
    * Of de kaart op de avond zelf behandeld is: de mensen zijn geweest en hun
    * bestelling is doorgegeven. Zo zie je naar het einde toe hoeveel er nog
    * moet komen. Staat los van betaald: wie vooraf overschreef, komt ook nog.
@@ -96,6 +129,46 @@ export interface Inschrijving {
   behandeld?: boolean;
   /** Wanneer de kaart behandeld is (ISO). */
   behandeldOp?: string;
+  /**
+   * Telt op bij elke keer dat de kaart bewaard wordt. De opslag geeft vlak na
+   * een schrijfactie soms nog de vorige versie terug; met dit nummer weet de
+   * server dat hij moet wachten tot hij de versie leest die de kassa al kent.
+   */
+  versie?: number;
+}
+
+/** Het nummer zoals het op de kaart staat, met de letter erbij: "409B". */
+export function nummerTekst(inschrijving: Pick<Inschrijving, "kaartnummer" | "kaartLetter">): string {
+  return inschrijving.kaartnummer ? `${inschrijving.kaartnummer}${inschrijving.kaartLetter ?? ""}` : "-";
+}
+
+/** De volgende vrije letter voor een kaart die afgesplitst wordt: B, dan C. */
+export function volgendeLetter(inschrijvingen: Inschrijving[], kaartnummer: number): string {
+  let hoogste = "A".charCodeAt(0);
+  for (const i of inschrijvingen) {
+    if (i.kaartnummer !== kaartnummer || !i.kaartLetter) continue;
+    hoogste = Math.max(hoogste, i.kaartLetter.toUpperCase().charCodeAt(0));
+  }
+  return String.fromCharCode(hoogste + 1);
+}
+
+/**
+ * Wat er per dag en per betaalmanier aan de kassa ontvangen is, voor de
+ * afrekening op het einde van de avond. De dag is die van de betaling zelf,
+ * in Belgische tijd, als "2026-10-23".
+ */
+export function kassaPerDag(
+  inschrijvingen: Inschrijving[],
+): Record<string, Record<Betaalmanier, number>> {
+  const perDag: Record<string, Record<Betaalmanier, number>> = {};
+  for (const i of inschrijvingen) {
+    for (const b of i.betalingen ?? []) {
+      const dag = new Date(b.op).toLocaleDateString("sv-SE", { timeZone: "Europe/Brussels" });
+      perDag[dag] ??= { cash: 0, bancontact: 0 };
+      perDag[dag][b.manier] = Math.round((perDag[dag][b.manier] + b.bedrag) * 100) / 100;
+    }
+  }
+  return perDag;
 }
 
 /**

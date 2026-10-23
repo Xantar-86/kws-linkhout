@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AlertCircle, Loader2, X } from "lucide-react";
 import { EVENEMENT, bedragVan, euro } from "@/lib/mosselfeest/kaart";
-import type { Inschrijving } from "@/lib/mosselfeest/totalen";
+import { nummerTekst, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { Aantallen } from "./Aantallen";
 
 /**
@@ -94,7 +94,7 @@ export function Bewerken({
               Inschrijving wijzigen
             </h2>
             <p className="text-sm text-slate-500">
-              {inschrijving.kaartnummer ? `Nummer ${inschrijving.kaartnummer}` : "Zonder nummer"}
+              {inschrijving.kaartnummer ? `Nummer ${nummerTekst(inschrijving)}` : "Zonder nummer"}
               {inschrijving.bron === "online" && ", online ingeschreven"}
             </p>
           </div>

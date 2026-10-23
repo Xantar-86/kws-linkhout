@@ -9,6 +9,7 @@ import {
   isAfhalen,
 } from "./kaart";
 import { openstaand, reedsBetaald, telOp, type Inschrijving } from "./opslag";
+import { nummerTekst } from "./totalen";
 
 /**
  * Het Excel-logboek van het mosselfeest.
@@ -229,7 +230,7 @@ export async function maakLogboek(inschrijvingen: Inschrijving[]): Promise<Buffe
           ? "stapel"
           : "online";
     const waarden = [
-      inschrijving.kaartnummer ?? "",
+      inschrijving.kaartLetter ? nummerTekst(inschrijving) : (inschrijving.kaartnummer ?? ""),
       new Date(inschrijving.aangemeld),
       bronLabel,
       inschrijving.naam,

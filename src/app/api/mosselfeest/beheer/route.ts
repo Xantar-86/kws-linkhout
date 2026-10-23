@@ -5,10 +5,13 @@ import {
   alleInschrijvingen,
   bewaarInschrijving,
   haalInschrijving,
+  ontvang,
   reedsBetaald,
   schrapInschrijving,
+  splitsAf,
   telOp,
   volgendKaartnummer,
+  wisBetaling,
   zetBehandeld,
   zetBetaald,
   type Inschrijving,
@@ -37,7 +40,7 @@ import {
  */
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 /** Vergelijken zonder te verklappen hoeveel tekens er juist waren. */
 function zelfdeGeheim(gegeven: string, verwacht: string): boolean {
@@ -77,6 +80,10 @@ export async function POST(request: NextRequest) {
     kenmerk?: string;
     betaald?: boolean;
     behandeld?: boolean;
+    manier?: string;
+    bedrag?: number;
+    betalingId?: string;
+    bekend?: Inschrijving;
   } & Partial<HandmatigeInvoer> & { telefoon?: string };
   try {
     body = (await request.json()) as typeof body;
@@ -152,18 +159,54 @@ export async function POST(request: NextRequest) {
   }
 
   const kenmerk = (body.kenmerk ?? "").trim();
+  // Wat de kassa zelf al van de kaart weet; zie haalVoorKassa in de opslag.
+  const bekend =
+    body.bekend && typeof body.bekend === "object" && body.bekend.kenmerk === kenmerk
+      ? body.bekend
+      : undefined;
   if (!/^[A-Z0-9-]{4,40}$/i.test(kenmerk)) {
     return NextResponse.json({ error: "Ongeldig kenmerk" }, { status: 400 });
   }
 
   if (body.actie === "betaald") {
-    const resultaat = await zetBetaald(kenmerk, body.betaald !== false);
+    const resultaat = await zetBetaald(kenmerk, body.betaald !== false, bekend);
     if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 404 });
     return NextResponse.json({ ok: true, inschrijving: resultaat.inschrijving });
   }
 
+  // Geld aan de kassa: alles wat openstaat, of een deel, cash of Bancontact.
+  if (body.actie === "ontvangen") {
+    if (body.manier !== "cash" && body.manier !== "bancontact") {
+      return NextResponse.json({ error: "Kies cash of Bancontact." }, { status: 400 });
+    }
+    const bedrag =
+      typeof body.bedrag === "number" && Number.isFinite(body.bedrag) ? body.bedrag : undefined;
+    const resultaat = await ontvang(kenmerk, body.manier, bedrag, bekend);
+    if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 400 });
+    return NextResponse.json({ ok: true, inschrijving: resultaat.inschrijving });
+  }
+
+  if (body.actie === "betalingWissen") {
+    const resultaat = await wisBetaling(kenmerk, (body.betalingId ?? "").trim(), bekend);
+    if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 400 });
+    return NextResponse.json({ ok: true, inschrijving: resultaat.inschrijving });
+  }
+
+  // Een deel van de kaart naar een nieuwe kaart met een letter erachter.
+  if (body.actie === "afsplitsen") {
+    const resultaat = await splitsAf(
+      kenmerk,
+      schoonAantallenRuim((body.aantallen ?? {}) as Record<string, unknown>),
+      (body.zitting ?? "").trim(),
+      (body.ingevoerdDoor ?? "").trim() || undefined,
+      bekend,
+    );
+    if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 400 });
+    return NextResponse.json({ ok: true, oud: resultaat.oud, nieuw: resultaat.nieuw });
+  }
+
   if (body.actie === "behandeld") {
-    const resultaat = await zetBehandeld(kenmerk, body.behandeld !== false);
+    const resultaat = await zetBehandeld(kenmerk, body.behandeld !== false, bekend);
     if (!resultaat.ok) return NextResponse.json({ error: resultaat.fout }, { status: 404 });
     return NextResponse.json({ ok: true, inschrijving: resultaat.inschrijving });
   }

@@ -24,7 +24,7 @@ import {
   gerechtenVan,
   isAfhalen,
 } from "@/lib/mosselfeest/kaart";
-import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
+import { nummerTekst, openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { KaartToevoegen } from "./KaartToevoegen";
 import { Bewerken } from "./Bewerken";
@@ -304,7 +304,7 @@ export default function OverzichtClient() {
       return (
         volledigeNaam(i).toLowerCase().includes(naald) ||
         (i.email ?? "").toLowerCase().includes(naald) ||
-        String(i.kaartnummer ?? "").includes(naald) ||
+        nummerTekst(i).toLowerCase().includes(naald) ||
         i.kenmerk.toLowerCase().includes(naald)
       );
     })
@@ -753,7 +753,7 @@ export default function OverzichtClient() {
                     >
                       <td className="py-3 pr-3">
                         <span className="font-display text-base font-bold text-inkt-900">
-                          {i.kaartnummer ?? "-"}
+                          {nummerTekst(i)}
                         </span>
                         <span className="mt-0.5 block text-[11px] font-medium text-slate-400">
                           {i.bron === "kaart" ? "kaart" : i.bron === "verzamelpost" ? "stapel" : "online"}
@@ -828,7 +828,7 @@ export default function OverzichtClient() {
                             type="button"
                             onClick={() =>
                               window.open(
-                                `/mosselfeest/afdruk?nr=${i.kaartnummer}&print=1`,
+                                `/mosselfeest/afdruk?kenmerk=${encodeURIComponent(i.kenmerk)}&print=1`,
                                 "_blank",
                               )
                             }

@@ -4,18 +4,32 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   CheckCheck,
+  History,
   Loader2,
   LockKeyhole,
   Pencil,
   Printer,
   RefreshCw,
   Search,
+  Split,
+  Wallet,
   X,
 } from "lucide-react";
 import { EVENEMENT, GERECHTEN, euro, isAfhalen } from "@/lib/mosselfeest/kaart";
-import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
+import {
+  BETAALMANIEREN,
+  kassaPerDag,
+  nummerTekst,
+  openstaand,
+  reedsBetaald,
+  telOp,
+  volgendeLetter,
+  type Betaalmanier,
+  type Inschrijving,
+} from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { Bewerken } from "../overzicht/Bewerken";
+import { Splitsen } from "./Splitsen";
 import { bewaarWachtwoord, leesWachtwoord } from "../toegang";
 
 /**
@@ -46,7 +60,14 @@ interface Wijziging {
   betaald?: boolean;
   behandeld?: boolean;
   vervanging?: Inschrijving;
+  /** Een kaart die hier net afgesplitst is en in de opslag nog kan ontbreken. */
+  nieuw?: boolean;
   tijd: number;
+}
+
+/** De dag van vandaag in Belgische tijd, zoals kassaPerDag ze schrijft. */
+function vandaag(): string {
+  return new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Brussels" });
 }
 
 export default function KassaClient() {
@@ -61,6 +82,11 @@ export default function KassaClient() {
   const [bewerkt, setBewerkt] = useState<Inschrijving | null>(null);
   // De zitting die nu bezig is; leeg is alle zittingen.
   const [zitting, setZitting] = useState("");
+  // De lijst "Laatst behandeld": alle behandelde kaarten, de laatste bovenaan.
+  const [laatst, setLaatst] = useState(false);
+  const [deelBedrag, setDeelBedrag] = useState("");
+  const [kassaOpen, setKassaOpen] = useState(false);
+  const [splitsen, setSplitsen] = useState<Inschrijving | null>(null);
   const zoekveld = useRef<HTMLInputElement | null>(null);
 
   const metEigenWijzigingen = useCallback((lijst: Inschrijving[]): Inschrijving[] => {
@@ -68,7 +94,12 @@ export default function KassaClient() {
     for (const [kenmerk, w] of wijzigingen.current) {
       if (nu - w.tijd > VOORRANG_MS) wijzigingen.current.delete(kenmerk);
     }
-    return lijst.map((i) => {
+    // Een net afgesplitste kaart die de opslag nog niet teruggeeft, toch tonen.
+    const bekend = new Set(lijst.map((i) => i.kenmerk));
+    const erbij = [...wijzigingen.current.values()]
+      .filter((w) => w.nieuw && w.vervanging && !bekend.has(w.vervanging.kenmerk))
+      .map((w) => w.vervanging!);
+    return [...lijst, ...erbij].map((i) => {
       const w = wijzigingen.current.get(i.kenmerk);
       if (!w) return i;
       let basis = w.vervanging ?? i;
@@ -138,6 +169,11 @@ export default function KassaClient() {
   const gevonden = useMemo(() => {
     const alles = inschrijvingen ?? [];
     const naald = zoek.trim().toLowerCase();
+    if (!naald && laatst) {
+      return alles
+        .filter((i) => i.behandeld)
+        .sort((a, b) => (b.behandeldOp ?? "").localeCompare(a.behandeldOp ?? ""));
+    }
     if (!naald && zitting) {
       // Een zitting gekozen: iedereen van die zitting, wie nog moet komen
       // bovenaan, op kaartnummer.
@@ -159,12 +195,18 @@ export default function KassaClient() {
     return alles
       .filter(
         (i) =>
-          String(i.kaartnummer ?? "").includes(naald) ||
+          nummerTekst(i).toLowerCase().includes(naald) ||
           volledigeNaam(i).toLowerCase().includes(naald),
       )
-      .sort((a, b) => (a.kaartnummer ?? 0) - (b.kaartnummer ?? 0))
+      .sort(
+        (a, b) =>
+          (a.kaartnummer ?? 0) - (b.kaartnummer ?? 0) ||
+          (a.kaartLetter ?? "").localeCompare(b.kaartLetter ?? ""),
+      )
       .slice(0, 40);
-  }, [inschrijvingen, zoek, zitting]);
+  }, [inschrijvingen, zoek, zitting, laatst]);
+
+  const kassa = useMemo(() => kassaPerDag(inschrijvingen ?? []), [inschrijvingen]);
 
   // Wie al geweest is, staat in een aparte lijst onder wie nog moet komen.
   const nogTeKomen = useMemo(() => gevonden.filter((i) => !i.behandeld), [gevonden]);
@@ -187,13 +229,20 @@ export default function KassaClient() {
     const antwoord = await fetch("/api/mosselfeest/beheer", {
       method: "POST",
       headers: { authorization: `Bearer ${ingevoerd}`, "content-type": "application/json" },
-      body: JSON.stringify({ actie: "betaald", kenmerk: inschrijving.kenmerk, betaald }),
+      body: JSON.stringify({
+        actie: "betaald",
+        kenmerk: inschrijving.kenmerk,
+        betaald,
+        bekend: inschrijving,
+      }),
     });
     if (!antwoord.ok) {
       setFout("Dat afvinken is niet gelukt.");
       return;
     }
-    onthoud(inschrijving.kenmerk, { betaald });
+    // De bewaarde kaart onthouden, met haar nieuwe versienummer.
+    const gegevens = (await antwoord.json().catch(() => ({}))) as { inschrijving?: Inschrijving };
+    onthoud(inschrijving.kenmerk, { betaald, vervanging: gegevens.inschrijving });
   }
 
   async function zetBehandeld(inschrijving: Inschrijving, behandeld: boolean) {
@@ -202,13 +251,89 @@ export default function KassaClient() {
     const antwoord = await fetch("/api/mosselfeest/beheer", {
       method: "POST",
       headers: { authorization: `Bearer ${ingevoerd}`, "content-type": "application/json" },
-      body: JSON.stringify({ actie: "behandeld", kenmerk: inschrijving.kenmerk, behandeld }),
+      body: JSON.stringify({
+        actie: "behandeld",
+        kenmerk: inschrijving.kenmerk,
+        behandeld,
+        bekend: inschrijving,
+      }),
     });
     if (!antwoord.ok) {
       setFout("Dat afvinken is niet gelukt.");
       return;
     }
-    onthoud(inschrijving.kenmerk, { behandeld });
+    const gegevens = (await antwoord.json().catch(() => ({}))) as { inschrijving?: Inschrijving };
+    onthoud(inschrijving.kenmerk, { behandeld, vervanging: gegevens.inschrijving });
+  }
+
+  /** Een actie die de bijgewerkte inschrijving terugstuurt, zoals ontvangen. */
+  async function stuur(body: Record<string, unknown>): Promise<Record<string, unknown> | null> {
+    if (!ingevoerd) return null;
+    setFout("");
+    try {
+      const antwoord = await fetch("/api/mosselfeest/beheer", {
+        method: "POST",
+        headers: { authorization: `Bearer ${ingevoerd}`, "content-type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const gegevens = (await antwoord.json().catch(() => ({}))) as Record<string, unknown>;
+      if (!antwoord.ok) {
+        setFout(typeof gegevens.error === "string" ? gegevens.error : "Dat is niet gelukt.");
+        return null;
+      }
+      return gegevens;
+    } catch {
+      setFout("Dat is niet gelukt. Kijk de verbinding na.");
+      return null;
+    }
+  }
+
+  /** Geld ontvangen: zonder bedrag alles wat openstaat, anders een deel. */
+  async function ontvang(inschrijving: Inschrijving, manier: Betaalmanier, bedrag?: number) {
+    const gegevens = await stuur({
+      actie: "ontvangen",
+      kenmerk: inschrijving.kenmerk,
+      manier,
+      bedrag,
+      bekend: inschrijving,
+    });
+    if (!gegevens?.inschrijving) return;
+    setDeelBedrag("");
+    onthoud(inschrijving.kenmerk, {
+      vervanging: gegevens.inschrijving as Inschrijving,
+      betaald: undefined,
+    });
+  }
+
+  async function wisBetaling(inschrijving: Inschrijving, betalingId: string) {
+    const gegevens = await stuur({
+      actie: "betalingWissen",
+      kenmerk: inschrijving.kenmerk,
+      betalingId,
+      bekend: inschrijving,
+    });
+    if (!gegevens?.inschrijving) return;
+    onthoud(inschrijving.kenmerk, {
+      vervanging: gegevens.inschrijving as Inschrijving,
+      betaald: undefined,
+    });
+  }
+
+  async function splitsAf(inschrijving: Inschrijving, aantallen: Record<string, number>, naarZitting: string) {
+    const gegevens = await stuur({
+      actie: "afsplitsen",
+      kenmerk: inschrijving.kenmerk,
+      aantallen,
+      zitting: naarZitting,
+      bekend: inschrijving,
+    });
+    if (!gegevens?.oud || !gegevens.nieuw) return false;
+    const nieuw = gegevens.nieuw as Inschrijving;
+    onthoud(inschrijving.kenmerk, { vervanging: gegevens.oud as Inschrijving, betaald: undefined });
+    wijzigingen.current.set(nieuw.kenmerk, { vervanging: nieuw, nieuw: true, tijd: Date.now() });
+    setInschrijvingen((vorig) => (vorig ? metEigenWijzigingen(vorig) : vorig));
+    setGekozenKenmerk(nieuw.kenmerk);
+    return true;
   }
 
   if (!ingevoerd) {
@@ -260,7 +385,7 @@ export default function KassaClient() {
         }
       >
         <span className="w-12 shrink-0 font-display text-lg font-bold text-inkt-900">
-          {i.kaartnummer ?? "-"}
+          {nummerTekst(i)}
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-medium text-inkt-900">
@@ -306,7 +431,16 @@ export default function KassaClient() {
                 : "bezig met laden"}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setKassaOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
+            >
+              <Wallet className="h-4 w-4" />
+              Kassa vandaag: cash {euro(kassa[vandaag()]?.cash ?? 0)}, Bancontact{" "}
+              {euro(kassa[vandaag()]?.bancontact ?? 0)}
+            </button>
             <a
               href="/mosselfeest/leftovers"
               className="rounded-xl border border-white/25 px-3 py-2 text-sm transition hover:bg-white/10"
@@ -347,10 +481,29 @@ export default function KassaClient() {
           <div className="container-custom flex flex-wrap gap-2 py-3">
             <button
               type="button"
-              onClick={() => setZitting("")}
+              onClick={() => {
+                setLaatst(true);
+                setZoek("");
+              }}
+              className={
+                "inline-flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-semibold transition " +
+                (laatst
+                  ? "border-green-700 bg-green-700 text-white"
+                  : "border-green-600 text-green-800 hover:bg-green-50")
+              }
+            >
+              <History className="h-4 w-4" />
+              Laatst behandeld
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setZitting("");
+                setLaatst(false);
+              }}
               className={
                 "rounded-xl border-2 px-3 py-2 text-sm font-semibold transition " +
-                (zitting === ""
+                (zitting === "" && !laatst
                   ? "border-inkt-900 bg-inkt-900 text-white"
                   : "border-zand-300 text-slate-700 hover:border-slate-400")
               }
@@ -363,13 +516,14 @@ export default function KassaClient() {
             {EVENEMENT.zittingen.map((z) => {
               const cijfers = totalen.perZitting[z.id];
               const nog = cijfers ? cijfers.inschrijvingen - cijfers.behandeld : 0;
-              const actief = zitting === z.id;
+              const actief = zitting === z.id && !laatst;
               return (
                 <button
                   key={z.id}
                   type="button"
                   onClick={() => {
                     setZitting(z.id);
+                    setLaatst(false);
                     setZoek("");
                   }}
                   className={
@@ -446,7 +600,14 @@ export default function KassaClient() {
               <p className="rounded-xl bg-white p-4 text-sm text-slate-500">
                 {zoek
                   ? <>Niets gevonden met &ldquo;{zoek}&rdquo;.</>
-                  : "Geen inschrijvingen voor deze zitting."}
+                  : laatst
+                    ? "Er is nog geen enkele kaart behandeld."
+                    : "Geen inschrijvingen voor deze zitting."}
+              </p>
+            )}
+            {laatst && !zoek && geweest.length > 0 && (
+              <p className="px-1 pt-1 text-xs font-semibold uppercase tracking-wide text-green-700">
+                Laatst behandeld, de laatste bovenaan ({geweest.length})
               </p>
             )}
             {nogTeKomen.length > 0 && (geweest.length > 0 || zitting) && (
@@ -455,7 +616,7 @@ export default function KassaClient() {
               </p>
             )}
             {nogTeKomen.map(regel)}
-            {geweest.length > 0 && (
+            {geweest.length > 0 && !(laatst && !zoek) && (
               <p className="px-1 pt-4 text-xs font-semibold uppercase tracking-wide text-green-700">
                 {zittingIsAfhalen ? "Afgehaald" : "Geweest"} ({geweest.length})
               </p>
@@ -478,7 +639,7 @@ export default function KassaClient() {
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-zand-200 pb-4">
                 <div>
                   <p className="font-display text-5xl font-bold leading-none text-inkt-900">
-                    {gekozen.kaartnummer ?? "-"}
+                    {nummerTekst(gekozen)}
                   </p>
                   <p className="mt-2 text-xl font-semibold text-inkt-900">
                     {volledigeNaam(gekozen)}
@@ -537,31 +698,104 @@ export default function KassaClient() {
                 </p>
               )}
 
+              {(gekozen.betalingen ?? []).length > 0 && (
+                <div className="mt-4 rounded-xl bg-zand-50 p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Betaald aan de kassa
+                  </p>
+                  <ul className="mt-1 space-y-1">
+                    {(gekozen.betalingen ?? []).map((b) => (
+                      <li key={b.id} className="flex items-center justify-between gap-3 text-sm">
+                        <span className="text-slate-700">
+                          {euro(b.bedrag)} euro{" "}
+                          {BETAALMANIEREN.find((m) => m.id === b.manier)?.label.toLowerCase()}
+                          <span className="text-slate-400">
+                            {" om "}
+                            {new Date(b.op).toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (window.confirm(`Deze betaling van ${euro(b.bedrag)} euro wissen?`)) {
+                              wisBetaling(gekozen, b.id);
+                            }
+                          }}
+                          className="rounded-lg px-2 py-1 text-xs text-slate-500 hover:bg-white hover:text-primary"
+                        >
+                          wissen
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {!gekozen.betaald && openstaand(gekozen) > 0 && (
+                <div className="mt-6 space-y-3">
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    {BETAALMANIEREN.map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => ontvang(gekozen, m.id)}
+                        className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-primary px-6 py-5 text-lg font-bold text-white transition hover:bg-primary-700"
+                      >
+                        <Check className="h-6 w-6" />
+                        {euro(openstaand(gekozen))} euro {m.id === "cash" ? "cash" : "met Bancontact"}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 rounded-xl border border-zand-200 p-3">
+                    <span className="text-sm font-medium text-slate-700">Een deel betalen:</span>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={deelBedrag}
+                      onChange={(e) => setDeelBedrag(e.target.value)}
+                      placeholder="bedrag"
+                      className="w-28 rounded-lg border border-zand-300 px-3 py-2 text-base outline-none focus:border-primary"
+                    />
+                    <span className="text-sm text-slate-500">euro</span>
+                    {BETAALMANIEREN.map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => {
+                          const bedrag = Number.parseFloat(deelBedrag.replace(",", "."));
+                          if (!(bedrag > 0)) {
+                            setFout("Vul eerst het bedrag van dat deel in.");
+                            return;
+                          }
+                          ontvang(gekozen, m.id, bedrag);
+                        }}
+                        className="rounded-lg border-2 border-primary px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary-50"
+                      >
+                        {m.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="mt-6 flex flex-col flex-wrap gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() => zetBetaald(gekozen, !gekozen.betaald)}
-                  className={
-                    "flex flex-1 items-center justify-center gap-3 rounded-2xl px-6 py-5 text-lg font-bold transition " +
-                    (gekozen.betaald
-                      ? "bg-green-600 text-white hover:bg-green-700"
-                      : "bg-primary text-white hover:bg-primary-700")
-                  }
-                >
-                  {gekozen.betaald ? (
-                    <>
-                      <Check className="h-6 w-6" />
-                      Betaald, klik om terug te zetten
-                    </>
-                  ) : (
-                    <>
-                      <Check className="h-6 w-6" />
-                      {reedsBetaald(gekozen) > 0
-                        ? `Ontvang de resterende ${euro(openstaand(gekozen))} euro`
-                        : "Zet op betaald"}
-                    </>
-                  )}
-                </button>
+                {(gekozen.betaald || openstaand(gekozen) <= 0) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (
+                        (gekozen.betalingen ?? []).length === 0 ||
+                        window.confirm("Alles terugzetten naar niet betaald? De betalingen hierboven worden gewist.")
+                      ) {
+                        zetBetaald(gekozen, false);
+                      }
+                    }}
+                    className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-green-600 px-6 py-5 text-lg font-bold text-white transition hover:bg-green-700"
+                  >
+                    <Check className="h-6 w-6" />
+                    Betaald, klik om terug te zetten
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => zetBehandeld(gekozen, !gekozen.behandeld)}
@@ -592,9 +826,19 @@ export default function KassaClient() {
                 {gekozen.kaartnummer && (
                   <button
                     type="button"
+                    onClick={() => setSplitsen(gekozen)}
+                    className="flex items-center justify-center gap-2 rounded-2xl border-2 border-zand-300 px-6 py-5 text-base font-semibold text-slate-700 transition hover:border-slate-400"
+                  >
+                    <Split className="h-5 w-5" />
+                    Kaart splitsen
+                  </button>
+                )}
+                {gekozen.kaartnummer && (
+                  <button
+                    type="button"
                     onClick={() =>
                       window.open(
-                        `/mosselfeest/afdruk?nr=${gekozen.kaartnummer}&print=1`,
+                        `/mosselfeest/afdruk?kenmerk=${encodeURIComponent(gekozen.kenmerk)}&print=1`,
                         "_blank",
                       )
                     }
@@ -633,6 +877,75 @@ export default function KassaClient() {
           }}
           onSluiten={() => setBewerkt(null)}
         />
+      )}
+
+      {splitsen && (
+        <Splitsen
+          inschrijving={splitsen}
+          volgendeLetter={volgendeLetter(inschrijvingen ?? [], splitsen.kaartnummer ?? 0)}
+          onBevestig={async (aantallen, naarZitting) => {
+            if (await splitsAf(splitsen, aantallen, naarZitting)) setSplitsen(null);
+          }}
+          onSluiten={() => setSplitsen(null)}
+          fout={fout}
+        />
+      )}
+
+      {kassaOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setKassaOpen(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-blad"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="font-display text-xl font-bold text-inkt-900">Kassa per dag</h2>
+              <button type="button" onClick={() => setKassaOpen(false)} aria-label="Sluiten">
+                <X className="h-5 w-5 text-slate-500" />
+              </button>
+            </div>
+            <p className="mt-1 text-sm text-slate-500">
+              Wat er aan de kassa ontvangen is, per betaalmanier. Overschrijvingen vooraf en wat
+              op het overzicht als betaald is aangevinkt, tellen hier niet mee.
+            </p>
+            {Object.keys(kassa).length === 0 ? (
+              <p className="mt-4 text-slate-600">Er is nog niets ontvangen aan de kassa.</p>
+            ) : (
+              <table className="mt-4 w-full text-base">
+                <thead>
+                  <tr className="text-left text-xs uppercase tracking-wide text-slate-500">
+                    <th className="py-2">Dag</th>
+                    <th className="py-2 text-right">Cash</th>
+                    <th className="py-2 text-right">Bancontact</th>
+                    <th className="py-2 text-right">Samen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(kassa)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([dag, bedragen]) => (
+                      <tr key={dag} className="border-t border-zand-100">
+                        <td className="py-2 font-medium text-inkt-900">
+                          {new Date(`${dag}T12:00:00`).toLocaleDateString("nl-BE", {
+                            weekday: "long",
+                            day: "numeric",
+                            month: "long",
+                          })}
+                        </td>
+                        <td className="py-2 text-right">{euro(bedragen.cash)}</td>
+                        <td className="py-2 text-right">{euro(bedragen.bancontact)}</td>
+                        <td className="py-2 text-right font-semibold">
+                          {euro(bedragen.cash + bedragen.bancontact)}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
       )}
     </main>
   );

@@ -10,7 +10,7 @@ import {
   gerechtenVan,
   isAfhalen,
 } from "@/lib/mosselfeest/kaart";
-import { openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
+import { nummerTekst, openstaand, reedsBetaald, telOp, type Inschrijving } from "@/lib/mosselfeest/totalen";
 import { volledigeNaam } from "@/lib/mosselfeest/nakijken";
 import { bewaarWachtwoord, leesWachtwoord } from "../toegang";
 
@@ -53,6 +53,9 @@ export default function AfdrukClient() {
     const vraag = new URLSearchParams(window.location.search);
     const nr = Number.parseInt(vraag.get("nr") ?? "", 10);
     if (Number.isFinite(nr) && nr > 0) setEnkelNummer(nr);
+    // Een afgesplitste kaart (409B) deelt haar nummer; die gaat via het kenmerk.
+    const kenmerk = vraag.get("kenmerk");
+    if (kenmerk) setEnkelKenmerk(kenmerk);
     if (vraag.get("print") === "1") setAutoAfdrukken(true);
   }, []);
 
@@ -174,7 +177,7 @@ export default function AfdrukClient() {
             <div className="w-full">
               <p className="text-sm text-slate-600">
                 Eén bonnetje
-                {gekozen[0]?.kaartnummer ? `, kaartnummer ${gekozen[0].kaartnummer}` : ""}.{" "}
+                {gekozen[0]?.kaartnummer ? `, kaartnummer ${nummerTekst(gekozen[0])}` : ""}.{" "}
                 <button
                   type="button"
                   onClick={() => {
@@ -304,7 +307,7 @@ function Bonnen({
             <div className="flex items-start justify-between gap-3 border-b border-slate-200 pb-2">
               <div>
                 <p className="font-display text-2xl font-bold leading-none text-inkt-900 print:text-5xl">
-                  {i.kaartnummer ?? "-"}
+                  {nummerTekst(i)}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-inkt-900 print:mt-2 print:text-2xl">
                   {volledigeNaam(i)}
@@ -432,7 +435,7 @@ function Keukenlijst({ lijst }: { lijst: Inschrijving[] }) {
               <tbody>
                 {vanZitting.map((i) => (
                   <tr key={i.kenmerk} className="border-b border-slate-100 align-top">
-                    <td className="py-1 pr-3 font-bold">{i.kaartnummer ?? "-"}</td>
+                    <td className="py-1 pr-3 font-bold">{nummerTekst(i)}</td>
                     <td className="py-1 pr-3">{volledigeNaam(i)}</td>
                     <td className="py-1 pr-3 text-slate-700">
                       {GERECHTEN.filter((g) => (i.aantallen[g.id] ?? 0) > 0)
