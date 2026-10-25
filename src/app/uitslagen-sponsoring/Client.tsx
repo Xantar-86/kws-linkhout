@@ -41,7 +41,18 @@ interface PloegScherm {
   seizoen: SeizoenWedstrijd[];
 }
 
-type Dia = { soort: "ploeg"; ploeg: PloegScherm } | { soort: "sponsors" };
+type Dia = { soort: "ploeg"; ploeg: PloegScherm } | { soort: "sponsors" } | { soort: "grap" };
+
+// TIJDELIJK: een grapdia voor bij een kameraad thuis, op vraag van Jochen
+// (25 oktober 2026). Enkel met ?grap=1 in het adres, zodat ze nooit op de tv in
+// de kantine komt. Weghalen door GRAP leeg te maken en public/images/grap/ te
+// wissen.
+const GRAP = [
+  "/images/grap/wafel.png",
+  "/images/grap/pizza.png",
+  "/images/grap/vrienden.png",
+  "/images/grap/aubergine.png",
+];
 
 const wachten = (ms: number) => new Promise((klaar) => setTimeout(klaar, ms));
 
@@ -80,8 +91,21 @@ export default function TvClient() {
   const [nr, setNr] = useState(0);
   const [nu, setNu] = useState<Date | null>(null);
   const [tijden, setTijden] = useState({ ploeg: STANDAARD_PLOEG_S, sponsor: STANDAARD_SPONSOR_S });
+  const [grap, setGrap] = useState(false);
 
   useEffect(() => {
+    let alleenGrap = false;
+    try {
+      alleenGrap = new URLSearchParams(window.location.search).get("grap") === "1";
+    } catch {
+      // Zonder adres geen grap.
+    }
+    // Met ?grap=1 enkel de grapdia: niets ophalen bij de bond.
+    if (alleenGrap) {
+      setGrap(true);
+      setPloegen([]);
+      return;
+    }
     setTijden({
       ploeg: leesSeconden("ploeg", STANDAARD_PLOEG_S),
       sponsor: leesSeconden("sponsor", STANDAARD_SPONSOR_S),
@@ -118,6 +142,7 @@ export default function TvClient() {
 
   // De volgorde: twee ploegen, sponsors, twee ploegen, sponsors, ...
   const dias = useMemo<Dia[]>(() => {
+    if (grap && GRAP.length > 0) return [{ soort: "grap" }];
     const lijst: Dia[] = [];
     (ploegen ?? []).forEach((ploeg, i) => {
       lijst.push({ soort: "ploeg", ploeg });
@@ -127,7 +152,7 @@ export default function TvClient() {
       lijst.push({ soort: "sponsors" });
     }
     return lijst;
-  }, [ploegen]);
+  }, [ploegen, grap]);
 
   const dia = dias[nr % dias.length];
   const duur = (dia?.soort === "ploeg" ? tijden.ploeg : tijden.sponsor) * 1000;
@@ -142,8 +167,8 @@ export default function TvClient() {
   return (
     <main className="relative flex h-dvh w-screen cursor-none flex-col overflow-hidden bg-inkt-900 text-white">
       <Kop
-        titel={dia?.soort === "ploeg" ? dia.ploeg.team.name : "Onze sponsors"}
-        onder={dia?.soort === "ploeg" ? dia.ploeg.klassement.reeks : "Zij maken het mogelijk"}
+        titel={dia?.soort === "ploeg" ? dia.ploeg.team.name : dia?.soort === "grap" ? "Even pauze" : "Onze sponsors"}
+        onder={dia?.soort === "ploeg" ? dia.ploeg.klassement.reeks : dia?.soort === "grap" ? "" : "Zij maken het mogelijk"}
         nu={nu}
       />
 
@@ -166,6 +191,12 @@ export default function TvClient() {
           </div>
         ) : dia?.soort === "ploeg" ? (
           <PloegDia key={nr} ploeg={dia.ploeg} />
+        ) : dia?.soort === "grap" ? (
+          <div key={nr} className="grid h-full grid-cols-4 items-center gap-[2vw] bg-white px-[3vw] py-[3vh]">
+            {GRAP.map((beeld) => (
+              <img key={beeld} src={beeld} alt="" className="max-h-full w-full object-contain" />
+            ))}
+          </div>
         ) : (
           <SponsorDia key={nr} melding={mislukt && ploegen.length === 0} />
         )}
