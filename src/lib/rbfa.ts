@@ -559,9 +559,13 @@ export function klassementUitAntwoord(
       (json as { data?: { teamSeriesAndRankings?: { rankings?: Rangschikking[] } } })?.data
         ?.teamSeriesAndRankings?.rankings ?? [];
 
-    // Hetzelfde klassement als de overzichtspagina van de ploeg op de
-    // RBFA-site: de eerste reeks die de bond teruggeeft en mag tonen.
-    const gekozen = rangschikkingen.find((r) => r.visibility?.showRanking);
+    // De competitie gaat voor. De bond geeft soms eerst de poule van de beker
+    // terug (in oktober 2026 bij P2, P4 en beide damesploegen), en dan stond
+    // de beker op de ploegpagina in plaats van de reeks. Enkel als een ploeg
+    // alleen een beker heeft, tonen we die.
+    const gekozen =
+      rangschikkingen.find((r) => r.visibility?.showRanking && !isBeker(r.name)) ??
+      rangschikkingen.find((r) => r.visibility?.showRanking);
 
     if (!gekozen?.visibility?.showRanking) return null;
 
@@ -620,12 +624,16 @@ export async function haalSeizoenInBrowser(teamId: string): Promise<SeizoenWedst
   return seizoenUitAntwoord(await response.json());
 }
 
-export async function haalKlassementInBrowser(teamId: string): Promise<Klassement | null> {
+/** Met een groot venster (bv. 99) komt het volledige klassement mee. */
+export async function haalKlassementInBrowser(
+  teamId: string,
+  venster = 5
+): Promise<Klassement | null> {
   const response = await fetch(RBFA_GRAPHQL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query: KLASSEMENT_QUERY, variables: { teamId, language: "nl" } }),
   });
   if (!response.ok) throw new Error(`RBFA-API gaf status ${response.status}`);
-  return klassementUitAntwoord(await response.json(), teamId);
+  return klassementUitAntwoord(await response.json(), teamId, venster);
 }
