@@ -19,6 +19,7 @@ import { Onthul } from "@/components/beweging/Onthul";
 import { SPONSORS } from "@/components/home/SponsorsSection";
 import { StatsSection, type Cijfer } from "@/components/home/StatsSection";
 import { FORMULES, SPONSOR_CONTACT, WAAROM, WEDSTRIJDBAL, ZELEM } from "./inhoud";
+import { balMail, stuurMail } from "./web3forms";
 
 const CIJFERS: Cijfer[] = [
   { waarde: 1938, vanaf: 1900, achtervoegsel: "", label: "Opgericht", onder: "Stamnummer 03531" },
@@ -96,35 +97,9 @@ const BAL_VELDEN: VeldDef[] = [
   { name: "match", label: "Voorkeur wedstrijd", placeholder: "bv. eerste thuiswedstrijd van het seizoen" },
 ];
 
-/**
- * De formulieren gaan via Web3Forms, met de sleutel van de maker van de
- * oorspronkelijke sponsorsite. Bij Web3Forms is bepaald naar wie de mail gaat.
- * De sleutel is bedoeld om in de pagina te staan; het gratis plan aanvaardt
- * enkel inzendingen vanuit de browser, niet vanaf een server.
- *
- * Een kopie meesturen kan op het gratis plan niet. Daarom een tweede sleutel,
- * op het adres van Joel Bynens: elk formulier gaat naar beide.
- */
-const WEB3FORMS_SLEUTELS = [
-  "4a359a84-fa74-4483-b0da-841394499c56", // maker van de sponsorsite
-  "79288482-8fd4-4dce-be91-99d69e4ec3df", // Joel Bynens
-];
-
 /** Wat er in de mail staat, zoals de maker het opgaf. */
 function mailVoor(tab: Tab, data: Record<string, string>) {
-  if (tab === "wedstrijdbal") {
-    return {
-      subject: `Wedstrijdbal bestelling - ${data.name}`,
-      from_name: data.name,
-      name: data.name,
-      email: data.email,
-      bedrijfsnaam: data.company || "-",
-      adres: `${data.street}, ${data.zip} ${data.city}`,
-      btw_nummer: data.vat || "-",
-      telefoon: data.phone,
-      voorkeur_wedstrijd: data.match || "-",
-    };
-  }
+  if (tab === "wedstrijdbal") return balMail(data);
   return {
     subject: `Sponsoring KWS Linkhout - ${data.subject}`,
     from_name: data.name,
@@ -148,6 +123,11 @@ export default function SponsoringClient() {
   const [waarden, setWaarden] = useState<Record<string, string>>({ subject: "" });
   const [bezocht, setBezocht] = useState<Record<string, boolean>>({});
   const [status, setStatus] = useState<Status>({ soort: "rust" });
+  // Of een wedstrijdbal meteen online betaald wordt, of enkel als mail gaat.
+  const [betalen, setBetalen] = useState(false);
+  // De code uit de testlink /sponsoring?test=..., en of de site die aanvaardde.
+  const [testcode, setTestcode] = useState("");
+  const [testmodus, setTestmodus] = useState(false);
 
   const velden = tab === "contact" ? CONTACT_VELDEN : BAL_VELDEN;
 
@@ -163,6 +143,18 @@ export default function SponsoringClient() {
     if (metOnderwerp) setWaarden((w) => ({ ...w, subject: metOnderwerp }));
     setOpen(true);
   }
+
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("test") ?? "";
+    fetch(`/api/wedstrijdbal${code ? `?test=${encodeURIComponent(code)}` : ""}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setBetalen(Boolean(d.betalen));
+        setTestmodus(Boolean(d.test));
+        setTestcode(d.test ? code : "");
+      })
+      .catch(() => {});
+  }, []);
 
   // Sluiten met Escape, en de pagina erachter niet laten scrollen.
   useEffect(() => {
@@ -197,6 +189,32 @@ export default function SponsoringClient() {
       setStatus({ soort: "ok" });
       return;
     }
+
+    // Een wedstrijdbal wordt meteen betaald, als Mollie ingesteld is. De
+    // mail volgt pas op de bedankpagina, als de betaling gelukt is. Staat
+    // Mollie uit, dan gaat de bestelling als mail zoals vroeger.
+    if (tab === "wedstrijdbal") {
+      setStatus({ soort: "bezig" });
+      try {
+        const antwoord = await fetch("/api/wedstrijdbal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...data, testcode }),
+        }).then((r) => r.json());
+        if (antwoord.checkout) {
+          window.location.href = antwoord.checkout;
+          return;
+        }
+        if (!antwoord.uit) {
+          setStatus({ soort: "fout", tekst: antwoord.fout ?? "De betaling kon niet gestart worden. Probeer het zo meteen opnieuw." });
+          return;
+        }
+      } catch {
+        setStatus({ soort: "fout", tekst: "Geen verbinding. Probeer het zo meteen opnieuw." });
+        return;
+      }
+    }
+
     // Wie de site op zijn eigen computer uitprobeert, stuurt geen echte mail.
     if (/^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
       setStatus({ soort: "ok", lokaal: true });
@@ -205,22 +223,7 @@ export default function SponsoringClient() {
 
     setStatus({ soort: "bezig" });
     try {
-      const mail = mailVoor(tab, data);
-      const antwoorden = await Promise.all(
-        WEB3FORMS_SLEUTELS.map((access_key) =>
-          fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ access_key, ...mail }),
-          })
-            .then((r) => r.json())
-            .then((d) => Boolean(d.success))
-            .catch(() => false)
-        )
-      );
-      // Gelukt zodra het bij minstens een van beiden aankwam: nog eens
-      // versturen zou de ander een dubbele mail geven.
-      if (!antwoorden.some(Boolean)) {
+      if (!(await stuurMail(mailVoor(tab, data)))) {
         setStatus({ soort: "fout", tekst: "Het bericht kon niet verstuurd worden. Mail ons gerust rechtstreeks." });
         return;
       }
@@ -626,11 +629,25 @@ export default function SponsoringClient() {
                   )}
                   <button type="submit" disabled={status.soort === "bezig"} className="btn-primary mt-2 w-full disabled:opacity-60">
                     {status.soort === "bezig"
-                      ? "Bezig met versturen..."
+                      ? tab === "wedstrijdbal" && betalen
+                        ? "Even naar de betaalpagina..."
+                        : "Bezig met versturen..."
                       : tab === "wedstrijdbal"
-                        ? "Bestelling versturen"
+                        ? betalen
+                          ? `Bestellen en ${WEDSTRIJDBAL.prijs} betalen`
+                          : "Bestelling versturen"
                         : "Verstuur bericht"}
                   </button>
+                  {tab === "wedstrijdbal" && betalen && (
+                    <p className="mt-3 text-center text-xs text-gray-500">
+                      U betaalt meteen online, via de beveiligde betaalpagina van Mollie.
+                    </p>
+                  )}
+                  {tab === "wedstrijdbal" && testmodus && (
+                    <p className="mx-auto mt-2 max-w-sm rounded-lg bg-amber-50 px-3 py-2 text-center text-xs text-amber-800">
+                      Testmodus: er wordt geen echt geld betaald. De mails vertrekken wel echt.
+                    </p>
+                  )}
                 </div>
               </form>
             )}

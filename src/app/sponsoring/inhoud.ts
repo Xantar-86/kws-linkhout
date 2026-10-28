@@ -129,6 +129,8 @@ export const FORMULES: Formule[] = [
 
 export const WEDSTRIJDBAL = {
   prijs: "€ 150",
+  /** Wat er via Mollie betaald wordt, in de vorm die Mollie vraagt. Hou gelijk met prijs. */
+  bedrag: "150.00",
   uitleg:
     "De laagdrempelige instapper: uw naam op de affiche in de kantine, een vol jaar lang " +
     "zichtbaar voor alle leden en bezoekers.",
