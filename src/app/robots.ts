@@ -25,6 +25,8 @@ export default function robots(): MetadataRoute.Robots {
           "/toestemming",
           // Inschrijven voor het mosselfeest, en het overzicht erachter.
           "/mosselfeest",
+          // De stabiliteitstraining, enkel voor wie de link kreeg.
+          "/stabiliteitstraining",
           // Antwoorden van de server, geen pagina's.
           "/api/",
         ],

@@ -81,6 +81,14 @@ const nextConfig: NextConfig = {
           destination: '/sponsoring',
         },
       ],
+      // De stabiliteitstraining is een aparte app (Vercel-project
+      // krachtschema, bron apps/kracht-app). Ze staat daar zelf ook op
+      // /stabiliteitstraining, zodat al haar links hier gewoon kloppen, en ze
+      // komt van dezelfde site: aanmelden en de cookie blijven hier.
+      afterFiles: [
+        { source: '/stabiliteitstraining', destination: 'https://krachtschema.vercel.app/stabiliteitstraining' },
+        { source: '/stabiliteitstraining/:pad*', destination: 'https://krachtschema.vercel.app/stabiliteitstraining/:pad*' },
+      ],
     };
   },
   async headers() {
@@ -94,6 +102,11 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/matchday/:pad*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+      // De stabiliteitstraining: enkel via de link, niet in Google.
+      {
+        source: '/stabiliteitstraining/:pad*',
         headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
       // Het toestemmingsformulier voor beeldmateriaal gaat via de
