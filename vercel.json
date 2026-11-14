@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/social/weekoverzicht-herinnering",
+      "schedule": "0 16 * * 4"
+    }
+  ]
+}

@@ -4,6 +4,30 @@ Twee soorten posts op Facebook en Instagram, voor vier ploegen: de
 aankondiging van de volgende wedstrijd en de uitslag erna. Niets vertrekt
 zonder jouw goedkeuring.
 
+## Weekoverzicht van alle ploegen
+
+Los van de posts per ploeg is er een weekoverzicht: alle wedstrijden van alle
+ploegen (senioren, dames en jeugd) van vrijdag tot zondag op één beeld van
+1080x1350, of op een carrousel als het niet leesbaar op één beeld past.
+
+- Pagina: [`/matchday/weekoverzicht`](../src/app/matchday/weekoverzicht/Client.tsx).
+  Geen sleutel nodig, er staan enkel openbare RBFA-gegevens op; niet in het
+  menu, `noindex` en geweerd in robots.txt.
+- De browser haalt de kalenders op, zoals het tv-scherm: de RBFA weigert onze
+  server sinds oktober 2026. Een headless browser wordt ook geweigerd.
+- Het beeld wordt met code getekend ([`teken.ts`](../src/app/matchday/weekoverzicht/teken.ts)),
+  niet door ChatGPT, zodat elk uur en elke naam exact klopt. Op de pagina staat
+  wel een opdracht om in ChatGPT te plakken voor een sfeervollere versie.
+- Knoppen: beelden downloaden, tekst kopiëren, en op de gsm delen naar de
+  Facebook- of Instagram-app.
+- Elke donderdag om 16:00 UTC (17u winter, 18u zomer) stuurt de Vercel-cron uit
+  [`vercel.json`](../vercel.json) een herinneringsmail met de link
+  (`/api/social/weekoverzicht-herinnering`). Daarvoor moet `CRON_SECRET` in
+  Vercel staan; Vercel stuurt het zelf mee. Ontvanger: `SOCIAL_MAIL_TO`, anders
+  het standaardadres uit `lib/social/mail.ts`.
+- Volgnummers die de bond achter jeugdploegen hangt ("Lummen 1", "Tessenderlo
+  E 2-1") worden weggelaten, anders lijken ze op een uitslag.
+
 ## Ploegen
 
 | Slug | Ploeg | RBFA-ploeg-ID |
