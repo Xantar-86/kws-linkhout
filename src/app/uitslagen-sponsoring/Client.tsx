@@ -9,7 +9,7 @@ import {
   type Klassement,
   type SeizoenWedstrijd,
 } from "@/lib/rbfa";
-import { SPONSORS } from "@/components/home/SponsorsSection";
+import { SPONSORS } from "@/lib/sponsors";
 
 /**
  * Het tv-scherm in de kantine.

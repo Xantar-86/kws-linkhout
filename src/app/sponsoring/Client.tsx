@@ -16,7 +16,7 @@ import { ArrowRight, Check, Eye, Handshake, Link2, Mail, CircleDot, AlertCircle,
 import { PaginaKop } from "@/components/PaginaKop";
 import { SectieKop } from "@/components/SectieKop";
 import { Onthul } from "@/components/beweging/Onthul";
-import { SPONSORS } from "@/components/home/SponsorsSection";
+import { SPONSORS } from "@/lib/sponsors";
 import { StatsSection, type Cijfer } from "@/components/home/StatsSection";
 import { FORMULES, SPONSOR_CONTACT, WAAROM, WEDSTRIJDBAL, ZELEM } from "./inhoud";
 import { balMail, stuurMail } from "./web3forms";

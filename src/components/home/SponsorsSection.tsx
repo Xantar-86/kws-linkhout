@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { SectieKop } from "@/components/SectieKop";
 import { Onthul } from "@/components/beweging/Onthul";
 import { kijk, varianten } from "@/lib/beweging";
+import { SPONSORS } from "@/lib/sponsors";
 
 /**
  * De sponsors.
@@ -26,16 +27,6 @@ import { kijk, varianten } from "@/lib/beweging";
  * er staat, en dan wacht de bezoeker op een raster.
  */
 
-export const SPONSORS = [
-  { naam: "Roof Projects", beeld: "/images/sponsors/ROOF-PROJECTS-LOGO-RGB.jpg" },
-  { naam: "Salesforce", beeld: "/images/sponsors/Salesforce.png" },
-  { naam: "De Backer", beeld: "/images/sponsors/de-backer.jpeg" },
-  { naam: "Lumen", beeld: "/images/sponsors/lumen.png" },
-  { naam: "PD Bouw", beeld: "/images/sponsors/pd-bouw.png" },
-  { naam: "AA Drink", beeld: "/images/sponsors/aa-drink.png" },
-  { naam: "Spar", beeld: "/images/sponsors/spar.jpg" },
-  { naam: "Mathys", beeld: "/images/sponsors/Mathys.png" },
-];
 
 export function SponsorsSection() {
   return (
