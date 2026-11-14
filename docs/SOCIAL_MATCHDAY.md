@@ -8,7 +8,7 @@ zonder jouw goedkeuring.
 
 Los van de posts per ploeg is er een weekoverzicht: alle wedstrijden van alle
 ploegen (senioren, dames en jeugd) van vrijdag tot zondag op één beeld van
-1080x1350, of op een carrousel als het niet leesbaar op één beeld past.
+1080x1440 (3:4), of op een carrousel als het niet leesbaar op één beeld past.
 
 - Pagina: [`/matchday/weekoverzicht`](../src/app/matchday/weekoverzicht/Client.tsx).
   Geen sleutel nodig, er staan enkel openbare RBFA-gegevens op; niet in het

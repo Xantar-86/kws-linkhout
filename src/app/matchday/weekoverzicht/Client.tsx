@@ -11,7 +11,7 @@ import {
   MAANDEN,
   type OverzichtPloeg,
 } from "@/lib/weekoverzicht";
-import { tekenBeeld, verdeel } from "./teken";
+import { laadOpmaak, tekenBeeld, verdeel, type Opmaak } from "./teken";
 
 /**
  * Haalt de kalender van elke ploeg op in de browser (de bond weigert onze
@@ -82,21 +82,27 @@ export default function WeekoverzichtClient() {
     return weekendVan(basis);
   }, [verschuiving]);
 
+  // Het ChatGPT-sjabloon, als het er is; anders het zelf getekende ontwerp.
+  const [opmaak, setOpmaak] = useState<Opmaak | null>(null);
+  useEffect(() => {
+    void laadOpmaak().then(setOpmaak);
+  }, []);
+
   const wedstrijden = useMemo(
     () => (geladen ? wedstrijdenInWeekend(geladen, van, tot) : []),
     [geladen, van, tot]
   );
-  const beelden = useMemo(() => verdeel(wedstrijden), [wedstrijden]);
+  const beelden = useMemo(() => (opmaak ? verdeel(wedstrijden, opmaak) : []), [wedstrijden, opmaak]);
   const tekst = useMemo(() => bouwTekst(wedstrijden, van), [wedstrijden, van]);
   const opdracht = useMemo(() => bouwChatGptOpdracht(wedstrijden, van), [wedstrijden, van]);
 
   useEffect(() => {
-    if (!geladen) return;
+    if (!geladen || !opmaak) return;
     beelden.forEach((beeld, i) => {
       const c = canvassen.current[i];
-      if (c) void tekenBeeld(c, beeld, wedstrijden, van, i + 1, beelden.length);
+      if (c) void tekenBeeld(c, beeld, wedstrijden, van, i + 1, beelden.length, opmaak);
     });
-  }, [geladen, beelden, wedstrijden, van]);
+  }, [geladen, opmaak, beelden, wedstrijden, van]);
 
   const toon = useCallback((t: string) => {
     setMelding(t);
@@ -250,7 +256,7 @@ export default function WeekoverzichtClient() {
                     canvassen.current[i] = el;
                   }}
                   width={1080}
-                  height={1350}
+                  height={1440}
                   className="h-auto w-full rounded-lg shadow-2xl"
                 />
               ))}

@@ -18,7 +18,8 @@ import {
 } from "@/lib/weekoverzicht";
 
 export const BREED = 1080;
-export const HOOG = 1350;
+/** 3:4, zoals Instagram sinds 2025 toont en zoals ChatGPT het sjabloon maakt. */
+export const HOOG = 1440;
 
 const ROOD = "#9e1b1b";
 const ROOD_LICHT = "#c62828";
@@ -27,38 +28,78 @@ const WIT = "#ffffff";
 
 const KOP_HOOGTE = 330;
 const VOET_HOOGTE = 96;
-const DAGBALK = 62;
+/** Dagbalk inclusief de witrand boven het paneel. */
+const DAGBALK = 64;
+const PANEEL_RAND = 4;
 const DAG_TUSSEN = 18;
 const MARGE = 36;
-const RIJ_MAX = 60;
-const RIJ_MIN = 42;
+const RIJ_MAX = 50;
+const RIJ_MIN = 29;
 
 /** Wat er op één beeld komt. */
 export interface Beeld {
   dagen: { dag: Date; wedstrijden: OverzichtWedstrijd[]; vervolg: boolean }[];
 }
 
-function ruimte(): number {
-  return HOOG - KOP_HOOGTE - VOET_HOOGTE - 20;
+/**
+ * Het sjabloon uit ChatGPT: een lege achtergrond in de clubstijl met logo en
+ * titel, waarop wij de datums en de tabel zetten. Staat het bestand er niet,
+ * dan tekenen we alles zelf (donker ontwerp).
+ *
+ * De posities hieronder zijn afgemeten op het sjabloon, in pixels op 1080x1350.
+ * Komt er een nieuw sjabloon, dan moeten enkel deze getallen mee veranderen.
+ */
+export const SJABLOON_PAD = "/images/social/sjabloon-weekoverzicht.png";
+const SJABLOON = {
+  /** Bovenkant en onderkant van de lege zone voor de tabel. */
+  boven: 450,
+  onder: 1305,
+  /** Midden van de lege witte band waarin de datums komen. */
+  datumX: 540,
+  datumY: 398,
+  datumKleur: ROOD,
+};
+
+/** De lege zone voor de tabel, en het sjabloon als dat er is. */
+export interface Opmaak {
+  boven: number;
+  onder: number;
+  sjabloon: HTMLImageElement | null;
 }
 
-function rijHoogte(beeld: Beeld): number {
+export const EIGEN_OPMAAK: Opmaak = {
+  boven: KOP_HOOGTE,
+  onder: HOOG - VOET_HOOGTE - 20,
+  sjabloon: null,
+};
+
+/** Kijkt of er een sjabloon is en geeft de bijhorende opmaak. */
+export async function laadOpmaak(): Promise<Opmaak> {
+  const sjabloon = await laadBeeld(SJABLOON_PAD);
+  return sjabloon ? { boven: SJABLOON.boven, onder: SJABLOON.onder, sjabloon } : EIGEN_OPMAAK;
+}
+
+function ruimte(o: Opmaak): number {
+  return o.onder - o.boven;
+}
+
+function rijHoogte(beeld: Beeld, o: Opmaak): number {
   const rijen = beeld.dagen.reduce((n, d) => n + d.wedstrijden.length, 0);
-  const vrij = ruimte() - beeld.dagen.length * (DAGBALK + DAG_TUSSEN);
+  const vrij = ruimte(o) - beeld.dagen.length * (DAGBALK + DAG_TUSSEN + 2 * PANEEL_RAND);
   return Math.min(RIJ_MAX, rijen ? vrij / rijen : RIJ_MAX);
 }
 
 /** Verdeelt de wedstrijden over zo weinig mogelijk beelden. */
-export function verdeel(lijst: OverzichtWedstrijd[]): Beeld[] {
+export function verdeel(lijst: OverzichtWedstrijd[], o: Opmaak = EIGEN_OPMAAK): Beeld[] {
   const dagen = perDag(lijst).map((d) => ({ ...d, vervolg: false }));
   if (dagen.length === 0) return [{ dagen: [] }];
 
   const alles: Beeld = { dagen };
-  if (rijHoogte(alles) >= RIJ_MIN) return [alles];
+  if (rijHoogte(alles, o) >= RIJ_MIN) return [alles];
 
   // Een te volle dag eerst in stukken, dan de stukken zo samen op een beeld
   // zetten als ze nog leesbaar passen.
-  const perBeeld = Math.floor((ruimte() - DAGBALK - DAG_TUSSEN) / RIJ_MIN);
+  const perBeeld = Math.floor((ruimte(o) - DAGBALK - DAG_TUSSEN - 2 * PANEEL_RAND) / RIJ_MIN);
   const stukken: Beeld["dagen"] = [];
   for (const d of dagen) {
     for (let i = 0; i < d.wedstrijden.length; i += perBeeld) {
@@ -68,7 +109,7 @@ export function verdeel(lijst: OverzichtWedstrijd[]): Beeld[] {
   const beelden: Beeld[] = [];
   for (const stuk of stukken) {
     const laatste = beelden[beelden.length - 1];
-    if (laatste && rijHoogte({ dagen: [...laatste.dagen, stuk] }) >= RIJ_MIN) {
+    if (laatste && rijHoogte({ dagen: [...laatste.dagen, stuk] }, o) >= RIJ_MIN) {
       laatste.dagen.push(stuk);
     } else {
       beelden.push({ dagen: [stuk] });
@@ -225,87 +266,88 @@ function tekenKop(
   }
 }
 
+/** Rode schuine balk met de dag, en een dunne lijn die naar rechts doorloopt. */
 function tekenDagbalk(ctx: CanvasRenderingContext2D, y: number, titel: string) {
+  const h = DAGBALK - 10;
+  const verloop = ctx.createLinearGradient(MARGE, 0, MARGE + 560, 0);
+  verloop.addColorStop(0, ROOD_LICHT);
+  verloop.addColorStop(1, ROOD);
   ctx.save();
   ctx.translate(MARGE, y);
-  ctx.transform(1, 0, -0.12, 1, 0, 0);
-  ctx.fillStyle = ROOD;
-  ctx.fillRect(6, 0, 640, DAGBALK - 8);
+  ctx.transform(1, 0, -0.25, 1, 0, 0);
+  ctx.fillStyle = verloop;
+  ctx.fillRect(14, 0, 540, h);
+  ctx.fillRect(14, h - 4, BREED - 2 * MARGE + 20, 4);
   ctx.restore();
 
-  // Klein kalendericoon.
-  const ix = MARGE + 22;
-  const iy = y + 11;
   ctx.fillStyle = WIT;
-  afgerond(ctx, ix, iy, 34, 32, 5);
-  ctx.fill();
-  ctx.fillStyle = ROOD;
-  ctx.fillRect(ix, iy + 9, 34, 3);
-  ctx.fillStyle = WIT;
-  ctx.font = `40px "WO Anton"`;
   ctx.textAlign = "left";
-  ctx.fillText(titel.toUpperCase(), MARGE + 72, y + 44);
+  ctx.font = `italic 700 34px "WO Inter"`;
+  ctx.fillText(titel.toUpperCase(), MARGE + 22, y + h / 2 + 12);
 }
 
-function tekenRij(ctx: CanvasRenderingContext2D, w: OverzichtWedstrijd, y: number, h: number, even: boolean) {
+/** Wit paneel waarop de rijen van een dag komen. */
+function tekenPaneel(ctx: CanvasRenderingContext2D, y: number, hoogte: number) {
+  ctx.save();
+  ctx.shadowColor = "rgba(0,0,0,0.45)";
+  ctx.shadowBlur = 18;
+  ctx.fillStyle = "#fbfbfb";
+  afgerond(ctx, MARGE, y, BREED - 2 * MARGE, hoogte, 8);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** Schuin label THUIS (rood), UIT (zwart) of UITGESTELD (grijs). */
+function tekenLabel(ctx: CanvasRenderingContext2D, w: OverzichtWedstrijd, x: number, midden: number, h: number) {
+  const b = 112;
+  const lh = Math.min(30, h - 6);
+  const label = w.uitgesteld ? "UITGESTELD" : w.eigenThuis ? "THUIS" : "UIT";
+  ctx.save();
+  ctx.translate(x, midden - lh / 2);
+  ctx.transform(1, 0, -0.3, 1, 0, 0);
+  ctx.fillStyle = w.uitgesteld ? "#8a8a8a" : w.eigenThuis ? ROOD_LICHT : "#161616";
+  ctx.fillRect(lh * 0.3, 0, b, lh);
+  ctx.restore();
+  ctx.fillStyle = WIT;
+  ctx.textAlign = "center";
+  ctx.font = `italic 700 ${w.uitgesteld ? 14 : Math.round(lh * 0.66)}px "WO Inter"`;
+  ctx.fillText(label, x + b / 2 + lh * 0.15, midden + lh * 0.24);
+}
+
+function tekenRij(ctx: CanvasRenderingContext2D, w: OverzichtWedstrijd, y: number, h: number, laatste: boolean) {
   const x = MARGE;
   const b = BREED - 2 * MARGE;
   const midden = y + h / 2;
-  const tekstY = midden + Math.round(h * 0.17);
-  const grootte = Math.round(Math.min(26, h * 0.46));
+  const grootte = Math.round(Math.min(26, h * 0.62));
+  const tekstY = midden + grootte * 0.36;
 
-  ctx.fillStyle = even ? "#ffffff" : "#f3eded";
-  afgerond(ctx, x, y + 2, b, h - 4, 10);
-  ctx.fill();
+  if (!laatste) {
+    ctx.fillStyle = "#dedede";
+    ctx.fillRect(x + 12, y + h - 1, b - 24, 1);
+  }
 
-  // Aftrapuur in een rood blok.
-  ctx.fillStyle = w.uitgesteld ? "#8a8a8a" : ROOD;
-  afgerond(ctx, x + 6, y + 6, 104, h - 12, 8);
-  ctx.fill();
-  ctx.fillStyle = WIT;
-  ctx.font = `${Math.round(grootte * 1.15)}px "WO Anton"`;
-  ctx.textAlign = "center";
-  ctx.fillText(uur(w.start), x + 58, tekstY + 1);
+  ctx.fillStyle = w.uitgesteld ? "#8a8a8a" : "#111111";
+  ctx.textAlign = "left";
+  ctx.font = `italic 700 ${grootte}px "WO Inter"`;
+  ctx.fillText(uur(w.start), x + 22, tekstY);
 
-  // Ploeg.
-  ctx.fillStyle = "#1a1a1a";
-  pasTekst(ctx, w.ploeg, x + 124, tekstY, 150, { grootte, min: 14, gewicht: "700" });
+  ctx.fillStyle = ROOD_LICHT;
+  ctx.font = `700 ${grootte}px "WO Inter"`;
+  ctx.fillText("|", x + 128, tekstY);
+  ctx.fillText("|", x + 300, tekstY);
 
-  // Thuis vs uit, onze eigen naam vet.
-  const vsX = x + 286 + 268;
-  ctx.fillStyle = w.eigenThuis ? "#111111" : "#333333";
-  pasTekst(ctx, w.thuis, vsX - 30, tekstY, 255, {
-    grootte: grootte - 2,
+  pasTekst(ctx, w.ploeg, x + 150, tekstY, 140, { grootte, min: 13, gewicht: "700" });
+
+  ctx.fillStyle = w.uitgesteld ? "#8a8a8a" : "#111111";
+  pasTekst(ctx, `${w.thuis} vs ${w.uit}`, x + 322, tekstY, b - 322 - 140, {
+    grootte,
     min: 13,
-    gewicht: w.eigenThuis ? "700" : "400",
-    uitlijning: "right",
-  });
-  ctx.fillStyle = ROOD;
-  afgerond(ctx, vsX - 20, midden - 15, 40, 30, 7);
-  ctx.fill();
-  ctx.fillStyle = WIT;
-  ctx.font = `20px "WO Anton"`;
-  ctx.textAlign = "center";
-  ctx.fillText("VS", vsX, midden + 8);
-  ctx.fillStyle = w.eigenThuis ? "#333333" : "#111111";
-  pasTekst(ctx, w.uit, vsX + 30, tekstY, 255, {
-    grootte: grootte - 2,
-    min: 13,
-    gewicht: w.eigenThuis ? "400" : "700",
+    gewicht: "700",
   });
 
-  // Label thuis, uit of uitgesteld.
-  const lb = 128;
-  const lx = x + b - lb - 8;
-  const label = w.uitgesteld ? "UITGESTELD" : w.eigenThuis ? "THUIS" : "UIT";
-  ctx.fillStyle = w.uitgesteld ? "#8a8a8a" : w.eigenThuis ? "#141414" : ROOD;
-  afgerond(ctx, lx, midden - 17, lb, 34, 17);
-  ctx.fill();
-  ctx.fillStyle = WIT;
-  ctx.font = `${w.uitgesteld ? 17 : 21}px "WO Anton"`;
-  ctx.textAlign = "center";
-  ctx.fillText(label, lx + lb / 2, midden + 8);
+  tekenLabel(ctx, w, x + b - 130, midden, h);
 }
+
 
 function tekenVoet(ctx: CanvasRenderingContext2D) {
   const y = HOOG - VOET_HOOGTE;
@@ -328,39 +370,67 @@ export async function tekenBeeld(
   alles: OverzichtWedstrijd[],
   van: Date,
   nr: number,
-  totaal: number
+  totaal: number,
+  o: Opmaak = EIGEN_OPMAAK
 ): Promise<void> {
   await laadFonts();
-  const logo = await laadBeeld("/images/logo-kws.png");
 
   canvas.width = BREED;
   canvas.height = HOOG;
   const ctx = canvas.getContext("2d")!;
+  const teller = totaal > 1 ? `${nr}/${totaal}` : "";
 
-  tekenAchtergrond(ctx);
-  tekenKop(ctx, logo, weekendTitel(alles, van), totaal > 1 ? `${nr}/${totaal}` : "");
+  if (o.sjabloon) {
+    // Sjabloon passend maken op 1080x1350, zonder vervorming (bijsnijden).
+    const s = o.sjabloon;
+    const schaal = Math.max(BREED / s.width, HOOG / s.height);
+    const b = s.width * schaal;
+    const h = s.height * schaal;
+    ctx.drawImage(s, (BREED - b) / 2, (HOOG - h) / 2, b, h);
 
-  let y = KOP_HOOGTE;
+    ctx.fillStyle = SJABLOON.datumKleur;
+    ctx.textAlign = "center";
+    pasTekst(ctx, weekendTitel(alles, van).toUpperCase(), SJABLOON.datumX, SJABLOON.datumY + 14, 520, {
+      grootte: 42,
+      min: 24,
+      familie: "WO Anton",
+      uitlijning: "center",
+    });
+    if (teller) {
+      ctx.fillStyle = ROOD;
+      ctx.textAlign = "right";
+      ctx.font = `700 24px "WO Inter"`;
+      ctx.fillText(teller, BREED - MARGE, o.boven - 14);
+    }
+  } else {
+    const logo = await laadBeeld("/images/logo-kws.png");
+    tekenAchtergrond(ctx);
+    tekenKop(ctx, logo, weekendTitel(alles, van), teller);
+  }
+
+  let y = o.boven;
   if (beeld.dagen.length === 0) {
-    ctx.fillStyle = WIT;
+    ctx.fillStyle = o.sjabloon ? ROOD : WIT;
     ctx.textAlign = "center";
     ctx.font = `700 40px "WO Inter"`;
-    ctx.fillText("Geen wedstrijden dit weekend", BREED / 2, y + 300);
+    ctx.fillText("Geen wedstrijden dit weekend", BREED / 2, y + ruimte(o) / 2);
   }
 
-  const h = rijHoogte(beeld);
+  const h = rijHoogte(beeld, o);
   // Een half gevuld beeld: de blokken verticaal in het midden van de vrije ruimte.
-  const nodig = beeld.dagen.reduce((n, d) => n + DAGBALK + DAG_TUSSEN + d.wedstrijden.length * h, 0);
-  y += Math.max(0, (ruimte() - nodig) / 2);
+  const nodig = beeld.dagen.reduce((n, d) => n + DAGBALK + DAG_TUSSEN + 2 * PANEEL_RAND + d.wedstrijden.length * h, 0);
+  y += Math.max(0, (ruimte(o) - nodig) / 2);
   for (const { dag, wedstrijden, vervolg } of beeld.dagen) {
-    tekenDagbalk(ctx, y, `${dagTitel(dag)} ${dag.getFullYear()}${vervolg ? " (vervolg)" : ""}`);
+    tekenDagbalk(ctx, y, `${dagTitel(dag)}${vervolg ? " (vervolg)" : ""}`);
     y += DAGBALK;
+    tekenPaneel(ctx, y, wedstrijden.length * h + 2 * PANEEL_RAND);
+    y += PANEEL_RAND;
     wedstrijden.forEach((w, i) => {
-      tekenRij(ctx, w, y, h, i % 2 === 0);
+      tekenRij(ctx, w, y, h, i === wedstrijden.length - 1);
       y += h;
     });
-    y += DAG_TUSSEN;
+    y += PANEEL_RAND + DAG_TUSSEN;
   }
 
-  tekenVoet(ctx);
+  if (!o.sjabloon) tekenVoet(ctx);
 }
