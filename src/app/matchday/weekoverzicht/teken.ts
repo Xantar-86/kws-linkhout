@@ -29,12 +29,12 @@ const WIT = "#ffffff";
 const KOP_HOOGTE = 330;
 const VOET_HOOGTE = 96;
 /** Dagbalk inclusief de witrand boven het paneel. */
-const DAGBALK = 64;
+const DAGBALK = 54;
 const PANEEL_RAND = 4;
-const DAG_TUSSEN = 18;
+const DAG_TUSSEN = 12;
 const MARGE = 36;
 const RIJ_MAX = 50;
-const RIJ_MIN = 29;
+const RIJ_MIN = 28;
 
 /** Wat er op één beeld komt. */
 export interface Beeld {
@@ -51,14 +51,49 @@ export interface Beeld {
  */
 export const SJABLOON_PAD = "/images/social/sjabloon-weekoverzicht.png";
 const SJABLOON = {
-  /** Bovenkant en onderkant van de lege zone voor de tabel. */
-  boven: 450,
-  onder: 1305,
+  /** Bovenkant en onderkant van de zone voor de tabel. */
+  boven: 462,
+  onder: 1292,
+  /**
+   * Het sjabloon uit ChatGPT (14/11/2026) heeft in het midden nog lege
+   * tabellen met een vast aantal rijen. Die dekken we af met een donkere
+   * achtergrond, met zachte randen zodat het in het beeld overloopt.
+   */
+  afdekVan: 440,
+  afdekTot: 1314,
   /** Midden van de lege witte band waarin de datums komen. */
-  datumX: 540,
-  datumY: 398,
-  datumKleur: ROOD,
+  datumX: 545,
+  datumY: 399,
+  datumKleur: "#b71c1c",
 };
+
+/** Dekt het middenstuk van het sjabloon af, zie SJABLOON.afdekVan. */
+function dekAf(ctx: CanvasRenderingContext2D) {
+  const { afdekVan: van, afdekTot: tot } = SJABLOON;
+  const zacht = 26;
+
+  const grond = ctx.createLinearGradient(0, van - zacht, 0, tot + 10);
+  grond.addColorStop(0, "rgba(14,10,10,0)");
+  grond.addColorStop(zacht / (tot - van + zacht + 10), "rgba(14,10,10,1)");
+  grond.addColorStop(0.97, "rgba(14,10,10,1)");
+  grond.addColorStop(1, "rgba(14,10,10,0)");
+  ctx.fillStyle = grond;
+  ctx.fillRect(0, van - zacht, BREED, tot - van + zacht + 10);
+
+  // Rode gloed langs beide zijkanten, zoals in de rest van het sjabloon.
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, van, BREED, tot - van);
+  ctx.clip();
+  for (const x of [0, BREED]) {
+    const gloed = ctx.createRadialGradient(x, (van + tot) / 2, 0, x, (van + tot) / 2, 420);
+    gloed.addColorStop(0, "rgba(170,20,20,0.55)");
+    gloed.addColorStop(1, "rgba(170,20,20,0)");
+    ctx.fillStyle = gloed;
+    ctx.fillRect(0, van, BREED, tot - van);
+  }
+  ctx.restore();
+}
 
 /** De lege zone voor de tabel, en het sjabloon als dat er is. */
 export interface Opmaak {
@@ -282,7 +317,7 @@ function tekenDagbalk(ctx: CanvasRenderingContext2D, y: number, titel: string) {
 
   ctx.fillStyle = WIT;
   ctx.textAlign = "left";
-  ctx.font = `italic 700 34px "WO Inter"`;
+  ctx.font = `italic 700 30px "WO Inter"`;
   ctx.fillText(titel.toUpperCase(), MARGE + 22, y + h / 2 + 12);
 }
 
@@ -381,23 +416,23 @@ export async function tekenBeeld(
   const teller = totaal > 1 ? `${nr}/${totaal}` : "";
 
   if (o.sjabloon) {
-    // Sjabloon passend maken op 1080x1350, zonder vervorming (bijsnijden).
+    // Sjabloon passend maken op 1080x1440, zonder vervorming (bijsnijden).
     const s = o.sjabloon;
     const schaal = Math.max(BREED / s.width, HOOG / s.height);
     const b = s.width * schaal;
     const h = s.height * schaal;
     ctx.drawImage(s, (BREED - b) / 2, (HOOG - h) / 2, b, h);
+    dekAf(ctx);
 
     ctx.fillStyle = SJABLOON.datumKleur;
-    ctx.textAlign = "center";
-    pasTekst(ctx, weekendTitel(alles, van).toUpperCase(), SJABLOON.datumX, SJABLOON.datumY + 14, 520, {
-      grootte: 42,
-      min: 24,
-      familie: "WO Anton",
+    pasTekst(ctx, weekendTitel(alles, van).toUpperCase(), SJABLOON.datumX, SJABLOON.datumY + 13, 470, {
+      grootte: 34,
+      min: 22,
+      gewicht: "italic 700",
       uitlijning: "center",
     });
     if (teller) {
-      ctx.fillStyle = ROOD;
+      ctx.fillStyle = WIT;
       ctx.textAlign = "right";
       ctx.font = `700 24px "WO Inter"`;
       ctx.fillText(teller, BREED - MARGE, o.boven - 14);
