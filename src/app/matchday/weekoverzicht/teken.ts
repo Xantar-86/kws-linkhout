@@ -56,14 +56,14 @@ const SJABLOON = {
   boven: 462,
   onder: 1292,
   /**
-   * Het sjabloon uit ChatGPT (14/11/2026) heeft in het midden nog lege
+   * Het sjabloon uit ChatGPT (16/11/2026, "DEZE WEEK") heeft in het midden nog lege
    * tabellen met een vast aantal rijen. Die dekken we af met een donkere
    * achtergrond, met zachte randen zodat het in het beeld overloopt.
    */
   afdekVan: 440,
   afdekTot: 1314,
   /** Midden van de lege witte band waarin de datums komen. */
-  datumX: 545,
+  datumX: 549,
   datumY: 399,
   datumKleur: "#b71c1c",
 };
