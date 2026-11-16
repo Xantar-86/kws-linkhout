@@ -13,7 +13,7 @@ import {
   dagTitel,
   perDag,
   uur,
-  weekendTitel,
+  weekTitel,
   type OverzichtWedstrijd,
 } from "@/lib/weekoverzicht";
 
@@ -278,7 +278,7 @@ function tekenKop(
   ctx.font = `104px "WO Anton"`;
   ctx.fillText("WEDSTRIJDEN", x, 140);
 
-  // "DIT WEEKEND" op een rode schuine band.
+  // "DEZE WEEK" op een rode schuine band.
   ctx.save();
   ctx.translate(x - 14, 160);
   ctx.transform(1, 0, -0.18, 1, 0, 0);
@@ -287,7 +287,7 @@ function tekenKop(
   ctx.restore();
   ctx.fillStyle = WIT;
   ctx.font = `74px "WO Anton"`;
-  ctx.fillText("DIT WEEKEND", x + 6, 230);
+  ctx.fillText("DEZE WEEK", x + 6, 230);
 
   ctx.fillStyle = "rgba(255,255,255,0.85)";
   ctx.font = `700 30px "WO Inter"`;
@@ -467,7 +467,7 @@ export async function tekenBeeld(
     dekAf(ctx);
 
     ctx.fillStyle = SJABLOON.datumKleur;
-    pasTekst(ctx, weekendTitel(alles, van).toUpperCase(), SJABLOON.datumX, SJABLOON.datumY + 13, 470, {
+    pasTekst(ctx, weekTitel(van).toUpperCase(), SJABLOON.datumX, SJABLOON.datumY + 13, 470, {
       grootte: 34,
       min: 22,
       gewicht: "italic 700",
@@ -482,7 +482,7 @@ export async function tekenBeeld(
   } else {
     const logo = await laadBeeld("/images/logo-kws.png");
     tekenAchtergrond(ctx);
-    tekenKop(ctx, logo, weekendTitel(alles, van), teller);
+    tekenKop(ctx, logo, `van ${weekTitel(van)}`, teller);
   }
 
   let y = o.boven;
@@ -490,7 +490,7 @@ export async function tekenBeeld(
     ctx.fillStyle = o.sjabloon ? ROOD : WIT;
     ctx.textAlign = "center";
     ctx.font = `700 40px "WO Inter"`;
-    ctx.fillText("Geen wedstrijden dit weekend", BREED / 2, y + ruimte(o) / 2);
+    ctx.fillText("Geen wedstrijden deze week", BREED / 2, y + ruimte(o) / 2);
   }
 
   const h = rijHoogte(beeld, o);

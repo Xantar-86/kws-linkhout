@@ -7,7 +7,7 @@ zonder jouw goedkeuring.
 ## Weekoverzicht van alle ploegen
 
 Los van de posts per ploeg is er een weekoverzicht: alle wedstrijden van alle
-ploegen (senioren, dames en jeugd) van vrijdag tot zondag op één beeld van
+ploegen (senioren, dames en jeugd) van maandag tot zondag op één beeld van
 1080x1440 (3:4), of op een carrousel als het niet leesbaar op één beeld past.
 
 - Pagina: [`/matchday/weekoverzicht`](../src/app/matchday/weekoverzicht/Client.tsx).
@@ -20,7 +20,9 @@ ploegen (senioren, dames en jeugd) van vrijdag tot zondag op één beeld van
   wel een opdracht om in ChatGPT te plakken voor een sfeervollere versie.
 - Knoppen: beelden downloaden, tekst kopiëren, en op de gsm delen naar de
   Facebook- of Instagram-app.
-- Elke donderdag om 16:00 UTC (17u winter, 18u zomer) stuurt de Vercel-cron uit
+- Het overzicht loopt van maandag tot en met zondag (ook bekermatchen en
+  inhaalwedstrijden in de week). Elke maandag om 06:00 UTC (7u winter, 8u
+  zomer) stuurt de Vercel-cron uit
   [`vercel.json`](../vercel.json) een herinneringsmail met de link
   (`/api/social/weekoverzicht-herinnering`). Daarvoor moet `CRON_SECRET` in
   Vercel staan; Vercel stuurt het zelf mee. Ontvanger: `SOCIAL_MAIL_TO`, anders

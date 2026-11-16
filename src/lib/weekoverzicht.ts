@@ -1,6 +1,6 @@
 /**
  * Het weekoverzicht voor sociale media: alle wedstrijden van alle ploegen in
- * één weekend, als afbeelding en als tekst.
+ * één week, als afbeelding en als tekst.
  *
  * De gegevens komen van de RBFA, opgehaald in de browser (de bond laat sinds
  * oktober 2026 geen aanvragen van onze server meer toe). Dit bestand bevat
@@ -78,23 +78,23 @@ export function isEigenClub(naam: string): boolean {
 }
 
 /**
- * Het weekend rond een datum: vrijdag 00:00 tot en met zondag 23:59.
- * Van maandag tot donderdag is dat het komende weekend, van vrijdag tot zondag
- * het lopende. Rekent in de tijdzone van de browser, en die staat in België.
+ * De week rond een datum: maandag 00:00 tot en met zondag 23:59, zodat ook
+ * bekermatchen en inhaalwedstrijden in de week erin staan. Rekent in de
+ * tijdzone van de browser, en die staat in België.
  */
-export function weekendVan(datum: Date): { van: Date; tot: Date } {
+export function weekVan(datum: Date): { van: Date; tot: Date } {
   const d = new Date(datum.getFullYear(), datum.getMonth(), datum.getDate());
   const dag = d.getDay(); // 0 = zondag
-  const naarVrijdag = dag === 0 ? -2 : dag === 6 ? -1 : 5 - dag;
+  const naarMaandag = dag === 0 ? -6 : 1 - dag;
   const van = new Date(d);
-  van.setDate(d.getDate() + naarVrijdag);
+  van.setDate(d.getDate() + naarMaandag);
   const tot = new Date(van);
-  tot.setDate(van.getDate() + 3); // maandag 00:00, exclusief
+  tot.setDate(van.getDate() + 7); // volgende maandag 00:00, exclusief
   return { van, tot };
 }
 
-/** Voegt de seizoenen van alle ploegen samen tot de wedstrijden van één weekend. */
-export function wedstrijdenInWeekend(
+/** Voegt de seizoenen van alle ploegen samen tot de wedstrijden van één week. */
+export function wedstrijdenInWeek(
   perPloeg: { ploeg: OverzichtPloeg; seizoen: SeizoenWedstrijd[] }[],
   van: Date,
   tot: Date
@@ -161,31 +161,20 @@ export function perDag(lijst: OverzichtWedstrijd[]): { dag: Date; wedstrijden: O
   return groepen;
 }
 
-/** "14 en 15 november" of "31 oktober en 1 november" */
-export function weekendTitel(lijst: OverzichtWedstrijd[], van: Date): string {
-  const dagen = perDag(lijst).map((g) => g.dag);
-  if (dagen.length === 0) {
-    const zat = new Date(van);
-    zat.setDate(van.getDate() + 1);
-    const zon = new Date(van);
-    zon.setDate(van.getDate() + 2);
-    dagen.push(zat, zon);
-  }
-  const delen = dagen.map((d, i) => {
-    const volgende = dagen[i + 1];
-    const zelfdeMaand = volgende && volgende.getMonth() === d.getMonth();
-    return zelfdeMaand ? `${d.getDate()}` : `${d.getDate()} ${MAANDEN[d.getMonth()]}`;
-  });
-  if (delen.length === 1) return delen[0];
-  return `${delen.slice(0, -1).join(", ")} en ${delen[delen.length - 1]}`;
+/** "16 tot 22 november" of "30 november tot 6 december" */
+export function weekTitel(van: Date): string {
+  const zon = new Date(van);
+  zon.setDate(van.getDate() + 6);
+  const begin = zon.getMonth() === van.getMonth() ? `${van.getDate()}` : `${van.getDate()} ${MAANDEN[van.getMonth()]}`;
+  return `${begin} tot ${zon.getDate()} ${MAANDEN[zon.getMonth()]}`;
 }
 
 /** De tekst bij de post, voor Facebook en Instagram. */
 export function bouwTekst(lijst: OverzichtWedstrijd[], van: Date): string {
   const regels: string[] = [
-    "⚽ WEDSTRIJDEN DIT WEEKEND 🔴⚫",
+    "⚽ WEDSTRIJDEN DEZE WEEK 🔴⚫",
     "",
-    `Op ${weekendTitel(lijst, van)} trekken onze ploegen weer de wei op. ` +
+    `Van ${weekTitel(van)} trekken onze ploegen weer de wei op. ` +
       "Van de kleinste duiveltjes tot de eerste ploegen: kom supporteren, thuis in Linkwood Park of op verplaatsing!",
   ];
 
@@ -227,7 +216,7 @@ export function bouwChatGptOpdracht(lijst: OverzichtWedstrijd[], van: Date): str
   return [
     "Maak een staande affiche voor Instagram en Facebook (1080 x 1350 pixels) voor voetbalclub KWS Linkhout.",
     "",
-    `Titel: WEDSTRIJDEN DIT WEEKEND. Ondertitel: ${weekendTitel(lijst, van).toUpperCase()}.`,
+    `Titel: WEDSTRIJDEN DEZE WEEK. Ondertitel: VAN ${weekTitel(van).toUpperCase()}.`,
     "Stijl: sportief en krachtig, clubkleuren donkerrood (#9e1b1b), zwart en wit, stadionlichten op de achtergrond, het clublogo in de bijlage bovenaan.",
     "Daaronder per dag een balk met de dag, en per wedstrijd een rij met: aftrapuur, ploeg, thuisploeg vs uitploeg, en een label THUIS of UIT.",
     "Onderaan: kwslinkhout.be",

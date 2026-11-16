@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/social/weekoverzicht-herinnering",
-      "schedule": "0 16 * * 4"
+      "schedule": "0 6 * * 1"
     }
   ]
 }

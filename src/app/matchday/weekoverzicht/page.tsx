@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import WeekoverzichtClient from "./Client";
 
 /**
- * Het weekoverzicht voor sociale media: alle wedstrijden van het weekend op
+ * Het weekoverzicht voor sociale media: alle wedstrijden van de week (maandag tot zondag) op
  * één afbeelding (of een carrousel), met de tekst erbij.
  *
  * Geen sleutel nodig: er staan enkel openbare RBFA-gegevens op. De pagina

@@ -6,8 +6,8 @@ import {
   bouwChatGptOpdracht,
   bouwTekst,
   overzichtPloegen,
-  weekendVan,
-  wedstrijdenInWeekend,
+  weekVan,
+  wedstrijdenInWeek,
   MAANDEN,
   type OverzichtPloeg,
 } from "@/lib/weekoverzicht";
@@ -79,7 +79,7 @@ export default function WeekoverzichtClient() {
   const { van, tot } = useMemo(() => {
     const basis = new Date();
     basis.setDate(basis.getDate() + verschuiving * 7);
-    return weekendVan(basis);
+    return weekVan(basis);
   }, [verschuiving]);
 
   // Het ChatGPT-sjabloon, als het er is; anders het zelf getekende ontwerp.
@@ -89,7 +89,7 @@ export default function WeekoverzichtClient() {
   }, []);
 
   const wedstrijden = useMemo(
-    () => (geladen ? wedstrijdenInWeekend(geladen, van, tot) : []),
+    () => (geladen ? wedstrijdenInWeek(geladen, van, tot) : []),
     [geladen, van, tot]
   );
   const beelden = useMemo(() => (opmaak ? verdeel(wedstrijden, opmaak) : []), [wedstrijden, opmaak]);
@@ -109,13 +109,11 @@ export default function WeekoverzichtClient() {
     setTimeout(() => setMelding(""), 2500);
   }, []);
 
-  const zat = new Date(van);
-  zat.setDate(van.getDate() + 1);
   const zon = new Date(van);
-  zon.setDate(van.getDate() + 2);
+  zon.setDate(van.getDate() + 6);
 
   const bestandsnaam = (i: number) => {
-    const d = `${zat.getFullYear()}-${String(zat.getMonth() + 1).padStart(2, "0")}-${String(zat.getDate()).padStart(2, "0")}`;
+    const d = `${van.getFullYear()}-${String(van.getMonth() + 1).padStart(2, "0")}-${String(van.getDate()).padStart(2, "0")}`;
     return `kws-weekoverzicht-${d}${beelden.length > 1 ? `-${i + 1}` : ""}.png`;
   };
 
@@ -176,20 +174,20 @@ export default function WeekoverzichtClient() {
             onClick={() => setVerschuiving((v) => v - 1)}
             className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10"
           >
-            Vorig weekend
+            Vorige week
           </button>
           <div className="min-w-[14rem] text-center text-lg font-semibold">
-            Vrijdag {korteDatum(van)} tot zondag {korteDatum(zon)}
+            Maandag {korteDatum(van)} tot zondag {korteDatum(zon)}
           </div>
           <button
             onClick={() => setVerschuiving((v) => v + 1)}
             className="rounded-lg border border-white/20 px-4 py-2 hover:bg-white/10"
           >
-            Volgend weekend
+            Volgende week
           </button>
           {verschuiving !== 0 && (
             <button onClick={() => setVerschuiving(0)} className="text-sm text-white/60 underline">
-              terug naar dit weekend
+              terug naar deze week
             </button>
           )}
         </div>
