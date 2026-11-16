@@ -373,14 +373,56 @@ function tekenRij(ctx: CanvasRenderingContext2D, w: OverzichtWedstrijd, y: numbe
 
   pasTekst(ctx, w.ploeg, x + 150, tekstY, 140, { grootte, min: 13, gewicht: "700" });
 
-  ctx.fillStyle = w.uitgesteld ? "#8a8a8a" : "#111111";
-  pasTekst(ctx, `${w.thuis} vs ${w.uit}`, x + 322, tekstY, b - 322 - 140, {
-    grootte,
-    min: 13,
-    gewicht: "700",
-  });
+  tekenDuel(ctx, w, x + 322, tekstY, b - 322 - 140, grootte);
 
   tekenLabel(ctx, w, x + b - 130, midden, h);
+}
+
+const isEigen = (naam: string) => naam.startsWith("KWS Linkhout");
+
+/**
+ * "thuis vs uit" met KWS Linkhout in het rood. Krimpt tot het past; past het
+ * dan nog niet, dan wordt de tegenstander afgekort, nooit onze eigen naam.
+ */
+function tekenDuel(
+  ctx: CanvasRenderingContext2D,
+  w: OverzichtWedstrijd,
+  x: number,
+  y: number,
+  breedte: number,
+  start: number
+) {
+  const grijs = "#8a8a8a";
+  const kleur = (naam: string) => (w.uitgesteld ? grijs : isEigen(naam) ? ROOD_LICHT : "#111111");
+  const delen = [
+    { t: w.thuis, k: kleur(w.thuis), kort: !isEigen(w.thuis) },
+    { t: " vs ", k: w.uitgesteld ? grijs : "#555555", kort: false },
+    { t: w.uit, k: kleur(w.uit), kort: !isEigen(w.uit) },
+  ];
+  const lettertype = (g: number) => `700 ${g}px "WO Inter"`;
+  const totaal = () => delen.reduce((s, d) => s + ctx.measureText(d.t).width, 0);
+
+  let grootte = start;
+  ctx.font = lettertype(grootte);
+  while (totaal() > breedte && grootte > 13) {
+    grootte -= 1;
+    ctx.font = lettertype(grootte);
+  }
+  // Nog te breed: de langste tegenstander inkorten.
+  while (totaal() > breedte) {
+    const kandidaten = delen.filter((d) => d.kort && d.t.length > 6);
+    if (kandidaten.length === 0) break;
+    const langste = kandidaten.reduce((a, d) => (ctx.measureText(d.t).width > ctx.measureText(a.t).width ? d : a));
+    langste.t = `${langste.t.replace(/\.\.\.$/, "").slice(0, -2).trimEnd()}...`;
+  }
+
+  ctx.textAlign = "left";
+  let pos = x;
+  for (const d of delen) {
+    ctx.fillStyle = d.k;
+    ctx.fillText(d.t, pos, y);
+    pos += ctx.measureText(d.t).width;
+  }
 }
 
 
