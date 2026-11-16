@@ -172,7 +172,7 @@ export function weekTitel(van: Date): string {
 /** De tekst bij de post, voor Facebook en Instagram. */
 export function bouwTekst(lijst: OverzichtWedstrijd[], van: Date): string {
   const regels: string[] = [
-    "⚽ WEDSTRIJDEN DEZE WEEK 🔴⚫",
+    "⚽ WEDSTRIJDEN DEZE WEEK 🔴⚪",
     "",
     `Van ${weekTitel(van)} trekken onze ploegen weer de wei op. ` +
       "Van de kleinste duiveltjes tot de eerste ploegen: kom supporteren, thuis in Linkwood Park of op verplaatsing!",
@@ -217,7 +217,7 @@ export function bouwChatGptOpdracht(lijst: OverzichtWedstrijd[], van: Date): str
     "Maak een staande affiche voor Instagram en Facebook (1080 x 1350 pixels) voor voetbalclub KWS Linkhout.",
     "",
     `Titel: WEDSTRIJDEN DEZE WEEK. Ondertitel: VAN ${weekTitel(van).toUpperCase()}.`,
-    "Stijl: sportief en krachtig, clubkleuren donkerrood (#9e1b1b), zwart en wit, stadionlichten op de achtergrond, het clublogo in de bijlage bovenaan.",
+    "Stijl: sportief en krachtig, clubkleuren rood (#9e1b1b) en wit op een donkere achtergrond, stadionlichten op de achtergrond, het clublogo in de bijlage bovenaan.",
     "Daaronder per dag een balk met de dag, en per wedstrijd een rij met: aftrapuur, ploeg, thuisploeg vs uitploeg, en een label THUIS of UIT.",
     "Onderaan: kwslinkhout.be",
     "",
