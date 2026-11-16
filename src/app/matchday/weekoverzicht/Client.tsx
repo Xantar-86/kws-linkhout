@@ -92,7 +92,7 @@ export default function WeekoverzichtClient() {
     () => (geladen ? wedstrijdenInWeek(geladen, van, tot) : []),
     [geladen, van, tot]
   );
-  const beelden = useMemo(() => (opmaak ? verdeel(wedstrijden, opmaak) : []), [wedstrijden, opmaak]);
+  const beelden = useMemo(() => (opmaak ? verdeel(wedstrijden) : []), [wedstrijden, opmaak]);
   const tekst = useMemo(() => bouwTekst(wedstrijden, van), [wedstrijden, van]);
   const opdracht = useMemo(() => bouwChatGptOpdracht(wedstrijden, van), [wedstrijden, van]);
 

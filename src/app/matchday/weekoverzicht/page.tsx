@@ -3,7 +3,7 @@ import WeekoverzichtClient from "./Client";
 
 /**
  * Het weekoverzicht voor sociale media: alle wedstrijden van de week (maandag tot zondag) op
- * één afbeelding (of een carrousel), met de tekst erbij.
+ * één afbeelding (langer als het moet), met de tekst erbij.
  *
  * Geen sleutel nodig: er staan enkel openbare RBFA-gegevens op. De pagina
  * staat niet in het menu en niet in de zoekmachines (robots.ts weert

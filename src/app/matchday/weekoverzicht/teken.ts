@@ -34,7 +34,8 @@ const PANEEL_RAND = 4;
 const DAG_TUSSEN = 12;
 const MARGE = 36;
 const RIJ_MAX = 50;
-const RIJ_MIN = 28;
+/** Kleiner wordt een rij niet; is er meer nodig, dan wordt het beeld langer. */
+const RIJ_LANG = 40;
 
 /** Wat er op één beeld komt. */
 export interface Beeld {
@@ -67,30 +68,38 @@ const SJABLOON = {
   datumKleur: "#b71c1c",
 };
 
-/** Dekt het middenstuk van het sjabloon af, zie SJABLOON.afdekVan. */
-function dekAf(ctx: CanvasRenderingContext2D) {
-  const { afdekVan: van, afdekTot: tot } = SJABLOON;
+/**
+ * Dekt het middenstuk van het sjabloon af, zie SJABLOON.afdekVan. Bij een
+ * verlengd beeld loopt het afgedekte stuk mee door tot boven de voet.
+ */
+function dekAf(ctx: CanvasRenderingContext2D, van: number, tot: number) {
   const zacht = 26;
+  const lengte = tot - van + zacht + 10;
 
   const grond = ctx.createLinearGradient(0, van - zacht, 0, tot + 10);
   grond.addColorStop(0, "rgba(14,10,10,0)");
-  grond.addColorStop(zacht / (tot - van + zacht + 10), "rgba(14,10,10,1)");
-  grond.addColorStop(0.97, "rgba(14,10,10,1)");
+  grond.addColorStop(zacht / lengte, "rgba(14,10,10,1)");
+  grond.addColorStop(1 - 30 / lengte, "rgba(14,10,10,1)");
   grond.addColorStop(1, "rgba(14,10,10,0)");
   ctx.fillStyle = grond;
-  ctx.fillRect(0, van - zacht, BREED, tot - van + zacht + 10);
+  ctx.fillRect(0, van - zacht, BREED, lengte);
 
-  // Rode gloed langs beide zijkanten, zoals in de rest van het sjabloon.
+  // Rode gloed langs beide zijkanten, zoals in de rest van het sjabloon; bij
+  // een lang beeld om de 700 pixels opnieuw.
   ctx.save();
   ctx.beginPath();
   ctx.rect(0, van, BREED, tot - van);
   ctx.clip();
-  for (const x of [0, BREED]) {
-    const gloed = ctx.createRadialGradient(x, (van + tot) / 2, 0, x, (van + tot) / 2, 420);
-    gloed.addColorStop(0, "rgba(170,20,20,0.55)");
-    gloed.addColorStop(1, "rgba(170,20,20,0)");
-    ctx.fillStyle = gloed;
-    ctx.fillRect(0, van, BREED, tot - van);
+  const stappen = Math.max(1, Math.round((tot - van) / 700));
+  for (let i = 0; i < stappen; i++) {
+    const my = van + ((i + 0.5) * (tot - van)) / stappen;
+    for (const x of [0, BREED]) {
+      const gloed = ctx.createRadialGradient(x, my, 0, x, my, 420);
+      gloed.addColorStop(0, "rgba(170,20,20,0.55)");
+      gloed.addColorStop(1, "rgba(170,20,20,0)");
+      ctx.fillStyle = gloed;
+      ctx.fillRect(0, van, BREED, tot - van);
+    }
   }
   ctx.restore();
 }
@@ -124,33 +133,19 @@ function rijHoogte(beeld: Beeld, o: Opmaak): number {
   return Math.min(RIJ_MAX, rijen ? vrij / rijen : RIJ_MAX);
 }
 
-/** Verdeelt de wedstrijden over zo weinig mogelijk beelden. */
-export function verdeel(lijst: OverzichtWedstrijd[], o: Opmaak = EIGEN_OPMAAK): Beeld[] {
-  const dagen = perDag(lijst).map((d) => ({ ...d, vervolg: false }));
-  if (dagen.length === 0) return [{ dagen: [] }];
+/**
+ * Alles op één beeld: het wordt enkel digitaal gedeeld, dus bij veel
+ * wedstrijden maken we het beeld langer in plaats van een carrousel.
+ */
+export function verdeel(lijst: OverzichtWedstrijd[]): Beeld[] {
+  return [{ dagen: perDag(lijst).map((d) => ({ ...d, vervolg: false })) }];
+}
 
-  const alles: Beeld = { dagen };
-  if (rijHoogte(alles, o) >= RIJ_MIN) return [alles];
-
-  // Een te volle dag eerst in stukken, dan de stukken zo samen op een beeld
-  // zetten als ze nog leesbaar passen.
-  const perBeeld = Math.floor((ruimte(o) - DAGBALK - DAG_TUSSEN - 2 * PANEEL_RAND) / RIJ_MIN);
-  const stukken: Beeld["dagen"] = [];
-  for (const d of dagen) {
-    for (let i = 0; i < d.wedstrijden.length; i += perBeeld) {
-      stukken.push({ dag: d.dag, wedstrijden: d.wedstrijden.slice(i, i + perBeeld), vervolg: i > 0 });
-    }
-  }
-  const beelden: Beeld[] = [];
-  for (const stuk of stukken) {
-    const laatste = beelden[beelden.length - 1];
-    if (laatste && rijHoogte({ dagen: [...laatste.dagen, stuk] }, o) >= RIJ_MIN) {
-      laatste.dagen.push(stuk);
-    } else {
-      beelden.push({ dagen: [stuk] });
-    }
-  }
-  return beelden;
+/** Hoe hoog het beeld moet zijn: minstens 1440, langer als het niet past. */
+export function hoogteVoor(beeld: Beeld, o: Opmaak): number {
+  const rijen = beeld.dagen.reduce((n, d) => n + d.wedstrijden.length, 0);
+  const nodig = beeld.dagen.length * (DAGBALK + DAG_TUSSEN + 2 * PANEEL_RAND) + rijen * RIJ_LANG;
+  return HOOG + Math.max(0, Math.ceil(nodig - ruimte(o)));
 }
 
 function laadBeeld(src: string): Promise<HTMLImageElement | null> {
@@ -213,13 +208,13 @@ function pasTekst(
   ctx.fillText(t, x, y);
 }
 
-function tekenAchtergrond(ctx: CanvasRenderingContext2D) {
-  const grond = ctx.createLinearGradient(0, 0, 0, HOOG);
+function tekenAchtergrond(ctx: CanvasRenderingContext2D, hoog: number) {
+  const grond = ctx.createLinearGradient(0, 0, 0, hoog);
   grond.addColorStop(0, "#2a1414");
   grond.addColorStop(0.45, DONKER);
   grond.addColorStop(1, "#0b0808");
   ctx.fillStyle = grond;
-  ctx.fillRect(0, 0, BREED, HOOG);
+  ctx.fillRect(0, 0, BREED, hoog);
 
   // Stadionlicht linksboven en rechtsboven.
   for (const [x, y] of [
@@ -230,7 +225,7 @@ function tekenAchtergrond(ctx: CanvasRenderingContext2D) {
     licht.addColorStop(0, "rgba(255,235,220,0.28)");
     licht.addColorStop(1, "rgba(255,235,220,0)");
     ctx.fillStyle = licht;
-    ctx.fillRect(0, 0, BREED, HOOG);
+    ctx.fillRect(0, 0, BREED, hoog);
   }
 
   // Schuine rode banen als achtergrondaccent.
@@ -246,10 +241,10 @@ function tekenAchtergrond(ctx: CanvasRenderingContext2D) {
   ctx.fill();
   ctx.globalAlpha = 0.12;
   ctx.beginPath();
-  ctx.moveTo(0, HOOG - 60);
-  ctx.lineTo(BREED, HOOG - 230);
-  ctx.lineTo(BREED, HOOG - 170);
-  ctx.lineTo(0, HOOG);
+  ctx.moveTo(0, hoog - 60);
+  ctx.lineTo(BREED, hoog - 230);
+  ctx.lineTo(BREED, hoog - 170);
+  ctx.lineTo(0, hoog);
   ctx.closePath();
   ctx.fill();
   ctx.restore();
@@ -426,8 +421,8 @@ function tekenDuel(
 }
 
 
-function tekenVoet(ctx: CanvasRenderingContext2D) {
-  const y = HOOG - VOET_HOOGTE;
+function tekenVoet(ctx: CanvasRenderingContext2D, hoog: number) {
+  const y = hoog - VOET_HOOGTE;
   ctx.fillStyle = WIT;
   ctx.textAlign = "left";
   ctx.font = `46px "WO Anton"`;
@@ -448,12 +443,15 @@ export async function tekenBeeld(
   van: Date,
   nr: number,
   totaal: number,
-  o: Opmaak = EIGEN_OPMAAK
+  basis: Opmaak = EIGEN_OPMAAK
 ): Promise<void> {
   await laadFonts();
 
+  const hoog = hoogteVoor(beeld, basis);
+  const extra = hoog - HOOG;
+  const o: Opmaak = { ...basis, onder: basis.onder + extra };
   canvas.width = BREED;
-  canvas.height = HOOG;
+  canvas.height = hoog;
   const ctx = canvas.getContext("2d")!;
   const teller = totaal > 1 ? `${nr}/${totaal}` : "";
 
@@ -463,8 +461,19 @@ export async function tekenBeeld(
     const schaal = Math.max(BREED / s.width, HOOG / s.height);
     const b = s.width * schaal;
     const h = s.height * schaal;
-    ctx.drawImage(s, (BREED - b) / 2, (HOOG - h) / 2, b, h);
-    dekAf(ctx);
+    const x = (BREED - b) / 2;
+    const y = (HOOG - h) / 2;
+    ctx.drawImage(s, x, y, b, h);
+    if (extra > 0) {
+      // Langer beeld: de voet van het sjabloon (gras en websiteband) zakt mee.
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, SJABLOON.afdekVan + extra, BREED, hoog);
+      ctx.clip();
+      ctx.drawImage(s, x, y + extra, b, h);
+      ctx.restore();
+    }
+    dekAf(ctx, SJABLOON.afdekVan, SJABLOON.afdekTot + extra);
 
     ctx.fillStyle = SJABLOON.datumKleur;
     pasTekst(ctx, weekTitel(van).toUpperCase(), SJABLOON.datumX, SJABLOON.datumY + 13, 470, {
@@ -481,7 +490,7 @@ export async function tekenBeeld(
     }
   } else {
     const logo = await laadBeeld("/images/logo-kws.png");
-    tekenAchtergrond(ctx);
+    tekenAchtergrond(ctx, hoog);
     tekenKop(ctx, logo, `van ${weekTitel(van)}`, teller);
   }
 
@@ -509,5 +518,5 @@ export async function tekenBeeld(
     y += PANEEL_RAND + DAG_TUSSEN;
   }
 
-  if (!o.sjabloon) tekenVoet(ctx);
+  if (!o.sjabloon) tekenVoet(ctx, hoog);
 }
