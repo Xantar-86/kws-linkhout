@@ -16,17 +16,34 @@ import { SPONSORS } from "@/lib/sponsors";
  * vorm als gekleurde blokken, en het uitgesneden clubschild
  * (public/images/tv/schild-kws-360.png).
  *
+ * Vóór de uitslagen van elke ploeg komt eerst de ploegfoto in het
+ * teamfoto-sjabloon. Die beelden staan klaar in public/images/tv/ploegfoto en
+ * worden gemaakt met scripts/tv-ploegfotos.py; na een nieuwe ploegfoto of een
+ * nieuw sjabloon dat script opnieuw draaien.
+ *
  * Alles wordt in de browser opgehaald: de bond laat sinds oktober 2026 enkel
  * echte browsers toe. Datums en uren staan vast op Brussel.
  *
  * In het adres:
  *   ?ploeg=25&sponsor=12   seconden per ploeg en per sponsorscherm
+ *   ?foto=8                seconden voor de ploegfoto vóór elke ploeg (standaard 8, 0 = geen foto's)
  *   ?live=1                herlaadt vanzelf zodra de pagina verandert (handig bij aanpassen)
  *   ?dia=2&vast=1          begint bij de derde dia en blijft daar staan
  */
 
+/** Zelfde naamregel als scripts/tv-ploegfotos.py. */
+function ploegfoto(image: string): string | null {
+  if (!image.startsWith("/images/teams/")) return null;
+  const basis = image.split("/").pop()!.replace(/\.[^.]+$/, "");
+  return `/images/tv/ploegfoto/${basis.trim().replace(/\s+/g, "-").toLowerCase()}.jpg`;
+}
+
 const PLOEGEN = teams
-  .map((t) => ({ naam: t.name, id: rbfaTeamId([t.standingsIframe, t.calendarIframe]) }))
+  .map((t) => ({
+    naam: t.name,
+    id: rbfaTeamId([t.standingsIframe, t.calendarIframe]),
+    foto: ploegfoto(t.image),
+  }))
   .filter((p) => p.id);
 
 const STIJL = `
@@ -102,6 +119,12 @@ body { background: #f3efeb; color: #120c0d; font-family: "Inter", system-ui, san
 .strook .vak { display: flex; height: 7vh; align-items: center; justify-content: center; }
 .strook img, .sponsors img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
+.fotodia { display: flex; height: 100%; flex-direction: column; align-items: center; padding: 1.5vh 2vw; background: #1c1314; animation: tv-in2 600ms ease-out both; }
+.fotodia .wie { display: flex; height: 8vh; max-width: 100%; flex-shrink: 0; align-items: baseline; justify-content: center; margin-bottom: 1.5vh; color: #fff; white-space: nowrap; }
+.fotodia .wie .naam { font-size: 6vh; font-weight: 800; line-height: 8vh; }
+.fotodia .wie .reeks { margin-left: 2vw; font-size: 3.2vh; font-weight: 600; color: #d6cfcf; overflow: hidden; text-overflow: ellipsis; }
+.fotodia .beeld { height: calc(100vh - 0.8vh - 3vh - 9.5vh); }
+.fotodia .beeld img { display: block; height: 100%; width: auto; border-radius: 0.6vh; box-shadow: 0 1vh 4vh rgba(0,0,0,0.5); }
 .sponsors { display: flex; height: 100%; flex-direction: column; background: #faf8f6; padding: 3vh 4vw 4vh; color: #0b0708; animation: tv-in2 600ms ease-out both; }
 @keyframes tv-in2 { from { opacity: 0 } to { opacity: 1 } }
 .sponsors h2 { text-align: center; font-size: 6vh; font-weight: 800; }
@@ -118,7 +141,7 @@ const SCRIPT = `
   var GRAPHQL = 'https://datalake-prod2018.rbfa.be/graphql';
   var LINKHOUT = '1595';
   var TZ = 'Europe/Brussels';
-  var PLOEGEN_PER_SPONSOR = 2;
+  var PLOEGEN_PER_SPONSOR = 4;
   var RIJEN_ZICHTBAAR = 8;
   var VORM_AANTAL = 5;
   var VERVERS_MS = 30 * 60000;
@@ -139,6 +162,8 @@ const SCRIPT = `
   }
   var TIJD_PLOEG = seconden('ploeg', 20) * 1000;
   var TIJD_SPONSOR = seconden('sponsor', 12) * 1000;
+  var fotoParam = Number(param('foto'));
+  var TIJD_FOTO = param('foto') !== null && isFinite(fotoParam) && fotoParam >= 0 ? fotoParam * 1000 : 8000;
   var VAST = param('vast') === '1';
   var STARTDIA = Number(param('dia')) || 0;
 
@@ -233,7 +258,7 @@ const SCRIPT = `
           var k = klassementUit(json, p.id);
           if (!k) return;
           return vraag(SEIZOEN_QUERY, p.id).then(seizoenUit, function () { return []; }).then(function (s) {
-            gevonden.push({ naam: p.naam, klassement: k, seizoen: s });
+            gevonden.push({ naam: p.naam, foto: p.foto, klassement: k, seizoen: s });
           });
         }).catch(function () {}).then(function () { return wachten(150); });
       });
@@ -334,7 +359,8 @@ const SCRIPT = `
   var el = {
     titel: document.getElementById('titel'), onder: document.getElementById('onder'),
     dag: document.getElementById('dag'), uur: document.getElementById('uur'),
-    balk: document.getElementById('balk'), inhoud: document.getElementById('inhoud'), strook: document.getElementById('strook')
+    balk: document.getElementById('balk'), inhoud: document.getElementById('inhoud'), strook: document.getElementById('strook'),
+    kop: document.querySelector('.kop')
   };
   el.strook.querySelector('.rooster').innerHTML = sponsorBeelden();
 
@@ -351,21 +377,42 @@ const SCRIPT = `
   function maakDias() {
     dias = [];
     (ploegen || []).forEach(function (p, i) {
+      if (p.foto && TIJD_FOTO > 0) dias.push({ fotoVan: p });
       dias.push(p);
       if ((i + 1) % PLOEGEN_PER_SPONSOR === 0) dias.push('sponsors');
     });
     if (!dias.length || dias[dias.length - 1] !== 'sponsors') dias.push('sponsors');
   }
 
+  function fotoDia(p) {
+    return '<div class="fotodia"><div class="wie"><span class="naam disp">' + esc(p.naam) + '</span>' +
+      '<span class="reeks">' + esc(p.klassement.reeks) + '</span></div>' +
+      '<div class="beeld"><img src="' + esc(p.foto) + '" alt="Ploegfoto ' + esc(p.naam) + '"></div></div>';
+  }
+
+  // De ploegfoto van de volgende dia alvast laden, zodat hij meteen verschijnt.
+  var voorgeladen = {};
+  function laadVooraf(dia) {
+    if (dia && dia.fotoVan && !voorgeladen[dia.fotoVan.foto]) {
+      voorgeladen[dia.fotoVan.foto] = true;
+      new Image().src = dia.fotoVan.foto;
+    }
+  }
+
   function toon() {
     var dia = dias[nr % dias.length];
-    var isPloeg = dia !== 'sponsors';
-    var duur = isPloeg ? TIJD_PLOEG : TIJD_SPONSOR;
-    el.titel.textContent = isPloeg ? dia.naam : 'Onze sponsors';
-    el.onder.textContent = isPloeg ? dia.klassement.reeks : 'Zij maken het mogelijk';
+    var isFoto = !!(dia && dia.fotoVan);
+    var isPloeg = !isFoto && dia !== 'sponsors';
+    var p = isFoto ? dia.fotoVan : dia;
+    var duur = isFoto ? TIJD_FOTO : isPloeg ? TIJD_PLOEG : TIJD_SPONSOR;
+    el.titel.textContent = isFoto || isPloeg ? p.naam : 'Onze sponsors';
+    el.onder.textContent = isFoto || isPloeg ? p.klassement.reeks : 'Zij maken het mogelijk';
     el.balk.innerHTML = VAST ? '' : '<div style="animation: tv-balk ' + duur + 'ms linear forwards"></div>';
-    el.inhoud.innerHTML = isPloeg ? ploegDia(dia) : sponsorDia(mislukt && ploegen.length === 0);
+    el.inhoud.innerHTML = isFoto ? fotoDia(p) : isPloeg ? ploegDia(dia) : sponsorDia(mislukt && ploegen.length === 0);
     el.strook.style.display = isPloeg ? '' : 'none';
+    // Bij de ploegfoto geen kopbalk: de naam staat boven de foto, zo kan die groter.
+    el.kop.style.display = isFoto ? 'none' : '';
+    laadVooraf(dias[(nr + 1) % dias.length]);
     clearTimeout(timer);
     if (!VAST) timer = setTimeout(function () { nr = (nr + 1) % dias.length; toon(); }, duur);
   }
