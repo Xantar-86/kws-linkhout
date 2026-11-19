@@ -29,7 +29,7 @@ import { SPONSORS } from "@/lib/sponsors";
  *
  * In het adres:
  *   ?ploeg=25&sponsor=12   seconden per ploeg en per sponsorscherm
- *   ?affiche=12            seconden voor de affiche om de 3 ploegen (0 = geen affiche)
+ *   ?affiche=20            seconden voor de affiche om de 3 ploegen (standaard 20, 0 = geen affiche)
  *   ?foto=8                seconden voor de ploegfoto vóór elke ploeg (standaard 8, 0 = geen foto's)
  *   ?live=1                herlaadt vanzelf zodra de pagina verandert (handig bij aanpassen)
  *   ?dia=2&vast=1          begint bij de derde dia en blijft daar staan
@@ -174,7 +174,7 @@ const SCRIPT = `
   var TIJD_PLOEG = seconden('ploeg', 20) * 1000;
   var TIJD_SPONSOR = seconden('sponsor', 12) * 1000;
   var afficheParam = Number(param('affiche'));
-  var TIJD_AFFICHE = param('affiche') !== null && isFinite(afficheParam) && afficheParam >= 0 ? afficheParam * 1000 : 12000;
+  var TIJD_AFFICHE = param('affiche') !== null && isFinite(afficheParam) && afficheParam >= 0 ? afficheParam * 1000 : 20000;
   var fotoParam = Number(param('foto'));
   var TIJD_FOTO = param('foto') !== null && isFinite(fotoParam) && fotoParam >= 0 ? fotoParam * 1000 : 8000;
   var VAST = param('vast') === '1';
