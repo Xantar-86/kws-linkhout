@@ -1,32 +1,30 @@
 // app/kws-cup-2026/schema.ts
 //
-// Eén plek waar het gepubliceerde schema uit de Blob-opslag gelezen wordt.
-// Zowel de pagina (server component) als de API-route gebruiken dit, zodat de
-// pagina geen omweg via zijn eigen API hoeft te maken. Die omweg werkte niet
-// op Vercel: de eigen deployment-URL is daar niet zomaar bereikbaar vanuit een
+// Eén plek waar het gepubliceerde schema gelezen en geschreven wordt. Zowel de
+// pagina (server component) als de API-route gebruiken dit, zodat de pagina
+// geen omweg via zijn eigen API hoeft te maken. Die omweg werkte niet op
+// Vercel: de eigen deployment-URL is daar niet zomaar bereikbaar vanuit een
 // server component.
+//
+// Het schema staat als openbaar bestand in de bucket "kws-cup" van Supabase
+// (zie lib/supabase.ts). Tot november 2026 stond het in Vercel Blob.
 
-import { list } from "@vercel/blob";
+import { databaseBeschikbaar, db } from "@/lib/supabase";
 import type { Tornooi } from "./TornooiClient";
 
-export const BESTAND = "kws-cup/schema.json";
+const BUCKET = "kws-cup";
+const BESTAND = "schema.json";
 
 /**
  * Het vaste webadres van het gepubliceerde schema.
  *
- * We schrijven met `addRandomSuffix: false`, dus het pad ligt vast en het
- * adres is te berekenen. Dat scheelt bij elke lezing een `list()`, en die
- * telt bij Vercel als "advanced operation". Met een verversing per minuut per
- * bezoeker liep dat in de duizenden en werd de opslag opgeschort.
- *
- * Het nummer van de opslag zit in het schrijftoken, dat de vorm
- * `vercel_blob_rw_<nummer>_<geheim>` heeft. Alleen dat nummer gebruiken we,
- * en dat staat sowieso in elk publiek blob-adres.
+ * De browsers van de bezoekers halen het daar elke minuut rechtstreeks op,
+ * zonder langs een serverfunctie van de site te gaan.
  */
 export function schemaAdres(): string | null {
-  const nummer = process.env.BLOB_READ_WRITE_TOKEN?.split("_")[3];
-  if (!nummer) return null;
-  return `https://${nummer.toLowerCase()}.public.blob.vercel-storage.com/${BESTAND}`;
+  const url = process.env.SUPABASE_URL;
+  if (!url) return null;
+  return `${url.replace(/\/$/, "")}/storage/v1/object/public/${BUCKET}/${BESTAND}`;
 }
 
 /**
@@ -42,54 +40,35 @@ export type Uitkomst =
   | { staat: "leeg" }
   | { staat: "fout"; reden: string };
 
-/** Haalt het schema op van zijn vaste adres. */
-async function haalVanAdres(adres: string): Promise<Uitkomst> {
-  const antwoord = await fetch(adres, { cache: "no-store" });
-  if (antwoord.status === 404) return { staat: "leeg" };
-  if (!antwoord.ok) {
-    // De opslag zelf antwoordt, maar weigert. Bij een overschreden limiet
-    // staat hier bijvoorbeeld "Your store is blocked".
-    const tekst = (await antwoord.text()).slice(0, 200).trim();
-    return { staat: "fout", reden: `${antwoord.status} ${tekst}` };
-  }
-  return { staat: "ok", tornooi: (await antwoord.json()) as Tornooi };
-}
-
 export async function leesSchema(): Promise<Uitkomst> {
-  const adres = schemaAdres();
-
-  if (adres) {
-    try {
-      return await haalVanAdres(adres);
-    } catch (e) {
-      // Het berekende adres klopte niet, of de verbinding viel weg. Hieronder
-      // proberen we het alsnog langs de trage weg.
-      const reden = e instanceof Error ? e.message : String(e);
-      const langs = await langsDeLijst();
-      return langs ?? { staat: "fout", reden };
-    }
+  if (!databaseBeschikbaar()) {
+    return { staat: "fout", reden: "SUPABASE_URL of SUPABASE_SECRET_KEY ontbreekt." };
   }
-
-  return (
-    (await langsDeLijst()) ?? {
-      staat: "fout",
-      reden: "Geen BLOB_READ_WRITE_TOKEN: is de Blob-opslag aan dit project gekoppeld?",
-    }
-  );
+  // Via de server-sleutel, niet via het openbare adres: dat kan tot een
+  // minuut een oudere versie uit de cache geven.
+  const { data, error } = await db().storage.from(BUCKET).download(BESTAND);
+  if (error) {
+    const status = (error as { status?: number; statusCode?: string }).status;
+    if (status === 400 || status === 404 || /not.?found/i.test(error.message)) return { staat: "leeg" };
+    return { staat: "fout", reden: error.message };
+  }
+  try {
+    return { staat: "ok", tornooi: JSON.parse(await data.text()) as Tornooi };
+  } catch (e) {
+    return { staat: "fout", reden: e instanceof Error ? e.message : String(e) };
+  }
 }
 
-/**
- * De oude weg, met een zoekopdracht in de opslag.
- *
- * Alleen als vangnet, want dit kost een advanced operation. Levert niets op
- * als ook dit mislukt, zodat de aanroeper zijn eigen reden kan melden.
- */
-async function langsDeLijst(): Promise<Uitkomst | null> {
-  try {
-    const { blobs } = await list({ prefix: BESTAND, limit: 1 });
-    if (blobs.length === 0) return { staat: "leeg" };
-    return await haalVanAdres(blobs[0].url);
-  } catch {
-    return null;
-  }
+/** Het schema publiceren; een vorige versie wordt vervangen. */
+export async function schrijfSchema(tornooi: unknown): Promise<void> {
+  const { error } = await db()
+    .storage.from(BUCKET)
+    .upload(BESTAND, JSON.stringify(tornooi), {
+      contentType: "application/json",
+      upsert: true,
+      // Een minuut, niet langer: een wijziging tijdens de tornooidag moet
+      // snel doorkomen bij wie het schema open heeft.
+      cacheControl: "60",
+    });
+  if (error) throw new Error(error.message);
 }

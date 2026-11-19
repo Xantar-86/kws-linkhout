@@ -5,13 +5,12 @@
 // het op met een GET. Zo is een wijziging meteen zichtbaar, zonder deploy.
 //
 // Nodig in Vercel:
-//   - integratie "Blob" toevoegen (gratis tier volstaat ruimschoots)
+//   - SUPABASE_URL en SUPABASE_SECRET_KEY (zie lib/supabase.ts)
 //   - omgevingsvariabele KWS_CUP_TOKEN met een lang, willekeurig wachtwoord
 //     (datzelfde token vul je in bij de Tornooiplanner)
 
-import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
-import { BESTAND, leesSchema } from "../../kws-cup-2026/schema";
+import { leesSchema, schrijfSchema } from "../../kws-cup-2026/schema";
 
 export const dynamic = "force-dynamic";   // nooit cachen: het schema kan wijzigen
 export const runtime = "nodejs";
@@ -61,16 +60,12 @@ export async function POST(request: Request) {
     );
   }
 
-  await put(BESTAND, JSON.stringify(gegevens), {
-    access: "public",
-    contentType: "application/json",
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    // Een minuut, niet langer: de bezoekers halen dit rechtstreeks op en een
-    // wijziging tijdens de tornooidag moet snel doorkomen. Binnen die minuut
-    // komt het uit de cache van het netwerk en kost het niets.
-    cacheControlMaxAge: 60,
-  });
+  try {
+    await schrijfSchema(gegevens);
+  } catch (fout) {
+    console.error("[kws-cup] schema bewaren mislukt:", fout);
+    return NextResponse.json({ fout: "Het schema kon niet bewaard worden." }, { status: 502 });
+  }
 
   return NextResponse.json({
     ok: true,

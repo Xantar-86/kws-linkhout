@@ -699,9 +699,7 @@ export default function TornooiClient({
    *
    * Daar halen we het elke minuut vandaan, rechtstreeks vanuit de browser.
    * Langs onze eigen API zou elke bezoeker elke minuut een serverfunctie
-   * wakker maken en daar een zoekopdracht in de opslag laten doen; dat heeft
-   * de opslag eerder al eens plat gelegd. Is het adres onbekend, dan valt het
-   * terug op die API.
+   * wakker maken. Is het adres onbekend, dan valt het terug op die API.
    */
   adres: string | null;
 }) {

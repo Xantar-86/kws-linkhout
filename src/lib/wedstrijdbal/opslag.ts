@@ -1,22 +1,17 @@
-import { del, list, put } from "@vercel/blob";
-import { ontsleutelJson, sleutelUit, versleutelJson } from "@/lib/kluis";
+import { databaseBeschikbaar, db } from "@/lib/supabase";
 
 /**
- * De bestellingen van een wedstrijdbal.
+ * De bestellingen van een wedstrijdbal, in de tabel wedstrijdbal_bestellingen
+ * van Supabase (zie lib/supabase.ts).
  *
- * Elke bestelling is één versleuteld blokje in Vercel Blob, onder
- * wedstrijdbal/<kenmerk>/. Er wordt nooit iets overschreven: een overschreven
- * blokje kan door het cachenetwerk van de opslag nog een tijd de oude inhoud
- * teruggeven (zie lib/mosselfeest/opslag.ts). Dus:
- *
- *  - bestelling.bin wordt één keer geschreven, met het nummer van de betaling;
+ *  - een bestelling wordt één keer geschreven, met het nummer van de betaling;
  *  - of er betaald is, vragen we telkens aan Mollie, dat is de waarheid;
- *  - dat de mails vertrokken zijn, is een apart blokje "gemeld". Of dat
- *    bestaat zien we met list(), dat niet langs de cache gaat.
+ *  - gemeld_op zegt wanneer de mails vertrokken.
  */
 
-// WEDSTRIJDBAL_MAP laat een lokale proef in een eigen map werken.
+// WEDSTRIJDBAL_MAP houdt een lokale proef apart van de echte bestellingen.
 const MAP = process.env.WEDSTRIJDBAL_MAP || "wedstrijdbal";
+const TABEL = "wedstrijdbal_bestellingen";
 
 export interface Bestelling {
   kenmerk: string;
@@ -28,13 +23,8 @@ export interface Bestelling {
   gegevens: Record<string, string>;
 }
 
-function sleutel(): Buffer | null {
-  const geheim = process.env.WEDSTRIJDBAL_SLEUTEL;
-  return geheim ? sleutelUit(geheim, "kws-wedstrijdbal") : null;
-}
-
 export function opslagBeschikbaar(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN) && Boolean(sleutel());
+  return databaseBeschikbaar();
 }
 
 /** Een kenmerk is een uuid; al de rest weigeren we, het komt uit een adres. */
@@ -43,55 +33,48 @@ export function geldigKenmerk(kenmerk: string | null): kenmerk is string {
 }
 
 export async function bewaarBestelling(bestelling: Bestelling): Promise<void> {
-  const key = sleutel();
-  if (!key) throw new Error("WEDSTRIJDBAL_SLEUTEL ontbreekt.");
-  await put(`${MAP}/${bestelling.kenmerk}/bestelling.bin`, versleutelJson(bestelling, key), {
-    access: "public",
-    contentType: "application/octet-stream",
-    addRandomSuffix: false,
-    cacheControlMaxAge: 0,
+  const { error } = await db().from(TABEL).insert({
+    kenmerk: bestelling.kenmerk,
+    map: MAP,
+    betaling: bestelling.betaling,
+    test: bestelling.test,
+    aangemaakt: bestelling.aangemaakt,
+    gegevens: bestelling,
   });
+  if (error) throw new Error(error.message);
 }
 
 export async function haalBestelling(kenmerk: string): Promise<{ bestelling: Bestelling; gemeld: boolean } | null> {
-  const key = sleutel();
-  if (!key) return null;
-  const { blobs } = await list({ prefix: `${MAP}/${kenmerk}/` });
-  const blok = blobs.find((b) => b.pathname.endsWith("/bestelling.bin"));
-  if (!blok) return null;
-  const antwoord = await fetch(blok.url, { cache: "no-store" });
-  if (!antwoord.ok) return null;
-  const bestelling = ontsleutelJson<Bestelling>(Buffer.from(await antwoord.arrayBuffer()), key);
-  if (!bestelling) return null;
-  return { bestelling, gemeld: blobs.some((b) => b.pathname.endsWith("/gemeld")) };
+  if (!databaseBeschikbaar()) return null;
+  const { data, error } = await db()
+    .from(TABEL)
+    .select("gegevens, gemeld_op")
+    .eq("kenmerk", kenmerk)
+    .eq("map", MAP)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+  return { bestelling: data.gegevens as Bestelling, gemeld: data.gemeld_op !== null };
 }
 
 /**
  * Het recht om te mailen opeisen. De bedankpagina en Mollie melden zich vaak
- * tegelijk; wie het blokje als eerste schrijft, mailt. De opslag weigert een
- * bestaand blokje te overschrijven, en dat maakt dit een slot.
+ * tegelijk; de database zet gemeld_op maar bij één van beiden, want de
+ * voorwaarde "nog niet gemeld" en het invullen gebeuren in één stap.
  */
 export async function eisMeldingOp(kenmerk: string): Promise<boolean> {
-  try {
-    await put(`${MAP}/${kenmerk}/gemeld`, new Date().toISOString(), {
-      access: "public",
-      contentType: "text/plain",
-      addRandomSuffix: false,
-      allowOverwrite: false,
-      cacheControlMaxAge: 0,
-    });
-    return true;
-  } catch (fout) {
-    // Bestaat het al, dan was iemand ons voor. Anders liep er iets anders mis,
-    // en dan moet de oproeper het later opnieuw proberen.
-    const { blobs } = await list({ prefix: `${MAP}/${kenmerk}/gemeld` });
-    if (blobs.length > 0) return false;
-    throw fout;
-  }
+  const { data, error } = await db()
+    .from(TABEL)
+    .update({ gemeld_op: new Date().toISOString() })
+    .eq("kenmerk", kenmerk)
+    .is("gemeld_op", null)
+    .select("kenmerk");
+  if (error) throw new Error(error.message);
+  return (data ?? []).length > 0;
 }
 
 /** Mislukte het mailen, dan het slot weer vrijgeven voor een volgende poging. */
 export async function geefMeldingVrij(kenmerk: string): Promise<void> {
-  const { blobs } = await list({ prefix: `${MAP}/${kenmerk}/gemeld` });
-  if (blobs.length > 0) await del(blobs.map((b) => b.url));
+  const { error } = await db().from(TABEL).update({ gemeld_op: null }).eq("kenmerk", kenmerk);
+  if (error) throw new Error(error.message);
 }

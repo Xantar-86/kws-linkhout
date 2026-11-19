@@ -4,6 +4,10 @@
     {
       "path": "/api/social/weekoverzicht-herinnering",
       "schedule": "0 6 * * 1"
+    },
+    {
+      "path": "/api/database-wakker",
+      "schedule": "0 5 * * *"
     }
   ]
 }

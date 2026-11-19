@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { del, list, put } from "@vercel/blob";
-import { ontsleutelJson, sleutelUit, versleutelJson } from "@/lib/kluis";
+import { databaseBeschikbaar, db } from "@/lib/supabase";
 import { EVENEMENT, bedragVan, zitting as zittingVan } from "./kaart";
 import {
   openstaand,
@@ -18,224 +17,86 @@ export { openstaand, reedsBetaald, telOp, volgendKaartnummer };
 export type { Betaalmanier, Bron, Inschrijving, Totalen };
 
 /**
- * De inschrijvingen van het mosselfeest.
+ * De inschrijvingen van het mosselfeest, in de tabel mosselfeest_inschrijvingen
+ * van Supabase (zie lib/supabase.ts).
  *
- * Elke inschrijving is één versleuteld blokje in Vercel Blob, onder
- * mosselfeest/<jaar>/. Ze blijven staan tot na het feest: dit is geen wachtrij
- * zoals bij de toestemmingen, maar de ledenlijst van de avond.
+ * Eén rij per inschrijving, met de inschrijving zelf als JSON in "gegevens".
+ * Ze blijven staan tot na het feest: dit is geen wachtrij zoals bij de
+ * toestemmingen, maar de ledenlijst van de avond.
  *
  * Het vinkje "betaald" verandert ná de inschrijving, dus dat wordt hier
- * bijgewerkt en het blokje wordt overschreven. Dat is ook de reden dat het
- * Excel-logboek elke keer volledig opnieuw gemaakt wordt uit deze gegevens:
- * dan is er één plek waar de waarheid staat en kan er niets uit elkaar lopen.
+ * bijgewerkt. Het Excel-logboek wordt elke keer volledig opnieuw gemaakt uit
+ * deze gegevens: dan is er één plek waar de waarheid staat.
+ *
+ * Tot november 2026 stond dit in Vercel Blob, met verse kopieën en etags om
+ * rond de cache van die opslag te werken. Een database geeft na het schrijven
+ * meteen de nieuwe stand, dus dat is allemaal weg.
  */
 
 // MOSSELFEEST_TESTMAP laat een lokale testserver op een kopie werken, zodat
 // proberen nooit aan de echte inschrijvingen komt. Live staat ze niet.
 const MAP = process.env.MOSSELFEEST_TESTMAP || `mosselfeest/${EVENEMENT.jaar}`;
-
-function sleutel(): Buffer | null {
-  const geheim = process.env.MOSSELFEEST_SLEUTEL;
-  return geheim ? sleutelUit(geheim, "kws-mosselfeest") : null;
-}
+const TABEL = "mosselfeest_inschrijvingen";
 
 export function opslagBeschikbaar(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN) && Boolean(sleutel());
+  return databaseBeschikbaar();
 }
 
-/**
- * Waar een inschrijving vandaan komt.
- *
- * "online" is het formulier. "kaart" is een gedrukte kaart die iemand heeft
- * afgegeven en die een organisator heeft ingetypt. "verzamelpost" is een
- * stapel kaarten die als een geheel geboekt is, zonder namen: alleen de
- * aantallen, met een toelichting erbij.
- */
 export interface BewaarResultaat {
   ok: boolean;
   fout?: string;
 }
 
-function pad(kenmerk: string): string {
-  return `${MAP}/${kenmerk}.bin`;
-}
-
-/**
- * Verse kopieën, naast de gewone opslag.
- *
- * Een overschreven blokje houdt zijn adres, en het cachenetwerk van de opslag
- * gaf daarop na een wijziging tot meer dan twintig seconden de vorige inhoud
- * terug, ook met vers() erachter (gemeten op 23 oktober 2026). Dan zou een
- * betaling vlak na een andere die eerste overschrijven, of een gesplitste
- * kaart haar gerechten terugkrijgen.
- *
- * Daarom komt bij elke bewaring ook een kopie op een nieuw adres. Een adres
- * dat nog nooit gelezen is, kan niet in de cache zitten, dus die kopie is
- * altijd de echte stand. Alleen de nieuwste blijft staan. Bewust buiten MAP:
- * alles onder MAP wordt als inschrijving gelezen.
- */
-function versMap(kenmerk: string): string {
-  return `${MAP}-vers/${kenmerk}/`;
-}
-
-/**
- * Een adres dat gegarandeerd langs de cache gaat.
- *
- * Een blokje houdt bij een wijziging zijn adres (we overschrijven het), en het
- * netwerk van de opslag mag dat adres cachen. In productie gaf een uitlezing
- * daardoor tot acht seconden lang nog de oude inhoud terug: je vinkte betaald
- * aan, de lijst werd ververst en het stond er nog steeds als openstaand. Met
- * een unieke parameter erachter is elk verzoek een nieuw adres voor die cache,
- * en krijgen we altijd wat er net geschreven is.
- */
-function vers(url: string): string {
-  return `${url}${url.includes("?") ? "&" : "?"}vers=${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
 async function zetWeg(inschrijving: Inschrijving): Promise<BewaarResultaat> {
-  const key = sleutel();
-  if (!key) return { ok: false, fout: "MOSSELFEEST_SLEUTEL ontbreekt." };
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return { ok: false, fout: "BLOB_READ_WRITE_TOKEN ontbreekt." };
-  }
+  if (!databaseBeschikbaar()) return { ok: false, fout: "SUPABASE_URL of SUPABASE_SECRET_KEY ontbreekt." };
   inschrijving.versie = (inschrijving.versie ?? 0) + 1;
-  const blok = versleutelJson(inschrijving, key);
-  try {
-    await put(pad(inschrijving.kenmerk), blok, {
-      access: "public",
-      contentType: "application/octet-stream",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: 0,
-    });
-  } catch (fout) {
-    return { ok: false, fout: fout instanceof Error ? fout.message : "Onbekende fout" };
-  }
-  await zetVerseKopie(inschrijving.kenmerk, blok);
-  return { ok: true };
-}
-
-/**
- * De verse kopie bijwerken. Lukt dat niet, dan gaan alle kopieën van die kaart
- * weg, zodat er nooit een oudere kopie gelezen wordt dan wat er echt staat.
- */
-async function zetVerseKopie(kenmerk: string, blok: Buffer): Promise<void> {
-  const map = versMap(kenmerk);
-  try {
-    const nieuw = await put(`${map}${Date.now()}.bin`, blok, {
-      access: "public",
-      contentType: "application/octet-stream",
-      addRandomSuffix: true,
-      cacheControlMaxAge: 0,
-    });
-    const { blobs } = await list({ prefix: map });
-    const oud = blobs.filter((b) => b.url !== nieuw.url).map((b) => b.url);
-    if (oud.length > 0) await del(oud);
-  } catch (fout) {
-    console.error("[mosselfeest] verse kopie mislukt:", fout);
-    try {
-      const { blobs } = await list({ prefix: map });
-      if (blobs.length > 0) await del(blobs.map((b) => b.url));
-    } catch {
-      // Dan valt haalInschrijving terug op de vergelijking van de tijdstippen.
-    }
-  }
+  const { error } = await db().from(TABEL).upsert({
+    map: MAP,
+    kenmerk: inschrijving.kenmerk,
+    gegevens: inschrijving,
+    bijgewerkt: new Date().toISOString(),
+  });
+  return error ? { ok: false, fout: error.message } : { ok: true };
 }
 
 export async function bewaarInschrijving(inschrijving: Inschrijving): Promise<BewaarResultaat> {
   return zetWeg(inschrijving);
 }
 
-/**
- * Alle inschrijvingen, oudste eerst.
- *
- * De blokjes worden per handvol tegelijk opgehaald: alles in één keer opvragen
- * legt bij honderden inschrijvingen te veel verbindingen open, en één per één
- * duurt te lang.
- */
+/** Alle inschrijvingen, oudste eerst. */
 export async function alleInschrijvingen(): Promise<Inschrijving[]> {
-  const key = sleutel();
-  if (!key || !process.env.BLOB_READ_WRITE_TOKEN) return [];
-
-  const { blobs } = await list({ prefix: `${MAP}/` });
-  const adressen = blobs.filter((b) => b.pathname.endsWith(".bin")).map((b) => b.url);
-
-  const gevonden: Inschrijving[] = [];
-  const TEGELIJK = 12;
-  for (let i = 0; i < adressen.length; i += TEGELIJK) {
-    const groep = adressen.slice(i, i + TEGELIJK);
-    const stukken = await Promise.all(
-      groep.map(async (adres) => {
-        try {
-          const antwoord = await fetch(vers(adres), { cache: "no-store" });
-          if (!antwoord.ok) return null;
-          const blok = Buffer.from(await antwoord.arrayBuffer());
-          return ontsleutelJson<Inschrijving>(blok, key);
-        } catch {
-          return null;
-        }
-      }),
-    );
-    for (const stuk of stukken) {
-      // Enkel wat er echt als inschrijving uitziet. Staat er ooit een ander
-      // bestand in deze map, dan mag dat de hele lijst niet onderuithalen.
-      if (stuk && typeof stuk.kenmerk === "string" && typeof stuk.aangemeld === "string") {
-        gevonden.push(stuk);
-      }
-    }
+  if (!databaseBeschikbaar()) return [];
+  const { data, error } = await db().from(TABEL).select("gegevens").eq("map", MAP);
+  if (error) {
+    console.error("[mosselfeest] inschrijvingen lezen mislukt:", error.message);
+    throw new Error(error.message);
   }
-
-  return gevonden.sort((a, b) => a.aangemeld.localeCompare(b.aangemeld));
+  return (data ?? [])
+    .map((r) => r.gegevens as Inschrijving)
+    .filter((i) => typeof i?.kenmerk === "string" && typeof i?.aangemeld === "string")
+    .sort((x, y) => x.aangemeld.localeCompare(y.aangemeld));
 }
 
-/**
- * Eén inschrijving, zoals ze nu echt in de opslag staat.
- *
- * Eerst de verse kopie (zie versMap); die is enkel bruikbaar als ze minstens
- * even nieuw is als het blokje zelf. Anders het blokje, en geeft de cache
- * daarvan een ander etag dan de lijst van de opslag, dan even opnieuw lezen.
- */
+/** Eén inschrijving, zoals ze nu in de database staat. */
 export async function haalInschrijving(kenmerk: string): Promise<Inschrijving | null> {
-  const key = sleutel();
-  if (!key || !process.env.BLOB_READ_WRITE_TOKEN) return null;
-  const { blobs } = await list({ prefix: pad(kenmerk) });
-  const blob = blobs.find((b) => b.pathname === pad(kenmerk));
-  if (!blob) return null;
-
-  try {
-    const kopieen = (await list({ prefix: versMap(kenmerk) })).blobs;
-    const nieuwste = kopieen.sort((x, y) => y.uploadedAt.getTime() - x.uploadedAt.getTime())[0];
-    if (nieuwste && nieuwste.uploadedAt.getTime() >= blob.uploadedAt.getTime()) {
-      const antwoord = await fetch(nieuwste.url, { cache: "no-store" });
-      if (antwoord.ok) {
-        const gelezen = ontsleutelJson<Inschrijving>(Buffer.from(await antwoord.arrayBuffer()), key);
-        if (gelezen) return gelezen;
-      }
-    }
-  } catch (fout) {
-    console.error("[mosselfeest] verse kopie lezen mislukt:", fout);
-  }
-
-  for (let poging = 0; ; poging++) {
-    const antwoord = await fetch(vers(blob.url), { cache: "no-store" });
-    if (!antwoord.ok) return null;
-    const etag = antwoord.headers.get("etag");
-    if (!etag || !blob.etag || etag === blob.etag || poging >= 8) {
-      return ontsleutelJson<Inschrijving>(Buffer.from(await antwoord.arrayBuffer()), key);
-    }
-    await new Promise((klaar) => setTimeout(klaar, 700));
-  }
+  if (!databaseBeschikbaar()) return null;
+  const { data, error } = await db()
+    .from(TABEL)
+    .select("gegevens")
+    .eq("map", MAP)
+    .eq("kenmerk", kenmerk)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return (data?.gegevens as Inschrijving | undefined) ?? null;
 }
 
 /**
  * De inschrijving om op verder te werken, voor de kassa.
  *
- * Het cachenetwerk van de opslag negeert de parameter van vers() en geeft na
- * een wijziging tot een twintigtal seconden de vorige inhoud terug (gemeten op
- * 23 oktober 2026). Zonder meer zou een tweede betaling vlak na de eerste die
- * eerste dan overschrijven. De kassa stuurt daarom mee wat zij van de kaart
- * weet; is dat een nieuwere versie dan wat hier gelezen wordt, dan werken we
- * daarmee verder.
+ * De kassa stuurt mee wat zij van de kaart weet. Is dat ooit een nieuwere
+ * versie dan wat hier gelezen wordt, dan werken we daarmee verder. Met Vercel
+ * Blob gebeurde dat geregeld (de cache liep tot twintig seconden achter); met
+ * de database is het een vangnet dat normaal niet meer nodig is.
  */
 async function haalVoorKassa(kenmerk: string, bekend?: Inschrijving): Promise<Inschrijving | null> {
   const gelezen = await haalInschrijving(kenmerk);
@@ -448,18 +309,10 @@ export async function zetBehandeld(
  * inzending; de aantallen moeten kloppen met wat er in de keuken nodig is.
  */
 export async function schrapInschrijving(kenmerk: string): Promise<boolean> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
-  const { blobs } = await list({ prefix: pad(kenmerk) });
-  const blob = blobs.find((b) => b.pathname === pad(kenmerk));
-  if (!blob) return false;
-  await del(blob.url);
-  try {
-    const kopieen = (await list({ prefix: versMap(kenmerk) })).blobs;
-    if (kopieen.length > 0) await del(kopieen.map((b) => b.url));
-  } catch {
-    // Een achtergebleven kopie zonder blokje wordt nooit gelezen.
-  }
-  return true;
+  if (!databaseBeschikbaar()) return false;
+  const { data, error } = await db().from(TABEL).delete().eq("map", MAP).eq("kenmerk", kenmerk).select("kenmerk");
+  if (error) throw new Error(error.message);
+  return (data ?? []).length > 0;
 }
 
 /**
@@ -469,7 +322,7 @@ export async function schrapInschrijving(kenmerk: string): Promise<boolean> {
  * wat er besteld is, weet de keuken hoeveel er die avond nog aan de deur
  * verkocht kan worden.
  *
- * Eén blokje voor het hele feest, versleuteld zoals de inschrijvingen.
+ * Eén rij per feest in de tabel mosselfeest_voorraad.
  */
 export interface Voorraad {
   /** Per dag en per gerecht-id het aantal dat voorzien is. */
@@ -478,43 +331,23 @@ export interface Voorraad {
   bijgewerktDoor?: string;
 }
 
-// Bewust buiten MAP: alles onder die map wordt als inschrijving gelezen.
-const VOORRAADPAD = `mosselfeest/voorraad-${EVENEMENT.jaar}.bin`;
+const VOORRAAD = "mosselfeest_voorraad";
 
 export async function haalVoorraad(): Promise<Voorraad> {
   const leeg: Voorraad = { voorzien: { vrijdag: {}, zaterdag: {} } };
-  const key = sleutel();
-  if (!key || !process.env.BLOB_READ_WRITE_TOKEN) return leeg;
-  try {
-    const { blobs } = await list({ prefix: VOORRAADPAD });
-    const blob = blobs.find((b) => b.pathname === VOORRAADPAD);
-    if (!blob) return leeg;
-    const antwoord = await fetch(vers(blob.url), { cache: "no-store" });
-    if (!antwoord.ok) return leeg;
-    const gelezen = ontsleutelJson<Voorraad>(Buffer.from(await antwoord.arrayBuffer()), key);
-    return gelezen ?? leeg;
-  } catch (fout) {
-    console.error("[mosselfeest] voorraad lezen mislukt:", fout);
+  if (!databaseBeschikbaar()) return leeg;
+  const { data, error } = await db().from(VOORRAAD).select("gegevens").eq("map", MAP).maybeSingle();
+  if (error) {
+    console.error("[mosselfeest] voorraad lezen mislukt:", error.message);
     return leeg;
   }
+  return (data?.gegevens as Voorraad | undefined) ?? leeg;
 }
 
 export async function bewaarVoorraad(voorraad: Voorraad): Promise<BewaarResultaat> {
-  const key = sleutel();
-  if (!key) return { ok: false, fout: "MOSSELFEEST_SLEUTEL ontbreekt." };
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return { ok: false, fout: "BLOB_READ_WRITE_TOKEN ontbreekt." };
-  }
-  try {
-    await put(VOORRAADPAD, versleutelJson(voorraad, key), {
-      access: "public",
-      contentType: "application/octet-stream",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: 0,
-    });
-    return { ok: true };
-  } catch (fout) {
-    return { ok: false, fout: fout instanceof Error ? fout.message : "Onbekende fout" };
-  }
+  if (!databaseBeschikbaar()) return { ok: false, fout: "SUPABASE_URL of SUPABASE_SECRET_KEY ontbreekt." };
+  const { error } = await db()
+    .from(VOORRAAD)
+    .upsert({ map: MAP, gegevens: voorraad, bijgewerkt: new Date().toISOString() });
+  return error ? { ok: false, fout: error.message } : { ok: true };
 }

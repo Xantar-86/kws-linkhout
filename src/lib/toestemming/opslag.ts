@@ -1,25 +1,25 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
-import { del, list, put } from "@vercel/blob";
+import { databaseBeschikbaar, db } from "@/lib/supabase";
 
 /**
  * De wachtrij tussen de website en de pc.
  *
  * Een ingevuld formulier moet ergens staan tot de mappenwachter op de pc het
- * komt halen. Dat is Vercel Blob, want het bestandssysteem van de server is na
- * de build alleen-lezen.
+ * komt halen. Dat is de tabel toestemming_wachtrij in Supabase (zie
+ * lib/supabase.ts), want het bestandssysteem van de server is na de build
+ * alleen-lezen.
  *
- * Blob-adressen zijn niet te raden maar wel openbaar leesbaar, en hier gaat
- * het over namen, geboortedatums en handtekeningen van minderjarigen. Daarom
- * staat er niets leesbaar in: we versleutelen de hele inhoud met AES-256-GCM
- * met een sleutel die alleen de server en de mappenwachter kennen. Wie het
- * adres zou kennen, ziet enkel ruis.
+ * Het gaat over namen, geboortedatums en handtekeningen van minderjarigen.
+ * Daarom staat er ook in de database niets leesbaar in: we versleutelen de
+ * hele inhoud met AES-256-GCM met een sleutel die alleen de server en de
+ * mappenwachter kennen. In de tabel staat enkel ruis.
  *
  * Zodra de wachter het bestand heeft weggeschreven, verdwijnt het hier. Wat
  * langer dan MAX_DAGEN blijft staan, ruimen we zelf op: dan is er iets
  * misgelopen en hoeven die gegevens hier niet te blijven.
  */
 
-const MAP = "toestemming";
+const TABEL = "toestemming_wachtrij";
 const MAX_DAGEN = 30;
 
 function sleutel(): Buffer | null {
@@ -31,7 +31,7 @@ function sleutel(): Buffer | null {
 }
 
 export function opslagBeschikbaar(): boolean {
-  return Boolean(process.env.BLOB_READ_WRITE_TOKEN) && Boolean(sleutel());
+  return databaseBeschikbaar() && Boolean(sleutel());
 }
 
 /** Wat er versleuteld in de wachtrij komt te staan. */
@@ -77,23 +77,17 @@ export async function bewaarInWachtrij(item: WachtrijItem): Promise<BewaarResult
   if (!key) {
     return { ok: false, fout: "TOESTEMMING_SLEUTEL ontbreekt." };
   }
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return { ok: false, fout: "BLOB_READ_WRITE_TOKEN ontbreekt." };
+  if (!databaseBeschikbaar()) {
+    return { ok: false, fout: "SUPABASE_URL of SUPABASE_SECRET_KEY ontbreekt." };
   }
 
-  try {
-    const blok = versleutel(Buffer.from(JSON.stringify(item), "utf8"), key);
-    await put(`${MAP}/${item.kenmerk}.bin`, blok, {
-      access: "public",
-      contentType: "application/octet-stream",
-      addRandomSuffix: false,
-      // Geen caches ertussen: het bestand wordt één keer gehaald en dan weg.
-      cacheControlMaxAge: 0,
-    });
-    return { ok: true, kenmerk: item.kenmerk };
-  } catch (fout) {
-    return { ok: false, fout: fout instanceof Error ? fout.message : "Onbekende fout" };
-  }
+  const blok = versleutel(Buffer.from(JSON.stringify(item), "utf8"), key);
+  const { error } = await db().from(TABEL).insert({
+    kenmerk: item.kenmerk,
+    blok: blok.toString("base64"),
+    grootte: blok.length,
+  });
+  return error ? { ok: false, fout: error.message } : { ok: true, kenmerk: item.kenmerk };
 }
 
 export interface WachtrijRegel {
@@ -104,27 +98,25 @@ export interface WachtrijRegel {
 
 /** Wat er klaarstaat, zonder de inhoud prijs te geven. */
 export async function lijstWachtrij(): Promise<WachtrijRegel[]> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return [];
-  const { blobs } = await list({ prefix: `${MAP}/` });
-  return blobs
-    .filter((b) => b.pathname.endsWith(".bin"))
-    .map((b) => ({
-      kenmerk: b.pathname.slice(MAP.length + 1, -4),
-      aangemaakt: b.uploadedAt instanceof Date ? b.uploadedAt.toISOString() : String(b.uploadedAt),
-      grootte: b.size,
-    }))
-    .sort((a, b) => a.aangemaakt.localeCompare(b.aangemaakt));
+  if (!databaseBeschikbaar()) return [];
+  const { data, error } = await db()
+    .from(TABEL)
+    .select("kenmerk, aangemaakt, grootte")
+    .order("aangemaakt", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((r) => ({
+    kenmerk: r.kenmerk,
+    aangemaakt: new Date(r.aangemaakt).toISOString(),
+    grootte: r.grootte,
+  }));
 }
 
-/** Het versleutelde blok van één inzending, zoals het in de blob staat. */
+/** Het versleutelde blok van één inzending, zoals de pc het verwacht. */
 export async function haalBlok(kenmerk: string): Promise<Buffer | null> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return null;
-  const { blobs } = await list({ prefix: `${MAP}/${kenmerk}.bin` });
-  const blob = blobs.find((b) => b.pathname === `${MAP}/${kenmerk}.bin`);
-  if (!blob) return null;
-  const antwoord = await fetch(blob.url, { cache: "no-store" });
-  if (!antwoord.ok) return null;
-  return Buffer.from(await antwoord.arrayBuffer());
+  if (!databaseBeschikbaar()) return null;
+  const { data, error } = await db().from(TABEL).select("blok").eq("kenmerk", kenmerk).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ? Buffer.from(data.blok, "base64") : null;
 }
 
 /** Voor de server zelf: de inhoud van een wachtrij-item leesbaar maken. */
@@ -140,12 +132,10 @@ export function leesBlok(blok: Buffer): WachtrijItem | null {
 
 /** Uit de wachtrij halen, nadat de pc het bestand heeft weggeschreven. */
 export async function schrapUitWachtrij(kenmerk: string): Promise<boolean> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
-  const { blobs } = await list({ prefix: `${MAP}/${kenmerk}.bin` });
-  const blob = blobs.find((b) => b.pathname === `${MAP}/${kenmerk}.bin`);
-  if (!blob) return false;
-  await del(blob.url);
-  return true;
+  if (!databaseBeschikbaar()) return false;
+  const { data, error } = await db().from(TABEL).delete().eq("kenmerk", kenmerk).select("kenmerk");
+  if (error) throw new Error(error.message);
+  return (data ?? []).length > 0;
 }
 
 /**
@@ -153,16 +143,9 @@ export async function schrapUitWachtrij(kenmerk: string): Promise<boolean> {
  * er is geen aparte taak voor nodig.
  */
 export async function ruimOudeOp(nu = new Date()): Promise<number> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return 0;
-  const grens = nu.getTime() - MAX_DAGEN * 24 * 60 * 60 * 1000;
-  const { blobs } = await list({ prefix: `${MAP}/` });
-  let weg = 0;
-  for (const blob of blobs) {
-    const op = blob.uploadedAt instanceof Date ? blob.uploadedAt.getTime() : Date.parse(String(blob.uploadedAt));
-    if (Number.isFinite(op) && op < grens) {
-      await del(blob.url);
-      weg += 1;
-    }
-  }
-  return weg;
+  if (!databaseBeschikbaar()) return 0;
+  const grens = new Date(nu.getTime() - MAX_DAGEN * 24 * 60 * 60 * 1000).toISOString();
+  const { data, error } = await db().from(TABEL).delete().lt("aangemaakt", grens).select("kenmerk");
+  if (error) throw new Error(error.message);
+  return (data ?? []).length;
 }
