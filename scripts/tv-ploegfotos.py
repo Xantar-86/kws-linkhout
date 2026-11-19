@@ -14,18 +14,22 @@ import os
 import re
 import sys
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
 HIER = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HIER)
 SJABLOON = os.path.join(REPO, "public", "images", "tv", "teamfoto-sjabloon.png")
 DOEL = os.path.join(REPO, "public", "images", "tv", "ploegfoto")
 
-# Het grijze vlak binnen de witte rand van het sjabloon (1448 x 1086).
-VAK = (74, 220, 1377, 932)
-# Hoe hoog in de foto het uitsnijden gebeurt: 0 = bovenaan, 0.5 = midden.
-# Iets boven het midden zodat hoofden zeker in beeld blijven.
-VERTICAAL = 0.4
+# Het grijze vlak binnen de witte rand van het sjabloon (1920 x 1080, sinds 19/11/2026).
+VAK = (125, 197, 1797, 947)
+# Het vak is veel breder (2,2:1) dan een ploegfoto (3:2). Volledig vullen zou
+# hoofden of voeten wegsnijden, dus de foto mag hooguit zoveel bijgesneden
+# worden; de ruimte links en rechts krijgt een wazige, donkere versie van
+# dezelfde foto.
+MAX_BIJSNIJDEN = 0.08
+# Waar het bijsnijden gebeurt: 0 = alles onderaan eraf, 0.5 = gelijk verdeeld.
+VERTICAAL = 0.3
 
 
 def naam(pad):
@@ -53,15 +57,35 @@ def gat(sjabloon):
     return masker.point(lambda v: 255 if v == 128 else 0)
 
 
-def vul(foto, breedte, hoogte):
+def bedek(foto, breedte, hoogte, verticaal=0.5):
     """Foto passend uitsnijden (zoals object-fit: cover)."""
     fb, fh = foto.size
     schaal = max(breedte / fb, hoogte / fh)
     nb, nh = round(fb * schaal), round(fh * schaal)
     foto = foto.resize((nb, nh), Image.LANCZOS)
     links = (nb - breedte) // 2
-    boven = round((nh - hoogte) * VERTICAAL)
+    boven = round((nh - hoogte) * verticaal)
     return foto.crop((links, boven, links + breedte, boven + hoogte))
+
+
+def vul(foto, breedte, hoogte):
+    """Scherpe foto in het midden, wazige versie errond."""
+    achter = bedek(foto, breedte, hoogte)
+    achter = achter.resize((breedte // 8, hoogte // 8), Image.LANCZOS).filter(ImageFilter.GaussianBlur(4))
+    achter = achter.resize((breedte, hoogte), Image.LANCZOS)
+    achter = ImageEnhance.Brightness(achter).enhance(0.45)
+
+    fb, fh = foto.size
+    # Hoogte van de scherpe foto: het vak, plus het stuk dat eraf mag.
+    sh = round(hoogte / (1 - MAX_BIJSNIJDEN))
+    sb = round(fb * sh / fh)
+    if sb >= breedte:
+        return bedek(foto, breedte, hoogte, VERTICAAL)
+    scherp = foto.resize((sb, sh), Image.LANCZOS)
+    boven = round((sh - hoogte) * VERTICAAL)
+    scherp = scherp.crop((0, boven, sb, boven + hoogte))
+    achter.paste(scherp, ((breedte - sb) // 2, 0))
+    return achter
 
 
 def main():

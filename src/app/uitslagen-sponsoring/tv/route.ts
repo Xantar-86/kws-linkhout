@@ -132,12 +132,11 @@ body { background: #0b0708; color: #fff; font-family: "Inter", system-ui, sans-s
 .strook .vak { display: flex; width: 14vw; height: 7vh; flex-shrink: 0; align-items: center; justify-content: center; margin-left: 3vw; }
 .strook img, .sponsors img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
-.fotodia { display: flex; height: 100%; flex-direction: column; align-items: center; padding: 1.5vh 2vw; background: #1c1314; animation: tv-in2 600ms ease-out both; }
-.fotodia .wie { display: flex; height: 8vh; max-width: 100%; flex-shrink: 0; align-items: baseline; justify-content: center; margin-bottom: 1.5vh; color: #fff; white-space: nowrap; }
-.fotodia .wie .naam { font-size: 6vh; font-weight: 800; line-height: 8vh; }
-.fotodia .wie .reeks { margin-left: 2vw; font-size: 3.2vh; font-weight: 600; color: #d6cfcf; overflow: hidden; text-overflow: ellipsis; }
-.fotodia .beeld { height: calc(100vh - 0.8vh - 3vh - 9.5vh); }
-.fotodia .beeld img { display: block; height: 100%; width: auto; border-radius: 0.6vh; box-shadow: 0 1vh 4vh rgba(0,0,0,0.5); }
+.fotodia { display: flex; height: 100%; align-items: center; justify-content: center; background: #1c1314; animation: tv-in2 600ms ease-out both; }
+.fotodia .beeld { position: relative; height: calc(100vh - 0.8vh); width: calc((100vh - 0.8vh) * 1.7778); }
+.fotodia .beeld img { display: block; height: 100%; width: 100%; }
+/* Ploegnaam in het sjabloon (1920 x 1080): links van het schild, boven de witte lijn. */
+.fotodia .naam { position: absolute; right: 57%; bottom: 89.2%; width: 36%; text-align: right; white-space: nowrap; font-size: calc((100vh - 0.8vh) * 0.068); font-weight: 800; line-height: 1; color: #fff; text-shadow: 0 0.3vh 1.2vh rgba(0,0,0,0.7), 0 0 0.4vh rgba(0,0,0,0.6); }
 .affiche { display: flex; height: 100%; align-items: center; justify-content: center; background: #fff; animation: tv-in2 600ms ease-out both; }
 .affiche img { display: block; width: 100vw; height: calc(100vh - 0.8vh); object-fit: contain; }
 .sponsors { display: flex; height: 100%; flex-direction: column; background: #faf8f6; padding: 3vh 4vw 4vh; color: #0b0708; animation: tv-in2 600ms ease-out both; }
@@ -409,9 +408,20 @@ const SCRIPT = `
   }
 
   function fotoDia(p) {
-    return '<div class="fotodia"><div class="wie"><span class="naam disp">' + esc(p.naam) + '</span>' +
-      '<span class="reeks">' + esc(p.klassement.reeks) + '</span></div>' +
-      '<div class="beeld"><img src="' + esc(p.foto) + '" alt="Ploegfoto ' + esc(p.naam) + '"></div></div>';
+    return '<div class="fotodia"><div class="beeld"><img src="' + esc(p.foto) + '" alt="Ploegfoto ' + esc(p.naam) + '">' +
+      '<p class="naam disp"><span>' + esc(p.naam) + '</span></p></div></div>';
+  }
+
+  // Lange ploegnamen kleiner maken tot ze links van het schild passen.
+  function pasNaamAan() {
+    var n = el.inhoud.querySelector('.fotodia .naam');
+    if (!n) return;
+    var maat = parseFloat(getComputedStyle(n).fontSize);
+    var tekst = n.firstChild;
+    for (var i = 0; i < 30 && tekst.offsetWidth > n.clientWidth; i++) {
+      maat = maat * 0.94;
+      n.style.fontSize = maat + 'px';
+    }
   }
 
   // De ploegfoto van de volgende dia alvast laden, zodat hij meteen verschijnt.
@@ -436,6 +446,7 @@ const SCRIPT = `
     el.balk.innerHTML = VAST ? '' : '<div style="animation: tv-balk ' + duur + 'ms linear forwards"></div>';
     el.inhoud.innerHTML = isAffiche ? '<div class="affiche"><img src="' + esc(AFFICHE) + '" alt=""></div>' : isFoto ? fotoDia(p) : isPloeg ? ploegDia(dia) : sponsorDia(mislukt && ploegen.length === 0);
     el.strook.style.display = isPloeg ? '' : 'none';
+    if (isFoto) pasNaamAan();
     // Bij de ploegfoto geen kopbalk: de naam staat boven de foto, zo kan die groter.
     el.kop.style.display = isFoto || isAffiche ? 'none' : '';
     laadVooraf(dias[(nr + 1) % dias.length]);
