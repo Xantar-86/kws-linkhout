@@ -121,9 +121,14 @@ body { background: #f3efeb; color: #120c0d; font-family: "Inter", system-ui, san
 .logo { flex-shrink: 0; object-fit: contain; }
 .logo-leeg { display: flex; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 9999px; background: #e7e1dc; font-weight: 800; color: #4a3f40; }
 
-.strook { display: flex; height: 10vh; flex-shrink: 0; align-items: center; background: #fff; padding: 0 2.5vw; border-top: 0.3vh solid #e7e1dc; }
-.strook .rooster { display: grid; flex: 1; grid-template-columns: repeat(8, 1fr); grid-column-gap: 1.5vw; align-items: center; }
-.strook .vak { display: flex; height: 7vh; align-items: center; justify-content: center; }
+.strook { display: flex; height: 10vh; flex-shrink: 0; align-items: stretch; background: #fff; border-top: 0.3vh solid #e7e1dc; }
+.strook .oproep { display: flex; flex-shrink: 0; flex-direction: column; justify-content: center; padding: 0 2vw; background: #c81e1e; color: #fff; white-space: nowrap; }
+.strook .oproep b { font-size: 3vh; font-weight: 800; line-height: 1.1; }
+.strook .oproep span { font-size: 2.2vh; font-weight: 600; color: #fde2e2; }
+.strook .venster { position: relative; min-width: 0; flex: 1; overflow: hidden; }
+.strook .rol { position: absolute; top: 0; left: 0; display: flex; height: 100%; align-items: center; white-space: nowrap; animation: tv-rol linear infinite; }
+@keyframes tv-rol { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+.strook .vak { display: flex; width: 14vw; height: 7vh; flex-shrink: 0; align-items: center; justify-content: center; margin-left: 3vw; }
 .strook img, .sponsors img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
 .fotodia { display: flex; height: 100%; flex-direction: column; align-items: center; padding: 1.5vh 2vw; background: #1c1314; animation: tv-in2 600ms ease-out both; }
@@ -375,7 +380,11 @@ const SCRIPT = `
     balk: document.getElementById('balk'), inhoud: document.getElementById('inhoud'), strook: document.getElementById('strook'),
     kop: document.querySelector('.kop')
   };
-  el.strook.querySelector('.rooster').innerHTML = sponsorBeelden();
+  // Rollende strook: de logo's twee keer na elkaar, de rol schuift een halve
+  // breedte op en begint dan naadloos opnieuw. Ongeveer 4 seconden per logo.
+  var rol = el.strook.querySelector('.rol');
+  rol.innerHTML = sponsorBeelden() + sponsorBeelden();
+  rol.style.animationDuration = Math.max(SPONSORS.length, 4) * 4 + 's';
 
   function klok() {
     var nu = Date.now();
@@ -476,7 +485,7 @@ function pagina(): string {
   </header>
   <div id="balk" class="balk"></div>
   <div id="inhoud"><div class="wacht">De uitslagen worden opgehaald...</div></div>
-  <div id="strook" class="strook" style="display:none"><div class="rooster"></div></div>
+  <div id="strook" class="strook" style="display:none"><div class="oproep"><b class="disp">Ook sponsor worden?</b><span>kwslinkhout.be/sponsoring</span></div><div class="venster"><div class="rol"></div></div></div>
 </main>
 <script>window.__PLOEGEN = ${json(PLOEGEN)}; window.__SPONSORS = ${json(SPONSORS)}; window.__AFFICHE = ${json(AFFICHE)};</script>
 <script>${SCRIPT}</script>
