@@ -25,10 +25,14 @@ type Stand =
 /** Bij een trage bank: zo vaak kijken we opnieuw, om de 3 seconden. */
 const WACHTRONDES = 20;
 
+/** Na een gelukte betaling: zoveel seconden tot we terug naar de sponsorpagina gaan. */
+const TERUG_NA = 10;
+
 export default function BetaaldClient() {
   const kenmerk = useSearchParams().get("b");
   const [stand, setStand] = useState<Stand>({ soort: "laden" });
   const bezig = useRef(false);
+  const [teller, setTeller] = useState(TERUG_NA);
 
   useEffect(() => {
     if (!kenmerk) {
@@ -60,6 +64,17 @@ export default function BetaaldClient() {
     return () => clearTimeout(wekker);
   }, [kenmerk]);
 
+  // Betaald: aftellen en dan terug naar de sponsorpagina.
+  useEffect(() => {
+    if (stand.soort !== "betaald") return;
+    const tik = setInterval(() => setTeller((t) => Math.max(t - 1, 0)), 1000);
+    return () => clearInterval(tik);
+  }, [stand.soort]);
+
+  useEffect(() => {
+    if (stand.soort === "betaald" && teller === 0) window.location.href = "/sponsoring";
+  }, [stand.soort, teller]);
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-zand-50 px-4 py-16">
       <div className="w-full max-w-lg rounded-3xl bg-white p-8 text-center shadow-blad md:p-10">
@@ -83,6 +98,12 @@ export default function BetaaldClient() {
                 Testbetaling: er is geen echt geld betaald.
               </p>
             )}
+            <p className="mt-6 text-sm text-gray-500">
+              Over {teller} {teller === 1 ? "seconde" : "seconden"} gaat u terug naar de sponsorpagina.
+            </p>
+            <a href="/sponsoring" className="btn-primary mt-3 inline-flex">
+              Nu terug naar de sponsorpagina
+            </a>
           </>
         )}
 
