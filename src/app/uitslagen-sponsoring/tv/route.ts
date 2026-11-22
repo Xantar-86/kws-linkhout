@@ -39,6 +39,18 @@ import { SPONSORS } from "@/lib/sponsors";
 /** Affiche die om de 3 ploegen schermvullend verschijnt; null = geen. */
 const AFFICHE: string | null = "/images/tv/wafelverkoop-2026.jpg";
 
+/**
+ * Sponsors die al op het tv-scherm staan (strook en sponsordia), maar nog niet
+ * op de website. Zodra ze in src/lib/sponsors.ts staan, hier weghalen.
+ */
+const EXTRA_TV = [
+  { naam: "R&V Algemene renovatie", beeld: "/images/sponsors/r&v.png" },
+  { naam: "AFS Care", beeld: "/images/sponsors/afs-care.png" },
+];
+
+/** Sponsors uit src/lib/sponsors.ts die niet meer op het tv-scherm komen. */
+const NIET_OP_TV = ["De Backer"];
+
 /** Zelfde naamregel als scripts/tv-ploegfotos.py. */
 function ploegfoto(image: string): string | null {
   if (!image.startsWith("/images/teams/")) return null;
@@ -129,8 +141,9 @@ body { background: #0b0708; color: #fff; font-family: "Inter", system-ui, sans-s
 .strook .venster { position: relative; min-width: 0; flex: 1; overflow: hidden; }
 .strook .rol { position: absolute; top: 0; left: 0; display: flex; height: 100%; align-items: center; white-space: nowrap; animation: tv-rol linear infinite; }
 @keyframes tv-rol { from { transform: translateX(0) } to { transform: translateX(-50%) } }
-.strook .vak { display: flex; width: 14vw; height: 7vh; flex-shrink: 0; align-items: center; justify-content: center; margin-left: 3vw; }
-.strook img, .sponsors img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.strook .vak { display: flex; height: 7vh; flex-shrink: 0; align-items: center; justify-content: center; margin-left: 5vw; }
+.strook .vak img { display: block; height: 7vh; width: auto; max-width: 16vw; object-fit: contain; }
+.sponsors img { max-height: 100%; max-width: 100%; object-fit: contain; }
 
 .fotodia { display: flex; height: 100%; align-items: center; justify-content: center; background: #1c1314; animation: tv-in2 600ms ease-out both; }
 .fotodia .beeld { position: relative; height: calc(100vh - 0.8vh); width: calc((100vh - 0.8vh) * 1.7778); }
@@ -143,9 +156,12 @@ body { background: #0b0708; color: #fff; font-family: "Inter", system-ui, sans-s
 @keyframes tv-in2 { from { opacity: 0 } to { opacity: 1 } }
 .sponsors h2 { text-align: center; font-size: 6vh; font-weight: 800; }
 .sponsors h2 span { color: #dc2626; }
-.sponsors .rooster { margin-top: 3vh; display: grid; min-height: 0; flex: 1; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, minmax(0, 1fr)); grid-gap: 2vw; }
-.sponsors .vak { display: flex; min-height: 0; align-items: center; justify-content: center; border-radius: 2vh; background: #fff; padding: 3vh; box-shadow: 0 2px 4px rgba(18,12,13,0.05), 0 12px 28px -8px rgba(18,12,13,0.1); }
-.sponsors .vak img { height: 100%; width: 100%; }
+.sponsors .rooster { margin: 2vh -1vw 0; display: flex; min-height: 0; flex: 1; flex-direction: column; }
+.sponsors .sponsorrij { display: flex; min-height: 0; flex: 1; justify-content: center; }
+.sponsors .vak { display: flex; min-height: 0; padding: 1vh 1vw; }
+.sponsors .vak > div { position: relative; flex: 1; min-width: 0; border-radius: 2vh; background: #fff; box-shadow: 0 2px 4px rgba(18,12,13,0.05), 0 12px 28px -8px rgba(18,12,13,0.1); }
+/* Absoluut binnen het vak: zo kan een groot logo het vak nooit groter maken. */
+.sponsors .vak img { position: absolute; top: 3vh; left: 3vh; width: calc(100% - 6vh); height: calc(100% - 6vh); max-width: none; max-height: none; }
 .sponsors .voet { margin-top: 2vh; text-align: center; font-size: 2.8vh; font-weight: 600; color: #4b5563; }
 `;
 
@@ -163,7 +179,12 @@ const SCRIPT = `
   var VERVERS_MS = 30 * 60000;
   var HERLAAD_MS = 3 * 60 * 60000;
   var PLOEGEN = window.__PLOEGEN;
-  var SPONSORS = window.__SPONSORS;
+  var SPONSORS = window.__SPONSORS.concat(window.__EXTRA_TV || []);
+  // Meer dan 6 sponsors: verdeeld over 2 sponsordia's na elkaar, zodat de
+  // logo's groot genoeg blijven.
+  var SPONSOR_PAGINAS = SPONSORS.length > 6
+    ? [SPONSORS.slice(0, Math.ceil(SPONSORS.length / 2)), SPONSORS.slice(Math.ceil(SPONSORS.length / 2))]
+    : [SPONSORS];
 
   var SEIZOEN_QUERY = 'query GetSeizoen($teamId: ID!, $language: Language!) { teamCalendar(teamId: $teamId, language: $language, sortByDate: asc) { id startTime state homeTeam { name clubId logo } awayTeam { name clubId logo } series { id name } outcome { status homeTeamGoals awayTeamGoals } } }';
   var KLASSEMENT_QUERY = 'query GetKlassement($teamId: ID!, $language: Language!) { teamSeriesAndRankings(teamId: $teamId, language: $language) { rankings { id name visibility { showRanking } rankings { type teams { teamId name position clubId logo points matchesPlayed matchesWon matchesLost matchesDrawn goalsFor goalsAgainst goalDifference } } } } }';
@@ -363,14 +384,23 @@ const SCRIPT = `
     return h;
   }
 
-  function sponsorBeelden() {
-    return SPONSORS.map(function (s) {
+  function sponsorBeelden(lijst) {
+    return (lijst || SPONSORS).map(function (s) {
       return '<div class="vak"><img src="' + esc(s.beeld) + '" alt="' + esc(s.naam) + '"></div>';
     }).join('');
   }
-  function sponsorDia(melding) {
+  function sponsorDia(melding, pagina) {
+    var lijst = SPONSOR_PAGINAS[pagina] || SPONSORS;
+    // Twee rijen; een onvolledige onderste rij staat in het midden.
+    var kolommen = Math.max(1, Math.ceil(lijst.length / 2));
+    var rijen = '';
+    for (var r = 0; r < lijst.length; r += kolommen) {
+      rijen += '<div class="sponsorrij">' + lijst.slice(r, r + kolommen).map(function (s) {
+        return '<div class="vak" style="width: ' + (100 / kolommen) + '%"><div><img src="' + esc(s.beeld) + '" alt="' + esc(s.naam) + '"></div></div>';
+      }).join('') + '</div>';
+    }
     return '<div class="sponsors"><h2 class="disp">Met dank aan onze <span>sponsors</span></h2>' +
-      '<div class="rooster">' + sponsorBeelden() + '</div>' +
+      '<div class="rooster">' + rijen + '</div>' +
       '<p class="voet">' + (melding ? 'De uitslagen konden niet opgehaald worden; er wordt opnieuw geprobeerd.' : 'Ook sponsor worden? Spreek ons gerust aan of kijk op kwslinkhout.be/sponsoring') + '</p></div>';
   }
 
@@ -402,9 +432,15 @@ const SCRIPT = `
       if (p.foto && TIJD_FOTO > 0) dias.push({ fotoVan: p });
       dias.push(p);
       if (AFFICHE && TIJD_AFFICHE > 0 && (i + 1) % PLOEGEN_PER_AFFICHE === 0) dias.push('affiche');
-      if ((i + 1) % PLOEGEN_PER_SPONSOR === 0) dias.push('sponsors');
+      if ((i + 1) % PLOEGEN_PER_SPONSOR === 0) voegSponsorsToe();
     });
-    if (!dias.length || dias[dias.length - 1] !== 'sponsors') dias.push('sponsors');
+    if (!dias.length || !isSponsorDia(dias[dias.length - 1])) voegSponsorsToe();
+  }
+  function voegSponsorsToe() {
+    for (var k = 0; k < SPONSOR_PAGINAS.length; k++) dias.push({ sponsorPagina: k });
+  }
+  function isSponsorDia(dia) {
+    return !!dia && typeof dia.sponsorPagina === 'number';
   }
 
   function fotoDia(p) {
@@ -438,13 +474,14 @@ const SCRIPT = `
     var dia = dias[nr % dias.length];
     var isFoto = !!(dia && dia.fotoVan);
     var isAffiche = dia === 'affiche';
-    var isPloeg = !isFoto && !isAffiche && dia !== 'sponsors';
+    var isSponsor = isSponsorDia(dia);
+    var isPloeg = !isFoto && !isAffiche && !isSponsor;
     var p = isFoto ? dia.fotoVan : dia;
     var duur = isFoto ? TIJD_FOTO : isAffiche ? TIJD_AFFICHE : isPloeg ? TIJD_PLOEG : TIJD_SPONSOR;
     el.titel.textContent = isFoto || isPloeg ? p.naam : 'Onze sponsors';
     el.onder.textContent = isFoto || isPloeg ? p.klassement.reeks : 'Zij maken het mogelijk';
     el.balk.innerHTML = VAST ? '' : '<div style="animation: tv-balk ' + duur + 'ms linear forwards"></div>';
-    el.inhoud.innerHTML = isAffiche ? '<div class="affiche"><img src="' + esc(AFFICHE) + '" alt=""></div>' : isFoto ? fotoDia(p) : isPloeg ? ploegDia(dia) : sponsorDia(mislukt && ploegen.length === 0);
+    el.inhoud.innerHTML = isAffiche ? '<div class="affiche"><img src="' + esc(AFFICHE) + '" alt=""></div>' : isFoto ? fotoDia(p) : isPloeg ? ploegDia(dia) : sponsorDia(mislukt && ploegen.length === 0, isSponsor ? dia.sponsorPagina : 0);
     el.strook.style.display = isPloeg ? '' : 'none';
     if (isFoto) pasNaamAan();
     // Bij de ploegfoto geen kopbalk: de naam staat boven de foto, zo kan die groter.
@@ -499,7 +536,7 @@ function pagina(): string {
   <div id="inhoud"><div class="wacht">De uitslagen worden opgehaald...</div></div>
   <div id="strook" class="strook" style="display:none"><div class="oproep"><b class="disp">Ook sponsor worden?</b><span>kwslinkhout.be/sponsoring</span></div><div class="venster"><div class="rol"></div></div></div>
 </main>
-<script>window.__PLOEGEN = ${json(PLOEGEN)}; window.__SPONSORS = ${json(SPONSORS)}; window.__AFFICHE = ${json(AFFICHE)};</script>
+<script>window.__PLOEGEN = ${json(PLOEGEN)}; window.__SPONSORS = ${json(SPONSORS.filter((s) => !NIET_OP_TV.includes(s.naam)))}; window.__AFFICHE = ${json(AFFICHE)}; window.__EXTRA_TV = ${json(EXTRA_TV)};</script>
 <script>${SCRIPT}</script>
 </body>
 </html>`;
