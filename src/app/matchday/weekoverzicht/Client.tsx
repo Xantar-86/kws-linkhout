@@ -65,9 +65,13 @@ function naarVierVijf(bron: HTMLCanvasElement): HTMLCanvasElement {
   return c;
 }
 
-function alsPng(c: HTMLCanvasElement, naam: string): Promise<File | null> {
+/**
+ * Voor Facebook en Instagram: JPEG. Instagram aanvaardt via de API enkel JPEG,
+ * en twee PNG's samen gingen over de 4,5 MB die Vercel per aanvraag toelaat.
+ */
+function alsJpeg(c: HTMLCanvasElement, naam: string): Promise<File | null> {
   return new Promise((klaar) =>
-    c.toBlob((blob) => klaar(blob ? new File([blob], naam, { type: "image/png" }) : null), "image/png")
+    c.toBlob((blob) => klaar(blob ? new File([blob], naam, { type: "image/jpeg" }) : null), "image/jpeg", 0.92)
   );
 }
 
@@ -215,7 +219,7 @@ export default function WeekoverzichtClient() {
       const c = canvassen.current[0];
       if (!c) return { ok: false, bericht: "Het beeld is er nog niet" };
       const naam = `kws-weekoverzicht-${weekCode(van)}`;
-      const [beeld, beeldIg] = await Promise.all([alsPng(c, `${naam}.png`), alsPng(naarVierVijf(c), `${naam}-ig.png`)]);
+      const [beeld, beeldIg] = await Promise.all([alsJpeg(c, `${naam}.jpg`), alsJpeg(naarVierVijf(c), `${naam}-ig.jpg`)]);
       if (!beeld || !beeldIg) return { ok: false, bericht: "Het beeld kon niet gemaakt worden" };
       return stuur({ bron, tekst, beeld, beeldIg });
     },

@@ -48,7 +48,7 @@ async function bewaarBeeld(naam: string, bestand: File): Promise<string> {
   const { error } = await db()
     .storage.from(BUCKET)
     .upload(naam, Buffer.from(await bestand.arrayBuffer()), {
-      contentType: "image/png",
+      contentType: "image/jpeg",
       upsert: true,
       // Kort, zodat een tweede poging met een verbeterd beeld meteen het nieuwe toont.
       cacheControl: "60",
@@ -59,7 +59,7 @@ async function bewaarBeeld(naam: string, bestand: File): Promise<string> {
 }
 
 function geldigBeeld(f: FormDataEntryValue | null): f is File {
-  return f instanceof File && f.type === "image/png" && f.size > 0 && f.size <= MAX_BYTES;
+  return f instanceof File && f.type === "image/jpeg" && f.size > 0 && f.size <= MAX_BYTES;
 }
 
 export async function POST(request: NextRequest) {
@@ -129,8 +129,8 @@ export async function POST(request: NextRequest) {
     }
     try {
       urls ??= {
-        fb: await bewaarBeeld(`weekoverzicht-${week}.png`, beeld),
-        ig: await bewaarBeeld(`weekoverzicht-${week}-ig.png`, beeldIg),
+        fb: await bewaarBeeld(`weekoverzicht-${week}.jpg`, beeld),
+        ig: await bewaarBeeld(`weekoverzicht-${week}-ig.jpg`, beeldIg),
       };
       const r =
         platform === "facebook"
