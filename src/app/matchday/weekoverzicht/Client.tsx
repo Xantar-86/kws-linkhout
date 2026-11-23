@@ -34,6 +34,50 @@ function kanBestandenDelen(): boolean {
   }
 }
 
+/** "2026-11-23": de maandag zoals de server ze kent. */
+function weekCode(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** De sleutel uit de mail (?t=&week=), en ?auto=1 als de thuis-pc de pagina opent. */
+type Sleutel = { t: string; week: string; auto: boolean };
+
+type Resultaat = { ok: boolean; live?: boolean; bericht: string };
+
+/**
+ * Instagram weigert beelden smaller dan 4:5; ons beeld is 3:4 of langer.
+ * Daarom zetten we het op een breder doek, met een vervaagde kopie als rand.
+ */
+function naarVierVijf(bron: HTMLCanvasElement): HTMLCanvasElement {
+  const h = bron.height;
+  const w = Math.max(bron.width, Math.ceil(h * 0.8));
+  if (w === bron.width) return bron;
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  const ctx = c.getContext("2d")!;
+  ctx.filter = "blur(40px)";
+  ctx.drawImage(bron, -80, -80, w + 160, h + 160);
+  ctx.filter = "none";
+  ctx.fillStyle = "rgba(0,0,0,0.35)";
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(bron, Math.round((w - bron.width) / 2), 0);
+  return c;
+}
+
+function alsPng(c: HTMLCanvasElement, naam: string): Promise<File | null> {
+  return new Promise((klaar) =>
+    c.toBlob((blob) => klaar(blob ? new File([blob], naam, { type: "image/png" }) : null), "image/png")
+  );
+}
+
+declare global {
+  interface Window {
+    /** Wat de thuis-pc uitleest om te weten of het plaatsen klaar is. */
+    __weekoverzicht?: { klaar: boolean; ok: boolean; bericht: string };
+  }
+}
+
 function korteDatum(d: Date): string {
   return `${d.getDate()} ${MAANDEN[d.getMonth()]}`;
 }
@@ -45,6 +89,19 @@ export default function WeekoverzichtClient() {
   const [verschuiving, setVerschuiving] = useState(0);
   const [melding, setMelding] = useState("");
   const canvassen = useRef<(HTMLCanvasElement | null)[]>([]);
+  const zoek = useSyncExternalStore(geenAbonnement, () => window.location.search, () => "");
+  const sleutel = useMemo<Sleutel | null>(() => {
+    const q = new URLSearchParams(zoek);
+    const t = q.get("t");
+    const week = q.get("week");
+    return t && week ? { t, week, auto: q.get("auto") === "1" } : null;
+  }, [zoek]);
+  const [getekend, setGetekend] = useState("");
+  const [geplaatst, setGeplaatst] = useState<{ facebook: string | null; instagram: string | null } | null>(null);
+  const [bezig, setBezig] = useState(false);
+  const [koppeling, setKoppeling] = useState<{ live: boolean; geldig: boolean; details: string } | null>(null);
+  const [resultaat, setResultaat] = useState<Resultaat | null>(null);
+  const autoGestart = useRef(false);
 
   // Alle ploegen een voor een ophalen, zodat de bond niet overstelpt wordt.
   useEffect(() => {
@@ -98,11 +155,104 @@ export default function WeekoverzichtClient() {
 
   useEffect(() => {
     if (!geladen || !opmaak) return;
-    beelden.forEach((beeld, i) => {
-      const c = canvassen.current[i];
-      if (c) void tekenBeeld(c, beeld, wedstrijden, van, i + 1, beelden.length, opmaak);
+    let gestopt = false;
+    void Promise.all(
+      beelden.map((beeld, i) => {
+        const c = canvassen.current[i];
+        return c ? tekenBeeld(c, beeld, wedstrijden, van, i + 1, beelden.length, opmaak) : undefined;
+      })
+    ).then(() => {
+      if (!gestopt) setGetekend(weekCode(van));
     });
+    return () => {
+      gestopt = true;
+    };
   }, [geladen, opmaak, beelden, wedstrijden, van]);
+
+  const magPlaatsen = !!sleutel && sleutel.week === weekCode(van);
+
+  // Wat er voor deze week al op Facebook en Instagram staat.
+  const vraagStaat = useCallback(() => {
+    if (!sleutel) return;
+    fetch(`/api/social/weekoverzicht-plaats?week=${sleutel.week}&t=${encodeURIComponent(sleutel.t)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => {
+        if (!json) return;
+        setGeplaatst(json.geplaatst);
+        setKoppeling({ live: json.live, ...json.meta });
+      })
+      // Niet erg: de knop werkt ook zonder.
+      .catch(() => undefined);
+  }, [sleutel]);
+  useEffect(vraagStaat, [vraagStaat]);
+
+  const stuur = useCallback(
+    async (velden: Record<string, string | File>): Promise<Resultaat> => {
+      if (!sleutel) return { ok: false, bericht: "Geen sleutel" };
+      const form = new FormData();
+      form.set("week", sleutel.week);
+      form.set("t", sleutel.t);
+      for (const [k, v] of Object.entries(velden)) form.set(k, v);
+      try {
+        const r = await fetch("/api/social/weekoverzicht-plaats", { method: "POST", body: form });
+        const json = await r.json().catch(() => ({}));
+        if (json.overgeslagen) return { ok: true, bericht: `Niet geplaatst: ${json.overgeslagen}` };
+        const regels: string[] = (json.resultaten ?? []).map((x: { bericht: string }) => x.bericht);
+        return {
+          ok: r.ok && json.ok !== false,
+          live: json.live,
+          bericht: regels.join(" | ") || json.error || `Fout ${r.status}`,
+        };
+      } catch (e) {
+        return { ok: false, bericht: e instanceof Error ? e.message : String(e) };
+      }
+    },
+    [sleutel]
+  );
+
+  const plaats = useCallback(
+    async (bron: "pc" | "knop"): Promise<Resultaat> => {
+      const c = canvassen.current[0];
+      if (!c) return { ok: false, bericht: "Het beeld is er nog niet" };
+      const naam = `kws-weekoverzicht-${weekCode(van)}`;
+      const [beeld, beeldIg] = await Promise.all([alsPng(c, `${naam}.png`), alsPng(naarVierVijf(c), `${naam}-ig.png`)]);
+      if (!beeld || !beeldIg) return { ok: false, bericht: "Het beeld kon niet gemaakt worden" };
+      return stuur({ bron, tekst, beeld, beeldIg });
+    },
+    [stuur, tekst, van]
+  );
+
+  async function plaatsMetKnop() {
+    setBezig(true);
+    setResultaat(null);
+    const r = await plaats("knop");
+    setResultaat(r);
+    setBezig(false);
+    vraagStaat();
+  }
+
+  // De thuis-pc: alles nakijken en dan zelf plaatsen, of melden waarom niet.
+  useEffect(() => {
+    if (!sleutel?.auto || autoGestart.current || !geladen || verschuiving !== 0) return;
+    if (getekend !== weekCode(van)) return;
+    autoGestart.current = true;
+    void (async () => {
+      let r: Resultaat;
+      if (sleutel.week !== weekCode(van)) {
+        r = await stuur({ bron: "pc", overslaan: `de link is voor de week van ${sleutel.week}, niet voor deze week` });
+      } else if (geladen.length === 0) {
+        r = await stuur({ bron: "pc", overslaan: "de RBFA gaf geen enkele kalender terug" });
+      } else if (mislukt.length > 0) {
+        r = await stuur({ bron: "pc", overslaan: `de RBFA gaf niets terug voor ${mislukt.join(", ")}` });
+      } else if (wedstrijden.length === 0) {
+        r = await stuur({ bron: "pc", overslaan: "er zijn deze week geen wedstrijden" });
+      } else {
+        r = await plaats("pc");
+      }
+      setResultaat(r);
+      window.__weekoverzicht = { klaar: true, ok: r.ok, bericht: r.bericht };
+    })();
+  }, [sleutel, geladen, mislukt, wedstrijden, getekend, van, verschuiving, stuur, plaats]);
 
   const toon = useCallback((t: string) => {
     setMelding(t);
@@ -165,8 +315,9 @@ export default function WeekoverzichtClient() {
       <div className="mx-auto max-w-5xl px-4 py-8">
         <h1 className="text-3xl font-bold">Weekoverzicht voor sociale media</h1>
         <p className="mt-2 text-white/70">
-          Alle wedstrijden van alle ploegen, rechtstreeks van de RBFA. Download het beeld, kopieer de
-          tekst en post het zelf op Facebook en Instagram.
+          Alle wedstrijden van alle ploegen, rechtstreeks van de RBFA. Elke maandag om 18:00 komt
+          het vanzelf op Facebook en Instagram. Met de link uit de maandagmail kunt ge het ook hier
+          plaatsen.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -222,6 +373,39 @@ export default function WeekoverzichtClient() {
             <p className="mt-6 text-white/70">
               {wedstrijden.length} wedstrijden, {beelden.length === 1 ? "1 beeld" : `${beelden.length} beelden (carrousel)`}.
             </p>
+
+            {magPlaatsen && (
+              <div className="mt-4 rounded-xl border border-white/15 bg-white/5 p-4">
+                {geplaatst?.facebook && geplaatst?.instagram ? (
+                  <p className="text-green-300">Deze week staat al op Facebook en Instagram.</p>
+                ) : (
+                  <>
+                    <button
+                      onClick={plaatsMetKnop}
+                      disabled={bezig || wedstrijden.length === 0 || getekend !== weekCode(van)}
+                      className="rounded-lg bg-[#1877f2] px-5 py-3 font-semibold hover:bg-[#2d86f5] disabled:opacity-50"
+                    >
+                      {bezig ? "Bezig met plaatsen..." : "Plaats op Facebook en Instagram"}
+                    </button>
+                    {geplaatst?.facebook && (
+                      <p className="mt-2 text-sm text-white/70">Op Facebook staat het al, enkel Instagram volgt nog.</p>
+                    )}
+                  </>
+                )}
+                {koppeling && (
+                  <p className={`mt-3 text-sm ${koppeling.geldig ? "text-white/60" : "text-red-300"}`}>
+                    {koppeling.geldig ? `Gekoppeld aan ${koppeling.details}` : `Meta-koppeling werkt niet: ${koppeling.details}`}
+                    {koppeling.live ? "" : " (proefstand: er wordt niets echt geplaatst)"}
+                  </p>
+                )}
+                {resultaat && (
+                  <p className={`mt-3 text-sm ${resultaat.ok ? "text-green-300" : "text-red-300"}`}>
+                    {resultaat.live === false ? "Proefstand, er is niets geplaatst: " : ""}
+                    {resultaat.bericht}
+                  </p>
+                )}
+              </div>
+            )}
 
             <div className="mt-4 flex flex-wrap gap-3">
               <button

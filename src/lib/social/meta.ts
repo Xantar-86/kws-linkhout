@@ -5,7 +5,9 @@
  * wordt er niets verstuurd en krijg je enkel terug wat er gepost zou worden.
  */
 
-const GRAPH = "https://graph.facebook.com/v21.0";
+// Meta schrapt een API-versie zo een twee jaar na de uitgave. v27.0 was de
+// huidige in november 2026; ook de Graph API Explorer stond daarop.
+const GRAPH = "https://graph.facebook.com/v27.0";
 
 export type Platform = "facebook" | "instagram";
 

@@ -169,37 +169,22 @@ export function weekTitel(van: Date): string {
   return `${begin} tot ${zon.getDate()} ${MAANDEN[zon.getMonth()]}`;
 }
 
-/** De tekst bij de post, voor Facebook en Instagram. */
+/**
+ * De tekst bij de post, voor Facebook en Instagram. Kort: de wedstrijden zelf
+ * staan al op het beeld (zo wou Jochen het, 23/11).
+ */
 export function bouwTekst(lijst: OverzichtWedstrijd[], van: Date): string {
-  const regels: string[] = [
+  const aantal = lijst.filter((w) => !w.uitgesteld).length;
+  return [
     "⚽ WEDSTRIJDEN DEZE WEEK 🔴⚪",
     "",
-    `Van ${weekTitel(van)} trekken onze ploegen weer de wei op. ` +
-      "Van de kleinste duiveltjes tot de eerste ploegen: kom supporteren, thuis in Linkwood Park of op verplaatsing!",
-  ];
-
-  for (const { dag, wedstrijden } of perDag(lijst)) {
-    const titel = dagTitel(dag);
-    regels.push("", `📅 ${titel.charAt(0).toUpperCase()}${titel.slice(1)}`);
-    for (const w of wedstrijden) {
-      const waar = w.uitgesteld
-        ? "uitgesteld"
-        : w.eigenThuis
-          ? w.anderVeld
-            ? `thuis, ${w.anderVeld}`
-            : "thuis"
-          : "uit";
-      regels.push(`${uur(w.start)} ${w.ploeg}: ${w.thuis} - ${w.uit} (${waar})`);
-    }
-  }
-
-  regels.push(
+    `Van ${weekTitel(van)} spelen onze ploegen ${aantal === 1 ? "1 wedstrijd" : `${aantal} wedstrijden`}. ` +
+      "Alle uren en tegenstanders staan op de affiche. Kom supporteren, thuis in Linkwood Park of op verplaatsing!",
     "",
     "📍 Linkwood Park, Kapelstraat 72, Linkhout",
     "",
-    "#kwslinkhout #jeugdvoetbal #matchday #linkhout"
-  );
-  return regels.join("\n");
+    "#kwslinkhout #jeugdvoetbal #matchday #linkhout",
+  ].join("\n");
 }
 
 /** Een opdracht om in ChatGPT te plakken, voor wie een sfeervollere affiche wil. */

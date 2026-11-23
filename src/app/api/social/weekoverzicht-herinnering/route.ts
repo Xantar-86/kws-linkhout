@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verstuurMail, ontvangers } from "@/lib/social/mail";
+import { dezeMaandag, weekLink } from "@/lib/social/weekoverzicht-post";
 
 /**
  * Elke maandagochtend een mail met de link naar het weekoverzicht van die week.
@@ -36,14 +37,14 @@ export async function GET(request: NextRequest) {
   }
 
   const site = process.env.SITE_URL ?? "https://www.kwslinkhout.be";
-  const link = `${site}/matchday/weekoverzicht`;
+  const link = weekLink(site, dezeMaandag());
   const week = dezeWeek();
   const onderwerp = `Weekoverzicht ${week} staat klaar`;
   const html = `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;padding:24px;background:#141010;color:#ffffff;border-radius:12px">
   <h2 style="margin:0 0 12px">Wedstrijden deze week</h2>
-  <p style="color:#dddddd;line-height:1.5">Het overzicht van alle wedstrijden van ${week} staat klaar voor Facebook en Instagram. Open de pagina, kijk het beeld na, download het en kopieer de tekst.</p>
+  <p style="color:#dddddd;line-height:1.5">Het overzicht van alle wedstrijden van ${week} staat klaar. Vanavond om 18:00 zet de thuis-pc het vanzelf op Facebook en Instagram. Wilt ge het eerst nakijken, of het meteen plaatsen, open dan de pagina.</p>
   <p style="margin:24px 0"><a href="${link}" style="display:inline-block;padding:14px 24px;background:#9e1b1b;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:700">Weekoverzicht openen</a></p>
-  <p style="color:#999999;font-size:13px">Op de gsm kan je het beeld vanop de pagina meteen delen naar Facebook of Instagram.</p>
+  <p style="color:#999999;font-size:13px">Is het om 20:00 nog niet geplaatst, dan krijgt ge nog een mail.</p>
 </div>`;
 
   if (request.nextUrl.searchParams.get("droog") === "1") {
