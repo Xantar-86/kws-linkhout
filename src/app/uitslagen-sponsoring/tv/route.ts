@@ -22,22 +22,26 @@ import { SPONSORS } from "@/lib/sponsors";
  * worden gemaakt met scripts/tv-ploegfotos.py; na een nieuwe ploegfoto of een
  * nieuw sjabloon dat script opnieuw draaien.
  *
- * Om de 3 ploegen komt een affiche (AFFICHE hieronder, nu de wafelverkoop
- * 2026). Na de actie AFFICHE op null zetten.
+ * Om de 3 ploegen komen de affiches (AFFICHES hieronder) na elkaar. Na een
+ * actie die affiche uit de lijst halen.
  *
  * Alles wordt in de browser opgehaald: de bond laat sinds oktober 2026 enkel
  * echte browsers toe. Datums en uren staan vast op Brussel.
  *
  * In het adres:
  *   ?ploeg=25&sponsor=12   seconden per ploeg en per sponsorscherm
- *   ?affiche=20            seconden voor de affiche om de 3 ploegen (standaard 20, 0 = geen affiche)
+ *   ?affiche=20            seconden voor elke affiche (standaard de tijd in AFFICHES, 0 = geen affiches)
  *   ?foto=8                seconden voor de ploegfoto vóór elke ploeg (standaard 8, 0 = geen foto's)
  *   ?live=1                herlaadt vanzelf zodra de pagina verandert (handig bij aanpassen)
  *   ?dia=2&vast=1          begint bij de derde dia en blijft daar staan
  */
 
-/** Affiche die om de 3 ploegen schermvullend verschijnt; null = geen. */
-const AFFICHE: string | null = "/images/tv/wafelverkoop-2026.jpg";
+/** Affiches die om de 3 ploegen schermvullend na elkaar verschijnen; leeg = geen. */
+const AFFICHES: { beeld: string; seconden: number }[] = [
+  { beeld: "/images/tv/wafelverkoop-2026.jpg", seconden: 20 },
+  { beeld: "/images/tv/poetshulp-2026.jpg", seconden: 10 },
+  { beeld: "/images/tv/vrijwilligers-2026.jpg", seconden: 10 },
+];
 
 /**
  * Sponsors die al op het tv-scherm staan (strook en sponsordia), maar nog niet
@@ -46,6 +50,7 @@ const AFFICHE: string | null = "/images/tv/wafelverkoop-2026.jpg";
 const EXTRA_TV = [
   { naam: "R&V Algemene renovatie", beeld: "/images/sponsors/r&v.png" },
   { naam: "AFS Care", beeld: "/images/sponsors/afs-care.png" },
+  { naam: "Café de Nachtmis", beeld: "/images/sponsors/cafe-de-nachtmis.png" },
 ];
 
 /** Sponsors uit src/lib/sponsors.ts die niet meer op het tv-scherm komen. */
@@ -173,7 +178,7 @@ const SCRIPT = `
   var TZ = 'Europe/Brussels';
   var PLOEGEN_PER_SPONSOR = 4;
   var PLOEGEN_PER_AFFICHE = 3;
-  var AFFICHE = window.__AFFICHE;
+  var AFFICHES = window.__AFFICHES || [];
   var RIJEN_ZICHTBAAR = 8;
   var VORM_AANTAL = 5;
   var VERVERS_MS = 30 * 60000;
@@ -200,7 +205,8 @@ const SCRIPT = `
   var TIJD_PLOEG = seconden('ploeg', 20) * 1000;
   var TIJD_SPONSOR = seconden('sponsor', 12) * 1000;
   var afficheParam = Number(param('affiche'));
-  var TIJD_AFFICHE = param('affiche') !== null && isFinite(afficheParam) && afficheParam >= 0 ? afficheParam * 1000 : 20000;
+  // null = elke affiche zijn eigen tijd uit AFFICHES.
+  var TIJD_AFFICHE = param('affiche') !== null && isFinite(afficheParam) && afficheParam >= 0 ? afficheParam * 1000 : null;
   var fotoParam = Number(param('foto'));
   var TIJD_FOTO = param('foto') !== null && isFinite(fotoParam) && fotoParam >= 0 ? fotoParam * 1000 : 8000;
   var VAST = param('vast') === '1';
@@ -431,7 +437,9 @@ const SCRIPT = `
     (ploegen || []).forEach(function (p, i) {
       if (p.foto && TIJD_FOTO > 0) dias.push({ fotoVan: p });
       dias.push(p);
-      if (AFFICHE && TIJD_AFFICHE > 0 && (i + 1) % PLOEGEN_PER_AFFICHE === 0) dias.push('affiche');
+      if (TIJD_AFFICHE !== 0 && (i + 1) % PLOEGEN_PER_AFFICHE === 0) {
+        AFFICHES.forEach(function (a) { dias.push({ affiche: a }); });
+      }
       if ((i + 1) % PLOEGEN_PER_SPONSOR === 0) voegSponsorsToe();
     });
     if (!dias.length || !isSponsorDia(dias[dias.length - 1])) voegSponsorsToe();
@@ -463,7 +471,7 @@ const SCRIPT = `
   // De ploegfoto van de volgende dia alvast laden, zodat hij meteen verschijnt.
   var voorgeladen = {};
   function laadVooraf(dia) {
-    var src = dia === 'affiche' ? AFFICHE : dia && dia.fotoVan ? dia.fotoVan.foto : null;
+    var src = dia && dia.affiche ? dia.affiche.beeld : dia && dia.fotoVan ? dia.fotoVan.foto : null;
     if (src && !voorgeladen[src]) {
       voorgeladen[src] = true;
       new Image().src = src;
@@ -473,15 +481,15 @@ const SCRIPT = `
   function toon() {
     var dia = dias[nr % dias.length];
     var isFoto = !!(dia && dia.fotoVan);
-    var isAffiche = dia === 'affiche';
+    var isAffiche = !!(dia && dia.affiche);
     var isSponsor = isSponsorDia(dia);
     var isPloeg = !isFoto && !isAffiche && !isSponsor;
     var p = isFoto ? dia.fotoVan : dia;
-    var duur = isFoto ? TIJD_FOTO : isAffiche ? TIJD_AFFICHE : isPloeg ? TIJD_PLOEG : TIJD_SPONSOR;
+    var duur = isFoto ? TIJD_FOTO : isAffiche ? (TIJD_AFFICHE !== null ? TIJD_AFFICHE : dia.affiche.seconden * 1000) : isPloeg ? TIJD_PLOEG : TIJD_SPONSOR;
     el.titel.textContent = isFoto || isPloeg ? p.naam : 'Onze sponsors';
     el.onder.textContent = isFoto || isPloeg ? p.klassement.reeks : 'Zij maken het mogelijk';
     el.balk.innerHTML = VAST ? '' : '<div style="animation: tv-balk ' + duur + 'ms linear forwards"></div>';
-    el.inhoud.innerHTML = isAffiche ? '<div class="affiche"><img src="' + esc(AFFICHE) + '" alt=""></div>' : isFoto ? fotoDia(p) : isPloeg ? ploegDia(dia) : sponsorDia(mislukt && ploegen.length === 0, isSponsor ? dia.sponsorPagina : 0);
+    el.inhoud.innerHTML = isAffiche ? '<div class="affiche"><img src="' + esc(dia.affiche.beeld) + '" alt=""></div>' : isFoto ? fotoDia(p) : isPloeg ? ploegDia(dia) : sponsorDia(mislukt && ploegen.length === 0, isSponsor ? dia.sponsorPagina : 0);
     el.strook.style.display = isPloeg ? '' : 'none';
     if (isFoto) pasNaamAan();
     // Bij de ploegfoto geen kopbalk: de naam staat boven de foto, zo kan die groter.
@@ -536,7 +544,7 @@ function pagina(): string {
   <div id="inhoud"><div class="wacht">De uitslagen worden opgehaald...</div></div>
   <div id="strook" class="strook" style="display:none"><div class="oproep"><b class="disp">Ook sponsor worden?</b><span>kwslinkhout.be/sponsoring</span></div><div class="venster"><div class="rol"></div></div></div>
 </main>
-<script>window.__PLOEGEN = ${json(PLOEGEN)}; window.__SPONSORS = ${json(SPONSORS.filter((s) => !NIET_OP_TV.includes(s.naam)))}; window.__AFFICHE = ${json(AFFICHE)}; window.__EXTRA_TV = ${json(EXTRA_TV)};</script>
+<script>window.__PLOEGEN = ${json(PLOEGEN)}; window.__SPONSORS = ${json(SPONSORS.filter((s) => !NIET_OP_TV.includes(s.naam)))}; window.__AFFICHES = ${json(AFFICHES)}; window.__EXTRA_TV = ${json(EXTRA_TV)};</script>
 <script>${SCRIPT}</script>
 </body>
 </html>`;
