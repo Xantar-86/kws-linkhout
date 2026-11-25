@@ -22,8 +22,9 @@ import { SPONSORS } from "@/lib/sponsors";
  * worden gemaakt met scripts/tv-ploegfotos.py; na een nieuwe ploegfoto of een
  * nieuw sjabloon dat script opnieuw draaien.
  *
- * Om de 3 ploegen komen de affiches (AFFICHES hieronder) na elkaar. Na een
- * actie die affiche uit de lijst halen.
+ * Om de 2 ploegen komt een affiche of de sponsors, om beurten. De affiches
+ * (AFFICHES hieronder) komen telkens één per keer, op rij, zodat ze verdeeld
+ * over de ronde verschijnen. Na een actie die affiche uit de lijst halen.
  *
  * Alles wordt in de browser opgehaald: de bond laat sinds oktober 2026 enkel
  * echte browsers toe. Datums en uren staan vast op Brussel.
@@ -36,11 +37,13 @@ import { SPONSORS } from "@/lib/sponsors";
  *   ?dia=2&vast=1          begint bij de derde dia en blijft daar staan
  */
 
-/** Affiches die om de 3 ploegen schermvullend na elkaar verschijnen; leeg = geen. */
+/** Affiches die om beurten schermvullend verschijnen; leeg = geen. */
 const AFFICHES: { beeld: string; seconden: number }[] = [
   { beeld: "/images/tv/wafelverkoop-2026.jpg", seconden: 20 },
   { beeld: "/images/tv/poetshulp-2026.jpg", seconden: 10 },
   { beeld: "/images/tv/vrijwilligers-2026.jpg", seconden: 10 },
+  // Opleiding op 14/12/2026; daarna weghalen.
+  { beeld: "/images/tv/hartveilige-club-2026.jpg", seconden: 20 },
 ];
 
 /**
@@ -177,7 +180,7 @@ const SCRIPT = `
   var LINKHOUT = '1595';
   var TZ = 'Europe/Brussels';
   var PLOEGEN_PER_SPONSOR = 4;
-  var PLOEGEN_PER_AFFICHE = 3;
+  var PLOEGEN_PER_AFFICHE = 2;
   var AFFICHES = window.__AFFICHES || [];
   var RIJEN_ZICHTBAAR = 8;
   var VORM_AANTAL = 5;
@@ -431,18 +434,32 @@ const SCRIPT = `
   setInterval(klok, 15000);
 
   var ploegen = null, mislukt = false, nr = 0, dias = [], timer = null;
+  // Welke affiche de volgende keer aan de beurt is; loopt door over de rondes.
+  var afficheTeller = 0;
+  function welkeAffiche(dia, verbruik) {
+    if (!dia || !dia.afficheBeurt) return dia;
+    var a = AFFICHES[afficheTeller % AFFICHES.length];
+    if (verbruik) afficheTeller++;
+    return { affiche: a };
+  }
 
   function maakDias() {
     dias = [];
     (ploegen || []).forEach(function (p, i) {
       if (p.foto && TIJD_FOTO > 0) dias.push({ fotoVan: p });
       dias.push(p);
-      if (TIJD_AFFICHE !== 0 && (i + 1) % PLOEGEN_PER_AFFICHE === 0) {
-        AFFICHES.forEach(function (a) { dias.push({ affiche: a }); });
-      }
+      // Sponsors en affiche nooit op dezelfde plaats: daar gaan de sponsors voor.
       if ((i + 1) % PLOEGEN_PER_SPONSOR === 0) voegSponsorsToe();
+      else if (AFFICHES.length && TIJD_AFFICHE !== 0 && (i + 1) % PLOEGEN_PER_AFFICHE === 0) dias.push({ afficheBeurt: true });
     });
-    if (!dias.length || !isSponsorDia(dias[dias.length - 1])) voegSponsorsToe();
+    // Afsluiten: sponsors als die minstens 2 ploegen geleden kwamen, anders
+    // een affiche, zodat er geen twee sponsorblokken kort na elkaar staan.
+    var n = (ploegen || []).length;
+    if (!n || n % PLOEGEN_PER_SPONSOR >= 2 || !AFFICHES.length || TIJD_AFFICHE === 0) {
+      if (!dias.length || !isSponsorDia(dias[dias.length - 1])) voegSponsorsToe();
+    } else if (n % PLOEGEN_PER_SPONSOR !== 0) {
+      dias.push({ afficheBeurt: true });
+    }
   }
   function voegSponsorsToe() {
     for (var k = 0; k < SPONSOR_PAGINAS.length; k++) dias.push({ sponsorPagina: k });
@@ -471,6 +488,7 @@ const SCRIPT = `
   // De ploegfoto van de volgende dia alvast laden, zodat hij meteen verschijnt.
   var voorgeladen = {};
   function laadVooraf(dia) {
+    dia = welkeAffiche(dia, false);
     var src = dia && dia.affiche ? dia.affiche.beeld : dia && dia.fotoVan ? dia.fotoVan.foto : null;
     if (src && !voorgeladen[src]) {
       voorgeladen[src] = true;
@@ -481,6 +499,7 @@ const SCRIPT = `
   function toon() {
     var dia = dias[nr % dias.length];
     var isFoto = !!(dia && dia.fotoVan);
+    dia = welkeAffiche(dia, true);
     var isAffiche = !!(dia && dia.affiche);
     var isSponsor = isSponsorDia(dia);
     var isPloeg = !isFoto && !isAffiche && !isSponsor;
