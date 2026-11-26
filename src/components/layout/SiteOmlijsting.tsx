@@ -34,6 +34,8 @@ const ZONDER_OMLIJSTING = [
   "uitslagen-sponsoring",
   // Het spelersdossier van de jeugd: achter een login, met een eigen kop.
   "spelers",
+  // De evaluatie via een persoonlijke link: eigen kop, geen menu.
+  "evaluatie",
 ];
 
 export function SiteOmlijsting({ children }: { children: React.ReactNode }) {

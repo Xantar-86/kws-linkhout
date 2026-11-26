@@ -219,6 +219,7 @@ export const SPELER: Rubriek[] = [
       { id: "s13", soort: "tekst", tekst: "Waar ben ik goed in, waar ben ik trots op?", groepen: A },
       { id: "s14", soort: "tekst", tekst: "Waar wil ik beter in worden?", groepen: A },
       { id: "s15", soort: "tekst", tekst: "Wat vind ik het leukst aan de training?", groepen: A },
+      { id: "s23", soort: "tekst", tekst: "Wat vind ik het minst leuk aan de training?", groepen: A },
       { id: "s16", soort: "tekst", tekst: "Wat zou ik graag anders zien?", groepen: M },
     ],
   },
