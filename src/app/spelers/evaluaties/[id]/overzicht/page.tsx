@@ -58,7 +58,7 @@ export default async function Overzicht({ params }: { params: Promise<{ id: stri
 
       <Kaart titel="Versturen">
         <p className="text-sm text-inkt-700">
-          Na het versturen krijgt elke speler en elke ouder een eigen link. Die stuurt ge door via WhatsApp of mail, met één klik
+          Na het versturen krijgt elke speler en elke ouder een eigen link. Die stuur je door via WhatsApp of mail, met één klik
           per persoon. Wat ze invullen, komt meteen op de fiche van de juiste speler.
         </p>
         <Versturen actie={rondeVersturen} id={id} tot={r.open_tot} aantal={count ?? 0} />

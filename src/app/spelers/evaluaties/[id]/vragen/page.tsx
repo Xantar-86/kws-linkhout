@@ -21,8 +21,8 @@ export default async function VragenKiezen({ params }: { params: Promise<{ id: s
         <Stappen id={id} stap={2} />
       </div>
       <p className="max-w-3xl text-sm text-inkt-700">
-        Alle vragen die bij deze leeftijd passen, staan aangevinkt. Vink af wat ge niet wilt gebruiken en voeg gerust eigen
-        vragen toe. Daarna ziet ge in het overzicht precies wat de spelers en ouders te zien krijgen.
+        Alle vragen die bij deze leeftijd passen, staan aangevinkt. Vink af wat je niet wilt gebruiken en voeg gerust eigen
+        vragen toe. Daarna zie je in het overzicht precies wat de spelers en ouders te zien krijgen.
       </p>
       <VragenKiezer rondeId={id} groepen={groepen} start={{ keuze: r.keuze, eigen: r.eigen ?? [] }} actie={vragenBewaren} />
     </div>

@@ -67,7 +67,7 @@ export default async function Spelers() {
 
       {lijst.length === 0 ? (
         <p className="rounded-xl border border-zand-200 bg-white p-5 text-inkt-700">
-          Er zijn nog geen ploegen aan uw account gekoppeld. Vraag het aan de beheerder.
+          Er zijn nog geen ploegen aan je account gekoppeld. Vraag het aan de beheerder.
         </p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

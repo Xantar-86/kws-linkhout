@@ -104,7 +104,7 @@ export default async function TrainerInvullen({ params }: { params: Promise<{ id
           {tr.ingediend && (
             <Kaart titel="Gesprek met de speler">
               <p className="text-sm text-inkt-700">
-                Bespreek de evaluatie met {s.voornaam}. Daarna kunt ge het verslag zichtbaar maken: speler en ouders zien het dan via
+                Bespreek de evaluatie met {s.voornaam}. Daarna kun je het verslag zichtbaar maken: speler en ouders zien het dan via
                 hun eigen link.
               </p>
               <Besproken

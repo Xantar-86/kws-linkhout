@@ -320,7 +320,7 @@ export default function WeekoverzichtClient() {
         <h1 className="text-3xl font-bold">Weekoverzicht voor sociale media</h1>
         <p className="mt-2 text-white/70">
           Alle wedstrijden van alle ploegen, rechtstreeks van de RBFA. Elke maandag om 18:00 komt
-          het vanzelf op Facebook en Instagram. Met de link uit de maandagmail kunt ge het ook hier
+          het vanzelf op Facebook en Instagram. Met de link uit de maandagmail kun je het ook hier
           plaatsen.
         </p>
 

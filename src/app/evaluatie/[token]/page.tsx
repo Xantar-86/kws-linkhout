@@ -58,8 +58,8 @@ export default async function EvaluatieViaLink({ params }: { params: Promise<{ t
           </h1>
           {ouders ? (
             <p className="text-inkt-700">
-              Twee keer per seizoen staan we stil bij hoe het gaat met elke speler. De trainer kijkt naar het voetbal; van u willen we
-              vooral horen hoe {s.voornaam} zich voelt bij de club en wat u thuis merkt. Het duurt een vijftal minuten.
+              Twee keer per seizoen staan we stil bij hoe het gaat met elke speler. De trainer kijkt naar het voetbal; van jou willen we
+              vooral horen hoe {s.voornaam} zich voelt bij de club en wat je thuis merkt. Het duurt een vijftal minuten.
             </p>
           ) : jong ? (
             <p className="text-inkt-700">
@@ -72,7 +72,7 @@ export default async function EvaluatieViaLink({ params }: { params: Promise<{ t
               samen. Er zijn geen foute antwoorden.
             </p>
           )}
-          {open && <p className="text-sm text-inkt-600">Invullen kan tot en met {datum(r.open_tot)}. Tussentijds bewaren mag, dezelfde link brengt u later terug.</p>}
+          {open && <p className="text-sm text-inkt-600">Invullen kan tot en met {datum(r.open_tot)}. Tussentijds bewaren mag, dezelfde link brengt je later terug.</p>}
         </section>
 
         {verslag && (
@@ -97,14 +97,14 @@ export default async function EvaluatieViaLink({ params }: { params: Promise<{ t
             verborgen={{ token }}
             actie={linkBewaren}
             ingediend={e.ingediend}
-            naamVeld={ouders ? { label: "Ingevuld door (uw naam, niet verplicht)", start: e.ingevuld_door ?? "" } : undefined}
+            naamVeld={ouders ? { label: "Ingevuld door (je naam, niet verplicht)", start: e.ingevuld_door ?? "" } : undefined}
             knopTekst="Versturen"
           />
         ) : (
           <section className="grid gap-2 rounded-xl border border-zand-200 bg-white p-5">
             <h2 className="font-display text-xl font-bold uppercase">Deze evaluatie is afgesloten</h2>
             <p className="text-inkt-700">
-              {e.ingediend ? "Bedankt, uw antwoorden zijn goed aangekomen." : "Er kan niet meer ingevuld worden. Neem contact op met de trainer als u toch nog iets wilt meegeven."}
+              {e.ingediend ? "Bedankt, je antwoorden zijn goed aangekomen." : "Er kan niet meer ingevuld worden. Neem contact op met de trainer als je toch nog iets wilt meegeven."}
             </p>
           </section>
         )}

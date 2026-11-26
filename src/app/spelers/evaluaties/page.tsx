@@ -29,7 +29,7 @@ export default async function Evaluaties() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-bold uppercase">Evaluaties</h1>
-          <p className="text-sm text-inkt-700">Stel per ploeg een evaluatie samen, kies de vragen en stuur ze naar uw spelers en hun ouders.</p>
+          <p className="text-sm text-inkt-700">Stel per ploeg een evaluatie samen, kies de vragen en stuur ze naar je spelers en hun ouders.</p>
         </div>
         <Link href="/spelers/evaluaties/nieuw" className="rounded-lg bg-primary-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-800">
           Nieuwe evaluatie
@@ -39,7 +39,7 @@ export default async function Evaluaties() {
       {zichtbaar.length === 0 ? (
         <Kaart titel="Nog geen evaluaties">
           <p className="text-sm text-inkt-700">
-            Maak een nieuwe evaluatie voor uw ploeg. Ge kiest eerst de vragen, bekijkt dan hoe het eruitziet, en stuurt pas daarna
+            Maak een nieuwe evaluatie voor je ploeg. Je kiest eerst de vragen, bekijkt dan hoe het eruitziet, en stuurt pas daarna
             de persoonlijke links door.
           </p>
         </Kaart>

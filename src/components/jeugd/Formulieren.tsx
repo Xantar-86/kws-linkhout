@@ -308,7 +308,7 @@ export function MailVoorbeeld({ voorbeelden }: { voorbeelden: { label: string; u
       <div className="grid gap-2 px-3 pb-3">
         <p className="text-inkt-700">
           De mailknop zet deze opgemaakte mail op het klembord en opent een lege mail met ontvanger en onderwerp. Plak de mail met Ctrl+V en
-          verstuur hem vanuit uw eigen mailbox: antwoorden komen zo rechtstreeks bij u.
+          verstuur hem vanuit je eigen mailbox: antwoorden komen zo rechtstreeks bij jou.
         </p>
         {voorbeelden.length > 1 && (
           <div className="flex flex-wrap gap-1.5">

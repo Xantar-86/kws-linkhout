@@ -7,7 +7,7 @@ type Staat = { fout?: string; ok?: string } | null;
 
 const ROL_NAAM: Record<EvalRol, string> = { trainer: "Trainer", speler: "Speler", ouders: "Ouders" };
 const ROL_UITLEG: Record<EvalRol, string> = {
-  trainer: "Wat gij invult per speler. Scores van 1 tot 5.",
+  trainer: "Wat jij invult per speler. Scores van 1 tot 5.",
   speler: "De zelfevaluatie, in ik-taal. Tot U12 met gezichtjes, vanaf U13 met scores.",
   ouders: "Geen voetbaltechniek: hoe hun kind zich voelt en wat ze thuis merken.",
 };

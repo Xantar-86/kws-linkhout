@@ -14,7 +14,7 @@
  *   één lijst van maximaal drie werkpunten, die bij de volgende evaluatie
  *   bovenaan staan om op te volgen.
  * - De vier spelfases zitten in de tactische vragen.
- * - "Wat merkt ge thuis" en "wat moet de trainer weten" zijn één vraag.
+ * - "Wat merk je thuis" en "wat moet de trainer weten" zijn één vraag.
  *
  * De ids blijven altijd dezelfde: oude antwoorden hangen eraan vast. Een
  * vraag weghalen mag, een id hergebruiken voor iets anders niet.
@@ -231,7 +231,7 @@ export const SPELER: Rubriek[] = [
 export const OUDERS: Rubriek[] = [
   {
     id: "kind",
-    titel: "Hoe gaat het met uw kind",
+    titel: "Hoe gaat het met je kind",
     vragen: [
       { id: "o1", soort: "score", tekst: "Mijn kind gaat graag naar de training", groepen: A },
       { id: "o2", soort: "score", tekst: "Mijn kind voelt zich goed in de ploeg", groepen: A },
@@ -250,16 +250,16 @@ export const OUDERS: Rubriek[] = [
   },
   {
     id: "woorden",
-    titel: "In uw eigen woorden",
+    titel: "In je eigen woorden",
     vragen: [
       {
         id: "o8",
         soort: "tekst",
-        tekst: "Wat merkt u thuis op, of is er iets wat de trainer moet weten?",
+        tekst: "Wat merk je thuis op, of is er iets wat de trainer moet weten?",
         hint: "Bv. motivatie, vermoeidheid, kleine blessures, drukte op school",
         groepen: A,
       },
-      { id: "o9", soort: "tekst", tekst: "Waarin kan uw kind volgens u nog groeien?", groepen: A },
+      { id: "o9", soort: "tekst", tekst: "Waarin kan je kind volgens jou nog groeien?", groepen: A },
       {
         id: "o11",
         soort: "tekst",

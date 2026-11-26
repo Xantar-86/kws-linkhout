@@ -90,7 +90,7 @@ export default async function Beheer({ searchParams }: { searchParams: Promise<{
       <div id="nieuw">
         <Kaart titel="Iemand toegang geven">
           <p className="text-sm text-inkt-700">
-            Na het bewaren krijgt ge een link. Stuur die zelf door, bijvoorbeeld via WhatsApp. Via die link kiest de persoon
+            Na het bewaren krijg je een link. Stuur die zelf door, bijvoorbeeld via WhatsApp. Via die link kiest de persoon
             een wachtwoord. Wachtwoord vergeten? Maak hierboven een nieuwe link.
           </p>
           <ToevoegFormulier

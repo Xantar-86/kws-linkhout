@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
   if (!geldigeWeek(week) || !sleutelKlopt(week, request.nextUrl.searchParams.get("t"))) {
     return NextResponse.json({ error: "Ongeldige of vervallen link" }, { status: 401 });
   }
-  // Werkt de pagina-sleutel nog? Meta kan ze intrekken; zo ziet ge dat voor ge plaatst.
+  // Werkt de pagina-sleutel nog? Meta kan ze intrekken; zo zie je dat voor je plaatst.
   const token = process.env.FB_PAGE_TOKEN;
   const meta = token ? await controleerToken(token) : { geldig: false, details: "FB_PAGE_TOKEN ontbreekt" };
   return NextResponse.json({ week, live: isLive(), meta, geplaatst: await staat(week) });
@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
   }
 
   const allesOk = resultaten.every((r) => r.ok);
-  // De pc meldt altijd hoe het afliep; bij de knop ziet ge het op de pagina zelf.
+  // De pc meldt altijd hoe het afliep; bij de knop zie je het op de pagina zelf.
   if (bron === "pc" || !allesOk) {
     const regels = resultaten.map((r) => `<li>${r.bericht.replace(/[<>&]/g, "")}</li>`).join("");
     const titel = !allesOk

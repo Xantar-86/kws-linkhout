@@ -7,7 +7,7 @@ export default async function Uitnodiging({ searchParams }: { searchParams: Prom
       <div className="grid gap-1">
         <h1 className="font-display text-2xl font-bold uppercase">Welkom</h1>
         <p className="text-sm text-inkt-700">
-          Kies een wachtwoord voor het spelersdossier van KWS Linkhout. Daarna meldt ge u aan met uw e-mailadres en dit
+          Kies een wachtwoord voor het spelersdossier van KWS Linkhout. Daarna meld je je aan met je e-mailadres en dit
           wachtwoord.
         </p>
       </div>

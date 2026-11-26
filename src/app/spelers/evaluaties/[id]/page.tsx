@@ -174,7 +174,7 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
                           bericht={
                             oud
                               ? `Dag ${s.voornaam}, hier is je evaluatie van KWS Linkhout. Vul ze in tegen ${tot}:`
-                              : `Dag, hier is de evaluatie die ${s.voornaam} zelf invult, gerust samen met u. Graag tegen ${tot}:`
+                              : `Dag, hier is de evaluatie die ${s.voornaam} zelf invult, gerust samen met jou. Graag tegen ${tot}:`
                           }
                           ontvangers={spelerOntvangers}
                           uitnodiging={uitnodiging("speler", s.voornaam, v.speler.token, groep)}

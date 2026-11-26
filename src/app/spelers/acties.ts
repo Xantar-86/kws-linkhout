@@ -35,7 +35,7 @@ async function basisUrl(): Promise<string> {
 export async function aanmelden(_vorige: Staat, form: FormData): Promise<Staat> {
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const wachtwoord = String(form.get("wachtwoord") ?? "");
-  if (!email || !wachtwoord) return { fout: "Vul uw e-mailadres en wachtwoord in." };
+  if (!email || !wachtwoord) return { fout: "Vul je e-mailadres en wachtwoord in." };
   const { data } = await db()
     .from("jeugd_gebruikers")
     .select("id, wachtwoord, sessie_versie")
@@ -120,7 +120,7 @@ export async function gebruikerAanpassen(_vorige: Staat, form: FormData): Promis
   const ploegen = form.getAll("ploegen").map(String);
   const beheerder = form.get("beheerder") === "on";
   if (!ROLLEN.includes(rol)) return { fout: "Kies een rol." };
-  if (id === ik.id && !beheerder) return { fout: "Ge kunt uzelf geen beheerder af maken." };
+  if (id === ik.id && !beheerder) return { fout: "Je kunt jezelf geen beheerder af maken." };
   const { error } = await db()
     .from("jeugd_gebruikers")
     .update({ rol, ploegen: rol === "bestuur" ? [] : ploegen, beheerder })
@@ -141,7 +141,7 @@ export async function nieuweLink(_vorige: Staat, form: FormData): Promise<Staat>
 export async function gebruikerVerwijderen(_vorige: Staat, form: FormData): Promise<Staat> {
   const ik = await vereisBeheerder();
   const id = String(form.get("id") ?? "");
-  if (id === ik.id) return { fout: "Ge kunt uw eigen account niet verwijderen." };
+  if (id === ik.id) return { fout: "Je kunt je eigen account niet verwijderen." };
   const { error } = await db().from("jeugd_gebruikers").delete().eq("id", id);
   if (error) return { fout: `Verwijderen mislukt: ${error.message}` };
   revalidatePath("/spelers/beheer");

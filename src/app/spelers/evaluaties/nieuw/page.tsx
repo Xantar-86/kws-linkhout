@@ -27,7 +27,7 @@ export default async function NieuweEvaluatie() {
       </div>
       <Kaart titel="Ploeg en datum">
         {ploegen.length === 0 ? (
-          <p className="text-sm text-inkt-700">Ge hebt nog geen toegang tot een ploeg. Vraag het aan de beheerder.</p>
+          <p className="text-sm text-inkt-700">Je hebt nog geen toegang tot een ploeg. Vraag het aan de beheerder.</p>
         ) : (
           <NieuweRonde
             actie={rondeMaken}

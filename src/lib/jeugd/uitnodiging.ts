@@ -77,31 +77,31 @@ function inhoud(u: Uitnodiging, aan: string) {
           ? `Bij de meeste vragen kiest ${v} een gezichtje. Lees de vragen voor waar nodig.`
           : "Beantwoord de vragen. Het duurt een paar minuten.",
         "Niet in één keer klaar? Klik op Tussentijds bewaren en ga later verder via dezelfde link.",
-        "Klik op Indienen als alles ingevuld is. Tot de einddatum kan u nog aanpassen.",
+        "Klik op Indienen als alles ingevuld is. Tot de einddatum kan je nog aanpassen.",
       ],
       daarna: `Ik leg de antwoorden naast mijn eigen evaluatie en bespreek ze met ${v}. Daarna staat het verslag bovenaan dezelfde link.`,
-      persoonlijk: `Deze link is enkel voor ${v}: stuur hem niet door. De vragen voor de ouders krijgt u met een aparte link.`,
+      persoonlijk: `Deze link is enkel voor ${v}: stuur hem niet door. De vragen voor de ouders krijg je met een aparte link.`,
       vraag: "Vragen? Antwoord gewoon op deze mail of spreek me aan op training.",
     };
   }
   return {
     onderwerp: `Evaluatie van ${v}: vragen voor de ouders (${u.ploeg})`,
-    titel: `Hoe ziet u het, als ouder?`,
+    titel: `Hoe zie jij het, als ouder?`,
     groet,
     intro: [
-      `Een paar keer per seizoen staan we bij KWS Linkhout even stil bij hoe het met elke speler gaat. Als trainer vul ik een evaluatie over ${v} in, ${v} doet dat zelf ook, en we horen graag hoe u het als ouder ziet.`,
-      `Het gaat niet over voetbaltechniek, wel over hoe ${v} zich voelt bij de ploeg en de club, wat u thuis hoort en waar we rekening mee kunnen houden.`,
+      `Een paar keer per seizoen staan we bij KWS Linkhout even stil bij hoe het met elke speler gaat. Als trainer vul ik een evaluatie over ${v} in, ${v} doet dat zelf ook, en we horen graag hoe jij het als ouder ziet.`,
+      `Het gaat niet over voetbaltechniek, wel over hoe ${v} zich voelt bij de ploeg en de club, wat je thuis hoort en waar we rekening mee kunnen houden.`,
     ],
     knop: "Vragen voor de ouders invullen",
     stappen: [
       "Klik op de knop. Aanmelden is niet nodig.",
       "Beantwoord de vragen. Het duurt een vijftal minuten.",
       "Niet in één keer klaar? Klik op Tussentijds bewaren en ga later verder via dezelfde link.",
-      "Klik op Indienen als alles ingevuld is. Tot de einddatum kan u nog aanpassen.",
+      "Klik op Indienen als alles ingevuld is. Tot de einddatum kan je nog aanpassen.",
     ],
     daarna:
-      `Ik neem uw antwoorden mee in het gesprek met ${v}. Daarna staat het verslag bovenaan dezelfde link.` +
-      (u.vertrouwelijk ? " Eén vak is enkel voor de jeugdcoördinator: wat u daar schrijft, krijg ik als trainer niet te zien." : ""),
+      `Ik neem je antwoorden mee in het gesprek met ${v}. Daarna staat het verslag bovenaan dezelfde link.` +
+      (u.vertrouwelijk ? " Eén vak is enkel voor de jeugdcoördinator: wat je daar schrijft, krijg ik als trainer niet te zien." : ""),
     persoonlijk: `Deze link hoort bij ${v}: stuur hem niet door.`,
     vraag: "Vragen? Antwoord gewoon op deze mail of spreek me aan aan het veld.",
   };

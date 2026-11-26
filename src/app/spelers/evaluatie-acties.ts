@@ -54,7 +54,7 @@ export async function rondeMaken(_vorige: Staat, form: FormData): Promise<Staat>
   if (!naam) return { fout: "Geef de evaluatie een naam, bv. Winterstop U13." };
   if (!DATUM.test(tot) || tot < vandaag()) return { fout: "Kies tot wanneer er ingevuld kan worden." };
   if (!ploegen.length) return { fout: "Kies minstens één ploeg." };
-  if (!ploegen.every((p) => magPloeg(ik, p))) return { fout: "Ge kunt enkel een evaluatie maken voor uw eigen ploegen." };
+  if (!ploegen.every((p) => magPloeg(ik, p))) return { fout: "Je kunt enkel een evaluatie maken voor je eigen ploegen." };
   const { data, error } = await db()
     .from("jeugd_rondes")
     .insert({ naam, seizoen: seizoenNaam(), open_tot: tot, ploegen: await inVolgorde(ploegen), aangemaakt_door: ik.naam })
@@ -132,7 +132,7 @@ export async function rondeAanpassen(_vorige: Staat, form: FormData): Promise<St
   const velden: Record<string, unknown> = { naam, open_tot: tot };
   const ploegen = form.getAll("ploegen").map(String);
   if (t.r.status === "concept" && ploegen.length) {
-    if (!ploegen.every((p) => magPloeg(t.ik, p))) return { fout: "Ge kunt enkel uw eigen ploegen kiezen." };
+    if (!ploegen.every((p) => magPloeg(t.ik, p))) return { fout: "Je kunt enkel je eigen ploegen kiezen." };
     velden.ploegen = await inVolgorde(ploegen);
   }
   const { data, error } = await db().from("jeugd_rondes").update(velden).eq("id", t.r.id).select("*").single();
@@ -243,7 +243,7 @@ export async function linkBewaren(_vorige: Staat, form: FormData): Promise<Staat
     })
     .eq("id", e.id);
   if (error) return { fout: "Bewaren lukte niet. Probeer het opnieuw." };
-  return { ok: indienen ? "Bedankt! Uw antwoorden zijn doorgestuurd." : "Tussentijds bewaard. U kunt later verder via dezelfde link." };
+  return { ok: indienen ? "Bedankt! Je antwoorden zijn doorgestuurd." : "Tussentijds bewaard. Je kunt later verder via dezelfde link." };
 }
 
 // ---------------------------------------------------------------------------
