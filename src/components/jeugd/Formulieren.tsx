@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import { maakUitnodiging, type Uitnodiging } from "@/lib/jeugd/uitnodiging";
 
 type Staat = { fout?: string; ok?: string } | null;
@@ -287,10 +287,23 @@ export function LinkKnoppen({
 /** Toont de trainer hoe de uitnodigingsmail eruitziet. */
 export function MailVoorbeeld({ voorbeelden }: { voorbeelden: { label: string; u: Uitnodiging }[] }) {
   const [keuze, setKeuze] = useState(0);
+  const [hoogte, setHoogte] = useState(900);
+  const kader = useRef<HTMLIFrameElement>(null);
+  // Het kader groeit mee met de mail, zodat de volledige mail zonder schuifbalk zichtbaar is.
+  const meet = useCallback(() => {
+    // De mail zelf meten, niet het document: dat is minstens zo hoog als het kader en zou nooit krimpen.
+    const mail = kader.current?.contentDocument?.body?.firstElementChild;
+    const h = mail ? Math.ceil(mail.getBoundingClientRect().height) : 0;
+    if (h > 0) setHoogte(h + 2);
+  }, []);
+  useEffect(() => {
+    window.addEventListener("resize", meet);
+    return () => window.removeEventListener("resize", meet);
+  }, [meet]);
   if (!voorbeelden.length) return null;
   const m = maakUitnodiging(voorbeelden[keuze].u);
   return (
-    <details className="rounded-lg border border-zand-200 bg-zand-50 text-sm">
+    <details className="rounded-lg border border-zand-200 bg-zand-50 text-sm" onToggle={() => requestAnimationFrame(meet)}>
       <summary className="cursor-pointer px-3 py-2 font-medium text-inkt-800">Zo ziet de mail eruit</summary>
       <div className="grid gap-2 px-3 pb-3">
         <p className="text-inkt-700">
@@ -312,7 +325,19 @@ export function MailVoorbeeld({ voorbeelden }: { voorbeelden: { label: string; u
           </div>
         )}
         <p className="text-xs text-inkt-600">Onderwerp: {m.onderwerp}</p>
-        <iframe title="Voorbeeld van de mail" srcDoc={`<body style="margin:0">${m.html}</body>`} className="h-[640px] w-full rounded-md border border-zand-200 bg-white" />
+        <iframe
+          ref={kader}
+          title="Voorbeeld van de mail"
+          srcDoc={`<body style="margin:0">${m.html}</body>`}
+          onLoad={() => {
+            meet();
+            // Het logo laadt soms later en maakt de mail dan nog iets hoger.
+            setTimeout(meet, 400);
+          }}
+          scrolling="no"
+          style={{ height: hoogte }}
+          className="w-full overflow-hidden rounded-md border border-zand-200 bg-white"
+        />
       </div>
     </details>
   );
