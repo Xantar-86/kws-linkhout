@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { maakUitnodiging, type Uitnodiging } from "@/lib/jeugd/uitnodiging";
 
 type Staat = { fout?: string; ok?: string } | null;
 type Actie = (vorige: Staat, form: FormData) => Promise<Staat>;
@@ -193,53 +194,127 @@ export function Besproken({
   );
 }
 
+/**
+ * Zet de opgemaakte mail op het klembord (html + gewone tekst) en opent een
+ * lege mail in het mailprogramma van de trainer. Een mailto-link kan zelf
+ * geen opmaak dragen, vandaar de omweg. Lukt het klembord niet, dan gaat de
+ * gewone tekst mee in de mail.
+ */
+async function opgemaakteMail(email: string, u: Uitnodiging, aan: string): Promise<boolean> {
+  const m = maakUitnodiging(u, aan);
+  let gekopieerd = false;
+  try {
+    if (typeof ClipboardItem !== "undefined" && navigator.clipboard?.write) {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          "text/html": new Blob([m.html], { type: "text/html" }),
+          "text/plain": new Blob([m.tekst], { type: "text/plain" }),
+        }),
+      ]);
+      gekopieerd = true;
+    }
+  } catch {
+    gekopieerd = false;
+  }
+  const delen = [`subject=${encodeURIComponent(m.onderwerp)}`];
+  if (!gekopieerd) delen.push(`body=${encodeURIComponent(m.tekst)}`);
+  window.location.href = `mailto:${email}?${delen.join("&")}`;
+  return gekopieerd;
+}
+
 /** Kopieer- en deelknoppen voor één persoonlijke link. */
 export function LinkKnoppen({
   link,
   bericht,
   ontvangers,
+  uitnodiging,
 }: {
   link: string;
   bericht: string;
   ontvangers: { naam: string; gsm: string | null; email: string | null }[];
+  uitnodiging: Uitnodiging;
 }) {
   const [gekopieerd, setGekopieerd] = useState(false);
+  const [plakken, setPlakken] = useState(false);
   const tekst = `${bericht}\n${link}`;
   const wa = (gsm: string) => `https://wa.me/${gsm.replace(/[^\d]/g, "").replace(/^0/, "32")}?text=${encodeURIComponent(tekst)}`;
+  const voornaam = (naam: string) => (naam === "ouder" ? "" : naam.split(" ")[0]);
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <button
-        type="button"
-        onClick={() => navigator.clipboard.writeText(tekst).then(() => setGekopieerd(true), () => setGekopieerd(false))}
-        className="rounded-md border border-zand-300 bg-white px-2 py-1 text-xs font-medium hover:border-inkt-600"
-      >
-        {gekopieerd ? "Gekopieerd" : "Kopieer"}
-      </button>
-      {ontvangers.map((o, i) => (
-        <span key={i} className="inline-flex gap-1">
-          {o.gsm && (
-            <a
-              href={wa(o.gsm)}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`WhatsApp naar ${o.naam}`}
-              className="rounded-md bg-[#1f7a4d] px-2 py-1 text-xs font-medium text-white hover:bg-[#17603c]"
-            >
-              WhatsApp {o.naam.split(" ")[0]}
-            </a>
-          )}
-          {o.email && (
-            <a
-              href={`mailto:${o.email}?subject=${encodeURIComponent("Evaluatie KWS Linkhout")}&body=${encodeURIComponent(tekst)}`}
-              title={`Mail naar ${o.naam}`}
-              className="rounded-md border border-zand-300 bg-white px-2 py-1 text-xs font-medium hover:border-inkt-600"
-            >
-              Mail {o.naam.split(" ")[0]}
-            </a>
-          )}
-        </span>
-      ))}
+    <div className="grid gap-1.5">
+      <div className="flex flex-wrap items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => navigator.clipboard.writeText(tekst).then(() => setGekopieerd(true), () => setGekopieerd(false))}
+          className="rounded-md border border-zand-300 bg-white px-2 py-1 text-xs font-medium hover:border-inkt-600"
+        >
+          {gekopieerd ? "Gekopieerd" : "Kopieer"}
+        </button>
+        {ontvangers.map((o, i) => (
+          <span key={i} className="inline-flex gap-1">
+            {o.gsm && (
+              <a
+                href={wa(o.gsm)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`WhatsApp naar ${o.naam}`}
+                className="rounded-md bg-[#1f7a4d] px-2 py-1 text-xs font-medium text-white hover:bg-[#17603c]"
+              >
+                WhatsApp {o.naam.split(" ")[0]}
+              </a>
+            )}
+            {o.email && (
+              <button
+                type="button"
+                onClick={() => opgemaakteMail(o.email!, uitnodiging, voornaam(o.naam)).then(setPlakken)}
+                title={`Opgemaakte mail naar ${o.naam}`}
+                className="rounded-md border border-zand-300 bg-white px-2 py-1 text-xs font-medium hover:border-inkt-600"
+              >
+                Mail {o.naam.split(" ")[0]}
+              </button>
+            )}
+          </span>
+        ))}
+      </div>
+      {plakken && (
+        <p className="rounded-md bg-amber-50 px-2 py-1 text-xs text-amber-900">
+          De opgemaakte mail staat op het klembord. Plak hem in de lege mail met Ctrl+V (op gsm: lang drukken en Plakken).
+        </p>
+      )}
     </div>
+  );
+}
+
+/** Toont de trainer hoe de uitnodigingsmail eruitziet. */
+export function MailVoorbeeld({ voorbeelden }: { voorbeelden: { label: string; u: Uitnodiging }[] }) {
+  const [keuze, setKeuze] = useState(0);
+  if (!voorbeelden.length) return null;
+  const m = maakUitnodiging(voorbeelden[keuze].u);
+  return (
+    <details className="rounded-lg border border-zand-200 bg-zand-50 text-sm">
+      <summary className="cursor-pointer px-3 py-2 font-medium text-inkt-800">Zo ziet de mail eruit</summary>
+      <div className="grid gap-2 px-3 pb-3">
+        <p className="text-inkt-700">
+          De mailknop zet deze opgemaakte mail op het klembord en opent een lege mail met ontvanger en onderwerp. Plak de mail met Ctrl+V en
+          verstuur hem vanuit uw eigen mailbox: antwoorden komen zo rechtstreeks bij u.
+        </p>
+        {voorbeelden.length > 1 && (
+          <div className="flex flex-wrap gap-1.5">
+            {voorbeelden.map((v, i) => (
+              <button
+                key={v.label}
+                type="button"
+                onClick={() => setKeuze(i)}
+                className={`rounded-md px-2 py-1 text-xs font-medium ${i === keuze ? "bg-inkt-900 text-white" : "border border-zand-300 bg-white"}`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+        )}
+        <p className="text-xs text-inkt-600">Onderwerp: {m.onderwerp}</p>
+        <iframe title="Voorbeeld van de mail" srcDoc={`<body style="margin:0">${m.html}</body>`} className="h-[640px] w-full rounded-md border border-zand-200 bg-white" />
+      </div>
+    </details>
   );
 }
 

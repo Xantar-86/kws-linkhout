@@ -2,9 +2,11 @@ import Link from "next/link";
 import { db } from "@/lib/supabase";
 import { magPloeg } from "@/lib/jeugd/toegang";
 import { siteFoto, type Speler } from "@/lib/jeugd/gegevens";
-import { evaluatiesVanRonde, isOpen, status, vandaag, zorgVoorEvaluaties, type Evaluatie } from "@/lib/jeugd/evaluatie";
+import { evaluatiesVanRonde, instellingen, isOpen, status, vandaag, zorgVoorEvaluaties, type Evaluatie } from "@/lib/jeugd/evaluatie";
+import { groepVanPloeg, zichtbaar as vragenVoor, type Groep } from "@/lib/jeugd/vragen";
+import type { Uitnodiging } from "@/lib/jeugd/uitnodiging";
 import { basisUrl } from "@/lib/jeugd/url";
-import { KopieerAlles, LinkKnoppen, RondeAanpassen, VerwijderRonde } from "@/components/jeugd/Formulieren";
+import { KopieerAlles, LinkKnoppen, MailVoorbeeld, RondeAanpassen, VerwijderRonde } from "@/components/jeugd/Formulieren";
 import { rondeAanpassen, rondeVerwijderen } from "../../evaluatie-acties";
 import { Kaart, Portret, datumLang } from "../../Onderdelen";
 import { Stappen, rondeVoorPagina } from "./gedeeld";
@@ -62,6 +64,8 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
   const open = isOpen(r);
   const tot = datumLang(r.open_tot);
   const heeftAntwoorden = evals.some((e) => status(e) !== "leeg");
+  const inst = instellingen(r);
+  const vertrouwelijk = (g: Groep) => vragenVoor("ouders", g, false, inst).some((rb) => rb.vragen.some((v) => v.id === "o11"));
 
   return (
     <div className="grid gap-6">
@@ -92,6 +96,30 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
               .join("\n"),
           )
           .join("\n\n");
+        const ploegNaam = kort.get(ploegId) ?? "Ploeg";
+        const ploegGroep = groepVanPloeg(kort.get(ploegId));
+        const uitnodiging = (rol: Uitnodiging["rol"], voornaam: string, token: string, groep: Groep): Uitnodiging => ({
+          rol,
+          groep,
+          voornaam,
+          ploeg: ploegNaam,
+          ronde: r.naam,
+          tot,
+          trainer: ik.naam,
+          link: `${basis}/evaluatie/${token}`,
+          basis,
+          vertrouwelijk: vertrouwelijk(groep),
+        });
+        const eerste = rijen[0];
+        const voorbeelden = eerste
+          ? [
+              {
+                label: ploegGroep === "oud" ? "Mail aan de speler" : "Mail voor de speler",
+                u: uitnodiging("speler", eerste.s.voornaam, eerste.v.speler?.token ?? "voorbeeld", ploegGroep),
+              },
+              { label: "Mail aan de ouders", u: uitnodiging("ouders", eerste.s.voornaam, eerste.v.ouders?.token ?? "voorbeeld", ploegGroep) },
+            ]
+          : [];
 
         return (
           <Kaart
@@ -109,10 +137,12 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
                 <KopieerAlles tekst={lijst} label="Alle links kopiëren" />
               </div>
             )}
+            {open && <MailVoorbeeld voorbeelden={voorbeelden} />}
             <ul className="grid divide-y divide-zand-100">
               {rijen.map(({ s, v }) => {
                 const naam = `${s.voornaam} ${s.achternaam}`;
-                const oud = (v.speler ?? v.trainer)?.groep === "oud";
+                const groep = (v.speler ?? v.trainer ?? v.ouders)?.groep ?? ploegGroep;
+                const oud = groep === "oud";
                 const ouders = s.ouders.map((o) => ({ naam: o.naam || "ouder", gsm: o.gsm, email: o.email }));
                 const spelerOntvangers = oud && (s.gsm || s.email) ? [{ naam: s.voornaam, gsm: s.gsm, email: s.email }] : ouders;
                 return (
@@ -147,6 +177,7 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
                               : `Dag, hier is de evaluatie die ${s.voornaam} zelf invult, gerust samen met u. Graag tegen ${tot}:`
                           }
                           ontvangers={spelerOntvangers}
+                          uitnodiging={uitnodiging("speler", s.voornaam, v.speler.token, groep)}
                         />
                       )}
                     </div>
@@ -159,6 +190,7 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
                           link={`${basis}/evaluatie/${v.ouders.token}`}
                           bericht={`Dag, hier zijn de vragen voor de ouders bij de evaluatie van ${s.voornaam} bij KWS Linkhout. Graag invullen tegen ${tot}:`}
                           ontvangers={ouders}
+                          uitnodiging={uitnodiging("ouders", s.voornaam, v.ouders.token, groep)}
                         />
                       )}
                       {open && !s.ouders.length && <span className="text-xs text-inkt-600">Geen ouders in Spond: kopieer de link.</span>}
