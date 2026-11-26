@@ -116,7 +116,7 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
                 const ouders = s.ouders.map((o) => ({ naam: o.naam || "ouder", gsm: o.gsm, email: o.email }));
                 const spelerOntvangers = oud && (s.gsm || s.email) ? [{ naam: s.voornaam, gsm: s.gsm, email: s.email }] : ouders;
                 return (
-                  <li key={s.id} className="grid gap-3 py-3 lg:grid-cols-[minmax(12rem,1fr)_auto_minmax(0,1.2fr)_minmax(0,1.2fr)] lg:items-start">
+                  <li key={s.id} className="grid gap-3 py-3 lg:grid-cols-[13rem_12rem_minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
                     <Link href={`/spelers/speler/${s.id}`} className="flex items-center gap-3 font-medium hover:text-primary-700">
                       <Portret foto={siteFoto(s)} naam={naam} grootte={36} />
                       {naam}

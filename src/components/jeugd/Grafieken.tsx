@@ -121,11 +121,16 @@ export function Evolutie({ punten }: { punten: { ronde: string; trainer: Record<
                     </text>
                   </g>
                 ))}
-                {punten.map((p, i) => (
-                  <text key={i} x={x(i)} y={H - 6} textAnchor="middle" fontSize="9" fill="#6b6457">
-                    {p.ronde.length > 16 ? `${p.ronde.slice(0, 15)}…` : p.ronde}
-                  </text>
-                ))}
+                {punten.map((p, i) => {
+                  // Eerste label links uitlijnen, laatste rechts, zodat niets buiten het vak valt.
+                  const anker = punten.length === 1 ? "middle" : i === 0 ? "start" : i === punten.length - 1 ? "end" : "middle";
+                  const max = punten.length > 2 ? 14 : 24;
+                  return (
+                    <text key={i} x={anker === "start" ? m.l - 4 : anker === "end" ? B - m.r + 4 : x(i)} y={H - 6} textAnchor={anker} fontSize="9" fill="#6b6457">
+                      {p.ronde.length > max ? `${p.ronde.slice(0, max - 1)}…` : p.ronde}
+                    </text>
+                  );
+                })}
                 {lijn("speler", d)}
                 {lijn("trainer", d)}
               </svg>

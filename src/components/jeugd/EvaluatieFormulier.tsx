@@ -391,7 +391,7 @@ export function EvaluatieFormulier(props: FormulierProps) {
             </p>
           )}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-auto text-sm tabular-nums text-inkt-600">
+            <span className="w-full text-sm tabular-nums text-inkt-600 sm:mr-auto sm:w-auto">
               {beantwoord} van {totaalScores} scores
               {props.ingediend && <> · al ingediend, aanpassen mag nog</>}
             </span>
