@@ -32,6 +32,8 @@ const ZONDER_OMLIJSTING = [
   "voetbalkamp",
   // Het scherm voor de tv in de kantine: vult het hele scherm zelf.
   "uitslagen-sponsoring",
+  // Het spelersdossier van de jeugd: achter een login, met een eigen kop.
+  "spelers",
 ];
 
 export function SiteOmlijsting({ children }: { children: React.ReactNode }) {

@@ -27,6 +27,8 @@ export default function robots(): MetadataRoute.Robots {
           "/mosselfeest",
           // De stabiliteitstraining, enkel voor wie de link kreeg.
           "/stabiliteitstraining",
+          // Het spelersdossier van de jeugd, enkel na aanmelden.
+          "/spelers",
           // Antwoorden van de server, geen pagina's.
           "/api/",
         ],
