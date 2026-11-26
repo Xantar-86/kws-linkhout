@@ -120,6 +120,8 @@ export function EvaluatieFormulier(props: FormulierProps) {
       props.start.opvolging ?? vorigeWerkpunten?.werkpunten.map((tekst) => ({ tekst, status: "" as const, feedback: "" })),
   }));
   const [toonMist, setToonMist] = useState(false);
+  // Gecontroleerd, want React maakt gewone velden leeg na het bewaren.
+  const [naam, setNaam] = useState(naamVeld?.start ?? "");
 
   const rubrieken = useMemo(() => zichtbaar(rol, groep, a.keeper, inst), [rol, groep, a.keeper, inst]);
   const mist = useMemo(() => new Set(ontbrekend(rol, groep, a, inst)), [rol, groep, a, inst]);
@@ -377,7 +379,7 @@ export function EvaluatieFormulier(props: FormulierProps) {
       {naamVeld && (
         <label className="grid gap-1 text-sm font-medium text-inkt-800">
           {naamVeld.label}
-          <input name="ingevuld_door" defaultValue={naamVeld.start} maxLength={80} disabled={alleenLezen} className={veld} />
+          <input name="ingevuld_door" value={naam} onChange={(e) => setNaam(e.target.value)} maxLength={80} disabled={alleenLezen} className={veld} />
         </label>
       )}
 
