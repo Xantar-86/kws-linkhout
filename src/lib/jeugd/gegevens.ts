@@ -234,3 +234,57 @@ export async function aandachtVoorSpelers(ids: string[]): Promise<Map<string, { 
   }
   return kaart;
 }
+
+// ---------------------------------------------------------------------------
+// Notities, blessures en ploeggeschiedenis
+
+export type Notitie = {
+  id: string;
+  soort: "notitie" | "blessure";
+  tekst: string;
+  van: string | null;
+  tot: string | null;
+  door: string | null;
+  aangemaakt: string;
+};
+
+export async function notities(spelerId: string): Promise<Notitie[]> {
+  const { data, error } = await db()
+    .from("jeugd_notities")
+    .select("id, soort, tekst, van, tot, door, aangemaakt")
+    .eq("speler_id", spelerId)
+    .order("aangemaakt", { ascending: false });
+  fout(error, "Notities");
+  return (data ?? []) as Notitie[];
+}
+
+export async function ploeghistoriek(spelerId: string): Promise<{ seizoen: string; ploegen: string[] }[]> {
+  const { data, error } = await db()
+    .from("jeugd_ploeghistoriek")
+    .select("seizoen, ploegen")
+    .eq("speler_id", spelerId)
+    .order("seizoen", { ascending: false });
+  fout(error, "Ploeggeschiedenis");
+  return (data ?? []) as { seizoen: string; ploegen: string[] }[];
+}
+
+/** Namen van alle ploegen, ook die van vroegere seizoenen. */
+export async function ploegNamen(): Promise<Map<string, string>> {
+  const { data } = await db().from("jeugd_ploegen").select("id, kort");
+  return new Map((data ?? []).map((p) => [p.id as string, p.kort as string]));
+}
+
+/** Positie voor op de fiche: wat de trainer koos, anders wat op de site staat. */
+export function positieVan(s: Pick<Speler, "voornaam" | "achternaam" | "extra">): string | undefined {
+  const code = s.extra.positiecode as string | undefined;
+  if (code && POSITIE_NAAM[code]) return POSITIE_NAAM[code];
+  if (typeof s.extra.positie === "string") return s.extra.positie;
+  const kern = siteKern(s);
+  return kern?.positie ? POSITIE_NAAM[kern.positie] : undefined;
+}
+
+export function rugnummerVan(s: Pick<Speler, "voornaam" | "achternaam" | "extra">): number | undefined {
+  return (s.extra.rugnummer as number | undefined) ?? siteKern(s)?.nummer;
+}
+
+const POSITIE_NAAM: Record<string, string> = { K: "Keeper", V: "Verdediger", M: "Middenvelder", A: "Aanvaller" };

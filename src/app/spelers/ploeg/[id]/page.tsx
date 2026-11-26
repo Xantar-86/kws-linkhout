@@ -1,8 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { magPloeg, vereisGebruiker } from "@/lib/jeugd/toegang";
-import { aandachtVoorSpelers, aanwezigheid, leeftijd, periodes, ploegen, siteFoto, siteKern, spelersVanPloeg, stafVanPloeg } from "@/lib/jeugd/gegevens";
-import { POSITIES } from "@/lib/kernen";
+import {
+  aandachtVoorSpelers,
+  aanwezigheid,
+  leeftijd,
+  periodes,
+  ploegen,
+  positieVan,
+  rugnummerVan,
+  siteFoto,
+  spelersVanPloeg,
+  stafVanPloeg,
+} from "@/lib/jeugd/gegevens";
 import { Portret, Procent } from "../../Onderdelen";
 
 export default async function PloegPagina({ params }: { params: Promise<{ id: string }> }) {
@@ -46,9 +56,8 @@ export default async function PloegPagina({ params }: { params: Promise<{ id: st
           <tbody>
             {spelers.map((s) => {
               const naam = `${s.voornaam} ${s.achternaam}`;
-              const kern = siteKern(s);
-              const nr = (s.extra.rugnummer as number | undefined) ?? kern?.nummer;
-              const pos = (s.extra.positie as string | undefined) ?? (kern?.positie ? POSITIES[kern.positie] : undefined);
+              const nr = rugnummerVan(s);
+              const pos = positieVan(s);
               const let_op = aandacht.get(s.id);
               return (
                 <tr key={s.id} className="border-b border-zand-100 last:border-0 hover:bg-zand-50">
@@ -81,7 +90,7 @@ export default async function PloegPagina({ params }: { params: Promise<{ id: st
       </div>
       <p className="text-xs text-inkt-600">
         Percentage = keren dat de speler &quot;komt&quot; antwoordde in Spond, op alle trainingen of wedstrijden waarvoor hij
-        uitgenodigd was. Geannuleerde activiteiten tellen niet mee. Een rood uitroepteken betekent allergie of medische
+        uitgenodigd was. Enkel activiteiten die al voorbij zijn tellen mee; wat nog moet komen en geannuleerde activiteiten niet. Een rood uitroepteken betekent allergie of medische
         info op de fiche, een grijze i een ander aandachtspunt.
       </p>
     </div>

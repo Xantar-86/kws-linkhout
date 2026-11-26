@@ -119,6 +119,12 @@ export function seizoensbegin(d = new Date()): Date {
   return new Date(Date.UTC(jaar, 6, 1));
 }
 
+/** Bv. "2026-2027" voor alles tussen 1 juli 2026 en 30 juni 2027. */
+export function seizoenNaam(d = new Date()): string {
+  const jaar = seizoensbegin(d).getUTCFullYear();
+  return `${jaar}-${jaar + 1}`;
+}
+
 const iso = (d: Date) => d.toISOString().slice(0, 10) + "T00:00:00.000Z";
 
 async function inStukken<T>(rijen: T[], grootte: number, doe: (stuk: T[]) => Promise<void>) {
@@ -214,6 +220,23 @@ async function ronde(aanmelding: Aanmelding, volledig: boolean): Promise<SyncRes
       );
     check(error, "Spelers bewaren");
   });
+
+  // Ploeggeschiedenis: in welke ploeg(en) de speler dit seizoen zit.
+  const seizoen = seizoenNaam(start);
+  await inStukken(spelers, 200, async (stuk) => {
+    const { error } = await db()
+      .from("jeugd_ploeghistoriek")
+      .upsert(
+        stuk.map((m) => ({
+          speler_id: m.id,
+          seizoen,
+          ploegen: (m.subGroups ?? []).filter((s) => ploegIds.has(s)),
+          bijgewerkt: start.toISOString(),
+        })),
+      );
+    check(error, "Ploeggeschiedenis bewaren");
+  });
+
   const nietMeer = await db()
     .from("jeugd_spelers")
     .update({ actief: false }, { count: "exact" })

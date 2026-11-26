@@ -29,6 +29,8 @@ export default function robots(): MetadataRoute.Robots {
           "/stabiliteitstraining",
           // Het spelersdossier van de jeugd, enkel na aanmelden.
           "/spelers",
+          // Persoonlijke evaluatielinks voor spelers en ouders.
+          "/evaluatie/",
           // Antwoorden van de server, geen pagina's.
           "/api/",
         ],

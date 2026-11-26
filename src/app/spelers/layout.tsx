@@ -32,6 +32,7 @@ export default async function SpelersLayout({ children }: { children: React.Reac
           {ik && (
             <nav className="ml-auto flex flex-wrap items-center gap-4 text-sm">
               <Link href="/spelers" className="text-white/80 hover:text-white">Ploegen</Link>
+              <Link href="/spelers/evaluaties" className="text-white/80 hover:text-white">Evaluaties</Link>
               {ik.beheerder && <Link href="/spelers/beheer" className="text-white/80 hover:text-white">Beheer</Link>}
               <span className="text-white/50">{ik.naam}</span>
               <form action={afmelden}>
