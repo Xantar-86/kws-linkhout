@@ -2,8 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { VragenKiezer } from "@/components/jeugd/VragenKiezer";
 import { GROEP_NAAM } from "@/lib/jeugd/vragen";
-import { vragenBewaren } from "../../../evaluatie-acties";
+import { rondeVerwijderen, vragenBewaren } from "../../../evaluatie-acties";
 import { Stappen, rondeVoorPagina } from "../gedeeld";
+import { VerwijderRonde } from "@/components/jeugd/Formulieren";
 
 export default async function VragenKiezen({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,13 +13,16 @@ export default async function VragenKiezen({ params }: { params: Promise<{ id: s
 
   return (
     <div className="grid gap-6">
-      <div className="grid gap-2">
-        <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
-        <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
-        <p className="text-sm text-inkt-700">
-          {r.ploegen.map((p) => kort.get(p)).join(", ")} · vragen voor {groepen.map((g) => GROEP_NAAM[g]).join(" en ")}
-        </p>
-        <Stappen id={id} stap={2} />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="grid gap-2">
+          <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
+          <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
+          <p className="text-sm text-inkt-700">
+            {r.ploegen.map((p) => kort.get(p)).join(", ")} · vragen voor {groepen.map((g) => GROEP_NAAM[g]).join(" en ")}
+          </p>
+          <Stappen id={id} stap={2} />
+        </div>
+        <VerwijderRonde actie={rondeVerwijderen} id={id} metAntwoorden={false} />
       </div>
       <p className="max-w-3xl text-sm text-inkt-700">
         Alle vragen die bij deze leeftijd passen, staan aangevinkt. Vink af wat je niet wilt gebruiken en voeg gerust eigen

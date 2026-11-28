@@ -19,7 +19,7 @@ export async function rondeVoorPagina(id: string) {
   return { ik, r, ploegen, kort, zichtbaar, beheer, groepen };
 }
 
-export function Stappen({ id, stap }: { id: string; stap: 2 | 3 }) {
+export function Stappen({ id, stap }: { id: string; stap: 1 | 2 | 3 }) {
   const klasse = (n: number) =>
     n === stap ? "rounded-md bg-inkt-900 px-2 py-1 font-semibold text-white" : "rounded-md bg-zand-100 px-2 py-1 text-inkt-700 hover:bg-zand-200";
   return (

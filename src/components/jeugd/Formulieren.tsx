@@ -132,7 +132,17 @@ export function Versturen({ actie, id, tot, aantal }: { actie: Actie; id: string
   );
 }
 
-export function VerwijderRonde({ actie, id, metAntwoorden }: { actie: Actie; id: string; metAntwoorden: boolean }) {
+export function VerwijderRonde({
+  actie,
+  id,
+  metAntwoorden,
+  label = "Evaluatie verwijderen",
+}: {
+  actie: Actie;
+  id: string;
+  metAntwoorden: boolean;
+  label?: string;
+}) {
   const [staat, verstuur, bezig] = useActionState(actie, null);
   const [zeker, setZeker] = useState(false);
   return (
@@ -146,7 +156,7 @@ export function VerwijderRonde({ actie, id, metAntwoorden }: { actie: Actie; id:
         </div>
       ) : (
         <div>
-          <button type="button" className={knopLicht} onClick={() => setZeker(true)}>Evaluatie verwijderen</button>
+          <button type="button" className={knopLicht} onClick={() => setZeker(true)}>{label}</button>
         </div>
       )}
       <Melding staat={staat} />

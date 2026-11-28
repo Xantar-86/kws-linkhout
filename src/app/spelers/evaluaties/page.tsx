@@ -3,6 +3,8 @@ import { db } from "@/lib/supabase";
 import { magPloeg, vereisGebruiker } from "@/lib/jeugd/toegang";
 import { ploegen as leesPloegen } from "@/lib/jeugd/gegevens";
 import { isOpen, rondes, vandaag } from "@/lib/jeugd/evaluatie";
+import { VerwijderRonde } from "@/components/jeugd/Formulieren";
+import { rondeVerwijderen } from "../evaluatie-acties";
 import { Kaart, datumLang } from "../Onderdelen";
 
 export default async function Evaluaties() {
@@ -49,11 +51,13 @@ export default async function Evaluaties() {
             const t = tel.get(r.id) ?? {};
             const status =
               r.status === "concept" ? "Nog niet verstuurd" : isOpen(r) ? `Open tot ${datumLang(r.open_tot)}` : r.open_tot < d ? "Afgesloten" : "Verstuurd";
+            const magWeg = ik.beheerder || (r.ploegen.length > 0 && r.ploegen.every((p) => magPloeg(ik, p)));
+            const ingevuld = Object.values(t).some((x) => x.klaar > 0);
             return (
-              <li key={r.id}>
+              <li key={r.id} className="grid gap-2 rounded-xl border border-zand-200 bg-white shadow-zacht transition hover:border-inkt-600">
                 <Link
                   href={r.status === "concept" ? `/spelers/evaluaties/${r.id}/vragen` : `/spelers/evaluaties/${r.id}`}
-                  className="grid gap-3 rounded-xl border border-zand-200 bg-white p-4 shadow-zacht transition hover:border-inkt-600 sm:grid-cols-[1fr_auto] sm:items-center"
+                  className="grid gap-3 p-4 pb-0 sm:grid-cols-[1fr_auto] sm:items-center"
                 >
                   <span className="grid gap-1">
                     <span className="font-display text-xl font-bold uppercase leading-none">{r.naam}</span>
@@ -77,6 +81,9 @@ export default async function Evaluaties() {
                     <span className="w-fit rounded-md bg-amber-50 px-2 py-1 text-sm font-medium text-amber-800">Verder opmaken</span>
                   )}
                 </Link>
+                <div className="flex justify-end px-4 pb-3">
+                  {magWeg && <VerwijderRonde actie={rondeVerwijderen} id={r.id} metAntwoorden={ingevuld} label="Verwijderen" />}
+                </div>
               </li>
             );
           })}

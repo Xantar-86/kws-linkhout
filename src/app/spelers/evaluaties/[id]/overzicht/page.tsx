@@ -2,10 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/supabase";
 import { EvaluatieFormulier } from "@/components/jeugd/EvaluatieFormulier";
-import { Versturen } from "@/components/jeugd/Formulieren";
+import { Versturen, VerwijderRonde } from "@/components/jeugd/Formulieren";
 import { instellingen } from "@/lib/jeugd/evaluatie";
 import { GROEP_NAAM, type EvalRol } from "@/lib/jeugd/vragen";
-import { rondeVersturen } from "../../../evaluatie-acties";
+import { rondeVersturen, rondeVerwijderen } from "../../../evaluatie-acties";
 import { Kaart } from "../../../Onderdelen";
 import { Stappen, rondeVoorPagina } from "../gedeeld";
 
@@ -28,11 +28,14 @@ export default async function Overzicht({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="grid gap-6">
-      <div className="grid gap-2">
-        <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
-        <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
-        <p className="text-sm text-inkt-700">{r.ploegen.map((p) => kort.get(p)).join(", ")}</p>
-        <Stappen id={id} stap={3} />
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="grid gap-2">
+          <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
+          <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
+          <p className="text-sm text-inkt-700">{r.ploegen.map((p) => kort.get(p)).join(", ")}</p>
+          <Stappen id={id} stap={3} />
+        </div>
+        <VerwijderRonde actie={rondeVerwijderen} id={id} metAntwoorden={false} />
       </div>
 
       <p className="max-w-3xl text-sm text-inkt-700">

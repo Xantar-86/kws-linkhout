@@ -29,10 +29,13 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
   if (r.status === "concept") {
     return (
       <div className="grid max-w-3xl gap-6">
-        <div className="grid gap-2">
-          <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
-          <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
-          <Stappen id={id} stap={2} />
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="grid gap-2">
+            <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
+            <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
+            <Stappen id={id} stap={1} />
+          </div>
+          {beheer && <VerwijderRonde actie={rondeVerwijderen} id={id} metAntwoorden={false} />}
         </div>
         <Kaart titel="Ploeg en datum">
           <RondeAanpassen actie={rondeAanpassen} id={id} naam={r.naam} tot={r.open_tot} ploegen={keuzePloegen} gekozen={r.ploegen} concept />
@@ -42,7 +45,6 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
             Verder: vragen kiezen
           </Link>
         </div>
-        {beheer && <VerwijderRonde actie={rondeVerwijderen} id={id} metAntwoorden={false} />}
       </div>
     );
   }
@@ -69,13 +71,16 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
 
   return (
     <div className="grid gap-6">
-      <div className="grid gap-1">
-        <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
-        <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
-        <p className="text-sm text-inkt-700">
-          {open ? <>Open tot en met {tot}</> : r.open_tot < vandaag() ? <>Afgesloten op {tot}</> : <>Verstuurd</>}
-          {r.aangemaakt_door && <> · opgemaakt door {r.aangemaakt_door}</>}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="grid gap-1">
+          <Link href="/spelers/evaluaties" className="text-sm text-inkt-600 hover:text-primary-700">← Evaluaties</Link>
+          <h1 className="font-display text-3xl font-bold uppercase">{r.naam}</h1>
+          <p className="text-sm text-inkt-700">
+            {open ? <>Open tot en met {tot}</> : r.open_tot < vandaag() ? <>Afgesloten op {tot}</> : <>Verstuurd</>}
+            {r.aangemaakt_door && <> · opgemaakt door {r.aangemaakt_door}</>}
+          </p>
+        </div>
+        {beheer && <VerwijderRonde actie={rondeVerwijderen} id={id} metAntwoorden={heeftAntwoorden} />}
       </div>
 
       {zichtbaar.map((ploegId) => {
@@ -214,7 +219,6 @@ export default async function RondePagina({ params }: { params: Promise<{ id: st
             gekozen={r.ploegen}
             concept={false}
           />
-          <VerwijderRonde actie={rondeVerwijderen} id={id} metAntwoorden={heeftAntwoorden} />
         </Kaart>
       )}
     </div>

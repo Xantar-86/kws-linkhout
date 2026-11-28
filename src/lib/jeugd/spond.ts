@@ -53,9 +53,14 @@ export type Aanmelding = { email: string; wachtwoord: string };
  * eigen pc mag het ook uit %USERPROFILE%\.kws\spond.txt komen (regel 1 het
  * adres, regel 2 het wachtwoord, een label als "login:" vooraan valt weg).
  */
+const schoonAdres = (s: string) => s.replace(/^﻿/, "").trim().replace(/^(login|e-?mail|gebruiker|user(name)?)\s*:\s*/i, "").trim();
+const schoonWachtwoord = (s: string) =>
+  s.replace(/^﻿/, "").trim().replace(/^(wachtwoord|paswoord|password|pasw|pass|pw|ww)\s*:\s*/i, "").trim();
+
 export function spondAanmelding(): Aanmelding | null {
+  // Een spatie, nieuwe regel of label dat mee geplakt werd in Vercel, doet de login mislukken.
   if (process.env.SPOND_EMAIL && process.env.SPOND_WACHTWOORD) {
-    return { email: process.env.SPOND_EMAIL, wachtwoord: process.env.SPOND_WACHTWOORD };
+    return { email: schoonAdres(process.env.SPOND_EMAIL), wachtwoord: schoonWachtwoord(process.env.SPOND_WACHTWOORD) };
   }
   if (process.env.VERCEL) return null;
   try {
@@ -65,10 +70,7 @@ export function spondAanmelding(): Aanmelding | null {
       .map((r) => r.trim())
       .filter(Boolean);
     if (regels.length < 2) return null;
-    return {
-      email: regels[0].replace(/^(login|e-?mail|gebruiker|user(name)?)\s*:\s*/i, ""),
-      wachtwoord: regels[1].replace(/^(wachtwoord|paswoord|password|pasw|pass|pw|ww)\s*:\s*/i, ""),
-    };
+    return { email: schoonAdres(regels[0]), wachtwoord: schoonWachtwoord(regels[1]) };
   } catch {
     return null;
   }
